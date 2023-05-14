@@ -3,7 +3,8 @@ require("core.options")
 require("core.keymaps")
 
 -- ----- 插件 ----- --
-require("plugins.plugins-setup")
+require("plugins.init")
+require("plugins.plugins")
 
 -- 主题：github-nvim-theme
 require("plugins.github-theme")
