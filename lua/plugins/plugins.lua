@@ -26,9 +26,7 @@ require('lazy').setup {
   -- 语法高亮
   {
     "nvim-treesitter/nvim-treesitter",
-    build = function()
-        require("nvim-treesitter.install").update({ with_sync = true })
-    end,
+    build = ":TSUpdate"
   },
   -- 彩虹括号
   {
@@ -79,6 +77,9 @@ require('lazy').setup {
   {
     'nvim-telescope/telescope.nvim', branch = '0.1.x',
     dependencies = 'nvim-lua/plenary.nvim'
+  },
+  -- Copilot
+  {
+    'github/copilot.vim'
   }
-
 }

@@ -17,6 +17,10 @@ keymap.set("n", "<leader>sv", "<C-w>v") -- 右侧新增窗口
 keymap.set("n", "<leader>sh", "<C-w>s") -- 底部新增窗口
 -- 开辟终端窗口
 keymap.set("n", "<leader>`", "<C-w>s :term<CR>")
+-- 删除行
+keymap.set("n", "xx", ":delete<CR>")
+-- 切换是否自动换行
+keymap.set('n', '<leader>x', ':set invwrap<CR>', { noremap = true })
 
 -- 取消高亮
 keymap.set("n", "<leader>nh", ":nohl<CR>")
