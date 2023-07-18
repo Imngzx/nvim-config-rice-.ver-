@@ -6,11 +6,13 @@ require("core.keymaps")
 require("plugins.init")
 require("plugins.plugins")
 
--- 主题：github-nvim-theme
+-- 主题
+-- github-nvim-theme
 require("plugins.github-theme")
--- 主题：transparent.nvim
+-- transparent.nvim
 require("plugins.transparent")
 
+-- 模块
 -- 底栏：lualine.nvim
 require("plugins.lualine")
 -- 侧栏：nvim-tree.lua
@@ -18,20 +20,24 @@ require("plugins.nvim-tree")
 -- 顶栏：bufferline
 require("plugins.bufferline")
 
--- 主界面：nvim-treesitter
+-- 主窗口
+-- 语法高亮：nvim-treesitter
 require("plugins.treesitter")
--- 主界面：lsp
+-- LSP 基础：lsp
 require("plugins.lsp")
--- 主界面：lspsaga
+-- LSP 增强：lspsaga
 require("plugins.lspsaga")
--- 主界面：cmp
+-- 填充提示：lsp-signature
+require("plugins.lsp-signature")
+-- 自动补全：cmp
 require("plugins.cmp")
--- 主界面：comment
+-- 快速注释：comment
 require("plugins.comment")
--- 主界面：autopairs
+-- 自动补全括号：autopairs
 require("plugins.autopairs")
 
--- 辅助工具：gitsigns
+-- 辅助工具
+-- Git 标记：gitsigns
 require("plugins.gitsigns")
--- 辅助工具：telescope
+-- 文件/内容检索：telescope
 require("plugins.telescope")

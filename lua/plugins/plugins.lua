@@ -57,6 +57,8 @@ require('lazy').setup {
       { "nvim-treesitter/nvim-treesitter" }
     }
   },
+  -- 填充提示（更详细）
+  { "ray-x/lsp_signature.nvim" },
   -- 自动补全
   { "hrsh7th/nvim-cmp" },
   { "hrsh7th/cmp-nvim-lsp" },
@@ -76,7 +78,7 @@ require('lazy').setup {
   {
     'lewis6991/gitsigns.nvim',
   },
-  -- 文件、内容检索
+  -- 文件/内容检索 Telescope
   {
     'nvim-telescope/telescope.nvim', branch = '0.1.x',
     dependencies = 'nvim-lua/plenary.nvim'
