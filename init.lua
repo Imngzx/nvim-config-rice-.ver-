@@ -43,3 +43,5 @@ require("plugins.colorizer")
 require("plugins.gitsigns")
 -- 文件/内容检索：telescope
 require("plugins.telescope")
+-- 键盘映射提示：which-key.nvim
+require("plugins.which-key")
