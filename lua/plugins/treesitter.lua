@@ -1,13 +1,14 @@
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the five listed parsers should always be installed)
   ensure_installed = {"vim", "vimdoc", "lua", -- Neovim 自身
-  "markdown", "markdown_inline", "json", "yaml", "gitignore", -- 静态文件
+  "markdown", "markdown_inline", "json", "yaml", "toml", "gitignore", -- 静态文件
   "bash", -- 执行文件
-  "c", "cpp", -- C
+  "c", "cpp", "cmake", "qmljs", -- C/Cpp/Qt
+  "matlab", -- Matlab
   "python", -- Python
   "r", -- R
   "sql", -- SQL
-  "html", "javascript", "typescript", "tsx", "css", "vue" -- 前端
+  "html", "javascript", "typescript", "tsx", "css", "vue", -- 前端
   },
 
   highlight = {
