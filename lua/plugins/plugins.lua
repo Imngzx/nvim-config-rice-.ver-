@@ -1,7 +1,10 @@
 require('lazy').setup {
   -- ----- 主题 ----- --
   -- Github 样式主题
-  { 'projekt0n/github-nvim-theme' },
+  { 'projekt0n/github-nvim-theme',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+  },
   -- 透明主题
   { 'xiyaowong/transparent.nvim' },
 
