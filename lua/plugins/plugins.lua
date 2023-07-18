@@ -70,6 +70,8 @@ require('lazy').setup {
   { 'numToStr/Comment.nvim' },
   -- 自动补全括号
   { "windwp/nvim-autopairs" },
+  -- 颜色识别
+  { "norcalli/nvim-colorizer.lua" },
 
   -- ----- 辅助工具 ----- --
   -- 快捷窗口切换

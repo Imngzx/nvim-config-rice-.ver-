@@ -35,6 +35,8 @@ require("plugins.cmp")
 require("plugins.comment")
 -- 自动补全括号：autopairs
 require("plugins.autopairs")
+-- 颜色识别：nvim-colorizer.lua
+require("plugins.colorizer")
 
 -- 辅助工具
 -- Git 标记：gitsigns
