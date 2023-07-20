@@ -41,6 +41,18 @@ require('dashboard').setup {
         key = 'c',
       },
     },
+    project = {
+      enable = true,
+      limit = 6,
+      icon = '',
+      label = ' Recent Projects:',
+      action = 'Telescope find_files cwd='
+    },
+    mru = {
+      limit = 6,
+      icon = '',
+      label = ' Most Recent Files:',
+    },
     footer = { '', ' Powered by Neovim' },
   },
 }
