@@ -1,14 +1,18 @@
 require('lazy').setup {
   -- ----- 美化 ----- --
   -- Github 样式主题
-  { 'projekt0n/github-nvim-theme',
+  {
+    'projekt0n/github-nvim-theme',
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
     priority = 1000, -- make sure to load this before all the other start plugins
   },
   -- 透明主题
   { 'xiyaowong/transparent.nvim' },
   -- 平滑滚动
-  { 'karb94/neoscroll.nvim' },
+  {
+    'karb94/neoscroll.nvim',
+    lazy = true
+  },
 
   -- ----- 模块 ----- --
   -- 底部状态栏
@@ -60,7 +64,10 @@ require('lazy').setup {
     }
   },
   -- 填充提示（更详细）
-  { "ray-x/lsp_signature.nvim" },
+  {
+    "ray-x/lsp_signature.nvim",
+    lazy = true
+  },
   -- 自动补全
   { "hrsh7th/nvim-cmp" },
   { "hrsh7th/cmp-nvim-lsp" },
@@ -69,27 +76,32 @@ require('lazy').setup {
   { "saadparwaiz1/cmp_luasnip" },
   { "rafamadriz/friendly-snippets" },
   -- 快速注释
-  { 'numToStr/Comment.nvim' },
+  {
+    'numToStr/Comment.nvim',
+    lazy = true
+  },
   -- 自动补全括号
   { "windwp/nvim-autopairs" },
   -- 颜色识别
-  { "norcalli/nvim-colorizer.lua" },
+  { "norcalli/nvim-colorizer.lua",
+    lazy = true
+  },
 
   -- ----- 辅助工具 ----- --
   -- 快捷窗口切换
   { 'christoomey/vim-tmux-navigator' },
   -- Git 管理
-  {
-    'lewis6991/gitsigns.nvim',
-  },
+  { 'lewis6991/gitsigns.nvim' },
   -- 文件/内容检索 Telescope
   {
     'nvim-telescope/telescope.nvim', branch = '0.1.x',
-    dependencies = 'nvim-lua/plenary.nvim'
+    dependencies = 'nvim-lua/plenary.nvim',
+    lazy = true
   },
   -- Copilot
   {
-    'github/copilot.vim'
+    'github/copilot.vim',
+    lazy = true
   },
   -- 键盘映射提示 Which-key
   {
@@ -104,6 +116,11 @@ require('lazy').setup {
   {
     'glepnir/dashboard-nvim',
     event = 'VimEnter',
-    dependencies = { {'nvim-tree/nvim-web-devicons'}}
+    dependencies = { 'nvim-tree/nvim-web-devicons' }
+  },
+  -- Git 增强
+  {
+    "tpope/vim-fugitive",
+    event = "VeryLazy"
   }
 }
