@@ -1,5 +1,5 @@
 require('lazy').setup {
-  -- ----- 主题 ----- --
+  -- ----- 美化 ----- --
   -- Github 样式主题
   { 'projekt0n/github-nvim-theme',
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
@@ -7,6 +7,8 @@ require('lazy').setup {
   },
   -- 透明主题
   { 'xiyaowong/transparent.nvim' },
+  -- 平滑滚动
+  { 'karb94/neoscroll.nvim' },
 
   -- ----- 模块 ----- --
   -- 底部状态栏

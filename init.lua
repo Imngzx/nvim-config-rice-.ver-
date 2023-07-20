@@ -6,11 +6,13 @@ require("core.keymaps")
 require("plugins.init")
 require("plugins.plugins")
 
--- 主题
--- github-nvim-theme
+-- 美化
+-- 主题：github-nvim-theme
 require("plugins.github-theme")
--- transparent.nvim
+-- 透明化：transparent.nvim
 require("plugins.transparent")
+-- 平滑滚动：neoscroll.nvim
+require("plugins.neoscroll")
 
 -- 模块
 -- 底栏：lualine.nvim
