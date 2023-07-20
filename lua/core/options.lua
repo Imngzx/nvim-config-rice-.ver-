@@ -30,6 +30,10 @@ opt.splitbelow = true
 opt.ignorecase = true
 opt.smartcase = true
 
+-- 终端
+opt.shell = "pwsh"
+opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+
 -- 外观
 opt.termguicolors = true -- 终端真色彩
 opt.signcolumn = "yes" -- 左边多一列，用来放debug/插件提示
