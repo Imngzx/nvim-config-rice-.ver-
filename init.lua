@@ -27,8 +27,8 @@ require("plugins.bufferline")
 require("plugins.treesitter")
 -- LSP 基础：lsp
 require("plugins.lsp")
--- LSP 增强：lspsaga
-require("plugins.lspsaga")
+
+
 -- 填充提示：lsp-signature
 require("plugins.lsp-signature")
 -- 自动补全：cmp

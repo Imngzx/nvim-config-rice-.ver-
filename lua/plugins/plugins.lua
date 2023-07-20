@@ -53,16 +53,9 @@ require('lazy').setup {
       },
     }
   },
-  -- 主窗口：LSP 增强
-  {
-    "glepnir/lspsaga.nvim",
-    event = "LspAttach",
-    dependencies = {
-      { "nvim-tree/nvim-web-devicons" },
-      --Please make sure you install markdown and markdown_inline parser
-      { "nvim-treesitter/nvim-treesitter" }
-    }
-  },
+
+
+  
   -- 填充提示（更详细）
   {
     "ray-x/lsp_signature.nvim",
