@@ -58,10 +58,7 @@ require('lazy').setup {
   -- 格式化文档
   { "MunifTanjim/prettier.nvim" },
   -- 填充提示（更详细）
-  {
-    "ray-x/lsp_signature.nvim",
-    lazy = true
-  },
+  { "ray-x/lsp_signature.nvim" },
   -- 自动补全
   { "hrsh7th/nvim-cmp" },
   { "hrsh7th/cmp-nvim-lsp" },
@@ -70,12 +67,9 @@ require('lazy').setup {
   { "saadparwaiz1/cmp_luasnip" },
   { "rafamadriz/friendly-snippets" },
   -- 快速注释
-  {
-    'numToStr/Comment.nvim',
-    lazy = true
-  },
+  { 'numToStr/Comment.nvim', lazy = true },
   -- 自动补全括号
-  { "windwp/nvim-autopairs" },
+  { "windwp/nvim-autopairs", lazy = true },
   -- 颜色识别
   { "norcalli/nvim-colorizer.lua", lazy = true },
 

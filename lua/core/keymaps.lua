@@ -29,22 +29,22 @@ local whichkeymaps = {
 
     -- 代码状态
     x = { "<cmd>set invwrap<cr>", "Toggle wrap", noremap = true }, -- 切换是否自动换行
-    n = { "<cmd>nohl<cr>", "Cancel search highlight" },
-
+    n = { "<cmd>nohl<cr>", "Close search hl" },
+    
     -- 插件
     -- Telescope
     f = {
-        name = "Telescope",
-        b = { "Find buffers" },
-        f = { "Find file" },
-        g = { "Find live grep" },
-        h = { "Find help" },
-        o = { "Find outlines" }
+      name = "Telescope",
+      b = { "Find buffer" },
+      f = { "Find file" },
+      g = { "Find live grep" },
+      h = { "Find help" },
+      s = { "Find symbol" }
     },
     -- 返回主页 Dashboard
     h = { "<cmd>NvimTreeClose<cr><cmd>Dashboard<cr>", "Home" },
     -- 侧栏切换 NvimTree
-    b = { "<cmd>NvimTreeToggle<cr>", "NvimTree" },
+    b = { "<cmd>NvimTreeToggle<cr>", "Sidebar" },
     -- Git 操作 Fugitive
     g = {
       name = "Git",
@@ -66,7 +66,7 @@ local whichkeymaps = {
       s = { "<cmd>Git<cr>", "Git status" },
     },
     -- Prettier
-    p = { "Prettier format" }
+    p = { "<cmd>Prettier<cr><cmd>w<cr>", "Format" },
   },
 
   -- ----- Shift ----- --
