@@ -53,9 +53,10 @@ require('lazy').setup {
       },
     }
   },
-
-
-  
+  -- LSP 增强
+  { "jose-elias-alvarez/null-ls.nvim" },
+  -- 格式化文档
+  { "MunifTanjim/prettier.nvim" },
   -- 填充提示（更详细）
   {
     "ray-x/lsp_signature.nvim",
@@ -76,9 +77,7 @@ require('lazy').setup {
   -- 自动补全括号
   { "windwp/nvim-autopairs" },
   -- 颜色识别
-  { "norcalli/nvim-colorizer.lua",
-    lazy = true
-  },
+  { "norcalli/nvim-colorizer.lua", lazy = true },
 
   -- ----- 辅助工具 ----- --
   -- 快捷窗口切换
@@ -92,10 +91,7 @@ require('lazy').setup {
     lazy = true
   },
   -- Copilot
-  {
-    'github/copilot.vim',
-    lazy = true
-  },
+  { 'github/copilot.vim' },
   -- 键盘映射提示 Which-key
   {
     "folke/which-key.nvim",

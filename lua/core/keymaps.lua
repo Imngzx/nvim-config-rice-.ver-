@@ -12,9 +12,12 @@ local whichkeymaps = {
     name = "Leader", -- 指定该快捷键组的名称
 
     -- 文件操作
+    c = { "<cmd>bd<cr>", "Close buffer"}, -- 关闭
     w = { "<cmd>w<cr>", "Save" }, -- 保存
     q = { "<cmd>q<cr>", "Quit" }, -- 退出
-    c = { "<cmd>bd<cr>", "Close buffer"},
+    -- 组合键
+    ["wc"] = {"<cmd>w<cr><cmd>bd<cr>", "Save & close" },
+    ["wq"] = {"<cmd>NvimTreeClose<cr><cmd>wq<cr>", "Save & quit" },
 
     -- 窗口
     s = {
@@ -61,7 +64,9 @@ local whichkeymaps = {
       },
       r = { "<cmd>Git reset<cr>", "Git reset" },
       s = { "<cmd>Git<cr>", "Git status" },
-    }
+    },
+    -- Prettier
+    p = { "Prettier format" }
   },
 
   -- ----- Shift ----- --
