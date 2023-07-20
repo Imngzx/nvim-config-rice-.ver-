@@ -4,7 +4,7 @@
 
 This repo hosts my [NeoVim](https://neovim.io/) configuration for Linux, macOS, and Windows. `init.lua` is the config entry point.
 
-![Screenshot](Screenshot.png)
+![Screenshot](src/Screenshot.png)
 
 I use [lazy.nvim](https://github.com/folke/lazy.nvim) to manage plugins.
 
