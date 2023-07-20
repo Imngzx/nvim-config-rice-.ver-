@@ -99,5 +99,11 @@ require('lazy').setup {
       vim.o.timeout = true
       vim.o.timeoutlen = 300
     end
+  },
+  -- 主页仪表盘 Dashboard
+  {
+    'glepnir/dashboard-nvim',
+    event = 'VimEnter',
+    dependencies = { {'nvim-tree/nvim-web-devicons'}}
   }
 }

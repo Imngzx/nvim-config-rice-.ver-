@@ -47,3 +47,5 @@ require("plugins.gitsigns")
 require("plugins.telescope")
 -- 键盘映射提示：which-key.nvim
 require("plugins.which-key")
+-- 主页仪表盘：dashboard-nvim
+require("plugins.dashboard")
