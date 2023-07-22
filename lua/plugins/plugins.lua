@@ -42,15 +42,17 @@ require('lazy').setup {
     'HiPhish/nvim-ts-rainbow2',
     dependencies = { 'nvim-treesitter/nvim-treesitter' }
   },
+  -- Mason
+  {
+    "williamboman/mason.nvim",
+    build = ":MasonUpdate" -- :MasonUpdate updates registry contents 
+  },
   -- LSP
   {
     "williamboman/mason-lspconfig.nvim",
     dependencies = {
       "neovim/nvim-lspconfig",
-      {
-        "williamboman/mason.nvim",
-        build = ":MasonUpdate" -- :MasonUpdate updates registry contents 
-      },
+      "williamboman/mason.nvim",
     }
   },
   -- LSP 格式化
@@ -81,7 +83,7 @@ require('lazy').setup {
   -- ----- 辅助工具 ----- --
   -- 快捷窗口切换
   { 'christoomey/vim-tmux-navigator' },
-  -- Git 管理
+  -- Git 状态展示
   { 'lewis6991/gitsigns.nvim' },
   -- 文件/内容检索 Telescope
   {
