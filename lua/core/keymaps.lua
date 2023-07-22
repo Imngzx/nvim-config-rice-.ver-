@@ -25,12 +25,12 @@ local whichkeymaps = {
       v = { "<C-w>v", "Split right" }, -- 右侧新增窗口
       s = { "<C-w>s", "Split bottom" }, -- 底部新增窗口
     },
-    ["`"] = { "<C-w>s <cmd>term<cr>", "Open terminal" }, -- 开辟终端窗口
+    ["`"] = { "<C-w>s <cmd>term pwsh<cr>", "Open terminal" }, -- 开辟终端窗口
 
     -- 代码状态
     x = { "<cmd>set invwrap<cr>", "Toggle wrap", noremap = true }, -- 切换是否自动换行
     n = { "<cmd>nohl<cr>", "Close search hl" },
-    
+
     -- 插件
     -- Telescope
     f = {

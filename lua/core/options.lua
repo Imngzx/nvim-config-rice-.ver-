@@ -31,8 +31,8 @@ opt.ignorecase = true
 opt.smartcase = true
 
 -- 终端
-opt.shell = "pwsh"
-opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+-- opt.shell = "pwsh"
+-- opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
 
 -- 外观
 opt.termguicolors = true -- 终端真色彩
