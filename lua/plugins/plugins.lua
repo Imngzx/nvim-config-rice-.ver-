@@ -53,10 +53,15 @@ require('lazy').setup {
       },
     }
   },
-  -- LSP 增强
-  { "jose-elias-alvarez/null-ls.nvim" },
-  -- 格式化文档
-  { "MunifTanjim/prettier.nvim" },
+  -- LSP 格式化
+  {
+    "jay-babu/mason-null-ls.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      "williamboman/mason.nvim",
+      "jose-elias-alvarez/null-ls.nvim",
+    },
+  },
   -- 填充提示（更详细）
   { "ray-x/lsp_signature.nvim" },
   -- 自动补全

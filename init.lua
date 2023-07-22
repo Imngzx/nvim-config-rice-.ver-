@@ -29,11 +29,8 @@ require("plugins.treesitter")
 require("plugins.lsp")
 
 
-
 -- LSP 增强：null-ls
 require("plugins.null-ls")
--- 格式化代码：prettier.vim
-require("plugins.prettier")
 -- 填充提示：lsp-signature
 require("plugins.lsp-signature")
 -- 自动补全：cmp
