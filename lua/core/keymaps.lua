@@ -5,25 +5,27 @@ vim.g.mapleader = " "
 vim.keymap.set("v", "<M-j>", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "<M-k>", ":m '>-2<CR>gv=gv")
 
+local builtin = require('telescope.builtin')
+
 -- Whichkey
 local whichkeymaps = {
   -- ----- Leader ----- --
-  ["<leader>"] = { -- 指定该快捷键组的前缀
+  ["<leader>"] = {   -- 指定该快捷键组的前缀
     name = "Leader", -- 指定该快捷键组的名称
 
     -- 文件操作
-    c = { "<cmd>bd<cr>", "Close buffer"}, -- 关闭
-    w = { "<cmd>w<cr>", "Save" }, -- 保存
-    q = { "<cmd>q<cr>", "Quit" }, -- 退出
+    c = { "<cmd>bd<cr>", "Close buffer" }, -- 关闭
+    w = { "<cmd>w<cr>", "+Save" },         -- 保存
+    q = { "<cmd>q<cr>", "Quit" },         -- 退出
     -- 组合键
-    ["wc"] = {"<cmd>w<cr><cmd>bd<cr>", "Save & close" },
-    ["wq"] = {"<cmd>NvimTreeClose<cr><cmd>wq<cr>", "Save & quit" },
+    ["wc"] = { "<cmd>w<cr><cmd>bd<cr>", "Save & close" },
+    ["wq"] = { "<cmd>NvimTreeClose<cr><cmd>wq<cr>", "Save & quit" },
 
     -- 窗口
     s = {
       name = "Split window",
-      v = { "<C-w>v", "Split right" }, -- 右侧新增窗口
-      s = { "<C-w>s", "Split bottom" }, -- 底部新增窗口
+      v = { "<C-w>v", "Split right" },                        -- 右侧新增窗口
+      s = { "<C-w>s", "Split bottom" },                       -- 底部新增窗口
     },
     ["`"] = { "<C-w>s <cmd>term pwsh<cr>", "Open terminal" }, -- 开辟终端窗口
 
@@ -35,11 +37,11 @@ local whichkeymaps = {
     -- Telescope
     f = {
       name = "Telescope",
-      b = { "Find buffer" },
-      f = { "Find file" },
-      g = { "Find live grep" },
-      h = { "Find help" },
-      s = { "Find symbol" }
+      b = { builtin.find_files, "Find buffer" },
+      f = { builtin.live_grep, "Find file" },
+      g = { builtin.buffers, "Find live grep" },
+      h = { builtin.help_tags, "Find help" },
+      s = { builtin.treesitter, "Find symbol" }
     },
     -- 返回主页 Dashboard
     h = { "<cmd>NvimTreeClose<cr><cmd>Dashboard<cr>", "Home" },
@@ -65,8 +67,16 @@ local whichkeymaps = {
       r = { "<cmd>Git reset<cr>", "Git reset" },
       s = { "<cmd>Git<cr>", "Git status" },
     },
-    -- Prettier
-    p = { "<cmd>Prettier<cr><cmd>w<cr>", "Format" },
+    -- LSP
+    l = {
+      name = "LSP",
+      d = { vim.lsp.buf.definition, "Declaration" },
+      D = { vim.lsp.buf.declaration, "Declaration" },
+      l = { vim.lsp.buf.hover, "Hover" },
+      r = { vim.lsp.buf.rename, "Rename" },
+    },
+    -- Null-ls
+    -- ["f"] = { "Format" },
   },
 
   -- ----- Shift ----- --
@@ -76,7 +86,7 @@ local whichkeymaps = {
 
   -- ----- Alt ----- --
   ["<M-j>"] = { "<cmd>m .+1<cr>==", "Move line down" }, -- 下移一行
-  ["<M-k>"] = { "<cmd>m .-2<cr>==", "Move line up" }, -- 上移一行
+  ["<M-k>"] = { "<cmd>m .-2<cr>==", "Move line up" },   -- 上移一行
 }
 
 return whichkeymaps

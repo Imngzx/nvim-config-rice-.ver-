@@ -1,6 +1,5 @@
 -- ----- 主设置 ----- --
 require("core.options")
-require("core.keymaps")
 
 -- ----- 插件 ----- --
 require("plugins.init")
@@ -51,3 +50,6 @@ require("plugins.telescope")
 require("plugins.which-key")
 -- 主页仪表盘：dashboard-nvim
 require("plugins.dashboard")
+
+-- ----- 其他 ----- --
+require("core.keymaps")
