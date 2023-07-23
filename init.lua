@@ -53,3 +53,4 @@ require("plugins.dashboard")
 
 -- ----- 其他 ----- --
 require("core.keymaps")
+require("others.cmd")
