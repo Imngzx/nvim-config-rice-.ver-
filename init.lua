@@ -22,18 +22,7 @@ require("plugins.nvim-tree")
 require("plugins.bufferline")
 
 -- 主窗口
--- 语法高亮：nvim-treesitter
-require("plugins.treesitter")
--- LSP 包管理：Mason
-require("plugins.mason")
--- LSP 基础：lsp
-require("plugins.lsp")
--- LSP 增强：null-ls
-require("plugins.null-ls")
--- 填充提示：lsp-signature
-require("plugins.lsp-signature")
--- 自动补全：cmp
-require("plugins.cmp")
+require("lsp")
 -- 快速注释：comment
 require("plugins.comment")
 -- 自动补全括号：autopairs

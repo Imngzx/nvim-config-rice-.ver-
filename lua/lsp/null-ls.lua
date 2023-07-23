@@ -4,19 +4,25 @@ local completion = null_ls.builtins.completion
 
 null_ls.setup({
   sources = {
+    -- 综合
     formatting.prettier,
+    completion.spell,
+
+    -- C/C++
     formatting.clang_format,
-    -- completion.spell,
-    -- completion.luasnip,
+    -- Lua
+    completion.luasnip,
+    -- Python
+    formatting.black
   },
 })
 
 require("mason-null-ls").setup({
   ensure_installed = {
-    "prettier",
+    "black",
     "clang-format",
+    "prettier",
   },
   automatic_installation = true,
 })
 
-vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, {})

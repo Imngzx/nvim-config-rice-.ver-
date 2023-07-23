@@ -4,26 +4,26 @@ require("mason-lspconfig").setup {
     -- 静态文件
     "lua_ls",   -- NeoVim 自身
     "marksman", -- Markdown
-    "lemminx",  -- XML
-    "yamlls",   -- YAML
-    "taplo",    -- TOML
-    "jsonls",   -- JSON
+    -- "lemminx",  -- XML
+    -- "yamlls",   -- YAML
+    -- "taplo",    -- TOML
+    -- "jsonls",   -- JSON
 
     -- 脚本文件
-    "bashls",        -- Bash
-    "powershell_es", -- powershell
+    -- "bashls",        -- Bash
+    -- "powershell_es", -- powershell
 
     -- 编程语言
     "clangd", "cmake",   -- C/Cpp/Qt
-    "matlab_ls",         -- Matlab
+    -- "matlab_ls",         -- Matlab
     "jdtls",             -- Java
     "pyright",           -- Python
     "r_language_server", -- R
-    "sqlls",             -- SQL
+    -- "sqlls",             -- SQL
 
     -- 前端
-    "html", "tsserver", "cssls", -- HTML/JS/TS/CSS
-    "volar",                     -- Vue
+    -- "html", "tsserver", "cssls", -- HTML/JS/TS/CSS
+    -- "volar",                     -- Vue
     -- "tailwindcss", -- Tailwind CSS
   }
 }
@@ -42,13 +42,24 @@ require("lspconfig").lua_ls.setup {
 }
 
 -- C/C++
-require 'lspconfig'.clangd.setup {
+require'lspconfig'.clangd.setup {
   capabilities = vim.tbl_extend("force", cmp_capabilities, {
     offsetEncoding = "utf-8",
   }),
   cmd = {
     "clangd",
-    "--query-driver=D:/Source/Qt/Tools/mingw1120_64/bin/g*",
+    "--query-driver=D:\\Source\\Qt\\Tools\\mingw1120_64\\bin\\c++.exe,D:\\Source\\Qt\\Tools\\mingw1120_64\\bin\\gcc.exe",
   },
 }
 
+-- Java
+require'lspconfig'.jdtls.setup{}
+
+-- Markdown
+require'lspconfig'.marksman.setup{}
+
+-- Python
+require'lspconfig'.pyright.setup{}
+
+-- R
+require'lspconfig'.r_language_server.setup{}
