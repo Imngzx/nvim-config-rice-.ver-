@@ -64,7 +64,7 @@ And many more. See [`Keymaps`](lua/core/keymaps.lua) for more.
 
 ## Installing Custom Plugins
 
-Goto [`lua/plugins/plugins.lua`](lua/plugins/plugins.lua) and add in the config. Like this:
+Goto [`lua/plugins/setup.lua`](lua/plugins/setup.lua) and add in the config. Like this:
 
 ```lua
 require('lazy').setup {

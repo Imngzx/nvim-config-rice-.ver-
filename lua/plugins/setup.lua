@@ -3,7 +3,7 @@ require('lazy').setup {
   -- Github 样式主题
   {
     'projekt0n/github-nvim-theme',
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    lazy = false,    -- make sure we load this during startup if it is your main colorscheme
     priority = 1000, -- make sure to load this before all the other start plugins
   },
   -- 透明主题
@@ -23,29 +23,35 @@ require('lazy').setup {
   -- 侧边栏（文件树）
   {
     'nvim-tree/nvim-tree.lua',
-    dependencies = 'nvim-tree/nvim-web-devicons'
+    dependencies = 'nvim-tree/nvim-web-devicons',
+    lazy = true
   },
   -- 顶栏（窗口管理）
   {
-    'akinsho/bufferline.nvim', version = "*",
-    dependencies = 'nvim-tree/nvim-web-devicons'
+    'akinsho/bufferline.nvim',
+    version = "*",
+    dependencies = 'nvim-tree/nvim-web-devicons',
+    lazy = true
   },
 
   -- ----- 主窗口 ----- --
   -- 语法高亮
   {
     "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate"
+    build = ":TSUpdate",
+    lazy = true
   },
   -- 彩虹括号
   {
     'HiPhish/nvim-ts-rainbow2',
-    dependencies = { 'nvim-treesitter/nvim-treesitter' }
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    lazy = true
   },
   -- Mason
   {
     "williamboman/mason.nvim",
-    build = ":MasonUpdate" -- :MasonUpdate updates registry contents 
+    build = ":MasonUpdate", -- :MasonUpdate updates registry contents
+    lazy = true
   },
   -- LSP
   {
@@ -53,7 +59,7 @@ require('lazy').setup {
     dependencies = {
       "neovim/nvim-lspconfig",
       "williamboman/mason.nvim",
-    }
+    },
   },
   -- LSP 格式化
   {
@@ -63,6 +69,7 @@ require('lazy').setup {
       "williamboman/mason.nvim",
       "jose-elias-alvarez/null-ls.nvim",
     },
+    lazy = true
   },
   -- 填充提示（更详细）
   { "ray-x/lsp_signature.nvim" },
@@ -70,7 +77,7 @@ require('lazy').setup {
   { "hrsh7th/nvim-cmp" },
   { "hrsh7th/cmp-nvim-lsp" },
   { "hrsh7th/cmp-path" }, -- 文件路径
-  { "L3MON4D3/LuaSnip" }, -- snippets引擎，不装这个自动补全会出问题
+  { "L3MON4D3/LuaSnip", lazy = true }, -- snippets引擎，不装这个自动补全会出问题
   { "saadparwaiz1/cmp_luasnip" },
   { "rafamadriz/friendly-snippets" },
   -- 快速注释
@@ -84,15 +91,16 @@ require('lazy').setup {
   -- 快捷窗口切换
   { 'christoomey/vim-tmux-navigator' },
   -- Git 状态展示
-  { 'lewis6991/gitsigns.nvim' },
+  { 'lewis6991/gitsigns.nvim', lazy = true },
   -- 文件/内容检索 Telescope
   {
-    'nvim-telescope/telescope.nvim', branch = '0.1.x',
+    'nvim-telescope/telescope.nvim',
+    branch = '0.1.x',
     dependencies = 'nvim-lua/plenary.nvim',
     lazy = true
   },
   -- Copilot
-  { 'github/copilot.vim' },
+  { 'github/copilot.vim', lazy = true },
   -- 键盘映射提示 Which-key
   {
     "folke/which-key.nvim",

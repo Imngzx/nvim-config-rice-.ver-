@@ -1,5 +1,3 @@
-require("mason").setup()
-
 -- LSP
 require("mason-lspconfig").setup {
   ensure_installed = {
@@ -31,22 +29,26 @@ require("mason-lspconfig").setup {
 }
 
 -- After setting up mason-lspconfig you may set up servers via lspconfig
-
 local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-local capabilities = vim.tbl_extend("force", cmp_capabilities, {
-  offsetEncoding = "utf-8",
-})
+
+-- Lua
+require("lspconfig").lua_ls.setup {
+  capabilities = cmp_capabilities,
+  diagnostics = {
+    globals = {
+      "vim" -- 注册全局变量避免报错
+    }
+  },
+}
+
+-- C/C++
 require 'lspconfig'.clangd.setup {
-  capabilities = capabilities,
+  capabilities = vim.tbl_extend("force", cmp_capabilities, {
+    offsetEncoding = "utf-8",
+  }),
   cmd = {
     "clangd",
     "--query-driver=D:/Source/Qt/Tools/mingw1120_64/bin/g*",
   },
 }
--- require("lspconfig").rust_analyzer.setup {}
--- ...
 
--- 与 cmp 结合
-require("lspconfig").lua_ls.setup {
-  capabilities = cmp_capabilities,
-}

@@ -2,8 +2,8 @@
 require("core.options")
 
 -- ----- 插件 ----- --
-require("plugins.init")
-require("plugins.plugins")
+require("plugins")
+require("plugins.setup")
 
 -- 美化
 -- 主题：github-nvim-theme
@@ -24,10 +24,10 @@ require("plugins.bufferline")
 -- 主窗口
 -- 语法高亮：nvim-treesitter
 require("plugins.treesitter")
+-- LSP 包管理：Mason
+require("plugins.mason")
 -- LSP 基础：lsp
 require("plugins.lsp")
-
-
 -- LSP 增强：null-ls
 require("plugins.null-ls")
 -- 填充提示：lsp-signature
