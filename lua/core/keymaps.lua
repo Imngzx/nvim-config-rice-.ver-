@@ -14,12 +14,14 @@ local whichkeymaps = {
     name = "Leader", -- 指定该快捷键组的名称
 
     -- 文件操作
-    c = { "<cmd>bd<cr>", "Close buffer" }, -- 关闭
+    b = { "<cmd>bd<cr>", "Close buffer" }, -- 关闭
     w = { "<cmd>w<cr>", "+Save" },         -- 保存
-    q = { "<cmd>q<cr>", "Quit" },         -- 退出
+    q = { "<cmd>q<cr>", "+Quit" },         -- 退出
     -- 组合键
-    ["wc"] = { "<cmd>w<cr><cmd>bd<cr>", "Save & close" },
+    ["wb"] = { "<cmd>w<cr><cmd>bd<cr>", "Save & close buffer" },
     ["wq"] = { "<cmd>NvimTreeClose<cr><cmd>wq<cr>", "Save & quit" },
+    ["qq"] = { "<cmd>NvimTreeClose<cr><cmd>q<cr>", "Quit completely" },
+    ["q!"] = { "<cmd>NvimTreeClose<cr><cmd>q!<cr>", "Quit Force" },
 
     -- 窗口
     s = {
@@ -46,7 +48,7 @@ local whichkeymaps = {
     -- 返回主页 Dashboard
     h = { "<cmd>NvimTreeClose<cr><cmd>Dashboard<cr>", "Home" },
     -- 侧栏切换 NvimTree
-    b = { "<cmd>NvimTreeToggle<cr>", "Sidebar" },
+    t = { "<cmd>NvimTreeToggle<cr>", "Sidebar" },
     -- Git 操作 Fugitive
     g = {
       name = "Git",
@@ -68,15 +70,14 @@ local whichkeymaps = {
       s = { "<cmd>Git<cr>", "Git status" },
     },
     -- LSP
-    l = {
-      name = "LSP",
-      d = { vim.lsp.buf.definition, "Declaration" },
+    c = {
+      name = "Code",
+      d = { vim.lsp.buf.definition, "Definition" },
       D = { vim.lsp.buf.declaration, "Declaration" },
-      l = { vim.lsp.buf.hover, "Hover" },
+      h = { vim.lsp.buf.hover, "Hover" },
       r = { vim.lsp.buf.rename, "Rename" },
+      f = { vim.lsp.buf.format, "Format" },
     },
-    -- Null-ls
-    -- ["f"] = { "Format" },
   },
 
   -- ----- Shift ----- --
