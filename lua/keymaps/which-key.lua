@@ -1,4 +1,4 @@
-local maps = require("core.keymaps")
+local maps = require("keymaps.config")
 
 require("which-key").register(maps)
 

@@ -1,14 +1,7 @@
--- 设置 leader 键
-vim.g.mapleader = " "
-
--- 单行或多行移动
-vim.keymap.set("v", "<M-j>", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "<M-k>", ":m '>-2<CR>gv=gv")
-
 local builtin = require('telescope.builtin')
 
 -- Whichkey
-local whichkeymaps = {
+local M = {
   -- ----- Leader ----- --
   ["<leader>"] = {   -- 指定该快捷键组的前缀
     name = "Leader", -- 指定该快捷键组的名称
@@ -20,7 +13,7 @@ local whichkeymaps = {
     -- 组合键
     ["wb"] = { "<cmd>w<cr><cmd>bd<cr>", "Save & close buffer" },
     ["wq"] = { "<cmd>NvimTreeClose<cr><cmd>wq<cr>", "Save & quit" },
-    ["qq"] = { "<cmd>NvimTreeClose<cr><cmd>q<cr>", "Quit completely" },
+    ["qq"] = { "<cmd>qa<cr>", "Quit completely" },
     ["q!"] = { "<cmd>NvimTreeClose<cr><cmd>q!<cr>", "Quit Force" },
 
     -- 窗口
@@ -29,8 +22,6 @@ local whichkeymaps = {
       v = { "<C-w>v", "Split right" },                        -- 右侧新增窗口
       s = { "<C-w>s", "Split bottom" },                       -- 底部新增窗口
     },
-    ["`"] = { "<C-w>s <cmd>term pwsh<cr>", "Open terminal" }, -- 开辟终端窗口
-
     -- 代码状态
     x = { "<cmd>set invwrap<cr>", "Toggle wrap", noremap = true }, -- 切换是否自动换行
     n = { "<cmd>nohl<cr>", "Close search hl" },
@@ -72,11 +63,6 @@ local whichkeymaps = {
     -- LSP
     c = {
       name = "Code",
-      d = { vim.lsp.buf.definition, "Definition" },
-      D = { vim.lsp.buf.declaration, "Declaration" },
-      h = { vim.lsp.buf.hover, "Hover" },
-      r = { vim.lsp.buf.rename, "Rename" },
-      f = { vim.lsp.buf.format, "Format" },
     },
   },
 
@@ -90,4 +76,4 @@ local whichkeymaps = {
   ["<M-k>"] = { "<cmd>m .-2<cr>==", "Move line up" },   -- 上移一行
 }
 
-return whichkeymaps
+return M
