@@ -12,7 +12,7 @@ local M = {
     q = { "<cmd>q<cr>", "+Quit" },         -- 退出
     -- 组合键
     ["wb"] = { "<cmd>w<cr><cmd>bd<cr>", "Save & close buffer" },
-    ["wq"] = { "<cmd>NvimTreeClose<cr><cmd>wq<cr>", "Save & quit" },
+    ["wq"] = { "<cmd>wqa<cr>", "Save & quit" },
     ["qq"] = { "<cmd>qa<cr>", "Quit completely" },
     ["q!"] = { "<cmd>NvimTreeClose<cr><cmd>q!<cr>", "Quit Force" },
 

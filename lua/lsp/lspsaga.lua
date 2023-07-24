@@ -24,18 +24,19 @@ require("lspsaga").setup({
   -- 快捷键
   rename = {
     keys = {
-      quit = '<Esc>',
-      select = '<Tab>',
+      quit = { "<Esc>", "q" },
+      select = "<Tab>",
     }
   },
   definition = {
     keys = {
-      quit = "<Esc>",
+      quit = { "<Esc>", "q" },
     }
   },
   outline = {
     keys = {
-      toggle_or_jump = "<cr>",
+      toggle_or_jump = "<Tab>",
+      jump = "<Cr>",
     }
   },
 })
