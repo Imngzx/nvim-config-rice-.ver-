@@ -22,6 +22,11 @@ local M = {
       v = { "<C-w>v", "Split right" },                        -- 右侧新增窗口
       s = { "<C-w>s", "Split bottom" },                       -- 底部新增窗口
     },
+    ["`"] = {
+      name = "Terminal",
+      ["`"] = { "<cmd>Lspsaga term_toggle<cr>", "Toggle float terminal" },
+      s = {"<C-w>s <cmd>term pwsh<cr>", "Open terminal split" }, -- 下半开辟终端窗口
+    },
     -- 代码状态
     x = { "<cmd>set invwrap<cr>", "Toggle wrap", noremap = true }, -- 切换是否自动换行
     n = { "<cmd>nohl<cr>", "Close search hl" },
@@ -63,7 +68,14 @@ local M = {
     -- LSP
     c = {
       name = "Code",
+      c = { vim.lsp.buf.format, "Format" },
+      d = { "<cmd>Lspsaga peek_definition<cr>", "Definition" },
+      r = { "<cmd>Lspsaga rename<cr>", "Rename" },
+      f = { "<cmd>Lspsaga finder<cr>", "Find" },
+      h = { "<cmd>Lspsaga hover_doc<cr>", "Hover" },
+      a = { "<cmd>Lspsaga code_action<cr>", "Actions" },
     },
+    o = { "<cmd>Lspsaga outline<cr>", "Outline" },
   },
 
   -- ----- Shift ----- --

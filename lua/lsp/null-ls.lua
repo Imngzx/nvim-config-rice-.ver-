@@ -6,7 +6,7 @@ null_ls.setup({
   sources = {
     -- 综合
     formatting.prettier,
-    completion.spell,
+    -- completion.spell,
 
     -- C/C++
     formatting.clang_format,

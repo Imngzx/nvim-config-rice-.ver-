@@ -72,8 +72,14 @@ require('lazy').setup {
     },
     lazy = true
   },
-  -- 填充提示（更详细）
-  { "ray-x/lsp_signature.nvim" },
+  -- LSP 综合体验优化
+  {
+    'nvimdev/lspsaga.nvim',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter', -- optional
+      'nvim-tree/nvim-web-devicons'     -- optional
+    }
+  },
   -- 自动补全
   { "hrsh7th/nvim-cmp" },
   { "hrsh7th/cmp-nvim-lsp" },
