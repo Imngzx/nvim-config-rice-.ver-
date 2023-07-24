@@ -11,4 +11,4 @@ require("lsp")
 require("keymaps")
 
 -- 其他
-require("others.cmd")
+require("core.cmd")
