@@ -77,22 +77,22 @@ require('lazy').setup {
   -- 自动补全
   { "hrsh7th/nvim-cmp" },
   { "hrsh7th/cmp-nvim-lsp" },
-  { "hrsh7th/cmp-path" }, -- 文件路径
-  { "L3MON4D3/LuaSnip", lazy = true }, -- snippets引擎，不装这个自动补全会出问题
+  { "hrsh7th/cmp-path" },                           -- 文件路径
+  { "L3MON4D3/LuaSnip",              lazy = true }, -- snippets引擎，不装这个自动补全会出问题
   { "saadparwaiz1/cmp_luasnip" },
   { "rafamadriz/friendly-snippets" },
   -- 快速注释
-  { 'numToStr/Comment.nvim', lazy = true },
+  { 'numToStr/Comment.nvim',         lazy = true },
   -- 自动补全括号
-  { "windwp/nvim-autopairs", lazy = true },
+  { "windwp/nvim-autopairs",         lazy = true },
   -- 颜色识别
-  { "norcalli/nvim-colorizer.lua", lazy = true },
+  { "norcalli/nvim-colorizer.lua",   lazy = true },
 
   -- ----- 辅助工具 ----- --
   -- 快捷窗口切换
   { 'christoomey/vim-tmux-navigator' },
   -- Git 状态展示
-  { 'lewis6991/gitsigns.nvim', lazy = true },
+  { 'lewis6991/gitsigns.nvim',       lazy = true },
   -- 文件/内容检索 Telescope
   {
     'nvim-telescope/telescope.nvim',
