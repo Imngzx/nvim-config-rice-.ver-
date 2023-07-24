@@ -2,6 +2,8 @@
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+local icons = require("icons")
+
 -- empty setup using defaults
 require("nvim-tree").setup {
 	auto_reload_on_write = true,
@@ -44,7 +46,8 @@ require("nvim-tree").setup {
 		special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md", "CMakeLists.txt" },
 		symlink_destination = true,
 		indent_markers = {
-			enable = true,
+      enable = true,
+      inline_arrows = false,
 			icons = {
 				corner = "└ ",
 				edge = "│ ",
@@ -59,33 +62,34 @@ require("nvim-tree").setup {
 			show = {
 				file = true,
 				folder = true,
-				folder_arrow = true,
+				folder_arrow = false,
 				git = true,
 			},
 			padding = " ",
-			symlink_arrow = " 󰁔 ",
+			symlink_arrow = " " .. icons.arrows.Right .. " ",
 			glyphs = {
-				default = "",
-				symlink = "",
-				-- bookmark = icons.ui.Bookmark,
+				default = icons.files.Defalt,
+				symlink = icons.files.Symlink,
+				bookmark = icons.files.Bookmark,
 				git = {
-					unstaged = "*",
-					staged = "󰄬",
-					-- unmerged = icons.git.Unmerged,
-					renamed = "󰁔",
-					untracked = "󰞋",
-					deleted = "",
-					ignored = "◌",
+					untracked = icons.git.Untracked,
+					renamed = icons.git.Renamed,
+					deleted = icons.git.Deleted,
+					unstaged = icons.git.Unstaged,
+					staged = icons.git.Staged,
+					unmerged = icons.git.Unmerged,
+					-- ignored = icons.git.Ignored,
+          ignored = "",
 				},
 				folder = {
-					-- arrow_open = icons.ui.ArrowOpen,
-					-- arrow_closed = icons.ui.ArrowClosed,
-					default = "󰉋",
-					open = "󰉖",
-					empty = "󱧴",
-					empty_open = "󱧵",
-					symlink = "󰌷",
-					symlink_open = "󰲔",
+					-- arrow_open = icons.arrows.ArrowOpen,
+					-- arrow_closed = icons.arrows.ArrowClosed,
+					default = icons.folders.Default,
+					open = icons.folders.Open,
+					empty = icons.folders.Empty,
+					empty_open = icons.folders.EmptyOpen,
+					symlink = icons.folders.Symlink,
+					symlink_open = icons.folders.SymlinkOpen,
 				},
 			},
 		},

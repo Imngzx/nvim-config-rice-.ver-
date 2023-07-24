@@ -1,18 +1,28 @@
 local bufferline = require('bufferline')
 
+local icons = require("icons")
+
 bufferline.setup {
   options = {
     style_preset = bufferline.style_preset.no_italic,
     -- 使用 nvim 内置lsp
     diagnostics = "nvim_lsp",
     -- 左侧让出 nvim-tree 的位置
-    offsets = {{
-      filetype = "NvimTree",
-      text = " File Explorer",
-      highlight = "Directory",
-      text_align = "left",
-      separator = true
-    }},
+    offsets = {
+      {
+        filetype = "NvimTree",
+        text = icons.basic.Vim .. " File Explorer",
+        highlight = "Directory",
+        text_align = "left",
+        separator = true
+      },
+      {
+        filetype = "sagaoutline",
+        text = icons.basic.Menu .. " Outline",
+        text_align = "left",
+        separator = true
+      },
+    },
     -- 分隔样式
     indicator = {
       icon = ' ', -- this should be omitted if indicator style is not 'icon'
