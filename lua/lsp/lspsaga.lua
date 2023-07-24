@@ -33,10 +33,21 @@ require("lspsaga").setup({
       quit = { "<Esc>", "q" },
     }
   },
+  diagnostic = {
+    keys = {
+      quit = { "<Esc>", "q" },
+    }
+  },
   outline = {
     keys = {
       toggle_or_jump = "<Tab>",
       jump = "<Cr>",
     }
   },
+  code_action = {
+    extend_gitsigns = true,
+    keys = {
+      quit = { "<Esc>", "q" },
+    }
+  }
 })
