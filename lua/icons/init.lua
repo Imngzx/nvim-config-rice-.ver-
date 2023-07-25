@@ -2,6 +2,7 @@ return {
   basic = {
     Vim = "",
     Menu = "󰍜",
+    Window = "󱂬",
   },
   arrows = {
     ArrowClosed = "",
@@ -9,8 +10,8 @@ return {
     Right = "󰁔",
   },
   files = {
-    Default = "",
-    File = "",
+    Default = "󰉢",
+    File = "󰈤",
     Symlink = "",
     Bookmark = "",
   },
@@ -54,12 +55,15 @@ return {
     TypeParameter = '𝙏', --  𝙏
   },
   git = {
-    Untracked = "",
+    Logo = "󰊢",
+    Added = "",
+    Modified = "*",
     Renamed = "󰁔",
     Deleted = "󰍴",
-    Unstaged = "*",
-    Staged = "",
-    Unmerged = "",
+    Untracked = "",
     Ignored = "◌",
+    Unstaged = "",
+    Staged = "",
+    Conflict = "",
   },
 }
