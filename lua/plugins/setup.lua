@@ -22,9 +22,13 @@ require('lazy').setup {
   },
   -- 侧边栏（文件树）
   {
-    'nvim-tree/nvim-tree.lua',
-    dependencies = 'nvim-tree/nvim-web-devicons',
-    lazy = true
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+    }
   },
   -- 顶栏（窗口管理）
   {
@@ -77,7 +81,7 @@ require('lazy').setup {
     'nvimdev/lspsaga.nvim',
     dependencies = {
       'nvim-treesitter/nvim-treesitter', -- optional
-      'nvim-tree/nvim-web-devicons'     -- optional
+      'nvim-tree/nvim-web-devicons'      -- optional
     }
   },
   -- 自动补全
@@ -90,7 +94,7 @@ require('lazy').setup {
   -- 快速注释
   { 'numToStr/Comment.nvim',         lazy = true },
   -- 自动补全括号
-  { "windwp/nvim-autopairs",         lazy = true },
+  { "windwp/nvim-autopairs", },
   -- 颜色识别
   { "norcalli/nvim-colorizer.lua",   lazy = true },
 

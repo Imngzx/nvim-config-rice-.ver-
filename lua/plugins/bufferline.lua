@@ -4,13 +4,15 @@ local icons = require("icons")
 
 bufferline.setup {
   options = {
+    close_command = "bp | bd #",
+    right_mouse_command = "bp | bd #",
     style_preset = bufferline.style_preset.no_italic,
     -- 使用 nvim 内置lsp
     diagnostics = "nvim_lsp",
     -- 左侧让出 nvim-tree 的位置
     offsets = {
       {
-        filetype = "NvimTree",
+        filetype = "neo-tree",
         text = icons.basic.Vim .. " File Explorer",
         highlight = "Directory",
         text_align = "left",

@@ -26,8 +26,8 @@ require("plugins.neoscroll")
 -- 模块
 -- 底栏：lualine.nvim
 require("plugins.lualine")
--- 侧栏：nvim-tree.lua
-require("plugins.nvim-tree")
+-- 侧栏：neo-tree.lua
+require("plugins.neo-tree")
 -- 顶栏：bufferline
 require("plugins.bufferline")
 

@@ -32,8 +32,8 @@ require('dashboard').setup {
       {
         desc = ' Sidebar',
         group = 'DiagnosticHint',
-        action = 'NvimTreeToggle',
-        key = 'b',
+        action = 'Neotree toggle',
+        key = 't',
       },
       {
         desc = ' Command',
@@ -46,13 +46,13 @@ require('dashboard').setup {
       enable = true,
       limit = 6,
       icon = '',
-      label = ' Recent Projects:',
+      label = '  Recent Projects:',
       action = 'Telescope find_files cwd='
     },
     mru = {
       limit = 6,
       icon = '',
-      label = ' Most Recent Files:',
+      label = '  Most Recent Files:',
     },
     footer = { '', ' Powered by Neovim' },
   },

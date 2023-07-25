@@ -11,14 +11,14 @@ M.n = {
     name = "Leader", -- 指定该快捷键组的名称
 
     -- 文件操作
-    b = { "<cmd>bd<cr>", "Close buffer" }, -- 关闭
+    b = { "<cmd>bp | bd #<cr>", "Close buffer" }, -- 关闭
     w = { "<cmd>w<cr>", "+Save" },         -- 保存
     q = { "<cmd>q<cr>", "+Quit" },         -- 退出
     -- 组合键
-    ["wb"] = { "<cmd>w<cr><cmd>bd<cr>", "Save & close buffer" },
+    ["wb"] = { "<cmd>w<cr><cmd>bp | bd #<cr>", "Save & close buffer" },
     ["wq"] = { "<cmd>wqa<cr>", "Save & quit" },
     ["qq"] = { "<cmd>qa<cr>", "Quit completely" },
-    ["q!"] = { "<cmd>NvimTreeClose<cr><cmd>q!<cr>", "Quit Force" },
+    ["q!"] = { "<cmd>q!<cr>", "Quit Force" },
 
     -- 窗口
     s = {
@@ -46,9 +46,7 @@ M.n = {
       s = { telescope.treesitter, "Find symbol" }
     },
     -- 返回主页 Dashboard
-    h = { "<cmd>NvimTreeClose<cr><cmd>Dashboard<cr>", "Home" },
-    -- 侧栏切换 NvimTree
-    t = { "<cmd>NvimTreeToggle<cr>", "Sidebar" },
+    h = { "<cmd>Neotree close<cr><cmd>Dashboard<cr>", "Home" },
     -- Git 操作 Fugitive
     g = {
       name = "Git",
@@ -84,8 +82,13 @@ M.n = {
       p = { "<cmd>Lspsaga show_workspace_diagnostics<cr>", "Workspace problem" },
     },
     o = { "<cmd>Lspsaga outline<cr>", "Outline" },
+    -- Transparent
+    t = { "<cmd>TransparentToggle<cr>", "Transparent" },
   },
 
+
+  -- 侧栏切换 NeoTree
+  ["\\"] = { "<cmd>Neotree toggle<cr>", "Sidebar" },
   -- ----- Shift ----- --
   -- 标签页切换 Bufferline
   L = { "<cmd>BufferLineCycleNext<cr>", "Next buffer" },
