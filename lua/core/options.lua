@@ -36,5 +36,8 @@ opt.smartcase = true
 
 -- 外观
 opt.termguicolors = true -- 终端真色彩
-opt.signcolumn = "yes" -- 左边多一列，用来放debug/插件提示
+opt.signcolumn = "yes"   -- 左边多一列，用来放debug/插件提示
 
+-- Which-key 配置需要
+opt.timeout = true
+opt.timeoutlen = 300

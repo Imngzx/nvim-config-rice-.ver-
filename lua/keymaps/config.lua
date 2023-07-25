@@ -1,5 +1,9 @@
 local telescope = require('telescope.builtin')
 local gs = package.loaded.gitsigns
+local function format_save()
+  vim.lsp.buf.format()
+  vim.cmd([[w]])
+end
 
 -- Whichkey
 local M = {}
@@ -12,8 +16,8 @@ M.n = {
 
     -- 文件操作
     b = { "<cmd>bp | bd #<cr>", "Close buffer" }, -- 关闭
-    w = { "<cmd>w<cr>", "+Save" },         -- 保存
-    q = { "<cmd>q<cr>", "+Quit" },         -- 退出
+    w = { "<cmd>w<cr>", "+Save" },                -- 保存
+    q = { "<cmd>q<cr>", "+Quit" },                -- 退出
     -- 组合键
     ["wb"] = { "<cmd>w<cr><cmd>bp | bd #<cr>", "Save & close buffer" },
     ["wq"] = { "<cmd>wqa<cr>", "Save & quit" },
@@ -72,6 +76,7 @@ M.n = {
     c = {
       name = "Code",
       c = { vim.lsp.buf.format, "Format" },
+      w = { format_save, "Format & save" },
       d = { "<cmd>Lspsaga peek_definition<cr>", "Definition" },
       r = { "<cmd>Lspsaga rename<cr>", "Rename" },
       f = { "<cmd>Lspsaga finder<cr>", "Find" },
