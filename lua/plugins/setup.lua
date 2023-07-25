@@ -46,6 +46,12 @@ local list = {
   { "windwp/nvim-autopairs", },
   -- 颜色识别
   { "norcalli/nvim-colorizer.lua", lazy = true },
+  -- 缩进线
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    lazy = true,
+    event = { "BufReadPost", "BufNewFile" },
+  },
 
   -- ----- 辅助工具 ----- --
   -- 快捷窗口切换

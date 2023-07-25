@@ -38,6 +38,8 @@ require("plugins.comment")
 require("plugins.autopairs")
 -- 颜色识别：nvim-colorizer.lua
 require("plugins.colorizer")
+-- 缩进线
+require("plugins.indent-line")
 
 -- 辅助工具
 -- Git 标记：gitsigns
