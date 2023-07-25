@@ -1,4 +1,4 @@
-require('lazy').setup {
+local list = {
   -- ----- 美化 ----- --
   -- Github 样式主题
   {
@@ -18,7 +18,8 @@ require('lazy').setup {
   -- 底部状态栏
   {
     'nvim-lualine/lualine.nvim',
-    dependencies = 'nvim-tree/nvim-web-devicons'
+    dependencies = 'nvim-tree/nvim-web-devicons',
+    event = "VeryLazy",
   },
   -- 侧边栏（文件树）
   {
@@ -39,70 +40,22 @@ require('lazy').setup {
   },
 
   -- ----- 主窗口 ----- --
-  -- 语法高亮
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    lazy = true
-  },
-  -- 彩虹括号
-  {
-    'HiPhish/nvim-ts-rainbow2',
-    dependencies = { 'nvim-treesitter/nvim-treesitter' },
-    lazy = true
-  },
-  -- Mason
-  {
-    "williamboman/mason.nvim",
-    build = ":MasonUpdate", -- :MasonUpdate updates registry contents
-    lazy = true
-  },
-  -- LSP
-  {
-    "williamboman/mason-lspconfig.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "neovim/nvim-lspconfig",
-      "williamboman/mason.nvim",
-    },
-  },
-  -- LSP 格式化
-  {
-    "jay-babu/mason-null-ls.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    dependencies = {
-      "williamboman/mason.nvim",
-      "jose-elias-alvarez/null-ls.nvim",
-    },
-    lazy = true
-  },
-  -- LSP 综合体验优化
-  {
-    'nvimdev/lspsaga.nvim',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter', -- optional
-      'nvim-tree/nvim-web-devicons'      -- optional
-    }
-  },
-  -- 自动补全
-  { "hrsh7th/nvim-cmp" },
-  { "hrsh7th/cmp-nvim-lsp" },
-  { "hrsh7th/cmp-path" },                           -- 文件路径
-  { "L3MON4D3/LuaSnip",              lazy = true }, -- snippets引擎，不装这个自动补全会出问题
-  { "saadparwaiz1/cmp_luasnip" },
-  { "rafamadriz/friendly-snippets" },
   -- 快速注释
-  { 'numToStr/Comment.nvim',         lazy = true },
+  { 'numToStr/Comment.nvim',       lazy = true },
   -- 自动补全括号
   { "windwp/nvim-autopairs", },
   -- 颜色识别
-  { "norcalli/nvim-colorizer.lua",   lazy = true },
+  { "norcalli/nvim-colorizer.lua", lazy = true },
 
   -- ----- 辅助工具 ----- --
   -- 快捷窗口切换
   { 'christoomey/vim-tmux-navigator' },
   -- Git 状态展示
-  { 'lewis6991/gitsigns.nvim',       lazy = true },
+  {
+    'lewis6991/gitsigns.nvim',
+    lazy = true,
+    event = { "BufReadPre", "BufNewFile" },
+  },
   -- 文件/内容检索 Telescope
   {
     'nvim-telescope/telescope.nvim',
@@ -111,15 +64,15 @@ require('lazy').setup {
     lazy = true
   },
   -- Copilot
-  { 'github/copilot.vim', lazy = true },
+  {
+    'github/copilot.vim',
+    lazy = true,
+    event = { "BufReadPre", "BufNewFile" },
+  },
   -- 键盘映射提示 Which-key
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
-    init = function()
-      vim.o.timeout = true
-      vim.o.timeoutlen = 300
-    end
   },
   -- 主页仪表盘 Dashboard
   {
@@ -133,3 +86,9 @@ require('lazy').setup {
     event = "VeryLazy"
   }
 }
+
+-- LSP
+local lsp = require('lsp.setup')
+table.insert(list, lsp)
+
+require('lazy').setup(list)
