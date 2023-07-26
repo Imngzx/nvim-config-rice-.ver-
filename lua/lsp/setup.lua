@@ -10,8 +10,10 @@ return {
   {
     'HiPhish/nvim-ts-rainbow2',
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
-    lazy = true
+    event = { "BufReadPost", "BufNewFile" },
+    lazy = true,
   },
+
   -- Mason
   {
     "williamboman/mason.nvim",
