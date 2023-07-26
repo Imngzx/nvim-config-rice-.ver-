@@ -4,6 +4,14 @@ return {
     Menu = "󰍜",
     Window = "󱂬",
   },
+  home = {
+    Home = "",
+    Package = "",
+    File = "",
+    Command = "",
+    Dashboard = "",
+    History = "",
+  },
   arrows = {
     ArrowClosed = "",
     ArrowOpen = "",
