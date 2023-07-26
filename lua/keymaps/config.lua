@@ -1,9 +1,5 @@
 local telescope = require('telescope.builtin')
 local gs = package.loaded.gitsigns
-local function format_save()
-  vim.lsp.buf.format()
-  vim.cmd([[w]])
-end
 
 -- Whichkey
 local M = {}
@@ -15,14 +11,15 @@ M.n = {
     name = "Leader", -- 指定该快捷键组的名称
 
     -- 文件操作
-    b = { "<cmd>bp | bd #<cr>", "Close buffer" }, -- 关闭
-    w = { "<cmd>w<cr>", "+Save" },                -- 保存
-    q = { "<cmd>q<cr>", "+Quit" },                -- 退出
+    b = { "<cmd>bp | bd #<cr>", "Close buffer" },        -- 关闭
+    B = { "<cmd>bp | bd! #<cr>", "Close buffer force" }, -- 关闭
+    q = { "<cmd>q<cr>", "+Quit" },                       -- 退出
+    Q = { "<cmd>qa!<cr>", "Quit force" },
+    w = { "<cmd>w<cr>", "+Save" },                       -- 保存
+    W = { "<cmd>wqa!<cr>", "Save & quit force" },        -- 保存
     -- 组合键
-    ["wb"] = { "<cmd>w<cr><cmd>bp | bd #<cr>", "Save & close buffer" },
-    ["wq"] = { "<cmd>wqa<cr>", "Save & quit" },
-    ["qq"] = { "<cmd>qa<cr>", "Quit completely" },
-    ["q!"] = { "<cmd>q!<cr>", "Quit Force" },
+    -- ["wb"] = { "<cmd>w<cr><cmd>bp | bd #<cr>", "Save & close buffer" },
+    -- ["wq"] = { "<cmd>wqa<cr>", "Save & quit" },
 
     -- 窗口
     s = {
@@ -32,12 +29,11 @@ M.n = {
     },
     ["`"] = {
       name = "Terminal",
-      ["`"] = { "<cmd>Lspsaga term_toggle<cr>", "Toggle float terminal" },
-      s = { "<C-w>s <cmd>term pwsh<cr>", "Open terminal split" }, -- 下半开辟终端窗口
+      ["`"] = { "<C-w>s <cmd>term pwsh<cr>", "Open terminal split" }, -- 下半开辟终端窗口
+      f = { "<cmd>Lspsaga term_toggle<cr>", "Toggle float terminal" },
     },
     -- 代码状态
     x = { "<cmd>set invwrap<cr>", "Toggle wrap", noremap = true }, -- 切换是否自动换行
-    n = { "<cmd>nohl<cr>", "Close search hl" },
 
     -- 插件
     -- Telescope
@@ -76,7 +72,10 @@ M.n = {
     c = {
       name = "Code",
       c = { vim.lsp.buf.format, "Format" },
-      w = { format_save, "Format & save" },
+      w = { function()
+        vim.lsp.buf.format()
+        vim.cmd([[w]])
+      end, "Format & save" },
       d = { "<cmd>Lspsaga peek_definition<cr>", "Definition" },
       r = { "<cmd>Lspsaga rename<cr>", "Rename" },
       f = { "<cmd>Lspsaga finder<cr>", "Find" },
@@ -93,7 +92,9 @@ M.n = {
 
 
   -- 侧栏切换 NeoTree
-  ["\\"] = { "<cmd>Neotree toggle<cr>", "Sidebar" },
+  ["\\"] = { "<cmd>Neotree toggle reveal_force_cwd<cr>", "Sidebar" },
+  -- 取消搜索高亮
+  ["<esc>"] = { "<cmd>nohl<cr>", "Close search hl" },
   -- ----- Shift ----- --
   -- 标签页切换 Bufferline
   L = { "<cmd>BufferLineCycleNext<cr>", "Next buffer" },
@@ -113,10 +114,16 @@ M.v = {
       s = { function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, "Git stage selected" },
       u = { function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, "Undo stage selected" },
     }
-    -- 单行或多行移动
   },
+  -- 单或多行移动
   ["<M-j>"] = { ":m '>+1<CR>gv=gv", "Move down" },
-  ["<M-k>"] = { ":m '>-2<CR>gv=gv", "Move up" },
+  ["<M-k>"] = { ":m '<-2<CR>gv=gv", "Move up" },
+}
+
+-- Terminal
+M.t = {
+  -- 退出终端
+  ["<Esc>"] = { "<C-\\><C-n>", "Exit ter mode"},
 }
 
 return M
