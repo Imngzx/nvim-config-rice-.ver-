@@ -11,11 +11,11 @@ M.n = {
     name = "Leader", -- 指定该快捷键组的名称
 
     -- 文件操作
-    b = { "<cmd>bp | bd #<cr>", "Close buffer" },        -- 关闭
-    B = { "<cmd>bp | bd! #<cr>", "Close buffer force" }, -- 关闭
-    q = { "<cmd>q<cr>", "+Quit" },                       -- 退出
+    b = { "<cmd>BufferLineCyclePrev<cr><cmd>bd #<cr>", "Close buffer" },        -- 关闭
+    B = { "<cmd>BufferLineCyclePrev<cr><cmd>bd! #<cr>", "Close buffer force" }, -- 关闭
+    q = { "<cmd>q<cr>", "Quit" },                       -- 退出
     Q = { "<cmd>qa!<cr>", "Quit force" },
-    w = { "<cmd>w<cr>", "+Save" },                       -- 保存
+    w = { "<cmd>w<cr>", "Save" },                       -- 保存
     W = { "<cmd>wqa!<cr>", "Save & quit force" },        -- 保存
     -- 组合键
     -- ["wb"] = { "<cmd>w<cr><cmd>bp | bd #<cr>", "Save & close buffer" },
@@ -29,7 +29,7 @@ M.n = {
     },
     ["`"] = {
       name = "Terminal",
-      ["`"] = { "<C-w>s <cmd>term pwsh<cr>", "Open terminal split" }, -- 下半开辟终端窗口
+      ["`"] = { "<C-w>s <cmd>term zsh<cr>", "Open terminal split" }, -- 下半开辟终端窗口
       f = { "<cmd>Lspsaga term_toggle<cr>", "Toggle float terminal" },
     },
     -- 代码状态
@@ -39,9 +39,9 @@ M.n = {
     -- Telescope
     f = {
       name = "Telescope",
-      b = { telescope.find_files, "Find buffer" },
-      f = { telescope.live_grep, "Find file" },
-      g = { telescope.buffers, "Find live grep" },
+      b = { telescope.buffers, "Find buffer" },
+      f = { telescope.find_files, "Find file" },
+      g = { telescope.live_grep, "Find live grep" },
       h = { telescope.help_tags, "Find help" },
       s = { telescope.treesitter, "Find symbol" }
     },

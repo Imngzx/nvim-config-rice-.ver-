@@ -31,11 +31,18 @@ require("lspsaga").setup({
   definition = {
     keys = {
       quit = { "<Esc>", "q" },
+      edit = '<Cr>',
     }
   },
   diagnostic = {
     keys = {
       quit = { "<Esc>", "q" },
+    }
+  },
+  finder = {
+    keys = {
+      quit = { "<Esc>", "q" },
+      toggle_or_open = { "<Tab>", "<Cr>" },
     }
   },
   outline = {

@@ -7,6 +7,14 @@ local icons = require("icons")
 
 bufferline.setup {
   options = {
+    close_command =
+        function(num)
+          if vim.fn.bufnr('%') == num then
+            vim.cmd('BufferLineCyclePrev')
+          end
+          vim.cmd('bd! ' .. num)
+        end,
+    right_mouse_command = "vertical sbuffer %d",
     style_preset = bufferline.style_preset.no_italic,
     -- 使用 nvim 内置lsp
     diagnostics = "nvim_lsp",
