@@ -48,7 +48,7 @@ require'lspconfig'.clangd.setup {
   }),
   cmd = {
     "clangd",
-    "--query-driver=D:\\Source\\Qt\\Tools\\mingw1120_64\\bin\\c++.exe,D:\\Source\\Qt\\Tools\\mingw1120_64\\bin\\gcc.exe",
+    "--query-driver=D:\\Source\\msys64\\ucrt64\\bin\\c++.exe,D:\\Source\\msys64\\ucrt64\\bin\\gcc.exe",
   },
 }
 

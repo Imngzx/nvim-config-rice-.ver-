@@ -9,7 +9,7 @@ require("neo-tree").setup({
   sources = { "filesystem", "buffers", "git_status" },
   source_selector = {
     winbar = true,
-    -- content_layout = "center",
+    separator = { left = '│ ', right = '' },
     sources = {
       { source = "filesystem", display_name = " " .. icons.files.File .. " File" },
       { source = "buffers",    display_name = icons.basic.Window .. " Bufs" },
@@ -85,10 +85,10 @@ require("neo-tree").setup({
         "thumbs.db"
       },
     },
-    group_empty_dirs = true,                -- when true, empty folders will be grouped together
+    group_empty_dirs = true, -- when true, empty folders will be grouped together
   },
   buffers = {
-    group_empty_dirs = true,   -- when true, empty folders will be grouped together
+    group_empty_dirs = true, -- when true, empty folders will be grouped together
   },
   git_status = {
     window = {
