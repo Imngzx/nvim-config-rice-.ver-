@@ -6,9 +6,9 @@ opt.cursorline = true -- 光标行
 opt.number = true
 opt.relativenumber = true
 opt.wrap = false -- 防止包裹
+vim.g.mapleader = " " -- 设置 leader 键
 
 -- 功能
-opt.winminwidth = 5 -- Minimum window width
 opt.termguicolors = true -- 终端真色彩
 opt.signcolumn = "yes"   -- 左边多一列，用来放debug/插件提示
 -- 默认新窗口在右边、下边
@@ -24,6 +24,7 @@ opt.mouse = "a" -- 启用鼠标
 opt.clipboard = "unnamedplus" -- 系统剪贴板
 
 -- 数据配置
+opt.winminwidth = 5 -- Minimum window width
 -- 会话选项
 opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize" }
 -- 缩进

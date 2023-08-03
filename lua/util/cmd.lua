@@ -1,5 +1,5 @@
 -- 检查
-function list_capabilities(verbose)
+local function list_capabilities(verbose)
   local bufnr = vim.api.nvim_get_current_buf()
   local clients = vim.lsp.get_active_clients { bufnr = bufnr }
   -- TODO: ensure there is only one non null-ls LS and highlight '-' capabilities
