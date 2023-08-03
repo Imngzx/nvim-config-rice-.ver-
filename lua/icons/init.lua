@@ -31,11 +31,13 @@ return {
     Symlink = "󱧮",
     SymlinkOpen = "󱧯",
   },
-  lsp = {
-    CodeAction = "󰌵",
-    Info = "",
-    Warning = "",
+  diagnostics = {
     Error = "",
+    Warn = "",
+    Hint = "󰌶",
+    Info = "",
+  },
+  kind = {
     Implementation = "",
     Spell = "󰓆",
     Text = '𝓐', --   𝓐
