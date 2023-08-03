@@ -1,100 +1,46 @@
-local list = {
-  -- ----- 美化 ----- --
-  -- Github 样式主题
-  {
-    'projekt0n/github-nvim-theme',
-    lazy = false,    -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-  },
-  -- 透明主题
-  { 'xiyaowong/transparent.nvim' },
-  -- 平滑滚动
-  {
-    'karb94/neoscroll.nvim',
-    lazy = true
-  },
+-- 自动安装
+-- https://github.com/folke/lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
 
-  -- ----- 模块 ----- --
-  -- 底部状态栏
-  {
-    'nvim-lualine/lualine.nvim',
-    dependencies = 'nvim-tree/nvim-web-devicons',
-    event = "VeryLazy",
+require("lazy").setup({
+  spec = {
+    -- import any modules here
+    { import = "plugins.ui" },
+    { import = "plugins.edit" },
+    { import = "plugins.tool" },
+    { import = "plugins.git" },
+    { import = "plugins.lsp" },
+    { import = "plugins.extras.clangd" },
+    { import = "plugins.extras.python" },
   },
-  -- 侧边栏（文件树）
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v3.x",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-      "MunifTanjim/nui.nvim",
-    }
+  defaults = {
+    -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
+    -- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.
+    lazy = false,
+    -- It's recommended to leave version=false for now, since a lot the plugin that support versioning,
+    -- have outdated releases, which may break your Neovim install.
+    version = false, -- always use the latest git commit
+    -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  -- 顶栏（窗口管理）
-  {
-    'akinsho/bufferline.nvim',
-    version = "*",
-    dependencies = 'nvim-tree/nvim-web-devicons',
-    lazy = true
+  -- install = { colorscheme = { "tokyonight", "habamax" } },
+  checker = { enabled = true }, -- automatically check for plugin updates
+  performance = {
+    rtp = {
+      -- disable some rtp plugins
+      disabled_plugins = {
+        "gzip",
+      },
+    },
   },
-
-  -- ----- 主窗口 ----- --
-  -- 快速注释
-  { 'numToStr/Comment.nvim',       lazy = true },
-  -- 自动补全括号
-  { "windwp/nvim-autopairs", },
-  -- 颜色识别
-  { "norcalli/nvim-colorizer.lua", lazy = true },
-  -- 缩进线
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    lazy = true,
-    event = { "BufReadPost", "BufNewFile" },
-  },
-
-  -- ----- 辅助工具 ----- --
-  -- 快捷窗口切换
-  { 'christoomey/vim-tmux-navigator' },
-  -- Git 状态展示
-  {
-    'lewis6991/gitsigns.nvim',
-    lazy = true,
-    event = { "BufReadPre", "BufNewFile" },
-  },
-  -- 文件/内容检索 Telescope
-  {
-    'nvim-telescope/telescope.nvim',
-    branch = '0.1.x',
-    dependencies = 'nvim-lua/plenary.nvim',
-    lazy = true
-  },
-  -- Copilot
-  {
-    'github/copilot.vim',
-    lazy = true,
-    event = { "BufReadPre", "BufNewFile" },
-  },
-  -- 键盘映射提示 Which-key
-  {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
-  },
-  -- 主页仪表盘 Dashboard
-  {
-    'glepnir/dashboard-nvim',
-    event = 'VimEnter',
-    dependencies = { 'nvim-tree/nvim-web-devicons' }
-  },
-  -- Git 增强
-  {
-    "tpope/vim-fugitive",
-    event = "VeryLazy"
-  }
-}
-
--- LSP
-local lsp = require('lsp.setup')
-table.insert(list, lsp)
-
-require('lazy').setup(list)
+})
