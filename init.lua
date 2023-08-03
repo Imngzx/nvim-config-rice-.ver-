@@ -1,14 +1,11 @@
 -- 主设置
-require("core.options")
+require("config.options")
 
 -- 插件
-require("plugins")
-
--- LSP
-require("lsp")
+require("plugins.setup")
 
 -- 快捷键
-require("keymaps")
+require("config.keymaps")
 
 -- 其他
--- require("core.cmd")
+-- require("config.cmd")
