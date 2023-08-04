@@ -34,6 +34,13 @@ local M = {
 function M.opts()
   local icons = require("icons")
   -- 配色修改
+  vim.cmd('highlight clear NeoTreeGitIgnored')
+  vim.cmd('highlight link NeoTreeGitIgnored Comment')
+  vim.cmd('highlight clear NeoTreeGitUntracked')
+  vim.cmd('highlight link NeoTreeGitUntracked NeoTreeGitAdded')
+  vim.cmd('highlight clear NeoTreeNormal')
+  vim.cmd('highlight link NeoTreeNormal Normal')
+
   vim.cmd('highlight NeoTreeTabInactive ctermbg=0 guibg=0 guifg=#767F72')
   vim.cmd('highlight NeoTreeTabSeparatorInactive ctermbg=0 guibg=0 guifg=#767F72')
   vim.cmd('highlight NeoTreeTabSeparatorActive ctermbg=0 guibg=0 guifg=0')
@@ -48,11 +55,12 @@ function M.opts()
     source_selector = {
       winbar = true,
       content_layout = "center",
+      tabs_layout = "equal",
       separator = { left = icons.lines.CentralVertical, right = icons.lines.CentralVertical, override = "active" },
       sources = {
-        { source = "filesystem", display_name = icons.files.File .. " File" },
-        { source = "buffers",    display_name = icons.basic.Window .. " Bufs" },
-        { source = "git_status", display_name = icons.git.Logo .. " Git" },
+        { source = "filesystem", display_name = "File" },
+        { source = "buffers",    display_name = "Bufs" },
+        { source = "git_status", display_name = "Git" },
       },
     },
     default_component_configs = {
