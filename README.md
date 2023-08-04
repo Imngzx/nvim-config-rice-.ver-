@@ -60,7 +60,7 @@ Find symbol & file & help:
 
 Pressing <kbd>Space</kbd> in normal mode will show you some parts of the keybindings.
 
-And many more. See [`Keymaps`](lua/core/keymaps.lua) for more.
+And many more. See [`Keymaps`](lua/config/keymaps.lua) for more.
 
 ## Installing Custom Plugins
 
