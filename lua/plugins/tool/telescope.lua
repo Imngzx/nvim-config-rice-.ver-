@@ -10,7 +10,6 @@ return {
   cmd = "Telescope",
   version = false, -- telescope did only one release, so use HEAD for now
   keys = {
-    { "<leader>,", "<cmd>Telescope buffers<cr>",         desc = "Buffers" },
     { "<leader>/", Util.telescope("live_grep"),          desc = "Grep (root dir)" },
     { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
     {
@@ -20,23 +19,24 @@ return {
       "Find Files (root dir)"
     },
     -- find
-    { "<leader>fb", "<cmd>Telescope buffers<cr>",                         desc = "Buffers" },
+    { "<leader>fb",  "<cmd>Telescope buffers<cr>",                         desc = "Buffers" },
     {
       "<leader>ff",
       Util.telescope("files"),
       desc =
       "Find Files (root dir)"
     },
-    { "<leader>fF", Util.telescope("files", { cwd = false }),             desc = "Files (cwd)" },
-    { "<leader>fr", "<cmd>Telescope oldfiles<cr>",                        desc = "Recent" },
-    { "<leader>fR", Util.telescope("oldfiles", { cwd = vim.loop.cwd() }), desc = "Recent (cwd)" },
-    { "<leader>fc", "<cmd>Telescope commands<cr>",                        desc = "Commands" },
-    { "<leader>fh", "<cmd>Telescope help_tags<cr>",                       desc = "Help" },
+    { "<leader>fb",  "<cmd>Telescope buffers<cr>",                         desc = "Buffers" },
+    { "<leader>fF",  Util.telescope("files", { cwd = false }),             desc = "Files (cwd)" },
+    { "<leader>fr",  "<cmd>Telescope oldfiles<cr>",                        desc = "Recent" },
+    { "<leader>fR",  Util.telescope("oldfiles", { cwd = vim.loop.cwd() }), desc = "Recent (cwd)" },
+    { "<leader>fc",  "<cmd>Telescope commands<cr>",                        desc = "Commands" },
+    { "<leader>fh",  "<cmd>Telescope help_tags<cr>",                       desc = "Help" },
     -- git
-    { "<leader>gc", "<cmd>Telescope git_commits<CR>",                     desc = "Commits" },
-    { "<leader>gs", "<cmd>Telescope git_status<CR>",                      desc = "Status" },
+    { "<leader>glc", "<cmd>Telescope git_commits<CR>",                     desc = "List commits" },
+    { "<leader>gs",  "<cmd>Telescope git_status<CR>",                      desc = "Status" },
     -- search
-    { "<leader>fd", "<cmd>Telescope diagnostics bufnr=0<cr>",             desc = "Document diagnostics" },
+    { "<leader>fd",  "<cmd>Telescope diagnostics bufnr=0<cr>",             desc = "Document diagnostics" },
     {
       "<leader>fD",
       "<cmd>Telescope diagnostics<cr>",

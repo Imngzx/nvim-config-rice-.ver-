@@ -70,7 +70,6 @@ return {
   },
   keys = {
     { "<leader>cc", vim.lsp.buf.format,                            desc = "Format" },
-    { "<leader>`f", "<cmd>Lspsaga term_toggle zsh<cr>",            desc = "Toggle float terminal" },
     { "<leader>cd", "<cmd>Lspsaga peek_definition<cr>",            desc = "Definition" },
     { "<leader>cd", "<cmd>Lspsaga peek_definition<cr>",            desc = "Definition" },
     { "<leader>cf", "<cmd>Lspsaga finder<cr>",                     desc = "Find" },
@@ -78,6 +77,8 @@ return {
     { "<leader>ca", "<cmd>Lspsaga code_action<cr>",                desc = "Actions" },
     { "<leader>cl", "<cmd>Lspsaga show_line_diagnostics<cr>",      desc = "Line diagnostics" },
     { "<leader>cw", "<cmd>Lspsaga show_workspace_diagnostics<cr>", desc = "Workspace diagnostics" },
+    { "<leader>cr", "<cmd>Lspsaga rename<cr>",                     desc = "Rename" },
     { "<leader>o",  "<cmd>Lspsaga outline<cr>",                    desc = "Outline" },
+    { "<leader>`f", "<cmd>Lspsaga term_toggle zsh<cr>",            desc = "Toggle float terminal" },
   }
 }

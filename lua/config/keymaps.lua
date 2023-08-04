@@ -1,19 +1,5 @@
 local Util = require("util")
-
-
-local function map(mode, lhs, rhs, opts)
-  local keys = require("lazy.core.handler").handlers.keys
-  ---@cast keys LazyKeysHandler
-  -- do not create the keymap if a lazy keys handler exists
-  if not keys.active[keys.parse({ lhs, mode = mode }).id] then
-    opts = opts or {}
-    opts.silent = opts.silent ~= false
-    if opts.remap and not vim.g.vscode then
-      opts.remap = nil
-    end
-    vim.keymap.set(mode, lhs, rhs, opts)
-  end
-end
+local map = Util.map
 
 -- Windows
 -- Move to window using the <ctrl> hjkl keys
@@ -27,8 +13,8 @@ map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 -- Split window
-map("n", "sv", "<C-w>v", { desc = "Split right" })  -- 右侧新增窗口
-map("n", "ss", "<C-w>s", { desc = "Split bottom" }) -- 底部新增窗口
+map("n", "<leader>v", "<C-w>v", { desc = "Split vertically" })   -- 右侧新增窗口
+map("n", "<leader>s", "<C-w>s", { desc = "Split horizontally" }) -- 底部新增窗口
 
 -- Buffers
 if Util.has("bufferline.nvim") then
@@ -47,6 +33,8 @@ end
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 
 -- Quick actions
+-- Wrap Line
+map("n", "<leader>x", "<cmd>set invwrap<cr>", { desc = "Toggle wrap" }) -- 切换是否自动换行
 -- Move Lines
 map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
 map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
@@ -64,5 +52,5 @@ map("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 map("n", "<leader>Q", "<cmd>qa<cr>", { desc = "Quit all" })
 
 -- Terminal
-map("n", "<leader>``", "<cmd>term zsh<cr>", { desc = "Split terminal" })
+map("n", "<leader>``", "<C-w>s<cmd>term zsh<cr>", { desc = "Split terminal" })
 map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit ter mode" })
