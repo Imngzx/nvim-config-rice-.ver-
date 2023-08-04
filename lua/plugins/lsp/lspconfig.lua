@@ -96,21 +96,11 @@ return {
     end
     -- setup autoformat
     require("util.lsp.format").setup(opts)
-    -- setup formatting and keymaps
-    Util.on_attach(function(client, buffer)
-      require("util.lsp.keymaps").on_attach(client, buffer)
-    end)
 
     local register_capability = vim.lsp.handlers["client/registerCapability"]
 
     vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx)
-      local ret = register_capability(err, res, ctx)
-      local client_id = ctx.client_id
-      ---@type lsp.Client
-      local client = vim.lsp.get_client_by_id(client_id)
-      local buffer = vim.api.nvim_get_current_buf()
-      require("util.lsp.keymaps").on_attach(client, buffer)
-      return ret
+      return register_capability(err, res, ctx)
     end
 
     -- diagnostics
@@ -131,14 +121,14 @@ return {
 
     if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
       opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
-        or function(diagnostic)
-          local icons = require("icons").diagnostics
-          for d, icon in pairs(icons) do
-            if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
-              return icon
+          or function(diagnostic)
+            local icons = require("icons").diagnostics
+            for d, icon in pairs(icons) do
+              if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
+                return icon
+              end
             end
           end
-        end
     end
 
     vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
