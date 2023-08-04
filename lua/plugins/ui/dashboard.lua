@@ -1,19 +1,15 @@
 -- 主页仪表盘 Dashboard
 -- https://github.com/nvimdev/dashboard-nvim
-local M = {
+local icons = require("icons")
+local header = require("icons.char-pic")
+table.insert(header, 1, '') -- 开头空行
+table.insert(header, '')    -- 结尾空行
+
+return {
   'glepnir/dashboard-nvim',
   event = 'VimEnter',
-  dependencies = { 'nvim-tree/nvim-web-devicons' }
-}
-
-function M.opts()
-  -- 从另一个文件里获取
-  local header = require("icons.char-pic")
-  table.insert(header, 1, '') -- 开头空行
-  table.insert(header, '')    -- 结尾空行
-  local icons = require("icons")
-
-  return {
+  dependencies = { 'nvim-tree/nvim-web-devicons' },
+  opts = {
     theme = 'hyper',
     -- shortcut_type = 'number',
     config = {
@@ -39,7 +35,7 @@ function M.opts()
           desc = ' Sidebar',
           group = 'DiagnosticWarn',
           action = 'Neotree toggle',
-          key = 't',
+          key = 'e',
         },
         {
           icon = icons.home.Command,
@@ -63,7 +59,8 @@ function M.opts()
       },
       footer = { '', icons.basic.Vim .. ' Powered by Neovim' },
     },
-  }
-end
+  },
+  keys = {
 
-return M
+  }
+}

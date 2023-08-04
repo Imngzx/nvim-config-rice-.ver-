@@ -15,16 +15,16 @@ return {
             enable = true,
             background = false,
           },
-          native_lsp = {
-            enable = true,
-            background = true,
-          },
+          -- native_lsp = {
+          --   enable = true,
+          --   background = true,
+          -- },
           treesitter = true,
           gitsigns = true,
           neotree = true,
           telescope = true,
           dashboard = true,
-          indent_blankline = true,
+          -- indent_blankline = true,
           whichkey = true,
         },
       }

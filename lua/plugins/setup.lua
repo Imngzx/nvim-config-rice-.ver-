@@ -1,4 +1,4 @@
--- 自动安装
+-- 插件安装&懒加载
 -- https://github.com/folke/lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -32,14 +32,14 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  -- install = { colorscheme = { "tokyonight", "habamax" } },
-  checker = { enabled = true }, -- automatically check for plugin updates
-  performance = {
-    rtp = {
-      -- disable some rtp plugins
-      disabled_plugins = {
-        "gzip",
-      },
-    },
-  },
+  install = { colorscheme = { "github_dark_dimmed" } },
+  -- checker = { enabled = true }, -- automatically check for plugin updates
+  -- performance = {
+  --   rtp = {
+  --     -- disable some rtp plugins
+  --     disabled_plugins = {
+  --       "gzip",
+  --     },
+  --   },
+  -- },
 })
