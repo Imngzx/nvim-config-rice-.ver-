@@ -19,7 +19,6 @@ require("lazy").setup({
     { import = "plugins.ui" },
     { import = "plugins.edit" },
     { import = "plugins.tool" },
-    { import = "plugins.git" },
     { import = "plugins.lsp" },
     { import = "plugins.extras.clangd" },
     { import = "plugins.extras.python" },
