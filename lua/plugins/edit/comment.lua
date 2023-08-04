@@ -3,7 +3,7 @@
 return {
   'numToStr/Comment.nvim',
   -- event = { "BufReadPre", "BufNewFile" },
-  config = function ()
+  config = function()
     require('Comment').setup()
   end,
   keys = { "g" }

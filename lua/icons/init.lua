@@ -16,6 +16,12 @@ return {
     ArrowClosed = "",
     ArrowOpen = "",
     Right = "󰁔",
+    CaretRight = "",
+    TriangleRight = ""
+  },
+  lines = {
+    LeftVertical = "▎",
+    CentralVertical = "│"
   },
   files = {
     Default = "󰉢",

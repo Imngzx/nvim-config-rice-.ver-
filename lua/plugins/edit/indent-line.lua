@@ -1,10 +1,11 @@
 -- 缩进线
 -- https://github.com/lukas-reineke/indent-blankline.nvim
+local icons = require("icons")
 return {
   "lukas-reineke/indent-blankline.nvim",
   event = { "BufReadPost", "BufNewFile" },
   opts = {
-    char = "│",
+    char = icons.lines.CentralVertical,
     filetype_exclude = {
       "help",
       "alpha",
