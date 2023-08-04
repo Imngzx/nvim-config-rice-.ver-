@@ -43,7 +43,7 @@ user_cmd("TransparentEnable", t_enable, { bang = false })
 user_cmd("TransparentDisable", t_disable, { bang = false })
 user_cmd("TransparentToggle", t_toggle, { bang = false })
 -- 快捷键
-map("n", "<leader>t", "TransparentToggle", { desc = "Transparent toggle" })
+map("n", "<leader>t", "<cmd>TransparentToggle<cr>", { desc = "Transparent toggle" })
 
 -- 默认启用
 t_enable()
