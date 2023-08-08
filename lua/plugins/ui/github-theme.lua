@@ -1,12 +1,12 @@
 -- Github 样式主题
 -- https://github.com/projekt0n/github-nvim-theme
 return {
-  'projekt0n/github-nvim-theme',
-  lazy = false,    -- make sure we load this during startup if it is your main colorscheme
+  "projekt0n/github-nvim-theme",
+  lazy = false, -- make sure we load this during startup if it is your main colorscheme
   priority = 1000, -- make sure to load this before all the other start plugins
   -- build = ":GithubThemeCompile", -- lua api version
   config = function()
-    require('github-theme').setup {
+    require("github-theme").setup({
       options = {
         modules = {
           diagnostic = {
@@ -15,10 +15,6 @@ return {
             enable = true,
             background = false,
           },
-          -- native_lsp = {
-          --   enable = true,
-          --   background = true,
-          -- },
           treesitter = true,
           gitsigns = true,
           neotree = true,
@@ -27,9 +23,9 @@ return {
           -- indent_blankline = true,
           whichkey = true,
         },
-      }
-    }
+      },
+    })
 
-    vim.cmd.colorscheme('github_dark_dimmed')
+    vim.cmd.colorscheme("github_dark_dimmed")
   end,
 }

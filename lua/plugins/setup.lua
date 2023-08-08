@@ -16,6 +16,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   spec = {
     -- import any modules here
+    { import = "plugins.extras.vscode" },
     { import = "plugins.ui" },
     { import = "plugins.edit" },
     { import = "plugins.tool" },
@@ -33,13 +34,20 @@ require("lazy").setup({
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
   install = { colorscheme = { "github_dark_dimmed" } },
-  -- checker = { enabled = true }, -- automatically check for plugin updates
-  -- performance = {
-  --   rtp = {
-  --     -- disable some rtp plugins
-  --     disabled_plugins = {
-  --       "gzip",
-  --     },
-  --   },
-  -- },
+  checker = { enabled = false }, -- automatically check for plugin updates
+  performance = {
+    rtp = {
+      -- disable some rtp plugins
+      disabled_plugins = {
+        "gzip",
+        -- "matchit",
+        -- "matchparen",
+        -- "netrwPlugin",
+        "tarPlugin",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+      },
+    },
+  },
 })
