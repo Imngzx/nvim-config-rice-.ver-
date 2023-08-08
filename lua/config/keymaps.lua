@@ -13,7 +13,7 @@ map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 -- Split window
-map("n", "<leader>v", "<C-w>v", { desc = "Split vertically" })   -- 右侧新增窗口
+map("n", "<leader>v", "<C-w>v", { desc = "Split vertically" }) -- 右侧新增窗口
 map("n", "<leader>s", "<C-w>s", { desc = "Split horizontally" }) -- 底部新增窗口
 
 -- Buffers
@@ -22,7 +22,7 @@ if Util.has("bufferline.nvim") then
   map("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
   map("n", "[b", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
   map("n", "]b", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
-  map("n", "<leader>b", "<cmd>BufferLineCyclePrev<cr><cmd>bd #<cr>", { desc = "Close buffer" })        -- 关闭
+  map("n", "<leader>b", "<cmd>BufferLineCyclePrev<cr><cmd>bd #<cr>", { desc = "Close buffer" }) -- 关闭
   map("n", "<leader>B", "<cmd>BufferLineCyclePrev<cr><cmd>bd! #<cr>", { desc = "Close buffer force" }) -- 关闭
 else
   map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
@@ -49,7 +49,7 @@ map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
 -- Quit
 map("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
-map("n", "<leader>Q", "<cmd>qa<cr>", { desc = "Quit all" })
+map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 -- Terminal
 map("n", "<leader>``", "<C-w>s<cmd>term zsh<cr>", { desc = "Split terminal" })
