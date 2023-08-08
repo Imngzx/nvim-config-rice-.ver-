@@ -7,6 +7,32 @@ return {
   event = { "BufReadPost", "BufNewFile" },
   dependencies = { "HiPhish/nvim-ts-rainbow2" },
   cmd = { "TSUpdateSync" },
+  config = function()
+    require("nvim-treesitter.configs").setup({
+      ensure_installed = {
+        -- 静态文件
+        "vim", "vimdoc", "lua",        -- Neovim 自身
+        "markdown", "markdown_inline", -- Markdown
+        "json", "yaml", "toml",        -- 数据存储
+        "gitignore", "dockerfile",     -- 其他
+
+        -- 脚本文件
+        "bash",
+
+        -- 编程语言
+        "c", "cpp", "cmake", "qmljs", -- C/Cpp/Qt
+        "matlab",                     -- Matlab
+        "java",                       -- Java
+        "python",                     -- Python
+        "r",                          -- R
+        "sql",                        -- SQL
+
+        -- 前端
+        "html", "javascript", "typescript", "css", -- HTML/JS/TS/CSS
+        "vue",                                     -- Vue
+      },
+    })
+  end,
   opts = {
     highlight = {
       enable = true,
@@ -19,28 +45,6 @@ return {
       end
     },
     indent = { enable = true },
-    ensure_installed = {
-      -- 静态文件
-      "vim", "vimdoc", "lua",        -- Neovim 自身
-      "markdown", "markdown_inline", -- Markdown
-      "json", "yaml", "toml",        -- 数据存储
-      "gitignore", "dockerfile",     -- 其他
-
-      -- 脚本文件
-      "bash",
-
-      -- 编程语言
-      "c", "cpp", "cmake", "qmljs", -- C/Cpp/Qt
-      "matlab",                     -- Matlab
-      "java",                       -- Java
-      "python",                     -- Python
-      "r",                          -- R
-      "sql",                        -- SQL
-
-      -- 前端
-      "html", "javascript", "typescript", "css", -- HTML/JS/TS/CSS
-      "vue",                                     -- Vue
-    },
     incremental_selection = {
       enable = true,
       keymaps = {
