@@ -1,5 +1,5 @@
 -- Settings
-vim.g.is_windows = false
+vim.g.is_windows = true
 
 -- 主设置
 require("config.options")
