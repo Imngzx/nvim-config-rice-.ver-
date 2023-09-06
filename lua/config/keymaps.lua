@@ -1,5 +1,6 @@
 local Util = require("util")
 local map = Util.map
+local vsc = vim.g.vscode
 
 -- Windows
 -- Move to window using the <ctrl> hjkl keys
@@ -46,11 +47,17 @@ map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 -- Save file
 map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
-map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
+
+if vsc then
+  map("n", "<leader>w", "<cmd>Write<cr>", { desc = "Save file" })
+else
+  map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
+end
+
 -- Quit
 map("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 -- Terminal
-map("n", "<leader>``", "<C-w>s<cmd>term zsh<cr>", { desc = "Split terminal" })
+map("n", "<leader>``", "<C-w>s<cmd>term<cr>", { desc = "Split terminal" })
 map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit ter mode" })
