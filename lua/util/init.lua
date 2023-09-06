@@ -83,9 +83,12 @@ function M.get_root()
   if path then
     for _, client in pairs(vim.lsp.get_active_clients({ bufnr = 0 })) do
       local workspace = client.config.workspace_folders
-      local paths = workspace and vim.tbl_map(function(ws)
-        return vim.uri_to_fname(ws.uri)
-      end, workspace) or client.config.root_dir and { client.config.root_dir } or {}
+      local paths = workspace
+          and vim.tbl_map(function(ws)
+            return vim.uri_to_fname(ws.uri)
+          end, workspace)
+        or client.config.root_dir and { client.config.root_dir }
+        or {}
       for _, p in ipairs(paths) do
         local r = vim.loop.fs_realpath(p)
         if path:find(r, 1, true) then
@@ -105,7 +108,9 @@ function M.get_root()
     root = vim.fs.find(M.root_patterns, { path = path, upward = true })[1]
     root = root and vim.fs.dirname(root) or vim.loop.cwd()
   end
-  root = root:gsub("/", "\\") -- 将斜杠替换为反斜杠
+  if vim.g.is_windows then
+    root = root:gsub("/", "\\") -- 将斜杠替换为反斜杠
+  end
   ---@cast root string
   return root
 end
@@ -125,4 +130,3 @@ function M.map(mode, lhs, rhs, opts)
 end
 
 return M
-
