@@ -9,6 +9,7 @@ local M = {
     "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
     "MunifTanjim/nui.nvim",
   },
+  lazy = false,
   cmd = "Neotree",
   keys = {
     {
@@ -27,30 +28,30 @@ local M = {
     },
   },
   deactivate = function()
-    vim.cmd('Neotree close')
+    vim.cmd("Neotree close")
   end,
 }
 
 function M.opts()
   local icons = require("icons")
   -- 配色修改
-  vim.cmd('highlight clear NeoTreeGitIgnored')
-  vim.cmd('highlight link NeoTreeGitIgnored Comment')
-  vim.cmd('highlight clear NeoTreeGitUntracked')
-  vim.cmd('highlight link NeoTreeGitUntracked NeoTreeGitAdded')
-  vim.cmd('highlight clear NeoTreeNormal')
-  vim.cmd('highlight link NeoTreeNormal Normal')
+  vim.cmd("highlight clear NeoTreeGitIgnored")
+  vim.cmd("highlight link NeoTreeGitIgnored Comment")
+  vim.cmd("highlight clear NeoTreeGitUntracked")
+  vim.cmd("highlight link NeoTreeGitUntracked NeoTreeGitAdded")
+  vim.cmd("highlight clear NeoTreeNormal")
+  vim.cmd("highlight link NeoTreeNormal Normal")
 
-  vim.cmd('highlight NeoTreeTabInactive ctermbg=0 guibg=0 guifg=#767F72')
-  vim.cmd('highlight NeoTreeTabSeparatorInactive ctermbg=0 guibg=0 guifg=#767F72')
-  vim.cmd('highlight NeoTreeTabSeparatorActive ctermbg=0 guibg=0 guifg=0')
+  vim.cmd("highlight NeoTreeTabInactive ctermbg=0 guibg=0 guifg=#767F72")
+  vim.cmd("highlight NeoTreeTabSeparatorInactive ctermbg=0 guibg=0 guifg=#767F72")
+  vim.cmd("highlight NeoTreeTabSeparatorActive ctermbg=0 guibg=0 guifg=0")
 
   return {
     auto_clean_after_session_restore = true,
-    close_if_last_window = true,                                       -- Close Neo-tree if it is the last window left in the tab
+    close_if_last_window = true, -- Close Neo-tree if it is the last window left in the tab
     enable_git_status = true,
     open_files_do_not_replace_types = { "terminal", "trouble", "qf" }, -- when opening files, do not use windows containing these filetypes or buftypes
-    sort_case_insensitive = false,                                     -- used when sorting files and directories in the tree
+    sort_case_insensitive = false, -- used when sorting files and directories in the tree
     sources = { "filesystem", "buffers", "git_status" },
     source_selector = {
       winbar = true,
@@ -59,13 +60,13 @@ function M.opts()
       separator = { left = icons.lines.CentralVertical, right = icons.lines.CentralVertical, override = "active" },
       sources = {
         { source = "filesystem", display_name = "File" },
-        { source = "buffers",    display_name = "Bufs" },
+        { source = "buffers", display_name = "Bufs" },
         { source = "git_status", display_name = "Git" },
       },
     },
     default_component_configs = {
       container = {
-        enable_character_fade = true
+        enable_character_fade = true,
       },
       indent = { padding = 0 },
       icon = {
@@ -83,17 +84,17 @@ function M.opts()
       git_status = {
         symbols = {
           -- Change type
-          added     = icons.git.Added,
-          modified  = icons.git.Modified,
-          deleted   = icons.git.Deleted, -- this can only be used in the git_status source
-          renamed   = icons.git.Renamed, -- this can only be used in the git_status source
+          added = icons.git.Added,
+          modified = icons.git.Modified,
+          deleted = icons.git.Deleted, -- this can only be used in the git_status source
+          renamed = icons.git.Renamed, -- this can only be used in the git_status source
           -- Status type
           untracked = icons.git.Untracked,
-          ignored   = icons.git.Ignored,
-          unstaged  = icons.git.Unstaged,
-          staged    = icons.git.Staged,
-          conflict  = icons.git.Conflict,
-        }
+          ignored = icons.git.Ignored,
+          unstaged = icons.git.Unstaged,
+          staged = icons.git.Staged,
+          conflict = icons.git.Conflict,
+        },
       },
     },
     -- A list of functions, each representing a global custom command
@@ -112,7 +113,7 @@ function M.opts()
         ["<space>"] = { "toggle_preview", config = { use_float = true } },
         ["s"] = "open_split",
         ["v"] = "open_vsplit",
-      }
+      },
     },
     filesystem = {
       filtered_items = {
@@ -122,14 +123,14 @@ function M.opts()
         hide_hidden = true, -- only works on Windows for hidden files/directories
         hide_by_name = {
           ".git",
-          "node_modules"
+          "node_modules",
         },
         always_show = { -- remains visible even if other settings would normally hide it
           -- ".gitignore",
         },
         never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
           ".DS_Store",
-          "thumbs.db"
+          "thumbs.db",
         },
       },
       group_empty_dirs = true, -- when true, empty folders will be grouped together
@@ -140,15 +141,15 @@ function M.opts()
     git_status = {
       window = {
         mappings = {
-          ["a"]  = "git_add_file",
-          ["A"]  = "git_add_all",
-          ["u"]  = "git_unstage_file",
+          ["a"] = "git_add_file",
+          ["A"] = "git_add_all",
+          ["u"] = "git_unstage_file",
           -- ["gr"] = "git_revert_file",
-          ["c"]  = "git_commit",
-          ["p"]  = "git_push",
+          ["c"] = "git_commit",
+          ["p"] = "git_push",
           ["cp"] = "git_commit_and_push",
-        }
-      }
+        },
+      },
     },
   }
 end
