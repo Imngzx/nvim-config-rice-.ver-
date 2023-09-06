@@ -1,3 +1,6 @@
+-- Settings
+vim.g.is_windows = false
+
 -- 主设置
 require("config.options")
 
@@ -7,8 +10,11 @@ require("plugins.setup")
 -- 快捷键
 require("config.keymaps")
 
--- 透明
-require("config.transparent")
+-- 特殊优化
+if not vim.g.vscode then
+  -- 透明
+  require("config.transparent")
+end
 
 -- 其他
 -- require("config.cmd")
