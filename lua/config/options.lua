@@ -10,7 +10,7 @@ vim.g.mapleader = " " -- 设置 leader 键
 
 -- 功能
 opt.termguicolors = true -- 终端真色彩
-opt.signcolumn = "yes"   -- 左边多一列，用来放debug/插件提示
+opt.signcolumn = "yes" -- 左边多一列，用来放debug/插件提示
 -- 默认新窗口在右边、下边
 opt.splitright = true
 opt.splitbelow = true
@@ -42,7 +42,7 @@ opt.timeoutlen = 300
 vim.g.markdown_recommended_style = 0
 
 -- 新版本功能
-if vim.fn.has("nvim-0.9.0") == 1 then
+if vim.fn.has("nvim-0.9.0") then
   opt.splitkeep = "screen"
   opt.shortmess:append({ C = true })
 end
