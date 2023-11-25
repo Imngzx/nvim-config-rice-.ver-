@@ -16,18 +16,19 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   spec = {
     -- import any modules here
-    -- 针对 VSCode-nvim 适配
+    -- 针对 VSCode-nvim 适配 --
     { import = "plugins.extras.vscode" },
-    -- Linux 输入法自动切换
-    -- { import = "plugins.extras.fcitx" },
     -- 常规插件
     { import = "plugins.ui" },
     { import = "plugins.edit" },
     { import = "plugins.tool" },
     { import = "plugins.lsp" },
+    -- 特殊插件 --
+    -- 输入法自动切换
+    { import = "plugins.extras.im-select" },
     -- 针对专门的语言做特殊适配
     { import = "plugins.extras.clangd" },
-    { import = "plugins.extras.python" },
+    -- { import = "plugins.extras.python" },
     -- { import = "plugins.extras.markdown" },
   },
   defaults = {
