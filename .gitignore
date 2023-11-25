@@ -41,3 +41,4 @@ tags
 
 ### Customize ###
 test/
+.DS_Store
