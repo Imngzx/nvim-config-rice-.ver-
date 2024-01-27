@@ -20,8 +20,9 @@ opt.smartcase = true -- Don't ignore case with capitals
 opt.smartindent = true -- Insert indents automatically
 
 -- 对接外界
-opt.mouse = "a" -- 启用鼠标
-opt.clipboard = "unnamedplus" -- 系统剪贴板
+opt.mouse = "a" -- Enable mouse hardware
+opt.mousescroll = "ver:1" -- Set trackpad scroll lines
+opt.clipboard = "unnamedplus" -- System clipboard
 
 -- 数据配置
 opt.winminwidth = 5 -- Minimum window width
@@ -41,7 +42,7 @@ opt.timeoutlen = 300
 -- Fix markdown indentation settings
 vim.g.markdown_recommended_style = 0
 
--- 新版本功能
+-- Only for new version
 if vim.fn.has("nvim-0.9.0") then
   opt.splitkeep = "screen"
   opt.shortmess:append({ C = true })
