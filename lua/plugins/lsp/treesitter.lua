@@ -5,7 +5,6 @@ return {
   version = false, -- last release is way too old and doesn't work on Windows
   build = ":TSUpdate",
   event = { "BufReadPost", "BufNewFile" },
-  dependencies = { "HiPhish/nvim-ts-rainbow2" },
   cmd = { "TSUpdateSync" },
   keys = {
     { "<c-space>", desc = "Increment selection" },
@@ -64,26 +63,6 @@ return {
         node_incremental = "<C-space>",
         scope_incremental = false,
         node_decremental = "<bs>",
-      },
-    },
-    -- 不同括号颜色区分（彩虹括号）
-    rainbow = {
-      enable = true,
-      -- list of languages you want to disable the plugin for
-      -- disable = { 'jsx', 'cpp' },
-      -- Which query to use for finding delimiters
-      query = "rainbow-parens",
-      -- Highlight the entire buffer all at once
-      strategy = function()
-        return require("ts-rainbow").strategy.global
-      end,
-      hlgroups = {
-        "TSRainbowYellow",
-        "TSRainbowBlue",
-        "TSRainbowOrange",
-        "TSRainbowGreen",
-        "TSRainbowViolet",
-        "TSRainbowCyan",
       },
     },
   },
