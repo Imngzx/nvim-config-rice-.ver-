@@ -47,6 +47,8 @@ map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 -- Save file
 map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
+-- New file
+map("n", "<leader>n", "<cmd>enew<cr>", { desc = "New file" })
 
 if vsc then
   map("n", "<leader>w", "<cmd>Write<cr>", { desc = "Save file" })
@@ -57,6 +59,7 @@ end
 -- Quit
 map("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
+map("n", "<leader>Q", "<cmd>qa!<cr>", { desc = "Quit force" })
 
 -- Terminal
 map("n", "<leader>``", "<C-w>s<cmd>term<cr>", { desc = "Split terminal" })
