@@ -8,6 +8,7 @@ return {
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
+    "saadparwaiz1/cmp_luasnip",
   },
   opts = function()
     vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
@@ -16,6 +17,11 @@ return {
     return {
       completion = {
         completeopt = "menu,menuone,noinsert",
+      },
+      snippet = {
+        expand = function(args)
+          require("luasnip").lsp_expand(args.body)
+        end,
       },
       mapping = cmp.mapping.preset.insert({
         ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
@@ -32,9 +38,9 @@ return {
       }),
       sources = cmp.config.sources({
         { name = "nvim_lsp" },
-        { name = "path" },
-      }, {
-        { name = "buffer" },
+         { name = "luasnip" },
+         { name = "buffer" },
+         { name = "path" },
       }),
       formatting = {
         format = function(_, item)
@@ -52,12 +58,5 @@ return {
       },
       sorting = defaults.sorting,
     }
-  end,
-  ---@param opts cmp.ConfigSchema
-  config = function(_, opts)
-    for _, source in ipairs(opts.sources) do
-      source.group_index = source.group_index or 1
-    end
-    require("cmp").setup(opts)
   end,
 }
