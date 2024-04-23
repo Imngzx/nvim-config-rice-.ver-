@@ -1,7 +1,7 @@
 -- 检查
 local function list_capabilities(verbose)
   local bufnr = vim.api.nvim_get_current_buf()
-  local clients = vim.lsp.get_active_clients { bufnr = bufnr }
+  local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
   -- TODO: ensure there is only one non null-ls LS and highlight '-' capabilities
   for _, client in pairs(clients) do
     if client.name ~= "null-ls" then
@@ -45,4 +45,3 @@ local mycmd = vim.api.nvim_create_user_command
 mycmd("LspCapabilities", function(info)
   list_capabilities(info.bang)
 end, { bang = true })
-

@@ -1,49 +1,55 @@
 local opt = vim.opt
 
--- 基本设置
-opt.cursorline = true -- 光标行
--- 行号
-opt.number = true
-opt.relativenumber = true
-opt.wrap = false -- 防止包裹
-vim.g.mapleader = " " -- 设置 leader 键
+-- Basic Settings
+opt.cursorline = true -- Highlight cursor line
+opt.fileformats = { "unix" } -- Set line endings to LF
+opt.number = true -- Show line numbers
+opt.relativenumber = true -- Show relative line numbers
+opt.wrap = false -- Disable line wrapping
+vim.g.mapleader = " " -- Set leader key
 
--- 功能
-opt.termguicolors = true -- 终端真色彩
-opt.signcolumn = "yes" -- 左边多一列，用来放debug/插件提示
--- 默认新窗口在右边、下边
-opt.splitright = true
-opt.splitbelow = true
--- 搜索
-opt.ignorecase = true
-opt.smartcase = true -- Don't ignore case with capitals
-opt.smartindent = true -- Insert indents automatically
+-- Functionality
+opt.termguicolors = true -- Enable true colors in the terminal
+opt.signcolumn = "yes" -- Always show signcolumn
+opt.splitright = true -- Open new split windows to the right
+opt.splitbelow = true -- Open new split windows below
+opt.ignorecase = true -- Ignore case when searching
+opt.smartcase = true -- Use smart case when searching
+opt.smartindent = true -- Enable smart indenting
 
--- 对接外界
-opt.mouse = "a" -- Enable mouse hardware
-opt.mousescroll = "ver:1" -- Set trackpad scroll lines
-opt.clipboard = "unnamedplus" -- System clipboard
+-- Interface
+opt.mouse = "a" -- Enable mouse support
+opt.mousescroll = "ver:1" -- Set mouse scroll lines
+opt.clipboard = "unnamedplus" -- Use system clipboard
 
--- 数据配置
+-- Data Configuration
 opt.winminwidth = 5 -- Minimum window width
--- 会话选项
-opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize" }
--- 缩进
-opt.tabstop = 2
-opt.shiftwidth = 2
-opt.expandtab = true
-opt.autoindent = true
--- 弹窗大小
+opt.sessionoptions = { -- Session options
+  "buffers",
+  "curdir",
+  "tabpages",
+  "winsize",
+}
+
+-- Indentation
+opt.tabstop = 2 -- Tab width
+opt.shiftwidth = 2 -- Indent width
+opt.expandtab = true -- Use spaces instead of tabs
+opt.autoindent = true -- Enable auto-indenting
+
+-- Popup Settings
 opt.pumblend = 10 -- Popup blend
 opt.pumheight = 10 -- Maximum number of entries in a popup
--- Which-key 配置需要
-opt.timeout = true
-opt.timeoutlen = 300
--- Fix markdown indentation settings
+
+-- Which-key Settings
+opt.timeout = true -- Enable timeout
+opt.timeoutlen = 300 -- Timeout length
+
+-- Fix Markdown Indentation Settings
 vim.g.markdown_recommended_style = 0
 
--- Only for new version
+-- Additional settings for new version
 if vim.fn.has("nvim-0.9.0") then
-  opt.splitkeep = "screen"
-  opt.shortmess:append({ C = true })
+  opt.splitkeep = "screen" -- Keep split window in screen
+  opt.shortmess:append({ C = true }) -- Hide completion messages quickly
 end

@@ -1,8 +1,8 @@
 -- 输入法自动切换
--- https://github.com/keaising/im-select.nvim
+-- https://github.com/cworld1/im-select.nvim
 return {
   {
-    "keaising/im-select.nvim",
+    "cworld1/im-select.nvim",
     event = { "InsertEnter" },
     opts = {
       -- IM will be set to `default_im_select` in `normal` mode

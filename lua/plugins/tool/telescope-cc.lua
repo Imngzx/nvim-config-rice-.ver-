@@ -8,5 +8,5 @@ return {
   end,
   keys = {
     { "<leader>gc", "<cmd>Telescope conventional_commits<CR>", desc = "Conventional commit" },
-  }
+  },
 }

@@ -3,17 +3,17 @@ local map = require("util").map
 vim.g.bg_color = vim.fn.synIDattr(vim.fn.hlID("Normal"), "bg")
 
 local groups = { -- table: default groups
-  'Normal', 'NormalNC', 'Comment', 'Constant', 'Special',
-  'Identifier', 'Statement', 'PreProc', 'Type', 'Underlined',
-  'Todo', 'String', 'Function', 'Conditional', 'Repeat',
-  'Operator', 'Structure', 'LineNr', 'NonText', 'SignColumn',
-  'CursorLineNr', 'EndOfBuffer',
-  'NeoTreeNormal', 'NeotreeNormalNC',
+  "Normal", "NormalNC", "Comment", "Constant", "Special",
+  "Identifier", "Statement", "PreProc", "Type", "Underlined",
+  "Todo", "String", "Function", "Conditional", "Repeat",
+  "Operator", "Structure", "LineNr", "NonText", "SignColumn",
+  "CursorLineNr", "EndOfBuffer",
+  "NeoTreeNormal", "NeotreeNormalNC",
 }
 
 local function set_background(option)
   for _, group in ipairs(groups) do
-    local cmd = 'highlight ' .. group .. ' guibg=' .. option
+    local cmd = "highlight " .. group .. " guibg=" .. option
     vim.cmd(cmd)
   end
 end

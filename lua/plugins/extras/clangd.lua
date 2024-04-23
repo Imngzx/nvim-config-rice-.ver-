@@ -8,10 +8,7 @@ local clangd_cmd = {
   "--fallback-style=llvm",
 }
 if vim.g.is_windows then
-  table.insert(
-    clangd_cmd,
-    "--query-driver=D:\\Source\\mingw64\\bin\\c++.exe,D:\\Source\\mingw64\\bin\\gcc.exe"
-  )
+  table.insert(clangd_cmd, "--query-driver=D:\\Source\\mingw64\\bin\\c++.exe,D:\\Source\\mingw64\\bin\\gcc.exe")
 end
 
 return {
