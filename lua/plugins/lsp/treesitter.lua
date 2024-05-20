@@ -23,38 +23,35 @@ return {
     },
     indent = { enable = true },
     ensure_installed = {
-      -- 静态文件
+      -- Configs
       "vim",
-      "vimdoc",
-      "lua", -- Neovim 自身
-      "markdown",
-      "markdown_inline", -- Markdown
       "json",
       "yaml",
-      "toml", -- 数据存储
+      "toml",
       "gitignore",
-      "dockerfile", -- 其他
+      "dockerfile",
 
-      -- 脚本文件
+      -- Docs
+      "vimdoc",
+      "markdown",
+      "markdown_inline",
+
+      -- Shell script
       "bash",
 
-      -- 编程语言
-      "c",
-      "cpp",
-      "cmake",
-      "qmljs", -- C/Cpp/Qt
-      "matlab", -- Matlab
-      "java", -- Java
-      "python", -- Python
-      "r", -- R
-      "sql", -- SQL
+      -- Programming languages
+      "lua",
+      -- "matlab", -- Matlab
+      -- "java", -- Java
+      -- "r", -- R
+      -- "sql", -- SQL
 
-      -- 前端
+      -- Front-end
       "html",
       "javascript",
       "typescript",
       "css", -- HTML/JS/TS/CSS
-      "vue", -- Vue
+      -- "vue", -- Vue
     },
     incremental_selection = {
       enable = true,
