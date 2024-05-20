@@ -28,6 +28,7 @@ require("lazy").setup({
     { import = "plugins.extras.im-select" },
     -- 针对专门的语言做特殊适配
     { import = "plugins.extras.clangd" },
+    { import = "plugins.extras.rust" },
     -- { import = "plugins.extras.python" },
     -- { import = "plugins.extras.markdown" },
   },
