@@ -15,8 +15,8 @@ return {
       -- You can use `im-select` or `fcitx5-remote -n` to get the IM's name
       default_im_select = "com.apple.keylayout.US",
 
-      -- Can be binary's name or binary's full path,
-      -- e.g. 'im-select' or '/usr/local/bin/im-select'
+      -- Can be binary's name, binary's full path, or a table, e.g. 'im-select',
+      -- '/usr/local/bin/im-select', or { "AIMSwitcher.exe", "--imm" }
       -- For Windows/WSL, default: "im-select.exe"
       -- For macOS, default: "im-select"
       -- For Linux, default: "fcitx5-remote" or "fcitx-remote" or "ibus"
