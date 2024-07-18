@@ -1,5 +1,31 @@
 -- 底部状态栏
 -- https://github.com/nvim-lualine/lualine.nvim
+local function get_short_cwd()
+  local cwd = vim.fn.getcwd():gsub("\\", "/"):gsub("^([A-Za-z]):/", "/%1/")
+  local shortened_cwd = ""
+
+  local parts = {}
+  for part in cwd:gmatch("[^/]+") do
+    table.insert(parts, part)
+  end
+
+  for i = 1, #parts - 1 do
+    shortened_cwd = shortened_cwd .. parts[i]:sub(1, 2) .. "/"
+  end
+
+  shortened_cwd = shortened_cwd .. parts[#parts]
+
+  return shortened_cwd
+end
+
+local neo_tree = {
+  sections = {
+    lualine_a = { get_short_cwd },
+    lualine_y = { "progress" },
+  },
+  filetypes = { "neo-tree" },
+}
+
 return {
   "nvim-lualine/lualine.nvim",
   dependencies = "nvim-tree/nvim-web-devicons",
@@ -32,6 +58,7 @@ return {
         section_separators = { left = "", right = "" },
         component_separators = { left = "|", right = "|" },
       },
+      extensions = { neo_tree },
     }
   end,
 }
