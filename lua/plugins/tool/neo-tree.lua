@@ -1,6 +1,7 @@
 -- 侧边栏（文件树）
 -- https://github.com/nvim-neo-tree/neo-tree.nvim
 local icons = require("icons")
+
 local M = {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "v3.x",
@@ -14,12 +15,19 @@ local M = {
     {
       "<leader>e",
       function()
+        require("neo-tree.command").execute({ toggle = true })
+      end,
+      desc = "Explorer NeoTree",
+    },
+    {
+      "<leader>er",
+      function()
         require("neo-tree.command").execute({ toggle = true, dir = require("util").get_root() })
       end,
       desc = "Explorer NeoTree (root dir)",
     },
     {
-      "<leader>E",
+      "<leader>ec",
       function()
         require("neo-tree.command").execute({ toggle = true, dir = vim.loop.cwd() })
       end,
@@ -30,8 +38,8 @@ local M = {
     vim.cmd("Neotree close")
   end,
   init = function()
-    if vim.fn.argc() == 1 then
-      local stat = vim.loop.fs_stat(vim.fn.argv(0))
+    if #vim.fn.argv() == 1 then
+      local stat = vim.loop.fs_stat(vim.fn.argv()[1])
       if stat and stat.type == "directory" then
         require("neo-tree")
       end
@@ -53,6 +61,8 @@ function M.opts()
   vim.cmd("highlight NeoTreeTabSeparatorActive ctermbg=0 guibg=0 guifg=0")
 
   return {
+    hide_root_node = true,
+    retain_hidden_root_indent = false,
     auto_clean_after_session_restore = true,
     close_if_last_window = true, -- Close Neo-tree if it is the last window left in the tab
     enable_git_status = true,
@@ -76,8 +86,8 @@ function M.opts()
       },
       indent = { padding = 0 },
       icon = {
-        folder_closed = icons.folders.Default,
-        folder_open = icons.folders.Open,
+        folder_closed = icons.arrows.ArrowClosed,
+        folder_open = icons.arrows.ArrowOpen,
         folder_empty = icons.folders.Empty,
         default = icons.files.Default,
       },
@@ -132,12 +142,15 @@ function M.opts()
           "node_modules",
         },
         always_show = { -- remains visible even if other settings would normally hide it
-          -- ".gitignore",
+          ".gitignore",
         },
         never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
           ".DS_Store",
           "thumbs.db",
         },
+      },
+      follow_current_file = {
+        enabled = true,
       },
       group_empty_dirs = true, -- when true, empty folders will be grouped together
     },
