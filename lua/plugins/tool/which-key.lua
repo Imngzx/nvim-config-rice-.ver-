@@ -8,19 +8,15 @@ return {
     vim.o.timeoutlen = 300
   end,
   config = function()
-    require("which-key").register({
-      ["<leader>"] = {
-        c = { name = "Code" },
-        f = { name = "Find" },
-        g = {
-          name = "Git",
-          b = { name = "Blame" },
-          s = { name = "Stage" },
-          S = { name = "Undo stage" },
-          r = { name = "Reset stage" },
-        },
-        ["`"] = { name = "Terminal" },
-      },
+    require("which-key").add({
+      { "<leader>`", group = "Terminal" },
+      { "<leader>c", group = "Code" },
+      { "<leader>f", group = "Find" },
+      { "<leader>g", group = "Git" },
+      { "<leader>gS", group = "Undo stage" },
+      { "<leader>gb", group = "Blame" },
+      { "<leader>gr", group = "Reset stage" },
+      { "<leader>gs", group = "Stage" },
     })
   end,
 }
