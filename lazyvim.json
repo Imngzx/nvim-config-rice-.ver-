@@ -1,0 +1,10 @@
+{
+  "extras": [
+    "lazyvim.plugins.extras.lang.astro",
+    "lazyvim.plugins.extras.ui.smear-cursor"
+  ],
+  "news": {
+    "NEWS.md": "10960"
+  },
+  "version": 7
+}

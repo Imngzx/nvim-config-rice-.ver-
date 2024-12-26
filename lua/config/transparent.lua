@@ -1,14 +1,35 @@
-local map = require("util").map
--- 将背景色保存到全局变量中
+local map = LazyVim.safe_keymap_set
+
+-- Save background color to global variable
 vim.g.bg_color = vim.fn.synIDattr(vim.fn.hlID("Normal"), "bg")
 
 local groups = { -- table: default groups
-  "Normal", "NormalNC", "Comment", "Constant", "Special",
-  "Identifier", "Statement", "PreProc", "Type", "Underlined",
-  "Todo", "String", "Function", "Conditional", "Repeat",
-  "Operator", "Structure", "LineNr", "NonText", "SignColumn",
-  "CursorLineNr", "EndOfBuffer",
-  "NeoTreeNormal", "NeotreeNormalNC",
+  "Normal",
+  "NormalNC",
+  "Comment",
+  "Constant",
+  "Special",
+  "Identifier",
+  "Statement",
+  "PreProc",
+  "Type",
+  "Underlined",
+  "Todo",
+  "String",
+  "Function",
+  "Conditional",
+  "Repeat",
+  "Operator",
+  "Structure",
+  "LineNr",
+  "NonText",
+  "SignColumn",
+  "CursorLineNr",
+  "EndOfBuffer",
+
+  -- NeoTree
+  "NeoTreeNormal",
+  "NeotreeNormalNC",
 }
 
 local function set_background(option)
@@ -29,7 +50,7 @@ local function t_disable()
 end
 
 local function t_toggle()
-  local current_bg_color = vim.opt.background:get()
+  -- local current_bg_color = vim.opt.background:get()
   if vim.g.bg_transparent then
     t_disable()
   else
