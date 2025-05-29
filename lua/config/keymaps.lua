@@ -4,4 +4,5 @@
 local map = LazyVim.safe_keymap_set
 
 map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
-map("n", "<leader>b", "<cmd>BufferLineCyclePrev<cr><cmd>bd #<cr>", { desc = "Close buffer" }) -- 关闭
+map("n", "<leader>b", "<cmd>BufferLineCyclePrev<cr><cmd>bd #<cr>", { desc = "Close buffer" }) -- close
+map("n", "<leader>cp", ":set spell!<CR>", { desc = "Toggle spelling" })

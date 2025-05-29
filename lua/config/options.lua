@@ -3,3 +3,6 @@
 -- Add any additional options here
 --
 vim.opt.fileformat = "unix"
+-- Check spelling
+vim.opt.spell = true
+vim.opt.spelllang = "en_us"
