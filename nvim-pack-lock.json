@@ -1,0 +1,36 @@
+{
+  "plugins": {
+    "blink.cmp": {
+      "rev": "f13226770b4947eb7e66befbeb53c3db39f13e25",
+      "src": "https://github.com/Saghen/blink.cmp"
+    },
+    "conform.nvim": {
+      "rev": "4993e07fac6679d0a5005aa7499e0bad2bd39f19",
+      "src": "https://github.com/stevearc/conform.nvim"
+    },
+    "github-nvim-theme": {
+      "rev": "c106c9472154d6b2c74b74565616b877ae8ed31d",
+      "src": "https://github.com/projekt0n/github-nvim-theme"
+    },
+    "mason.nvim": {
+      "rev": "57e5a8addb8c71fb063ee4acda466c7cf6ad2800",
+      "src": "https://github.com/mason-org/mason.nvim"
+    },
+    "nvim-lspconfig": {
+      "rev": "f1237a8b3c243608a7116fa1ad216c441d7c2264",
+      "src": "https://github.com/neovim/nvim-lspconfig"
+    },
+    "smear-cursor.nvim": {
+      "rev": "47eb965f63b672fd02ebebd1493e4d5be301ffc1",
+      "src": "https://github.com/sphamba/smear-cursor.nvim"
+    },
+    "tiny-inline-diagnostic.nvim": {
+      "rev": "44b61d4cb9dd6c423793e6cb21dcc313d223e690",
+      "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
+    },
+    "yanky.nvim": {
+      "rev": "04775cc6e10ef038c397c407bc17f00a2f52b378",
+      "src": "https://github.com/gbprod/yanky.nvim"
+    }
+  }
+}

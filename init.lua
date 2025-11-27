@@ -1,3 +1,4 @@
 require("config.options")
 require("config.keymaps")
-require("custom.transparent")
+require("plugins.index")
+require("custom.transparent").setup({ auto_enable = true })
