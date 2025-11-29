@@ -49,9 +49,10 @@ vim.keymap.set("n", "<leader>bo", function()
 end, { desc = "Delete Other Buffers" })
 
 -- [Window]
+vim.keymap.set("n", "<leader>sd", "<C-W>c", { desc = "Delete Window", remap = true })
 -- Split windows
-vim.keymap.set("n", "<leader>-", "<C-W>s", { desc = "Split Window Below", remap = true })
-vim.keymap.set("n", "<leader>|", "<C-W>v", { desc = "Split Window Right", remap = true })
+vim.keymap.set("n", "<leader>ss", "<C-W>s", { desc = "Split Window Below", remap = true })
+vim.keymap.set("n", "<leader>sv", "<C-W>v", { desc = "Split Window Right", remap = true })
 -- Move between windows
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below window" })

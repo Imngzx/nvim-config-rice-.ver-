@@ -53,7 +53,7 @@ end
 --- @param opts table|nil Configuration options
 function M.setup(opts)
   opts = opts or {}
-  
+
   if opts.auto_enable then
     vim.api.nvim_create_autocmd("VimEnter", {
       once = true,
@@ -77,14 +77,14 @@ end
 --- Disable transparent background and restore original colors
 function M.disable()
   local bg_color = vim.g.bg_color
-  
+
   if not bg_color or bg_color == "NONE" then
     if vim.g.colors_name then
       vim.cmd.colorscheme(vim.g.colors_name)
     end
     bg_color = get_background_color()
   end
-  
+
   set_background(bg_color)
   vim.g.bg_transparent = false
 end
