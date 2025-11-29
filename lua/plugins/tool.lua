@@ -19,7 +19,7 @@ vim.keymap.set("n", "<leader>?",
 vim.pack.add({ "https://github.com/akinsho/bufferline.nvim" })
 require("bufferline").setup({
   options = {
-    -- always_show_bufferline = false,
+    always_show_bufferline = false,
     -- themable = true,
     style_preset = require("bufferline").style_preset.no_italic,
     indicator = { style = "none" },
@@ -48,8 +48,8 @@ require("bufferline").setup({
     -- Offset
     offsets = {
       {
-        filetype = "NetrwTreeListing",
-        -- text = icons.basic.Vim .. " File Explorer",
+        filetype = "netrw",
+        text = icons.ft.vim .. " Files",
         highlight = "Directory",
         text_align = "left",
         separator = true,

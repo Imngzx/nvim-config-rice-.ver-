@@ -62,3 +62,16 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     (vim.hl or vim.highlight).on_yank()
   end,
 })
+-- Change EOL format to unix on save
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*',
+  callback = function()
+    -- Remove CR (0x0D)
+    local buf = vim.api.nvim_get_current_buf()
+    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+    for i, l in ipairs(lines) do
+      if l:find('\r') then lines[i] = l:gsub('\r', '') end
+    end
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  end,
+})
