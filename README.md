@@ -1,4 +1,55 @@
-# 💤 LazyVim
+# CWorld Neovim Config
 
-A starter template for [LazyVim](https://github.com/LazyVim/LazyVim).
-Refer to the [documentation](https://lazyvim.github.io/installation) to get started.
+## About
+
+This repo hosts my [NeoVim](https://neovim.io/) configuration for Linux, macOS, and Windows. `init.lua` is the config entry point.
+
+I use `vim.pack` to manage plugins.
+
+## Features
+
+- **Fast.** Less than **30ms** to start (Depends on SSD and CPU).
+- **Simple.** Run out of the box.
+- **Modern.** Pure `lua` config.
+- **Modular.** Easy to customize.
+- **Powerful.** Full functionality to code.
+
+## Installation
+
+Making sure you've installed [NeoVim](https://neovim.io/).
+
+_For Windows:_
+
+```bash
+git clone https://github.com/cworld1/nvim-config.git ~/AppData/Local/nvim
+nvim
+:Lazy
+```
+
+_For \*nix:_
+
+```bash
+git clone https://github.com/cworld1/nvim-config.git ~/.config/nvim
+nvim
+:Lazy
+```
+
+Then please having fun!
+
+## Mappings
+
+Pressing <kbd>Space</kbd> in normal mode will show you some parts of the keybindings.
+
+And many more. See [`Keymaps`](lua/config/keymaps.lua) for more.
+
+## Plugin List
+
+Goto [`lua/plugins/plugins.lua`](lua/plugins/) for details.
+
+## Contributions
+
+As the author is only a beginner in learning it, there are obvious mistakes in his notes. Readers are also invited to make a lot of mistakes. In addition, you are welcome to use PR or Issues to improve them.
+
+## License
+
+This project is licensed under the GPL 3.0 License.
