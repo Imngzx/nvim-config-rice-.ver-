@@ -23,7 +23,6 @@ _For Windows:_
 ```bash
 git clone https://github.com/cworld1/nvim-config.git ~/AppData/Local/nvim
 nvim
-:Lazy
 ```
 
 _For \*nix:_
@@ -31,7 +30,6 @@ _For \*nix:_
 ```bash
 git clone https://github.com/cworld1/nvim-config.git ~/.config/nvim
 nvim
-:Lazy
 ```
 
 Then please having fun!
@@ -44,7 +42,7 @@ And many more. See [`Keymaps`](lua/config/keymaps.lua) for more.
 
 ## Plugin List
 
-Goto [`lua/plugins/plugins.lua`](lua/plugins/) for details.
+Goto [`lua/plugins/`](lua/plugins/) for details.
 
 ## Contributions
 
