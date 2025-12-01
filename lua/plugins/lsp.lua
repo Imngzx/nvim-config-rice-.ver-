@@ -36,7 +36,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 -- [Diagnostic]
 vim.pack.add({ "https://github.com/rachartier/tiny-inline-diagnostic.nvim" })
-require("tiny-inline-diagnostic").setup()
+require("tiny-inline-diagnostic").setup({
+  preset = "powerline",
+  signs = { diag = "-" },
+})
 vim.diagnostic.config({ virtual_text = false })
 -- Keymap
 local diagnostic_goto = function(next, severity)
