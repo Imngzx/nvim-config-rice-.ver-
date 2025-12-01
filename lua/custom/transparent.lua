@@ -1,121 +1,157 @@
--- ============================================================================
--- Transparent Background Plugin
--- Provides commands to toggle background transparency in Neovim
--- ============================================================================
+-- Transparent background
+-- https://github.com/xiyaowong/transparent.nvim/blob/main/lua/transparent/init.lua
 
 local M = {}
+local api, fn = vim.api, vim.fn
+local ORIGINAL_HL_CACHE = {}
 
--- Highlight groups that should be affected by transparency
-local TRANSPARENT_GROUPS = {
-  -- Core
-  "Normal", "NormalNC", "SignColumn", "EndOfBuffer",
-  "LineNr", "CursorLineNr", "NonText",
-  -- Syntax
-  "Comment", "Constant", "Special", "Identifier", "Statement",
-  "PreProc", "Type", "Underlined", "Todo", "String", "Function",
-  "Conditional", "Repeat", "Operator", "Structure",
-  -- Plugins
-  "NeoTreeNormal", "NeoTreeNormalNC",
+-- Config Module
+local config = {
+  groups = {
+    "Normal", "NormalNC", "SignColumn", "EndOfBuffer",
+    "LineNr", "CursorLineNr", "NonText",
+
+    "Comment", "Constant", "Special", "Identifier", "Statement",
+    "PreProc", "Type", "Underlined", "Todo", "String", "Function",
+    "Conditional", "Repeat", "Operator", "Structure",
+  },
+
+  extra_groups = {
+    -- NeoTree
+    "NeoTreeNormal", "NeoTreeNormalNC",
+    -- BufferLine
+    "Tabline", "WildMenu", "BufferLineFill",
+  },
+
+  exclude_groups = {},
+  on_clear = function() end,
 }
 
--- ============================================================================
--- Helper Functions
--- ============================================================================
-
---- Get the current background color from Normal highlight group
---- @return string Background color or "NONE" if not set
-local function get_background_color()
-  local bg = vim.fn.synIDattr(vim.fn.hlID("Normal"), "bg")
-  return (bg ~= "" and bg) or "NONE"
-end
-
---- Set background color for all transparent groups
---- @param color string Background color value
-local function set_background(color)
-  for _, group in ipairs(TRANSPARENT_GROUPS) do
-    vim.cmd.highlight(group .. " guibg=" .. color)
-  end
-end
-
---- Save current background color if valid
-local function save_background()
-  local bg = get_background_color()
-  if bg ~= "NONE" then
-    vim.g.bg_color = bg
-  end
-end
-
--- ============================================================================
--- Public Functions
--- ============================================================================
-
---- Setup the transparent plugin with options
---- @param opts table|nil Configuration options
 function M.setup(opts)
   opts = opts or {}
+  config = vim.tbl_extend("force", config, opts)
 
   if opts.auto_enable then
     vim.api.nvim_create_autocmd("VimEnter", {
       once = true,
       callback = function()
         vim.schedule(function()
-          save_background()
-          M.enable()
+          M.toggle(true)
         end)
       end,
     })
   end
 end
 
---- Enable transparent background
-function M.enable()
-  save_background()
-  set_background("NONE")
-  vim.g.bg_transparent = true
+-- [Cache Module] persist state
+local cache_path = fn.stdpath("data") .. package.config:sub(1, 1) .. "transparent_state"
+local function cache_read()
+  local ok, data = pcall(fn.readfile, cache_path)
+  vim.g.bg_transparent = ok and #data > 0 and vim.trim(data[1]) == "true"
 end
+local function cache_write()
+  fn.writefile({ tostring(vim.g.bg_transparent) }, cache_path)
+end
+cache_read() -- load state on startup
 
---- Disable transparent background and restore original colors
-function M.disable()
-  local bg_color = vim.g.bg_color
+-- [Core] Clear highlight groups
+local function clear_group(group)
+  local list = type(group) == "string" and { group } or group
 
-  if not bg_color or bg_color == "NONE" then
-    if vim.g.colors_name then
-      vim.cmd.colorscheme(vim.g.colors_name)
+  for _, g in ipairs(list) do
+    if not vim.tbl_contains(config.exclude_groups, g) then
+      -- Preserve original highlight (only save on first transparency)
+      if ORIGINAL_HL_CACHE[g] == nil then
+        local ok, prev = pcall(api.nvim_get_hl, 0, { name = g, link = false })
+        if ok and prev then
+          ORIGINAL_HL_CACHE[g] = vim.deepcopy(prev)
+        end
+      end
+
+      -- Set transparent
+      local ok, prev = pcall(api.nvim_get_hl, 0, { name = g, link = false })
+      if ok and prev then
+        if prev.bg or prev.ctermbg then
+          prev.bg, prev.ctermbg = "NONE", "NONE"
+          api.nvim_set_hl(0, g, prev)
+        end
+      end
     end
-    bg_color = get_background_color()
+  end
+end
+
+local function do_clear()
+  if not vim.g.bg_transparent then
+    return
   end
 
-  set_background(bg_color)
+  clear_group(config.groups)
+  clear_group(config.extra_groups)
+
+  if type(vim.g.transparent_groups) == "table" then
+    clear_group(vim.g.transparent_groups)
+  end
+end
+
+function M.clear()
+  if not vim.g.bg_transparent then
+    return
+  end
+
+  do_clear()
+
+  vim.defer_fn(do_clear, 300)
+  vim.defer_fn(do_clear, 800)
+  vim.defer_fn(do_clear, 1500)
+  vim.defer_fn(do_clear, 3000)
+
+  api.nvim_exec_autocmds("User", { pattern = "TransparentClear", modeline = false })
+  config.on_clear()
+end
+
+-- [Public API]
+function M.enable()
+  vim.g.bg_transparent = true
+  cache_write()
+  M.clear()
+end
+
+function M.disable()
   vim.g.bg_transparent = false
-end
+  cache_write()
 
---- Toggle transparent background
-function M.toggle()
-  if vim.g.bg_transparent then
-    M.disable()
-  else
-    M.enable()
+  -- Restore original highlights
+  for group, attrs in pairs(ORIGINAL_HL_CACHE) do
+    api.nvim_set_hl(0, group, attrs)
+  end
+  -- Clear cache for next save
+  ORIGINAL_HL_CACHE = {}
+  -- If the theme plugin reloads the highlight, reset the theme
+  if vim.g.colors_name then
+    pcall(vim.cmd.colorscheme, vim.g.colors_name)
   end
 end
 
--- ============================================================================
--- Initialization
--- ============================================================================
+function M.toggle(opt)
+  if opt ~= nil then
+    vim.g.bg_transparent = opt
+  else
+    vim.g.bg_transparent = not vim.g.bg_transparent
+  end
 
-vim.g.bg_color = get_background_color()
-vim.g.bg_transparent = false
+  cache_write()
 
-vim.api.nvim_create_user_command("TransparentEnable", M.enable, {
-  desc = "Enable transparent background",
-})
-vim.api.nvim_create_user_command("TransparentDisable", M.disable, {
-  desc = "Disable transparent background and restore original colors",
-})
-vim.api.nvim_create_user_command("TransparentToggle", M.toggle, {
-  desc = "Toggle transparent background",
-})
-vim.keymap.set("n", "<leader>t", M.toggle, {
-  desc = "Toggle transparent background",
-})
+  if vim.g.bg_transparent then
+    M.enable()
+  else
+    M.disable()
+  end
+end
+
+-- [Commands & Keymaps]
+vim.api.nvim_create_user_command("TransparentEnable", M.enable, { desc = "Enable background transparency" })
+vim.api.nvim_create_user_command("TransparentDisable", M.disable, { desc = "Disable background transparency" })
+vim.api.nvim_create_user_command("TransparentToggle", M.toggle, { desc = "Toggle background transparency" })
+vim.keymap.set("n", "<leader>t", M.toggle, { desc = "Toggle transparent background" })
 
 return M

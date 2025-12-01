@@ -16,4 +16,4 @@ require("custom.git")
 -- Pairs auto close
 require("custom.pairs").setup()
 -- Indent guides
-require("custom.indent").setup({ highlight = "Comment" })
+require("custom.indent").setup()
