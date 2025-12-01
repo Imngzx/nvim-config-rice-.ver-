@@ -29,8 +29,6 @@ _G.statusline.filetype = filetype
 _G.statusline.fileformat = fileformat
 
 -- Display
-vim.cmd('hi! StatusLine guifg=#FFFFFF')
-vim.cmd('hi! StatusLineNC guifg=#FFFFFF')
 local left = '%f %m'
 local right =
 ' %=%{v:lua.statusline.fileformat()} | %{v:lua.statusline.filetype()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
