@@ -6,4 +6,10 @@ debug
 foo.*
 *.log
 data
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# Custom
 /old/
