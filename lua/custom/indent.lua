@@ -4,7 +4,7 @@ local api = vim.api
 local ns = api.nvim_create_namespace("indent_guides")
 local config = {
   indent_width = vim.opt.shiftwidth:get(),
-  highlight = "LineNr",
+  highlight = "LineIndent",
   char = "│",
   only_current = false,
   exclude = { "dashboard", "lazy", "help", "nofile", "terminal", "prompt", "qf" },
@@ -163,7 +163,7 @@ function M.setup(opts)
 
   local hl = vim.api.nvim_get_hl(0, { name = config.highlight })
   if not hl.fg then
-    vim.api.nvim_set_hl(0, config.highlight, { fg = "#666666" })
+    vim.api.nvim_set_hl(0, config.highlight, { fg = "#424A51" })
   end
 
   vim.api.nvim_create_autocmd({
