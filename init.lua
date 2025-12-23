@@ -10,11 +10,11 @@ require("plugins.lsp")
 require("plugins.tool")
 
 -- [Custom]
+-- UI
 require("custom.transparent").setup({ auto_enable = true })
 require("custom.statusline")
--- Support lazygit
-require("custom.git")
--- Pairs auto close
+-- Edit
 require("custom.pairs").setup()
--- Indent guides
 require("custom.indent").setup()
+-- Tool
+require("custom.git")
