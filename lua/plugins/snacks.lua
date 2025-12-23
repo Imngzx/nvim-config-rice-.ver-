@@ -62,35 +62,26 @@ Snacks.setup({
     icons = {
       files = {
         enabled = true, -- show file icons
-        dir = '󰉋 ',
-        dir_open = '󰉖 ',
-        file = '󰈔 '
+        dir = icons.basic.dir .. ' ',
+        dir_open = icons.basic.dir_open .. ' ',
+        file = icons.basic.file .. ' '
       },
       tree = {
-        vertical = '│',
-        middle   = '│',
-        last     = '│',
-      },
-      ui = {
-        live       = '󰐰 ',
-        hidden     = 'h',
-        ignored    = 'i',
-        follow     = 'f',
-        selected   = '● ',
-        unselected = '○ ',
-        -- selected = " ",
+        vertical = icons.basic.indent,
+        middle   = icons.basic.indent,
+        last     = icons.basic.indent,
       },
       git = {
-        enabled   = true, -- show git icons
-        commit    = '󰜘 ', -- used by git log
-        staged    = 'S', -- staged changes. always overrides the type icons
-        added     = 'A',
-        deleted   = 'D',
-        ignored   = 'I',
-        modified  = 'M',
-        renamed   = 'R',
-        unmerged  = '',
-        untracked = 'U',
+        enabled   = true,                   -- show git icons
+        commit    = icons.git.commit .. ' ', -- used by git log
+        staged    = icons.git.staged,       -- staged changes; always overrides the type icons
+        added     = icons.git.added,
+        deleted   = icons.git.deleted,
+        ignored   = icons.git.ignored,
+        modified  = icons.git.modified,
+        renamed   = icons.git.renamed,
+        unmerged  = icons.git.branch,
+        untracked = icons.git.untracked,
       },
       diagnostics = {
         Error = icons.lsp.error .. ' ',

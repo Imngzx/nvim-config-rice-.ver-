@@ -9,10 +9,25 @@ M.lsp = {
 }
 
 M.basic = {
-  -- directory = '',
-  file = '',
+  dir = '󰉋',
+  dir_open = '󰉖',
+  file = '󰈔',
   modify = '●',
   close = '󰅖',
+  indent = '│'
+}
+
+M.git = {
+  commit    = '󰜘',
+  branch    = '󰘬',
+  staged    = 'S',
+  added     = 'A',
+  deleted   = 'D',
+  ignored   = 'I',
+  modified  = 'M',
+  renamed   = 'R',
+  unmerged  = '',
+  untracked = 'U',
 }
 
 return M
