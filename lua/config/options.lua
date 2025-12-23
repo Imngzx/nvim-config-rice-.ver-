@@ -45,6 +45,16 @@ vim.opt.formatoptions =
 -- Command
 vim.opt.inccommand = 'nosplit'                             -- live preview for :substitute
 vim.opt.wildmode = 'longest:full,full'                     -- enhanced command completion
+-- Fold https://www.jackfranklin.co.uk/blog/code-folding-in-vim-neovim/
+vim.opt.foldmethod = 'expr'
+-- Fold expr are on `config/autocommands`
+-- vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.opt.foldcolumn = '0'
+vim.opt.foldlevel = 99
+vim.opt.foldtext = '' -- make fold preview be syntax highlighted
+-- vim.opt.foldtext = "v:lua.vim.fn.getline(v:foldstart) .. ' …'" -- fold text
+vim.opt.foldlevelstart = 5
+vim.opt.foldnestmax = 6 -- levels that won't be broken down into more granular folds
 -- Others
 vim.opt.jumpoptions = 'view'                               -- restore view after jump
 vim.opt.virtualedit = 'block'                              -- allow cursor past EOL in block mode
