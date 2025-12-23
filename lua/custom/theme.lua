@@ -194,6 +194,10 @@ function M.setup()
   hi('DiffDelete', { fg = colors.red, bg = '#3b1719' })
   hi('DiffText', { fg = colors.yellow, bg = '#3d3014' })
 
+  -- Builtin other highlight groups
+  hi('SpecialKey', { fg = colors.comment }) -- welcome info key text
+  hi('ModeMsg', { fg = colors.green })      -- mode note
+
   -- MiniDiff
   hi('MiniDiffSignAdd', { fg = colors.green })
   hi('MiniDiffSignChange', { fg = colors.yellow })
