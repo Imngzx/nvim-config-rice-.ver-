@@ -315,7 +315,7 @@ function M.setup(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
 
   -- Visual mode:  add surround
-  vim.keymap.set('x', 'sa', ':<C-u>lua require("custom.surround").add_visual()<CR>', {
+  vim.keymap.set('x', 'sa', ':<C-u>lua require("custom.surround").add_visual()<cr>', {
     silent = true,
     desc = 'Add surround',
   })

@@ -1,12 +1,12 @@
 -- [Appearance]
-vim.opt.signcolumn = 'yes' -- always show sign column
+vim.opt.signcolumn = 'yes'     -- always show sign column
 if vim.fn.has('nvim-0.10') == 0 then
   vim.opt.termguicolors = true -- enable 24-bit RGB colors
 end
 -- vim.opt.showmode = false -- Hide mode status
 -- Line edit
 vim.opt.cursorline = true -- highlight current line
-vim.opt.scrolloff = 4 -- keep 4 lines visible around cursor
+vim.opt.scrolloff = 4     -- keep 4 lines visible around cursor
 vim.opt.sidescrolloff = 8 -- keep 8 columns visible horizontally
 -- Line number
 vim.opt.number = true
@@ -27,26 +27,28 @@ vim.opt.foldtext = "v:lua.vim.fn.getline(v:foldstart) .. ' …'" -- Fold text
 
 -- [Editor]
 vim.opt.fileformat = 'unix'
-vim.opt.mouse = 'a' -- enable mouse in all modes
-vim.opt.laststatus = 3 -- global statusline (once you add one)
-vim.opt.colorcolumn = '80' -- column ruler
-vim.opt.confirm = true -- confirm before quitting unsaved changes
+vim.opt.mouse = 'a'          -- enable mouse in all modes
+vim.opt.laststatus = 3       -- global statusline (once you add one)
+vim.opt.colorcolumn = '100'  -- column ruler
+vim.opt.confirm = true       -- confirm before quitting unsaved changes
 -- Case
-vim.opt.ignorecase = true -- case-insensitive by default
-vim.opt.incsearch = true -- show search results while typing
-vim.opt.smartcase = true -- but smart if uppercase is used
+vim.opt.ignorecase = true    -- case-insensitive by default
+vim.opt.incsearch = true     -- show search results while typing
+vim.opt.smartcase = true     -- but smart if uppercase is used
 -- Split
-vim.opt.splitbelow = true -- horizontal splits below
-vim.opt.splitright = true -- vertical splits to the right
+vim.opt.splitbelow = true    -- horizontal splits below
+vim.opt.splitright = true    -- vertical splits to the right
 vim.opt.splitkeep = 'screen' -- preserve layout when splitting
 -- Format
-vim.opt.formatoptions = 'jcroqlnt' -- keep comments, wrap text, autoformat when possible
+vim.opt.formatoptions =
+'jcroqlnt'                                                 -- keep comments, wrap text, autoformat when possible
 -- Command
-vim.opt.inccommand = 'nosplit' -- live preview for :substitute
-vim.opt.wildmode = 'longest:full,full' -- enhanced command completion
+vim.opt.inccommand = 'nosplit'                             -- live preview for :substitute
+vim.opt.wildmode = 'longest:full,full'                     -- enhanced command completion
 -- Others
-vim.opt.jumpoptions = 'view' -- restore view after jump
-vim.opt.virtualedit = 'block' -- allow cursor past EOL in block mode
+vim.opt.jumpoptions = 'view'                               -- restore view after jump
+vim.opt.virtualedit = 'block'                              -- allow cursor past EOL in block mode
+vim.o.formatoptions = vim.o.formatoptions:gsub('[ro]', '') -- break comment new line
 
 -- [Functions]
 -- Clipboard
