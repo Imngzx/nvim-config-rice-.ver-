@@ -28,7 +28,7 @@ vim.opt.foldtext = "v:lua.vim.fn.getline(v:foldstart) .. ' …'" -- Fold text
 -- [Editor]
 vim.opt.fileformat = 'unix'
 vim.opt.mouse = 'a'          -- enable mouse in all modes
-vim.opt.laststatus = 3       -- global statusline (once you add one)
+vim.opt.laststatus = 3       -- global satusline (once you add one)
 vim.opt.colorcolumn = '100'  -- column ruler
 vim.opt.confirm = true       -- confirm before quitting unsaved changes
 -- Case
@@ -56,3 +56,6 @@ vim.opt.clipboard = vim.env.SSH_CONNECTION and '' or 'unnamedplus'
 -- Check spelling
 vim.opt.spell = true
 vim.opt.spelllang = 'en_us'
+vim.opt.spellsuggest = 'best,5' -- show only first best 5
+vim.opt.spelloptions = 'camel'  --support CamelCase
+-- vim.opt.spelloptions = 'underscore'
