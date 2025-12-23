@@ -33,6 +33,7 @@ end
 
 local function filetype()
   local ft = vim.bo.filetype ~= '' and vim.bo.filetype or 'plaintext'
+  -- Snacks.util.icon(ft, 'fileype')
   return (icons.get_icon_by_ft(ft) or '') .. ' ' .. ft
 end
 
@@ -47,6 +48,7 @@ _G.statusline.filetype = filetype
 local left = ' %{v:lua.statusline.filename()} %m'
 -- local right =
 -- ' %=%{v:lua.statusline.filetype()} | %{v:lua.statusline.fileformat()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
-local right = ' %=%{v:lua.statusline.filetype()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
+local right =
+' %=%{v:lua.statusline.filetype()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
 
 vim.o.statusline = left .. right
