@@ -7,7 +7,27 @@ local M = {}
 M.config = {
   -- Hide tabline when only one buffer is open
   hide_single_tab = false,
+  -- on_close: optional function(buf_id) -> boolean
+  -- If provided, it's called when a close is requested. If it returns true,
+  -- the module will NOT perform the default `bdelete`. If it returns false/nil,
+  -- the module will run the default `bdelete <buf_id>`.
+  on_close        = nil,
+  -- icons: function(filename) -> string, string
+  ---@diagnostic disable-next-line: unused-local
+  icons           = function(filename) return icons.basic.file, 'Normal' end,
+  -- optional name for close highlight group
+  close_hl        = 'TablineClose',
 }
+
+-- Public: programmatic close helper (respects on_close)
+M.close_buffer = function(buf_id)
+  if type(M.config.on_close) == 'function' then
+    local handled = M.config.on_close(buf_id)
+    if handled then return end
+  end
+  -- default behavior
+  pcall(vim.api.nvim_buf_delete, buf_id, { force = false })
+end
 
 -- Setup function
 M.setup = function(opts)
@@ -15,13 +35,26 @@ M.setup = function(opts)
 
   -- Set initial showtabline value
   _G.SimpleTabline = M
+  -- v:lua click handlers
+  ---@diagnostic disable-next-line: unused-local
+  _G.SimpleTablineSwitch = function(buf_id, clicks, button, mods)
+    if button == 'l' then
+      vim.api.nvim_set_current_buf(buf_id)
+    elseif button == 'r' then
+      _G.SimpleTabline.close_buffer(buf_id)
+    end
+  end
+  ---@diagnostic disable-next-line: unused-local
+  _G.SimpleTablineClose = function(buf_id, clicks, button, mods)
+    _G.SimpleTabline.close_buffer(buf_id)
+  end
+
   if M.config.hide_single_tab then
     M.update_showtabline()
   else
     vim.o.showtabline = 2
   end
   vim.o.tabline = '%! v:lua.SimpleTabline.render()'
-  -- Create highlight groups
   M.create_highlights()
 
   local group = vim.api.nvim_create_augroup('SimpleTabline', { clear = true })
@@ -36,21 +69,6 @@ M.setup = function(opts)
       callback = function() M.update_showtabline() end,
     })
   end
-
-  -- Make tabline clickable
-  vim.api.nvim_exec([[
-    function! SimpleTablineSwitch(buf_id, clicks, button, mod)
-      if a:button ==# 'l'
-        execute 'buffer' a:buf_id
-      elseif a:button ==# 'r'
-        execute 'bdelete' a:buf_id
-      endif
-    endfunction
-
-    function! SimpleTablineClose(buf_id, clicks, button, mod)
-      execute 'bdelete' a:buf_id
-    endfunction
-  ]], false)
 end
 
 -- Update showtabline option based on buffer count
@@ -59,7 +77,7 @@ M.update_showtabline = function()
   for _, buf_id in ipairs(vim.api.nvim_list_bufs()) do
     if vim.bo[buf_id].buflisted then
       count = count + 1
-      if count > 1 then break end -- Early exit optimization
+      if count > 1 then break end
     end
   end
   vim.o.showtabline = count > 1 and 2 or 0
@@ -69,13 +87,15 @@ end
 M.create_highlights = function()
   local highlights = {
     TablineCurrent = { link = 'TabLineSel', bold = true },
-    TablineHidden = { link = 'TabLine' },
-    TablineFill = { link = 'TabLineFill' },
-    TablineError = { fg = '#f38ba8', bold = true },
-    TablineWarn = { fg = '#f9e2af', bold = true },
-    TablineInfo = { fg = '#89b4fa', bold = true },
-    TablineHint = { fg = '#94e2d5', bold = true },
+    TablineHidden  = { link = 'TabLine' },
+    TablineFill    = { link = 'TabLineFill' },
+    TablineError   = { fg = '#f38ba8', bold = true },
+    TablineWarn    = { fg = '#f9e2af', bold = true },
+    TablineInfo    = { fg = '#89b4fa', bold = true },
+    TablineHint    = { fg = '#94e2d5', bold = true },
   }
+
+  highlights[M.config.close_hl] = { link = 'TabLine' }
 
   for name, opts in pairs(highlights) do
     opts.default = true
@@ -88,14 +108,14 @@ M.get_diagnostics = function(buf_id)
   local counts = { error = 0, warn = 0, info = 0, hint = 0 }
 
   for _, diagnostic in ipairs(vim.diagnostic.get(buf_id)) do
-    local severity = diagnostic.severity
-    if severity == vim.diagnostic.severity.ERROR then
+    local s = diagnostic.severity
+    if s == vim.diagnostic.severity.ERROR then
       counts.error = counts.error + 1
-    elseif severity == vim.diagnostic.severity.WARN then
+    elseif s == vim.diagnostic.severity.WARN then
       counts.warn = counts.warn + 1
-    elseif severity == vim.diagnostic.severity.INFO then
+    elseif s == vim.diagnostic.severity.INFO then
       counts.info = counts.info + 1
-    elseif severity == vim.diagnostic.severity.HINT then
+    elseif s == vim.diagnostic.severity.HINT then
       counts.hint = counts.hint + 1
     end
   end
@@ -105,50 +125,59 @@ end
 
 -- Get highlight group based on buffer state and diagnostics
 M.get_highlight = function(buf_id, is_current)
-  if not is_current then return 'TablineHidden' end
+  if not is_current then
+    return 'TablineHidden'
+  end
 
   local diag = M.get_diagnostics(buf_id)
   if diag.error > 0 then return 'TablineError' end
   if diag.warn > 0 then return 'TablineWarn' end
   if diag.info > 0 then return 'TablineInfo' end
   if diag.hint > 0 then return 'TablineHint' end
+
   return 'TablineCurrent'
 end
 
 -- Format single tab
 M.format_tab = function(buf_id, is_current)
   -- Get buffer name
-  local bufname = vim.api.nvim_buf_get_name(buf_id)
-  local filename = bufname ~= '' and vim.fn.fnamemodify(bufname, ':t') or '[No Name]'
-  local icon = icons.get_icon_by_name(filename) or icons.basic.file
+  local bufname       = vim.api.nvim_buf_get_name(buf_id)
+  local filename      = bufname ~= '' and vim.fn.fnamemodify(bufname, ':t') or '[No Name]'
 
-  -- Get diagnostics
-  local diag_str = ''
-  local diag = M.get_diagnostics(buf_id)
+  local icon, icon_hl = M.config.icons(filename)
+  icon_hl             = icon_hl or 'Normal'
+
+  local diag          = M.get_diagnostics(buf_id)
+  local diag_str      = ''
   if diag.error > 0 then diag_str = diag_str .. icons.lsp.error .. diag.error end
   if diag.warn > 0 then diag_str = diag_str .. icons.lsp.warn .. diag.warn end
   if diag_str ~= '' then diag_str = ' ' .. diag_str end
 
-  -- Make tab clickable
-  local switch_func = '%' .. buf_id .. '@SimpleTablineSwitch@'
-  local close_func = '%' .. buf_id .. '@SimpleTablineClose@'
+  -- v:lua click handlers
+  local switch      = '%' .. buf_id .. '@v:lua.SimpleTablineSwitch@'
+  local close       = '%' .. buf_id .. '@v:lua.SimpleTablineClose@'
 
-  -- Close button
-  local close_icon = vim.bo[buf_id].modified and icons.basic.modify or icons.basic.close
-  local close_btn = '%#TablineClose#' .. ' ' .. close_func .. close_icon .. '%X'
+  local close_icon  = vim.bo[buf_id].modified and icons.basic.modify or icons.basic.close
+  local close_btn   = '%#' .. M.config.close_hl .. '# ' ..
+    close .. close_icon .. '%X'
 
-  -- Assemble tab
-  local hl = '%#' .. M.get_highlight(buf_id, is_current) .. '#'
-  return hl .. switch_func .. ' ' .. icon .. ' ' .. filename .. diag_str .. close_btn .. ' '
+  local tab_hl      = '%#' .. M.get_highlight(buf_id, is_current) .. '#'
+  local icon_hl_str = '%#' .. icon_hl .. '#'
+  return tab_hl .. switch
+    .. ' ' .. icon_hl_str .. icon .. tab_hl
+    .. ' ' .. filename .. diag_str .. close_btn
+    .. ' '
 end
 
 -- Render tabline
 M.render = function()
   local tabs = {}
-  local current_buf = vim.api.nvim_get_current_buf()
+  local current = vim.api.nvim_get_current_buf()
 
   for _, buf_id in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.bo[buf_id].buflisted then table.insert(tabs, M.format_tab(buf_id, buf_id == current_buf)) end
+    if vim.bo[buf_id].buflisted then
+      table.insert(tabs, M.format_tab(buf_id, buf_id == current))
+    end
   end
 
   return table.concat(tabs, '|') .. '%#TablineFill#'
