@@ -62,8 +62,9 @@ vim.keymap.set('n', '<leader>pd', '<C-W>c', { desc = 'Delete window', remap = tr
 vim.keymap.set('n', '<leader>ps', '<C-W>s', { desc = 'Split window below', remap = true })
 vim.keymap.set('n', '<leader>pv', '<C-W>v', { desc = 'Split window right', remap = true })
 -- Move between windows
-vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to left window', remap = true })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to below window', remap = true })
+vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to left window' })
+vim.keymap.set('n', '<BS>', '<C-w>h', { desc = 'Move to left window' }) -- Fix <c-h> used as <bs> in some terminal
+vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to below window' })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to above window' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to right window' })
 -- Resize splits
