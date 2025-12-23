@@ -54,27 +54,3 @@ vim.opt.clipboard      = vim.env.SSH_CONNECTION and "" or "unnamedplus"
 -- Check spelling
 vim.opt.spell          = true
 vim.opt.spelllang      = "en_us"
--- File tree
--- vim.cmd("let g:netrw_banner=0") -- disable banner
-vim.cmd("let g:netrw_liststyle=3") -- tree view list style
-
--- [Auto commands]
--- Highlight on yank
-vim.api.nvim_create_autocmd("TextYankPost", {
-  group = vim.api.nvim_create_augroup("BasicAutocommands", {}),
-  callback = function() (vim.hl or vim.highlight).on_yank() end,
-  desc = 'Highlight yanked text'
-})
--- Change EOL format to unix on save
-vim.api.nvim_create_autocmd('BufWritePre', {
-  group = vim.api.nvim_create_augroup("BasicAutocommands", {}),
-  callback = function()
-    -- Remove CR (0x0D)
-    local buf = vim.api.nvim_get_current_buf()
-    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-    for i, l in ipairs(lines) do
-      if l:find('\r') then lines[i] = l:gsub('\r', '') end
-    end
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  end,
-})
