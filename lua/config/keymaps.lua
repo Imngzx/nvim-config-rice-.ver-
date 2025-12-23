@@ -9,8 +9,10 @@ vim.keymap.set("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
 vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
 
 -- [View]
-vim.keymap.set("n", "<leader>cp", ":set spell!<CR>", { desc = "Toggle spelling" })
-vim.keymap.set('n', '<leader>cx', ':set wrap!<CR>', { desc = "Toggle wrap" })
+vim.keymap.set("n", "<leader>us", '<Cmd>setlocal spell! spell?<CR>', { desc = "Toggle spelling" })
+vim.keymap.set('n', '<leader>uw', '<Cmd>setlocal wrap! wrap?<CR>', { desc = "Toggle wrap" })
+vim.keymap.set('n', '<leader>ub', '<Cmd>lua vim.o.bg = vim.o.bg == "dark" and "light" or "dark"<CR>',
+  { desc = "Toggle background" })
 
 -- [Edit]
 -- Indent

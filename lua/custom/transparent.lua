@@ -152,6 +152,6 @@ end
 vim.api.nvim_create_user_command("TransparentEnable", M.enable, { desc = "Enable background transparency" })
 vim.api.nvim_create_user_command("TransparentDisable", M.disable, { desc = "Disable background transparency" })
 vim.api.nvim_create_user_command("TransparentToggle", M.toggle, { desc = "Toggle background transparency" })
-vim.keymap.set("n", "<leader>t", M.toggle, { desc = "Toggle transparent background" })
+vim.keymap.set("n", "<leader>ut", M.toggle, { desc = "Toggle transparent background" })
 
 return M

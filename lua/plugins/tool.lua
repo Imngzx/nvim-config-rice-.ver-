@@ -5,6 +5,7 @@ vim.pack.add({ "https://github.com/folke/which-key.nvim" })
 require("which-key").add({
   { "<leader>b", group = "Buffer" },
   { "<leader>c", group = "Code" },
+  { "<leader>u", group = "UI" },
   { "<leader>s", group = "Session" },
   { "<leader>f", group = "File" },
 })
