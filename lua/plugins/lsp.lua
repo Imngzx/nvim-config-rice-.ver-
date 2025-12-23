@@ -6,14 +6,20 @@ local H = {}
 -- `:Mason` to see the list
 H.mason = {
   -- LSP
-  'lua_ls', 'vtsls',
+  'lua_ls', -- lua
+  'vtsls', -- typescript
+  'css-lsp', -- css
+  'marksman', -- markdown
+  'ty', -- python
   -- Formatter
-  'prettier', 'shfmt',
+  'prettier', -- front-end
+  'shfmt', -- shell
+  'ruff' -- python
 }
 
 -- (Lsp) lspconfig
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
-H.lsp = { 'lua_ls', 'vtsls', 'vue_ls' }
+H.lsp = { 'lua_ls', 'vtsls', 'cssls', 'vue_ls', 'marksman', 'ty' }
 
 -- (Formatter) conform
 -- https://github.com/stevearc/conform.nvim#formatters
@@ -21,6 +27,8 @@ H.lsp = { 'lua_ls', 'vtsls', 'vue_ls' }
 H.conform = {
   markdown = { 'prettier' },
   vue = { 'prettier' },
+  -- python = { 'ruff' }
+  css = { 'prettier' },
 }
 
 -- (Specific)
@@ -44,6 +52,7 @@ vim.lsp.config('vtsls', {
   },
   filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
 })
+
 vim.g.markdown_fenced_languages = {
   'sh', 'bash=sh',
   'python', 'py=python',
@@ -88,19 +97,29 @@ lazy.on_event({ 'User', pattern = 'VeryLazy' },
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('LspKepmap', {}),
       callback = function(ev)
-        local opts = function(desc) return { buffer = ev.buf, desc = desc } end
         -- LSP keymaps
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts('LSP hover'))
-        vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, opts('LSP hover'))
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = ev.buf, desc = 'LSP hover' })
+        vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, { buffer = ev.buf, desc = 'LSP hover' })
         -- Moved to Snacks
-        -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts('Goto definition'))
-        -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts('Goto declaration'))
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts('List references'))
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts('Goto implementation'))
-        vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts('Type definition'))
-        vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, opts('Rename symbol'))
-        vim.keymap.set({ 'n', 'x' }, '<leader>ca', vim.lsp.buf.code_action, opts('Code action'))
-        vim.keymap.set('i', '<c-k>', vim.lsp.buf.signature_help, opts('Signature help'))
+        -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = ev.buf, desc='Goto definition'})
+        -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = ev.buf, desc='Goto declaration'})
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, {
+          buffer = ev.buf,
+          desc =
+          'List references'
+        })
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation,
+          { buffer = ev.buf, desc = 'Goto implementation' })
+        vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition,
+          { buffer = ev.buf, desc = 'Type definition' })
+        vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename,
+          { buffer = ev.buf, desc = 'Rename symbol' })
+        vim.keymap.set({ 'n', 'x' }, '<leader>ca', vim.lsp.buf.code_action,
+          { buffer = ev.buf, desc = 'Code action' })
+        vim.keymap.set('i', '<c-k>', vim.lsp.buf.signature_help,
+          { buffer = ev.buf, desc = 'Signature help' })
+        -- vim.keymap.set('n', '<leader>cf', vim.lsp.buf.format,
+        --   { buffer = ev.buf, desc = 'Format code' })
       end,
     })
     vim.keymap.set('n', '<leader>pl', '<cmd>checkhealth vim.lsp<cr>', { desc = '[Panel] Lsp info' })
