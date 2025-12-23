@@ -24,20 +24,20 @@ vim.keymap.set('x', '>', '>gv')
 vim.keymap.set('n', 'gco', 'o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>', { desc = 'Add comment below' })
 vim.keymap.set('n', 'gcO', 'O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>', { desc = 'Add comment above' })
 -- Move lines
-vim.keymap.set('n', '<A-k>', "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = 'Move up' })
-vim.keymap.set('n', '<A-j>', "<cmd>execute 'move .+' . v:count1<cr>==", { desc = 'Move down' })
-vim.keymap.set('i', '<A-k>', '<esc><cmd>m .-2<cr>==gi', { desc = 'Move up' })
-vim.keymap.set('i', '<A-j>', '<esc><cmd>m .+1<cr>==gi', { desc = 'Move down' })
-vim.keymap.set('v', '<A-k>', ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv",
+vim.keymap.set('n', '<a-k>', "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = 'Move up' })
+vim.keymap.set('n', '<a-j>', "<cmd>execute 'move .+' . v:count1<cr>==", { desc = 'Move down' })
+vim.keymap.set('i', '<a-k>', '<esc><cmd>m .-2<cr>==gi', { desc = 'Move up' })
+vim.keymap.set('i', '<a-j>', '<esc><cmd>m .+1<cr>==gi', { desc = 'Move down' })
+vim.keymap.set('v', '<a-k>', ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv",
   { desc = 'Move up' })
-vim.keymap.set('v', '<A-j>', ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv",
+vim.keymap.set('v', '<a-j>', ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv",
   { desc = 'Move down' })
 -- Spelling
 vim.keymap.set('n', '<leader>cs', 'z=', { desc = 'Spelling suggestions' })
 
 -- [Buffer]
-vim.keymap.set('n', '<S-h>', '<cmd>bprevious<cr>', { desc = 'Prev buffer' })
-vim.keymap.set('n', '<S-l>', '<cmd>bnext<cr>', { desc = 'Next buffer' })
+vim.keymap.set('n', '<s-h>', '<cmd>bprevious<cr>', { desc = 'Prev buffer' })
+vim.keymap.set('n', '<s-l>', '<cmd>bnext<cr>', { desc = 'Next buffer' })
 -- vim.keymap.set('n', '<leader>bd', function()
 --   local cur = vim.api.nvim_get_current_buf()
 --   local alt = vim.fn.bufnr('#')
@@ -57,27 +57,27 @@ vim.keymap.set('n', '<S-l>', '<cmd>bnext<cr>', { desc = 'Next buffer' })
 vim.keymap.set('n', '<leader>bn', '<cmd>enew<cr>', { desc = 'New file' }) -- new file
 
 -- [Window]
-vim.keymap.set('n', '<leader>pd', '<C-W>c', { desc = 'Delete window', remap = true })
+vim.keymap.set('n', '<leader>pd', '<c-w>c', { desc = 'Delete window', remap = true })
 -- Split windows
-vim.keymap.set('n', '<leader>ps', '<C-W>s', { desc = 'Split window below', remap = true })
-vim.keymap.set('n', '<leader>pv', '<C-W>v', { desc = 'Split window right', remap = true })
+vim.keymap.set('n', '<leader>ps', '<c-w>s', { desc = 'Split window below', remap = true })
+vim.keymap.set('n', '<leader>pv', '<c-w>v', { desc = 'Split window right', remap = true })
 -- Move between windows
-vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to left window' })
-vim.keymap.set('n', '<BS>', '<C-w>h', { desc = 'Move to left window' }) -- Fix <c-h> used as <bs> in some terminal
-vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to below window' })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to above window' })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to right window' })
+vim.keymap.set('n', '<c-h>', '<c-w>h', { desc = 'Move to left window' })
+vim.keymap.set('n', '<bs>', '<c-w>h', { desc = 'Move to left window' }) -- Fix <c-h> used as <bs> in some terminal
+vim.keymap.set('n', '<c-j>', '<c-w>j', { desc = 'Move to below window' })
+vim.keymap.set('n', '<c-k>', '<c-w>k', { desc = 'Move to above window' })
+vim.keymap.set('n', '<c-l>', '<c-w>l', { desc = 'Move to right window' })
 -- Resize splits
-vim.keymap.set('n', '<C-Left>', '"<cmd>vertical resize -" . v:count1 . "<cr>"',
+vim.keymap.set('n', '<c-left>', '"<cmd>vertical resize -" . v:count1 . "<cr>"',
   { expr = true, replace_keycodes = false, desc = 'Decrease window width' }
 )
-vim.keymap.set('n', '<C-Down>', '"<cmd>resize -" . v:count1 . "<cr>"',
+vim.keymap.set('n', '<c-down>', '"<cmd>resize -" . v:count1 . "<cr>"',
   { expr = true, replace_keycodes = false, desc = 'Decrease window height' }
 )
-vim.keymap.set('n', '<C-Up>', '"<cmd>resize +" . v:count1 . "<cr>"',
+vim.keymap.set('n', '<c-up>', '"<cmd>resize +" . v:count1 . "<cr>"',
   { expr = true, replace_keycodes = false, desc = 'Increase window height' }
 )
-vim.keymap.set('n', '<C-Right>', '"<cmd>vertical resize +" . v:count1 . "<cr>"',
+vim.keymap.set('n', '<c-right>', '"<cmd>vertical resize +" . v:count1 . "<cr>"',
   { expr = true, replace_keycodes = false, desc = 'Increase window width' }
 )
 
