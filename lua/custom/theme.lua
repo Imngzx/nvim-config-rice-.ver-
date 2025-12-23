@@ -218,8 +218,6 @@ function M.setup()
   hi('MiniIconsPurple', { fg = '#C5BEF8' })
   hi('MiniIconsRed', { fg = '#F6B2B2' })
   hi('MiniIconsYellow', { fg = '#CACB8F' })
-
-  hi('VirtColumn', { fg = '#3c3836' })
 end
 
 return M

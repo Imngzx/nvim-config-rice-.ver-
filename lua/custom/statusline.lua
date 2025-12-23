@@ -47,9 +47,9 @@ _G.my_statusline.screen = screen_percent
 _G.my_statusline.filetype = function() return filetype(M.config) end
 
 local function apply()
-  local left = '%{v:lua.my_statusline.filename()} %m'
+  local left = ' %{v:lua.my_statusline.filename()} %m'
   local right =
-  '%=%{v:lua.my_statusline.filetype()} | %{v:lua.my_statusline.screen()} | %{v:lua.my_statusline.cursor()}'
+  ' %=%{v:lua.my_statusline.filetype()} | %{v:lua.my_statusline.screen()} | %{v:lua.my_statusline.cursor()}'
   vim.o.statusline = left .. right
 end
 
