@@ -68,6 +68,27 @@ vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
 vim.keymap.set("n", "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", { desc = "Toggle Pin" })
 vim.keymap.set("n", "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", { desc = "Delete Non-Pinned Buffers" })
 
+-- [File explorer]
+vim.pack.add({ "https://github.com/nvim-mini/mini.files" })
+require('mini.files').setup({
+  mappings = {
+    close = '<ESC>',
+    synchronize = '<CR>',
+  },
+  windows = {
+    -- Whether to show preview of file/directory under cursor
+    preview = true,
+    -- Width of focused window
+    width_focus = 35,
+    -- Width of preview window
+    width_preview = 40,
+  },
+})
+vim.keymap.set("n", "<leader>e", function(...)
+  if not require('mini.files').close() then MiniFiles.open(...) end
+end, { desc = "Toggle file explorer" })
+
+
 -- [Clipboard]
 -- vim.pack.add({ "https://github.com/gbprod/yanky.nvim" })
 -- -- Custom paste function
