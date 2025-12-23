@@ -92,6 +92,7 @@ lazy.on_event({ 'User', pattern = 'VeryLazy' },
         -- LSP keymaps
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts('LSP hover'))
         vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, opts('LSP hover'))
+        -- Moved to Snacks
         -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts('Goto definition'))
         -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts('Goto declaration'))
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts('List references'))

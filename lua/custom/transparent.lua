@@ -10,7 +10,6 @@ local config = {
   groups = {
     'Normal', 'NormalNC', 'SignColumn', 'EndOfBuffer',
     'LineNr', 'CursorLineNr', 'NonText',
-
     'Comment', 'Constant', 'Special', 'Identifier', 'Statement',
     'PreProc', 'Type', 'Underlined', 'Todo', 'String', 'Function',
     'Conditional', 'Repeat', 'Operator', 'Structure',

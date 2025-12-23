@@ -11,13 +11,13 @@ M.config = {
   -- If provided, it's called when a close is requested. If it returns true,
   -- the module will NOT perform the default `bdelete`. If it returns false/nil,
   -- the module will run the default `bdelete <buf_id>`.
-  on_close        = nil,
+  on_close = nil,
   -- icons: function(filename) -> string, string
   ---@diagnostic disable-next-line: unused-local
-  file_icons      = function(filename) return '', 'Normal' end,
-  icons           = { close = '󰅖', modify = '●' },
+  file_icons = function(filename) return '', 'Normal' end,
+  icons = { close = '󰅖', modify = '●' },
   -- optional name for close highlight group
-  close_hl        = 'TablineClose',
+  close_hl = 'TablineClose',
 }
 
 -- Public: programmatic close helper (respects on_close)
@@ -88,12 +88,12 @@ end
 M.create_highlights = function()
   local highlights = {
     TablineCurrent = { link = 'TabLineSel', bold = true },
-    TablineHidden  = { link = 'TabLine' },
-    TablineFill    = { link = 'TabLineFill' },
-    TablineError   = { fg = '#f38ba8', bold = true },
-    TablineWarn    = { fg = '#f9e2af', bold = true },
-    TablineInfo    = { fg = '#89b4fa', bold = true },
-    TablineHint    = { fg = '#94e2d5', bold = true },
+    TablineHidden = { link = 'TabLine' },
+    TablineFill = { link = 'TabLineFill' },
+    TablineError = { fg = '#f38ba8', bold = true },
+    TablineWarn = { fg = '#f9e2af', bold = true },
+    TablineInfo = { fg = '#89b4fa', bold = true },
+    TablineHint = { fg = '#94e2d5', bold = true },
   }
 
   highlights[M.config.close_hl] = { link = 'TabLine' }
@@ -142,27 +142,27 @@ end
 -- Format single tab
 M.format_tab = function(buf_id, is_current)
   -- Get buffer name
-  local bufname       = vim.api.nvim_buf_get_name(buf_id)
-  local filename      = bufname ~= '' and vim.fn.fnamemodify(bufname, ':t') or '[No Name]'
+  local bufname = vim.api.nvim_buf_get_name(buf_id)
+  local filename = bufname ~= '' and vim.fn.fnamemodify(bufname, ':t') or '[No Name]'
 
   local icon, icon_hl = M.config.file_icons(filename)
-  icon_hl             = icon_hl or 'Normal'
+  icon_hl = icon_hl or 'Normal'
 
-  local diag          = M.get_diagnostics(buf_id)
-  local diag_str      = ''
+  local diag = M.get_diagnostics(buf_id)
+  local diag_str = ''
   if diag.error > 0 then diag_str = diag_str .. icons.lsp.error .. diag.error end
   if diag.warn > 0 then diag_str = diag_str .. icons.lsp.warn .. diag.warn end
   if diag_str ~= '' then diag_str = ' ' .. diag_str end
 
   -- v:lua click handlers
-  local switch      = '%' .. buf_id .. '@v:lua.SimpleTablineSwitch@'
-  local close       = '%' .. buf_id .. '@v:lua.SimpleTablineClose@'
+  local switch = '%' .. buf_id .. '@v:lua.SimpleTablineSwitch@'
+  local close = '%' .. buf_id .. '@v:lua.SimpleTablineClose@'
 
-  local close_icon  = vim.bo[buf_id].modified and M.config.icons.modify or M.config.icons.close
-  local close_btn   = '%#' .. M.config.close_hl .. '# ' ..
+  local close_icon = vim.bo[buf_id].modified and M.config.icons.modify or M.config.icons.close
+  local close_btn = '%#' .. M.config.close_hl .. '# ' ..
     close .. close_icon .. '%X'
 
-  local tab_hl      = '%#' .. M.get_highlight(buf_id, is_current) .. '#'
+  local tab_hl = '%#' .. M.get_highlight(buf_id, is_current) .. '#'
   local icon_hl_str = '%#' .. icon_hl .. '#'
   return tab_hl .. switch
     .. ' ' .. icon_hl_str .. icon .. tab_hl

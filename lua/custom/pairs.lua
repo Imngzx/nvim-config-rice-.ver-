@@ -139,14 +139,14 @@ local function escape(s)
 end
 
 H.keys = {
-  above      = escape('<C-o>O'),
-  bs         = escape('<BS>'),
-  cr         = escape('<CR>'),
-  del        = escape('<Del>'),
-  ctrl_y     = escape('<C-y>'),
-  left       = escape('<Left>'),
-  right      = escape('<Right>'),
-  left_undo  = escape('<C-g>U<Left>'),
+  above = escape('<C-o>O'),
+  bs = escape('<BS>'),
+  cr = escape('<CR>'),
+  del = escape('<Del>'),
+  ctrl_y = escape('<C-y>'),
+  left = escape('<Left>'),
+  right = escape('<Right>'),
+  left_undo = escape('<C-g>U<Left>'),
   right_undo = escape('<C-g>U<Right>'),
 }
 

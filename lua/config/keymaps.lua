@@ -38,6 +38,7 @@ vim.keymap.set('n', '<leader>cs', 'z=', { desc = 'Spelling suggestions' })
 -- [Buffer]
 vim.keymap.set('n', '<s-h>', '<cmd>bprevious<cr>', { desc = 'Prev buffer' })
 vim.keymap.set('n', '<s-l>', '<cmd>bnext<cr>', { desc = 'Next buffer' })
+-- Moved to Snacks
 -- vim.keymap.set('n', '<leader>bd', function()
 --   local cur = vim.api.nvim_get_current_buf()
 --   local alt = vim.fn.bufnr('#')
@@ -109,11 +110,11 @@ vim.keymap.set({ 'i', 'n', 's' }, '<esc>',
 --   if not success and err then
 --     vim.notify(err, vim.log.levels.ERROR)
 --   end
--- end, { desc = "Location List" })
+-- end, { desc = "Location list" })
 -- -- quickfix list
 -- vim.keymap.set("n", "<leader>xq", function()
 --   local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
 --   if not success and err then
 --     vim.notify(err, vim.log.levels.ERROR)
 --   end
--- end, { desc = "Quickfix List" })
+-- end, { desc = "Quickfix list" })
