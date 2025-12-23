@@ -8,6 +8,8 @@ M.config = {
   icons = { branch = '' },
   -- required: user must provide git resolver when calling setup via git_cache_setup
   git_cache_setup = nil, -- optional: table passed to git_cache.setup
+  -- Like: { lua = true, markdown = true }
+  hide_filename_by_ft = {},
 }
 
 local function pad(s, w)
@@ -15,9 +17,14 @@ local function pad(s, w)
   return #s > w and s:sub(1, w) or s .. string.rep(' ', w - #s)
 end
 
+local function ft()
+  return vim.bo.filetype ~= '' and vim.bo.filetype or 'plaintext'
+end
+
 -- [Left]
 -- Filename
 local function filename(max_w)
+  if M.config.hide_filename_by_ft[ft()] then return '' end
   local name = vim.fn.expand('%')
   if name == '' then return '[No Name]' end
   name = name:gsub('\\', '/')
@@ -27,12 +34,11 @@ local function filename(max_w)
   return name
 end
 
--- Right
-local function filetype(cfg)
-  local ft = vim.bo.filetype ~= '' and vim.bo.filetype or 'plaintext'
-  return (cfg.ft_icon(ft) or '') .. ' ' .. ft
+-- [Right]
+local function filetype()
+  local ft_text = ft()
+  return (M.config.ft_icon(ft_text) or '') .. ' ' .. ft_text
 end
-
 local function screen_percent()
   local cur, tot = vim.fn.line('.'), vim.fn.line('$')
   if cur == 1 then return pad('Top', 3) end
@@ -56,13 +62,17 @@ _G.my_statusline.gitbranch = function()
   local icon = (M.config.icons and M.config.icons.branch) or 'BR'
   return icon .. ' ' .. br .. ' | '
 end
-_G.my_statusline.filename = function() return filename(M.config and M.config.filename_width) end
-_G.my_statusline.filetype = function() return filetype(M.config) end
+_G.my_statusline.filetype = function() return filetype() end
+_G.my_statusline.filename = function()
+  local fn = filename(M.config.filename_width)
+  if fn and fn ~= '' then return fn .. ' ' end
+  return ''
+end
 _G.my_statusline.screen = screen_percent
 _G.my_statusline.cursor = cursor_position
 
 local function apply()
-  local left = ' %{v:lua.my_statusline.gitbranch()}%{v:lua.my_statusline.filename()} %m'
+  local left = ' %{v:lua.my_statusline.gitbranch()}%{v:lua.my_statusline.filename()}%m'
   local right =
   ' %=%{v:lua.my_statusline.filetype()} | %{v:lua.my_statusline.screen()} | %{v:lua.my_statusline.cursor()}'
   vim.o.statusline = left .. right
