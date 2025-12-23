@@ -13,6 +13,8 @@ local config = {
     'Comment', 'Constant', 'Special', 'Identifier', 'Statement',
     'PreProc', 'Type', 'Underlined', 'Todo', 'String', 'Function',
     'Conditional', 'Repeat', 'Operator', 'Structure',
+    -- Append from the origin list
+    'Folded',
   },
 
   extra_groups = {
