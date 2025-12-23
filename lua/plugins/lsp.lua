@@ -12,13 +12,14 @@ H.mason = {
 
 -- (Lsp) lspconfig
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
-H.lsp = { 'lua_ls', 'vtsls' }
+H.lsp = { 'lua_ls', 'vtsls', 'vue_ls' }
 
 -- (Formatter) conform
 -- https://github.com/stevearc/conform.nvim#formatters
 -- Or use `:help conform-formatters`
 H.conform = {
   markdown = { 'prettier' },
+  vue = { 'prettier' },
 }
 
 -- (Specific)
@@ -66,9 +67,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts('Type definition'))
     vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, opts('Rename symbol'))
     vim.keymap.set({ 'n', 'x' }, '<leader>ca', vim.lsp.buf.code_action, opts('Code action'))
-    vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, opts('Signature help'))
+    vim.keymap.set('i', '<c-k>', vim.lsp.buf.signature_help, opts('Signature help'))
   end,
 })
+vim.keymap.set('n', '<leader>ul', '<cmd>checkhealth vim.lsp<cr>', { desc = 'Lsp info' })
 
 -- [Formatter]
 vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
