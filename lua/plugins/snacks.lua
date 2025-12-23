@@ -1,3 +1,9 @@
+---@module 'snacks'
+
+local icons = require('libs.icons')
+
+local common_exclude = { '.git', '~', '.idea', '.DS_Store' }
+
 vim.pack.add({ 'https://github.com/folke/snacks.nvim' })
 local Snacks = require('snacks')
 Snacks.setup({
@@ -11,19 +17,199 @@ Snacks.setup({
   indent = { enabled = true },
   input = { enabled = false },
   notifier = { enabled = false },
+
   -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
   picker = {
     enabled = true,
+    -- Appearance
+    prompt = ' ',
+    layouts = {
+      my_default_layout = {
+        layout = {
+          width = 0.8,
+          height = 0.8,
+          border = 'none',
+          backdrop = false,
+          box = 'horizontal',
+          {
+            box = 'vertical',
+            { win = 'input', height = 1,       border = 'single', title = '{title} {live} {flags}', title_pos = 'left' },
+            { win = 'list',  border = 'single' },
+          },
+          { win = 'preview', border = 'single', title = '{preview:Preview}', title_pos = 'left', width = 0.65 },
+        },
+      },
+      my_vertical_layout = {
+        layout = {
+          width = 0.8,
+          height = 0.9,
+          border = 'none',
+          backdrop = false,
+          box = 'vertical',
+          { win = 'input',   border = 'single', height = 1, title = '{title} {live} {flags}', title_pos = 'left' },
+          { win = 'list',    border = 'single', height = 8 },
+          { win = 'preview', border = 'single' },
+        },
+      },
+    },
     layout = {
       --- Use the default layout or vertical if the window is too narrow
       preset = function()
-        return vim.o.columns >= 100 and 'default' or 'vertical'
+        return vim.o.columns >= 100 and 'my_default_layout' or 'my_vertical_layout'
       end,
     },
-    previewers = {
-      diff = {
+    icons = {
+      files = {
+        enabled = true, -- show file icons
+        dir = '󰉋 ',
+        dir_open = '󰉖 ',
+        file = '󰈔 '
+      },
+      tree = {
+        vertical = '│',
+        middle   = '│',
+        last     = '│',
+      },
+      ui = {
+        live       = '󰐰 ',
+        hidden     = 'h',
+        ignored    = 'i',
+        follow     = 'f',
+        selected   = '● ',
+        unselected = '○ ',
+        -- selected = " ",
+      },
+      git = {
+        enabled   = true, -- show git icons
+        commit    = '󰜘 ', -- used by git log
+        staged    = 'S', -- staged changes. always overrides the type icons
+        added     = 'A',
+        deleted   = 'D',
+        ignored   = 'I',
+        modified  = 'M',
+        renamed   = 'R',
+        unmerged  = '',
+        untracked = 'U',
+      },
+      diagnostics = {
+        Error = icons.lsp.error .. ' ',
+        Warn  = icons.lsp.warn .. ' ',
+        Hint  = icons.lsp.hint .. ' ',
+        Info  = icons.lsp.info .. ' ',
       },
     },
+    -- Specific
+    sources = {
+      files = { exclude = common_exclude },
+      grep = { exclude = common_exclude },
+      -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#explorer
+      explorer = {
+        exclude = common_exclude,
+        diagnostics = true,
+        diagnostics_open = false, -- forward to parent folder
+        git_status = true,
+        git_status_open = false,
+        git_untracked = true,
+        -- Layout
+        layout = function()
+          return {
+            preview = false,
+            layout = {
+              position = 'left',
+              width = (vim.g.explorer_size or { width = 30 }).width,
+              box = 'vertical',
+              { win = 'list',    border = 'none' },
+              { win = 'preview', title = '{preview}', height = 0.4, border = 'top' },
+            },
+          }
+        end,
+        -- Show patch
+        on_show = function(picker)
+          local show = true
+          local gap = 1
+          local clamp_width = function(value)
+            return math.max(20, math.min(50, value))
+          end
+          --
+          local position = picker.resolved_layout.layout.position
+          local rel = picker.layout.root
+          local update = function(win)
+            local border = win:border_size().left + win:border_size().right
+            win.opts.row = vim.api.nvim_win_get_position(rel.win)[1]
+            win.opts.height = 0.6
+            if position == 'left' then
+              win.opts.col = vim.api.nvim_win_get_width(rel.win) + gap
+              win.opts.width = clamp_width(vim.o.columns - border - win.opts.col)
+            end
+            if position == 'right' then
+              win.opts.col = -vim.api.nvim_win_get_width(rel.win) - gap
+              win.opts.width = clamp_width(vim.o.columns - border + win.opts.col)
+            end
+            win:update()
+          end
+          local preview_win = Snacks.win.new {
+            relative = 'editor',
+            external = false,
+            focusable = false,
+            border = 'rounded',
+            backdrop = false,
+            show = show,
+            bo = {
+              filetype = 'snacks_float_preview',
+              buftype = 'nofile',
+              buflisted = false,
+              swapfile = false,
+              undofile = false,
+            },
+            on_win = function(win)
+              update(win)
+              picker:show_preview()
+            end,
+          }
+          rel:on('WinLeave', function()
+            vim.schedule(function()
+              if not picker:is_focused() then picker.preview.win:close() end
+            end)
+          end)
+          rel:on('WinResized', function() update(preview_win) end)
+          picker.preview.win = preview_win
+          picker.main = preview_win.win
+        end,
+        on_close = function(picker)
+          vim.g.explorer_size = picker.layout.root:size()
+          picker.preview.win:close()
+        end,
+        actions = {
+          --[[Override]]
+          toggle_preview = function(picker) picker.preview.win:toggle() end,
+        },
+        -- win = {
+        --   list = {
+        --     keys = {
+        --       ['<BS>'] = 'explorer_up',
+        --       ['o'] = 'explorer_open', -- open with system application
+        --       ['P'] = 'toggle_preview',
+        --       ['u'] = 'explorer_update',
+        --       ['<c-c>'] = 'tcd',
+        --       ['<leader>fg'] = 'picker_grep',
+        --       ['<c-t>'] = 'terminal',
+        --       ['.'] = 'explorer_focus',
+        --       ['I'] = 'toggle_ignored',
+        --       ['H'] = 'toggle_hidden',
+        --       ['Z'] = 'explorer_close_all',
+        --       [']g'] = 'explorer_git_next',
+        --       ['[g'] = 'explorer_git_prev',
+        --       [']d'] = 'explorer_diagnostic_next',
+        --       ['[d'] = 'explorer_diagnostic_prev',
+        --       [']w'] = 'explorer_warn_next',
+        --       ['[w'] = 'explorer_warn_prev',
+        --       [']e'] = 'explorer_error_next',
+        --       ['[e'] = 'explorer_error_prev',
+        --     },
+        --   },
+        -- },
+      }
+    }
   },
   quickfile = { enabled = true },
   scope = { enabled = true },
