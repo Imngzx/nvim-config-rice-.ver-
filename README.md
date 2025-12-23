@@ -2,9 +2,12 @@
 
 ## About
 
-This repo hosts my [NeoVim](https://neovim.io/) configuration for Linux, macOS, and Windows. `init.lua` is the config entry point.
+This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop environment.
 
-I use `vim.pack` to manage plugins.
+![Preview image](.github/assets/Img20251228160329175.png)
+
+| ![Preview image](.github/assets/Img20251228160216984.png) | ![Preview image](.github/assets/Img20251228160529133.png) |
+|---|---|
 
 ## Features
 
@@ -12,7 +15,13 @@ I use `vim.pack` to manage plugins.
 - **Simple.** Run out of the box.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
-- **Powerful.** Full functionality to code.
+- **Powerful.** Almost full functionality to code.
+
+## Info
+
+- Plugin manager: `vim.pack`
+- Language server protocol: `nvim-lspconfig`
+- Leader key: `Space`
 
 ## Installation
 
@@ -28,21 +37,20 @@ nvim
 _For \*nix:_
 
 ```bash
-git clone https://github.com/cworld1/nvim-config.git ~/.config/nvim
+git clone https://github.com/cworld1/nvim-config.git $XDG_CONFIG_HOME/nvim
 nvim
 ```
 
 Then please having fun!
 
-## Mappings
+## Project Structure
 
-Pressing <kbd>Space</kbd> in normal mode will show you some parts of the keybindings.
-
-And many more. See [`Keymaps`](lua/config/keymaps.lua) for more.
-
-## Plugin List
-
-Goto [`lua/plugins/`](lua/plugins/) for details.
+- `lua/config`: basic settings
+- `lua/custom`: custom tools & functions
+- `lua/libs`: shared libraries
+- `lua/plugins`: plugin configurations
+- `snippets/`: code snippets
+- `init.lua`: entry point
 
 ## Contributions
 
