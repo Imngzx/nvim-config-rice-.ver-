@@ -1,6 +1,7 @@
 -- [Appearance]
 vim.opt.signcolumn = 'yes' -- always show sign column
 vim.opt.termguicolors = true -- enable 24-bit RGB colors
+vim.opt.winborder = 'single' -- add a border of ui
 -- vim.opt.showmode = false -- Hide mode status
 -- Line edit
 vim.opt.cursorline = true -- highlight current line
@@ -28,6 +29,8 @@ vim.opt.mouse = 'a' -- enable mouse in all modes
 vim.opt.laststatus = 3 -- global satusline (once you add one)
 vim.opt.colorcolumn = '80' -- column ruler
 vim.opt.confirm = true -- confirm before quitting unsaved changes
+vim.opt.signcolumn = 'yes' -- leave the left lsp or git column
+vim.opt.swapfile = false -- disable swapfile function
 -- Case
 vim.opt.ignorecase = true -- case-insensitive by default
 vim.opt.incsearch = true -- show search results while typing
