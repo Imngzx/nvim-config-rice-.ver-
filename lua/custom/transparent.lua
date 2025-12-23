@@ -7,7 +7,6 @@ local ORIGINAL_HL_CACHE = {}
 
 -- Config Module
 local config = {
-  -- stylua: ignore start
   groups = {
     'Normal', 'NormalNC', 'SignColumn', 'EndOfBuffer',
     'LineNr', 'CursorLineNr', 'NonText',
@@ -23,7 +22,6 @@ local config = {
     -- BufferLine
     'Tabline', 'WildMenu', 'BufferLineFill',
   },
-  -- stylua: ignore end
 
   exclude_groups = {},
   on_clear = function() end,
@@ -137,9 +135,12 @@ function M.toggle(opt)
 end
 
 -- [Commands & Keymaps]
-vim.api.nvim_create_user_command('TransparentEnable', M.enable, { desc = 'Enable background transparency' })
-vim.api.nvim_create_user_command('TransparentDisable', M.disable, { desc = 'Disable background transparency' })
-vim.api.nvim_create_user_command('TransparentToggle', M.toggle, { desc = 'Toggle background transparency' })
+vim.api.nvim_create_user_command('TransparentEnable', M.enable,
+  { desc = 'Enable background transparency' })
+vim.api.nvim_create_user_command('TransparentDisable', M.disable,
+  { desc = 'Disable background transparency' })
+vim.api.nvim_create_user_command('TransparentToggle', M.toggle,
+  { desc = 'Toggle background transparency' })
 vim.keymap.set('n', '<leader>ut', M.toggle, { desc = 'Toggle transparent background' })
 
 return M

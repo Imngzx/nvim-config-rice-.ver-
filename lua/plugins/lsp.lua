@@ -8,7 +8,7 @@ require('mason').setup({
     -- LSP
     'vtsls',
     -- Formatter
-    'stylua',
+    -- 'stylua',
     'prettier',
     'shfmt',
   },
@@ -45,7 +45,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 require('conform').setup({
   formatters_by_ft = {
-    lua = { 'stylua' },
+    -- lua = { 'stylua' },
   },
   format_on_save = {
     -- These options will be passed to conform.format()
@@ -97,9 +97,7 @@ require('blink.cmp').setup({
   keymap = { preset = 'enter' },
   appearance = { nerd_font_variant = 'mono' },
   -- completion = { documentation = { auto_show = false } },
-  sources = {
-    default = { 'lsp', 'path', 'snippets', 'buffer' },
-  },
+  sources = { default = { 'lsp', 'path', 'snippets', 'buffer' }, },
   -- build = 'cargo build --release'
   -- fuzzy = { implementation = "prefer_rust_with_warning" },
   fuzzy = { implementation = 'lua' },

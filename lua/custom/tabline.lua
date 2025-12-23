@@ -1,6 +1,6 @@
 -- Simple Tabline with icons, LSP diagnostics, and close button
 -- https://github.com/akinsho/bufferline.nvim/blob/main/doc/bufferline.txt
-local icons = require("libs.icons")
+local icons = require('libs.icons')
 local M = {}
 
 -- Default config
@@ -33,9 +33,7 @@ M.setup = function(opts)
   if M.config.hide_single_tab then
     vim.api.nvim_create_autocmd({ 'BufAdd', 'BufDelete', 'BufWipeout' }, {
       group = group,
-      callback = function()
-        M.update_showtabline()
-      end,
+      callback = function() M.update_showtabline() end,
     })
   end
 
@@ -46,6 +44,7 @@ M.setup = function(opts)
         execute 'buffer' a:buf_id
       elseif a:button ==# 'r'
         execute 'bdelete' a:buf_id
+      endif
     endfunction
 
     function! SimpleTablineClose(buf_id, clicks, button, mod)
@@ -106,9 +105,7 @@ end
 
 -- Get highlight group based on buffer state and diagnostics
 M.get_highlight = function(buf_id, is_current)
-  if not is_current then
-    return 'TablineHidden'
-  end
+  if not is_current then return 'TablineHidden' end
 
   local diag = M.get_diagnostics(buf_id)
   if diag.error > 0 then return 'TablineError' end
@@ -128,15 +125,9 @@ M.format_tab = function(buf_id, is_current)
   -- Get diagnostics
   local diag_str = ''
   local diag = M.get_diagnostics(buf_id)
-  if diag.error > 0 then
-    diag_str = diag_str .. icons.lsp.error .. diag.error
-  end
-  if diag.warn > 0 then
-    diag_str = diag_str .. icons.lsp.warn .. diag.warn
-  end
-  if diag_str ~= '' then
-    diag_str = ' ' .. diag_str
-  end
+  if diag.error > 0 then diag_str = diag_str .. icons.lsp.error .. diag.error end
+  if diag.warn > 0 then diag_str = diag_str .. icons.lsp.warn .. diag.warn end
+  if diag_str ~= '' then diag_str = ' ' .. diag_str end
 
   -- Make tab clickable
   local switch_func = '%' .. buf_id .. '@SimpleTablineSwitch@'
@@ -157,9 +148,7 @@ M.render = function()
   local current_buf = vim.api.nvim_get_current_buf()
 
   for _, buf_id in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.bo[buf_id].buflisted then
-      table.insert(tabs, M.format_tab(buf_id, buf_id == current_buf))
-    end
+    if vim.bo[buf_id].buflisted then table.insert(tabs, M.format_tab(buf_id, buf_id == current_buf)) end
   end
 
   return table.concat(tabs, '|') .. '%#TablineFill#'
