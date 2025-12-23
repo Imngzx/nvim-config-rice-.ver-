@@ -72,9 +72,9 @@ Snacks.setup({
         last     = icons.basic.indent,
       },
       git = {
-        enabled   = true,                   -- show git icons
+        enabled   = true,                    -- show git icons
         commit    = icons.git.commit .. ' ', -- used by git log
-        staged    = icons.git.staged,       -- staged changes; always overrides the type icons
+        staged    = icons.git.staged,        -- staged changes; always overrides the type icons
         added     = icons.git.added,
         deleted   = icons.git.deleted,
         ignored   = icons.git.ignored,
@@ -115,14 +115,13 @@ Snacks.setup({
             },
           }
         end,
-        -- Show patch
+        -- Preview patch
         on_show = function(picker)
           local show = true
           local gap = 1
           local clamp_width = function(value)
-            return math.max(20, math.min(50, value))
+            return math.max(20, math.min(42, value))
           end
-          --
           local position = picker.resolved_layout.layout.position
           local rel = picker.layout.root
           local update = function(win)
@@ -238,7 +237,7 @@ local key = {
   { '<leader>fb',      function() Snacks.picker.lines() end,                desc = 'Buffer lines' },
   { '<leader>fB',      function() Snacks.picker.grep_buffers() end,         desc = 'Grep open buffers' },
   { '<leader>fw',      function() Snacks.picker.grep_word() end,            desc = 'Visual selection or word', mode = { 'n', 'x' } },
-  -- git
+  -- Git
   { '<leader>gB',      function() Snacks.gitbrowse() end,                   desc = 'Git browse',               mode = { 'n', 'v' } },
   { '<leader>gg',      function() Snacks.lazygit() end,                     desc = 'Lazygit' },
   { '<leader>gb',      function() Snacks.picker.git_branches() end,         desc = 'Git branches' },
@@ -246,7 +245,7 @@ local key = {
   { '<leader>gs',      function() Snacks.picker.git_status() end,           desc = 'Git status' },
   { '<leader>gS',      function() Snacks.picker.git_stash() end,            desc = 'Git stash' },
   { '<leader>gd',      function() Snacks.picker.git_diff() end,             desc = 'Git diff (hunks)' },
-  -- search
+  -- Search
   { '<leader>sc',      function() Snacks.picker.command_history() end,      desc = 'Command history' },
   { '<leader>s/',      function() Snacks.picker.search_history() end,       desc = 'Search history' },
   { '<leader>sa',      function() Snacks.picker.autocmds() end,             desc = 'Autocmds' },

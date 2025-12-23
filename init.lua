@@ -10,8 +10,9 @@ require('config.autocommands')
 require('plugins.ui')
 require('plugins.lsp')
 require('plugins.tool')
--- require('plugins.im-select')
 local Snacks = require('plugins.snacks')
+-- Input method swtich for non-English users
+-- require('plugins.im-select')
 
 -- [Custom]
 -- UI
