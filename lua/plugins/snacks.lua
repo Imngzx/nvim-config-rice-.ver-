@@ -222,10 +222,10 @@ Snacks.setup({
       easing = 'linear',
     },
   },
+  -- https://github.com/folke/snacks.nvim/blob/main/docs/statuscolumn.md
   statuscolumn = {
     enabled = true,
-    left = { 'mark', 'sign', 'git' }, -- priority of signs on the left (high to low)
-    right = { 'fold' },               -- priority of signs on the right (high to low)
+    folds = { open = true, }, -- show open fold icons
   },
   -- https://github.com/folke/snacks.nvim/blob/main/docs/words.md
   words = { enabled = true },
