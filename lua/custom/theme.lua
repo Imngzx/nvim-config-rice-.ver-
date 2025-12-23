@@ -197,6 +197,7 @@ function M.setup()
   -- Builtin other highlight groups
   hi('SpecialKey', { fg = colors.comment }) -- welcome info key text
   hi('ModeMsg', { fg = colors.green })      -- mode note
+  hi('Directory', { fg = colors.fg })       -- netrw dict
 
   -- MiniDiff
   hi('MiniDiffSignAdd', { fg = colors.green })
@@ -204,13 +205,15 @@ function M.setup()
   hi('MiniDiffSignDelete', { fg = colors.red })
 
   -- Snacks
-  hi('SnacksIndentScope', { fg = '#7C7C7C' })
+  hi('SnacksIndentScope', { fg = '#7C7C7C' })     -- Indent line
+  hi('SnacksPickerDirectory', { fg = colors.fg }) -- Dir icon
+  hi('SnacksPickerDir', { fg = colors.comment })  -- Dir path name
+  hi('SnacksPickerPathIgnored', { fg = colors.comment })
+  -- Git
   hi('SnacksPickerGitStatusAdded', { fg = '#81B88B' })
   hi('SnacksPickerGitStatusModified', { fg = '#E2C08D' })
   hi('SnacksPickerGitStatusDeleted', { fg = '#D27A6B' })
   hi('SnacksPickerGitStatusUntracked', { fg = colors.comment })
-  hi('SnacksPickerDirectory', { fg = colors.fg }) -- Dir icon
-  hi('SnacksPickerDir', { fg = colors.comment })  -- Dir path name
 
   -- MiniIcon
   hi('MiniIconsAzure', { fg = '#D2DADE' })
