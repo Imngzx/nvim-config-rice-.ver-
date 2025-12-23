@@ -19,10 +19,9 @@ require('custom.transparent').setup({ auto_enable = true })
 
 local icons = require('libs.icons')
 require('custom.statusline').setup({
-  ft_icon = function(ft) return Snacks.util.icon(ft, 'filetype') end,
-  icons = { branch = icons.git.branch },
   git_cache_setup = { get_git_root = Snacks.git.get_root },
-  hide_filename_by_ft = { snacks_picker_list = true }
+  hide_filename_by_ft = { snacks_picker_list = true },
+  icons = { branch = icons.git.branch }
 })
 
 require('custom.tabline').setup({

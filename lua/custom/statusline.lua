@@ -2,8 +2,6 @@ local git_cache = require('libs.git_branch_cache')
 
 local M = {}
 M.config = {
-  -- Required: function(ft) -> icon
-  ft_icon = nil,
   filename_width = nil,
   icons = { branch = '' },
   -- required: user must provide git resolver when calling setup via git_cache_setup
@@ -17,14 +15,12 @@ local function pad(s, w)
   return #s > w and s:sub(1, w) or s .. string.rep(' ', w - #s)
 end
 
-local function ft()
+local function filetype()
   return vim.bo.filetype ~= '' and vim.bo.filetype or 'plaintext'
 end
 
--- [Left]
--- Filename
 local function filename(max_w)
-  if M.config.hide_filename_by_ft[ft()] then return '' end
+  if M.config.hide_filename_by_ft[filetype()] then return '' end
   local name = vim.fn.expand('%')
   if name == '' then return '[No Name]' end
   name = name:gsub('\\', '/')
@@ -34,11 +30,6 @@ local function filename(max_w)
   return name
 end
 
--- [Right]
-local function filetype()
-  local ft_text = ft()
-  return (M.config.ft_icon(ft_text) or '') .. ' ' .. ft_text
-end
 local function screen_percent()
   local cur, tot = vim.fn.line('.'), vim.fn.line('$')
   if cur == 1 then return pad('Top', 3) end
@@ -62,12 +53,12 @@ _G.my_statusline.gitbranch = function()
   local icon = (M.config.icons and M.config.icons.branch) or 'BR'
   return icon .. ' ' .. br .. ' | '
 end
-_G.my_statusline.filetype = function() return filetype() end
 _G.my_statusline.filename = function()
   local fn = filename(M.config.filename_width)
   if fn and fn ~= '' then return fn .. ' ' end
   return ''
 end
+_G.my_statusline.filetype = filetype
 _G.my_statusline.screen = screen_percent
 _G.my_statusline.cursor = cursor_position
 
@@ -79,10 +70,6 @@ local function apply()
 end
 M.setup = function(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
-  -- validate ft_icon
-  if type(M.config.ft_icon) ~= 'function' then
-    error('my_statusline.setup requires ft_icon = function(ft) -> icon')
-  end
   -- initialize git cache if user provided resolver via git_cache_setup or directly via M.config
   local git_opts = M.config.git_cache_setup or {}
   if git_opts.get_git_root == nil and type(M.config.get_git_root) == 'function' then
