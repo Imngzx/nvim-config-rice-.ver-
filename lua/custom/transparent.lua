@@ -18,9 +18,12 @@ local config = {
 
   extra_groups = {
     -- NeoTree
-    'NeoTreeNormal', 'NeoTreeNormalNC',
+    -- 'NeoTreeNormal', 'NeoTreeNormalNC',
     -- BufferLine
-    'Tabline', 'WildMenu', 'BufferLineFill',
+    -- 'Tabline', 'WildMenu', 'BufferLineFill',
+    -- Snacks
+    'SnacksPickerInput', 'SnacksPickerInputBorder',
+    'SnacksPickerList', 'SnacksPickerListBorder',
   },
 
   exclude_groups = {},
