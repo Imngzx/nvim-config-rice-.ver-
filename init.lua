@@ -4,7 +4,8 @@ require('config.keymaps')
 require('config.autocommands')
 
 -- [Plugins]
--- require('custom.theme').setup() -- theme must be set before plugins
+require('custom.theme').setup() -- theme must be set before plugins
+-- vim.cmd.colorscheme('github-dark-custom')
 require('plugins.ui')
 require('plugins.lsp')
 require('plugins.tool')
@@ -18,4 +19,3 @@ require('custom.tabline').setup({ hide_single_tab = true })
 -- Edit
 -- require('custom.pairs').setup()
 require('custom.surround').setup()
--- Tool
