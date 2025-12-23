@@ -1,15 +1,7 @@
-tt.*
-.tests
-doc/tags
-debug
-.repro
-foo.*
-*.log
-data
-
 # VSCode
 .vscode/
 *.code-workspace
 
 # Custom
 /old/
+/test*
