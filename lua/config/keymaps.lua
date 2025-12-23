@@ -48,12 +48,12 @@ vim.keymap.set('n', '<S-l>', '<cmd>bnext<cr>', { desc = 'Next buffer' })
 --   end
 --   vim.cmd('bdelete ' .. cur)
 -- end, { desc = 'Delete buffer' })
-vim.keymap.set('n', '<leader>bo', function()
-  local current = vim.api.nvim_get_current_buf()
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_loaded(buf) and buf ~= current then vim.cmd('bdelete ' .. buf) end
-  end
-end, { desc = 'Delete Other Buffers' })
+-- vim.keymap.set('n', '<leader>bo', function()
+--   local current = vim.api.nvim_get_current_buf()
+--   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+--     if vim.api.nvim_buf_is_loaded(buf) and buf ~= current then vim.cmd('bdelete ' .. buf) end
+--   end
+-- end, { desc = 'Delete Other Buffers' })
 vim.keymap.set('n', '<leader>bn', '<cmd>enew<cr>', { desc = 'New file' }) -- new file
 
 -- [Window]
