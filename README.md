@@ -12,7 +12,7 @@ This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop enviro
 ## Features
 
 - **Fast.** Less than **30ms** to start (Depends on SSD and CPU).
-- **Simple.** Run out of the box. Only 10 plugins.
+- **Simple.** Run out of the box with only 11 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Almost full functionality to code.

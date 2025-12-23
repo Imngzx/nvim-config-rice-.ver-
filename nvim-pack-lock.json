@@ -9,6 +9,10 @@
       "rev": "5420c4b5ea0aeb99c09cfbd4fd0b70d257b44f25",
       "src": "https://github.com/stevearc/conform.nvim"
     },
+    "im-select.nvim": {
+      "rev": "113a6905a1c95d2990269f96abcbad9718209557",
+      "src": "https://github.com/keaising/im-select.nvim"
+    },
     "mason.nvim": {
       "rev": "57e5a8addb8c71fb063ee4acda466c7cf6ad2800",
       "src": "https://github.com/mason-org/mason.nvim"

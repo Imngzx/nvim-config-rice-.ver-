@@ -11,6 +11,7 @@ require('plugins.ui')
 require('plugins.lsp')
 require('plugins.tool')
 require('plugins.snacks')
+-- require('plugins.im-select')
 
 -- [Custom]
 -- UI
