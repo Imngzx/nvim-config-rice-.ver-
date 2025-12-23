@@ -32,3 +32,6 @@ require('custom.tabline').setup({
 -- Edit
 require('custom.pairs').setup()
 require('custom.surround').setup()
+
+-- Trigger VeryLazy event after all are loaded
+require('libs.lazy').trigger_verylazy()

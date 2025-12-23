@@ -1,6 +1,7 @@
 ---@module 'snacks'
 
-local icons = require('libs.icons')
+local icons          = require('libs.icons')
+local lazy           = require('libs.lazy')
 
 local common_exclude = { '.git', '~', '.idea', '.DS_Store' }
 
@@ -334,9 +335,6 @@ local set_keys = function(keys)
   end
 end
 
--- apply mappings
-set_keys(key)
-
 local init_snacks = function()
   vim.api.nvim_create_autocmd('User', {
     pattern = 'VeryLazy',
@@ -376,6 +374,12 @@ local init_snacks = function()
   })
 end
 
-init_snacks()
+
+lazy.on_event({ 'User', pattern = 'VeryLazy' }, {},
+  function()
+    set_keys(key)
+    init_snacks()
+  end
+)
 
 return Snacks

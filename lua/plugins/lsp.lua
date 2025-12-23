@@ -1,3 +1,4 @@
+local lazy = require('libs.lazy')
 -- [Config]
 local H = {}
 
@@ -23,6 +24,26 @@ H.conform = {
 }
 
 -- (Specific)
+local vue_language_server_path = vim.fn.stdpath('data') ..
+  '/mason/packages/vue-language-server/node_modules/@vue/language-server'
+local vue_plugin = {
+  name = '@vue/typescript-plugin',
+  location = vue_language_server_path,
+  languages = { 'vue' },
+  configNamespace = 'typescript',
+}
+vim.lsp.config('vtsls', {
+  settings = {
+    vtsls = {
+      tsserver = {
+        globalPlugins = {
+          vue_plugin,
+        },
+      },
+    },
+  },
+  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+})
 vim.g.markdown_fenced_languages = {
   'sh', 'bash=sh',
   'python', 'py=python',
@@ -35,93 +56,114 @@ vim.g.markdown_fenced_languages = {
   'vim',
 }
 
--- [Env]
-vim.pack.add({ 'https://github.com/mason-org/mason.nvim' })
-require('mason').setup({
-  ensure_installed = H.mason,
-  ui = {
-    icons = {
-      package_installed = '✓',
-      package_pending = '➜',
-      package_uninstalled = '✗',
-    },
+-- [Dependencies] Load on run `Mason` command, key, and event
+lazy.load({
+  plugin = 'https://github.com/mason-org/mason.nvim',
+  event = { 'BufReadPost', 'BufNewFile' },
+  cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonLog', 'MasonUpdate' },
+  keys = {
+    { 'n', '<leader>pm', function() vim.cmd('Mason') end, { desc = '[Panel] Mason' } }
   },
-})
-
--- [LSP]
-vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
-vim.lsp.enable(H.lsp)
--- LSP attach
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('LspKepmap', {}),
-  callback = function(ev)
-    -- Use buffer-local keymaps
-    local opts = function(desc) return { buffer = ev.buf, desc = desc } end
-    -- LSP keymaps
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts('LSP hover'))
-    vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, opts('LSP hover'))
-    -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts('Goto definition'))
-    -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts('Goto declaration'))
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts('List references'))
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts('Goto implementation'))
-    vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts('Type definition'))
-    vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, opts('Rename symbol'))
-    vim.keymap.set({ 'n', 'x' }, '<leader>ca', vim.lsp.buf.code_action, opts('Code action'))
-    vim.keymap.set('i', '<c-k>', vim.lsp.buf.signature_help, opts('Signature help'))
-  end,
-})
-vim.keymap.set('n', '<leader>pl', '<cmd>checkhealth vim.lsp<cr>', { desc = 'Lsp info' })
-
--- [Formatter]
-vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
-require('conform').setup({
-  formatters_by_ft = H.conform,
-  format_after_save = {
-    async = true,
-    lsp_format = 'fallback',
-  },
-})
-vim.keymap.set('n', '<leader>cf',
-  function()
-    require('conform').format({
-      async = true,
-      lsp_format = 'fallback'
-    })
-  end,
-  { desc = 'Format file' }
-)
-
--- [Diagnostic]
-vim.pack.add({ 'https://github.com/rachartier/tiny-inline-diagnostic.nvim' })
-require('tiny-inline-diagnostic').setup({
-  preset = 'powerline',
-  signs = { diag = '-' },
-})
-vim.diagnostic.config({ virtual_text = false })
--- Keymap
-local diagnostic_goto = function(next, severity)
-  return function()
-    vim.diagnostic.jump({
-      count = (next and 1 or -1) * vim.v.count1,
-      severity = severity and vim.diagnostic.severity[severity] or nil,
-      float = true,
+  setup = function()
+    require('mason').setup({
+      ensure_installed = H.mason,
+      ui = {
+        icons = {
+          package_installed = '✓',
+          package_pending = '➜',
+          package_uninstalled = '✗',
+        },
+      },
     })
   end
-end
-vim.keymap.set('n', '<leader>cl', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
-vim.keymap.set('n', ']d', diagnostic_goto(true), { desc = 'Next Diagnostic' })
-vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'Prev Diagnostic' })
-vim.keymap.set('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next Error' })
-vim.keymap.set('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'Prev Error' })
-vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning' })
-vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning' })
-
--- [Completion]
-vim.pack.add({ { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') } })
-require('blink.cmp').setup({
-  keymap = { preset = 'enter' },
-  appearance = { nerd_font_variant = 'mono' },
-  completion = { documentation = { auto_show = true } },
-  sources = { default = { 'lsp', 'path', 'snippets', 'buffer' }, },
-  fuzzy = { implementation = 'prefer_rust_with_warning' },
 })
+
+-- [LSP] Load when opening files or delay
+
+lazy.on_event({ 'User', pattern = 'VeryLazy' },
+  'https://github.com/neovim/nvim-lspconfig',
+  function()
+    vim.lsp.enable(H.lsp)
+    -- LSP attach
+    vim.api.nvim_create_autocmd('LspAttach', {
+      group = vim.api.nvim_create_augroup('LspKepmap', {}),
+      callback = function(ev)
+        local opts = function(desc) return { buffer = ev.buf, desc = desc } end
+        -- LSP keymaps
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts('LSP hover'))
+        vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, opts('LSP hover'))
+        -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts('Goto definition'))
+        -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts('Goto declaration'))
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts('List references'))
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts('Goto implementation'))
+        vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts('Type definition'))
+        vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, opts('Rename symbol'))
+        vim.keymap.set({ 'n', 'x' }, '<leader>ca', vim.lsp.buf.code_action, opts('Code action'))
+        vim.keymap.set('i', '<c-k>', vim.lsp.buf.signature_help, opts('Signature help'))
+      end,
+    })
+    vim.keymap.set('n', '<leader>pl', '<cmd>checkhealth vim.lsp<cr>', { desc = '[Panel] Lsp info' })
+  end
+)
+
+-- [Formatter] Multi-trigger: load on save or keymap
+vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
+lazy.load({
+  plugin = 'https://github.com/stevearc/conform.nvim',
+  event = 'BufWritePre',
+  keys = {
+    { 'n', '<leader>cf', function()
+      require('conform').format({ async = true, lsp_format = 'fallback' })
+    end, { desc = 'Format file' } }
+  },
+  setup = function()
+    require('conform').setup({
+      formatters_by_ft = H.conform,
+      format_after_save = {
+        async = true,
+        lsp_format = 'fallback',
+      },
+    })
+  end
+})
+
+-- [Diagnostic] Load after LSP attaches
+lazy.on_event('LspAttach', 'https://github.com/rachartier/tiny-inline-diagnostic.nvim', function()
+  require('tiny-inline-diagnostic').setup({
+    preset = 'powerline',
+    signs = { diag = '-' },
+  })
+  vim.diagnostic.config({ virtual_text = false })
+
+  -- Keymap
+  local diagnostic_goto = function(next, severity)
+    return function()
+      vim.diagnostic.jump({
+        count = (next and 1 or -1) * vim.v.count1,
+        severity = severity and vim.diagnostic.severity[severity] or nil,
+        float = true,
+      })
+    end
+  end
+  vim.keymap.set('n', '<leader>cl', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
+  vim.keymap.set('n', ']d', diagnostic_goto(true), { desc = 'Next Diagnostic' })
+  vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'Prev Diagnostic' })
+  vim.keymap.set('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next Error' })
+  vim.keymap.set('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'Prev Error' })
+  vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning' })
+  vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning' })
+end)
+
+-- [Completion] Load on InsertEnter
+lazy.on_event('InsertEnter',
+  { { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') } },
+  function()
+    require('blink.cmp').setup({
+      keymap = { preset = 'enter' },
+      appearance = { nerd_font_variant = 'mono' },
+      completion = { documentation = { auto_show = true } },
+      sources = { default = { 'lsp', 'path', 'snippets', 'buffer' }, },
+      fuzzy = { implementation = 'prefer_rust_with_warning' },
+    })
+  end
+)

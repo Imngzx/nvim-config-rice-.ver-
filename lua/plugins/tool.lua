@@ -1,47 +1,58 @@
--- [Key note]
-vim.pack.add({ 'https://github.com/folke/which-key.nvim' })
-require('which-key').add({
-  { '<leader>b', group = 'Buffer' },
-  { '<leader>c', group = 'Code' },
-  { '<leader>f', group = 'File' },
-  { '<leader>g', group = 'Git' },
-  { '<leader>q', group = 'Quit' },
-  { '<leader>s', group = 'Session' },
-  { '<leader>u', group = 'UI' },
-  { '<leader>f', group = 'Find' },
-  { '<leader>p', group = 'Panel' },
-})
-vim.keymap.set('n', '<leader>?',
-  function() require('which-key').show({ global = false }) end,
-  { desc = 'which-key local keymap' }
+local lazy = require('libs.lazy')
+
+-- [Key note] Load on VeryLazy
+lazy.on_event({ 'User', pattern = 'VeryLazy' },
+  'https://github.com/folke/which-key.nvim',
+  function()
+    require('which-key').add({
+      { '<leader>b', group = 'Buffer' },
+      { '<leader>c', group = 'Code' },
+      { '<leader>f', group = 'File' },
+      { '<leader>g', group = 'Git' },
+      { '<leader>q', group = 'Quit' },
+      { '<leader>s', group = 'Session' },
+      { '<leader>u', group = 'UI' },
+      { '<leader>p', group = 'Panel' },
+    })
+
+    vim.keymap.set('n', '<leader>?',
+      function() require('which-key').show({ global = false }) end,
+      { desc = 'which-key local keymap' }
+    )
+  end)
+
+-- [Diff] Load on open a file
+lazy.on_event({ 'BufReadPost', 'BufNewFile' },
+  'https://github.com/nvim-mini/mini.diff',
+  function()
+    require('mini.diff').setup({
+      view = {
+        style = 'sign',
+        signs = { add = '│', change = '│', delete = '│' },
+      },
+      mappings = {
+        -- Apply hunks inside a visual/operator region
+        apply = '<leader>gh',
+
+        -- Reset hunks inside a visual/operator region
+        reset = '<leader>gH',
+
+        -- Hunk range textobject to be used inside operator
+        -- Works also in Visual mode if mapping differs from apply and reset
+        textobject = '<leader>gh',
+
+        -- Go to hunk range in corresponding direction
+        goto_first = '[H',
+        goto_prev = '[h',
+        goto_next = ']h',
+        goto_last = ']H',
+      },
+    })
+    vim.keymap.set('n', '<leader>gd', function()
+      require('mini.diff').toggle_overlay()
+    end, { desc = 'Toggle diff' })
+  end
 )
-
--- [Diff]
-vim.pack.add({ 'https://github.com/nvim-mini/mini.diff' })
-require('mini.diff').setup({
-  view = {
-    style = 'sign',
-    signs = { add = '│', change = '│', delete = '│' },
-  },
-  mappings = {
-    -- Apply hunks inside a visual/operator region
-    apply = '<leader>gh',
-
-    -- Reset hunks inside a visual/operator region
-    reset = '<leader>gH',
-
-    -- Hunk range textobject to be used inside operator
-    -- Works also in Visual mode if mapping differs from apply and reset
-    textobject = '<leader>gh',
-
-    -- Go to hunk range in corresponding direction
-    goto_first = '[H',
-    goto_prev = '[h',
-    goto_next = ']h',
-    goto_last = ']H',
-  },
-})
-vim.keymap.set('n', '<leader>gd', '<cmd>lua MiniDiff.toggle_overlay()<cr>', { desc = 'Toggle diff' })
 
 -- [Clipboard]
 -- vim.pack.add({ "https://github.com/gbprod/yanky.nvim" })
