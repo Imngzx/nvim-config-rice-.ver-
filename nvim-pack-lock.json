@@ -1,16 +1,21 @@
 {
   "plugins": {
     "blink.cmp": {
-      "rev": "f13226770b4947eb7e66befbeb53c3db39f13e25",
-      "src": "https://github.com/Saghen/blink.cmp"
+      "rev": "b19413d214068f316c78978b08264ed1c41830ec",
+      "src": "https://github.com/Saghen/blink.cmp",
+      "version": "1.0.0 - 2.0.0"
     },
     "bufferline.nvim": {
       "rev": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3",
       "src": "https://github.com/akinsho/bufferline.nvim"
     },
     "conform.nvim": {
-      "rev": "4993e07fac6679d0a5005aa7499e0bad2bd39f19",
+      "rev": "5420c4b5ea0aeb99c09cfbd4fd0b70d257b44f25",
       "src": "https://github.com/stevearc/conform.nvim"
+    },
+    "github-nvim-theme": {
+      "rev": "c106c9472154d6b2c74b74565616b877ae8ed31d",
+      "src": "https://github.com/projekt0n/github-nvim-theme"
     },
     "mason.nvim": {
       "rev": "57e5a8addb8c71fb063ee4acda466c7cf6ad2800",
@@ -24,20 +29,28 @@
       "rev": "22c64f010eef047ed270e29e7cc266cd4740787e",
       "src": "https://github.com/nvim-mini/mini.files"
     },
+    "mini.icons": {
+      "rev": "ff2e4f1d29f659cc2bad0f9256f2f6195c6b2428",
+      "src": "https://github.com/nvim-mini/mini.icons"
+    },
     "mini.pick": {
       "rev": "0c56dc3ef9b15e9659ce09331fdc82449349701b",
       "src": "https://github.com/nvim-mini/mini.pick"
     },
     "nvim-lspconfig": {
-      "rev": "07f4e93de92e8d4ea7ab99602e3a8c9ac0fb778a",
+      "rev": "d696e36d5792daf828f8c8e8d4b9aa90c1a10c2a",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "smear-cursor.nvim": {
       "rev": "c85bdbb25db096fbcf616bc4e1357bd61fe2c199",
       "src": "https://github.com/sphamba/smear-cursor.nvim"
     },
+    "snacks.nvim": {
+      "rev": "fe7cfe9800a182274d0f868a74b7263b8c0c020b",
+      "src": "https://github.com/folke/snacks.nvim"
+    },
     "tiny-inline-diagnostic.nvim": {
-      "rev": "3255aaf9089c06db1732b25762b2eaa889034603",
+      "rev": "d9d12d4bfb9a4c5b8b8bdf7f612551df6972946c",
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
     "which-key.nvim": {

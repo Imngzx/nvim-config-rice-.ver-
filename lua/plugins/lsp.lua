@@ -59,8 +59,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- LSP keymaps
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts('LSP hover'))
     vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, opts('LSP hover'))
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts('Goto definition'))
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts('Goto declaration'))
+    -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts('Goto definition'))
+    -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts('Goto declaration'))
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts('List references'))
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts('Goto implementation'))
     vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts('Type definition'))
@@ -106,7 +106,7 @@ local diagnostic_goto = function(next, severity)
     })
   end
 end
-vim.keymap.set('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
+vim.keymap.set('n', '<leader>cl', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
 vim.keymap.set('n', ']d', diagnostic_goto(true), { desc = 'Next Diagnostic' })
 vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'Prev Diagnostic' })
 vim.keymap.set('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next Error' })
