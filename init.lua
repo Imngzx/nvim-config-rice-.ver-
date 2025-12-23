@@ -1,22 +1,22 @@
 -- [Config]
-require("config.options")
-require("config.keymaps")
-require("config.autocommands")
+require('config.options')
+require('config.keymaps')
+require('config.autocommands')
 
 -- [Plugins]
-require("custom.theme").setup() -- theme must be set before plugins
-require("plugins.ui")
-require("plugins.lsp")
-require("plugins.tool")
+require('custom.theme').setup() -- theme must be set before plugins
+require('plugins.ui')
+require('plugins.lsp')
+require('plugins.tool')
 
 -- [Custom]
 -- UI
-require("custom.transparent").setup({ auto_enable = true })
-require("custom.statusline")
-require("custom.tabline").setup({ hide_single_tab = true })
+require('custom.transparent').setup({ auto_enable = true })
+require('custom.statusline')
+require('custom.tabline').setup({ hide_single_tab = true })
 -- Edit
-require("custom.pairs").setup()
+require('custom.pairs').setup()
 require('custom.surround').setup()
-require("custom.indent").setup()
+require('custom.indent').setup()
 -- Tool
-require("custom.git")
+require('custom.git')

@@ -20,5 +20,5 @@ local function float_window(execution)
   vim.keymap.set('n', 'q', ':bd!<CR>', { buffer = buf, silent = true })
 end
 
-vim.keymap.set('n', '<leader>gg', function() float_window('lazygit') end, { desc = "Open lazygit", noremap = true })
-vim.keymap.set('n', '<leader>gj', function() float_window('jjui') end, { desc = "Open jjui", noremap = true })
+vim.keymap.set('n', '<leader>gg', function() float_window('lazygit') end, { desc = 'Open lazygit', noremap = true })
+vim.keymap.set('n', '<leader>gj', function() float_window('jjui') end, { desc = 'Open jjui', noremap = true })

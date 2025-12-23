@@ -1,34 +1,34 @@
-local icons = require("libs.icons")
+local icons = require('libs.icons')
 
 -- [Key note]
-vim.pack.add({ "https://github.com/folke/which-key.nvim" })
-require("which-key").add({
-  { "<leader>b", group = "Buffer" },
-  { "<leader>c", group = "Code" },
-  { "<leader>f", group = "File" },
-  { "<leader>g", group = "Git" },
-  { "<leader>q", group = "Quit" },
-  { "<leader>s", group = "Session" },
-  { "<leader>u", group = "UI" },
+vim.pack.add({ 'https://github.com/folke/which-key.nvim' })
+require('which-key').add({
+  { '<leader>b', group = 'Buffer' },
+  { '<leader>c', group = 'Code' },
+  { '<leader>f', group = 'File' },
+  { '<leader>g', group = 'Git' },
+  { '<leader>q', group = 'Quit' },
+  { '<leader>s', group = 'Session' },
+  { '<leader>u', group = 'UI' },
 })
-vim.keymap.set("n", "<leader>?",
-  function()
-    require("which-key").show({ global = false })
-  end,
-  { desc = "which-key local keymap" }
+vim.keymap.set(
+  'n',
+  '<leader>?',
+  function() require('which-key').show({ global = false }) end,
+  { desc = 'which-key local keymap' }
 )
 
 -- [File explorer]
-vim.pack.add({ "https://github.com/nvim-mini/mini.files" })
+vim.pack.add({ 'https://github.com/nvim-mini/mini.files' })
 local MiniFiles = require('mini.files')
 -- Hide dotfiles
 local hide = true
 ---@diagnostic disable-next-line: unused-local
 local filter_show = function(fs_entry) return true end
 local filter_hide = function(fs_entry)
-  local name = fs_entry.name or ""
-  if vim.startswith(name, ".") then return false end
-  if name:lower() == "node_modules" then return false end
+  local name = fs_entry.name or ''
+  if vim.startswith(name, '.') then return false end
+  if name:lower() == 'node_modules' then return false end
   return true
 end
 local get_filter = function() return hide and filter_hide or filter_show end
@@ -45,7 +45,7 @@ MiniFiles.setup({
         return icons.basic.directory .. ' ', 'MiniFilesDirectory'
       end
       return (icons.get_icon_by_name(fs_entry.name) or icons.basic.file) .. ' ', 'MiniFilesFile'
-    end
+    end,
   },
   windows = {
     -- Whether to show preview of file/directory under cursor
@@ -56,9 +56,9 @@ MiniFiles.setup({
     width_preview = 40,
   },
 })
-vim.keymap.set("n", "<leader>e", function(...)
+vim.keymap.set('n', '<leader>e', function(...)
   if not MiniFiles.close() then MiniFiles.open(...) end
-end, { desc = "Toggle file explorer" })
+end, { desc = 'Toggle file explorer' })
 local toggle_dotfiles = function()
   hide = not hide
   MiniFiles.refresh({ content = { filter = get_filter() } })

@@ -1,17 +1,17 @@
 -- [Autocmd] Highlight on yank
-vim.api.nvim_create_autocmd("TextYankPost", {
-  group = vim.api.nvim_create_augroup("HighlightOnYank", {}),
+vim.api.nvim_create_autocmd('TextYankPost', {
+  group = vim.api.nvim_create_augroup('HighlightOnYank', {}),
   callback = function() (vim.hl or vim.highlight).on_yank() end,
-  desc = 'Highlight yanked text'
+  desc = 'Highlight yanked text',
 })
 
 -- [Autocmd] Change EOL format to unix on save
-vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup("WriteWithLF", {}),
-  pattern = "*",
+vim.api.nvim_create_autocmd('BufWritePre', {
+  group = vim.api.nvim_create_augroup('WriteWithLF', {}),
+  pattern = '*',
   callback = function()
-    if vim.bo.readonly or vim.bo.buftype ~= "" then return end
-    vim.bo.fileformat = "unix"
+    if vim.bo.readonly or vim.bo.buftype ~= '' then return end
+    vim.bo.fileformat = 'unix'
     vim.cmd([[ %s/\r\+$//e ]])
   end,
 })
@@ -71,6 +71,5 @@ vim.api.nvim_create_autocmd('BufEnter', {
     if root == nil then return end
     vim.fn.chdir(root)
   end),
-  desc =
-  'Find root and change current directory'
+  desc = 'Find root and change current directory',
 })

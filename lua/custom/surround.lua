@@ -31,15 +31,11 @@ function M.add_visual()
   vim.api.nvim_echo({ { '' } }, false, {})
 
   -- Handle <Esc> or <C-c>
-  if char == '\27' or char == '' then
-    return
-  end
+  if char == '\27' or char == '' then return end
 
   -- Get surround pair
   local surround = M.config.surrounds[char]
-  if not surround then
-    surround = { char, char }
-  end
+  if not surround then surround = { char, char } end
 
   local left, right = surround[1], surround[2]
 
@@ -53,15 +49,11 @@ function M.add_visual()
   local end_col = end_pos[3]
 
   -- Validate positions
-  if start_line == 0 or end_line == 0 then
-    return
-  end
+  if start_line == 0 or end_line == 0 then return end
 
   -- Get lines
   local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
-  if #lines == 0 then
-    return
-  end
+  if #lines == 0 then return end
 
   if start_line == end_line then
     -- Single line case
@@ -116,9 +108,7 @@ function M.add_normal()
 
     -- Get surround pair
     local surround = M.config.surrounds[char]
-    if not surround then
-      surround = { char, char }
-    end
+    if not surround then surround = { char, char } end
 
     local left, right = surround[1], surround[2]
 
@@ -179,9 +169,7 @@ local function find_surround(char)
   -- Get all possible surround pairs for this char
   local pairs_to_try = {}
 
-  if M.config.surrounds[char] then
-    table.insert(pairs_to_try, M.config.surrounds[char])
-  end
+  if M.config.surrounds[char] then table.insert(pairs_to_try, M.config.surrounds[char]) end
 
   -- For brackets, try both open and close variants
   if char == '(' or char == ')' or char == 'b' then
@@ -194,9 +182,7 @@ local function find_surround(char)
     table.insert(pairs_to_try, { '<', '>' })
   else
     -- Default:  same character on both sides
-    if #pairs_to_try == 0 then
-      table.insert(pairs_to_try, { char, char })
-    end
+    if #pairs_to_try == 0 then table.insert(pairs_to_try, { char, char }) end
   end
 
   local cursor = vim.api.nvim_win_get_cursor(0)
@@ -204,9 +190,7 @@ local function find_surround(char)
   local col = cursor[2] + 1 -- Convert to 1-based
 
   local line = vim.api.nvim_buf_get_lines(0, line_num - 1, line_num, false)[1]
-  if not line then
-    return nil
-  end
+  if not line then return nil end
 
   -- Try each possible pair
   for _, pair in ipairs(pairs_to_try) do
@@ -255,9 +239,7 @@ function M.delete()
   vim.api.nvim_echo({ { '' } }, false, {})
 
   -- Handle <Esc> or <C-c>
-  if char == '\27' or char == '' then
-    return
-  end
+  if char == '\27' or char == '' then return end
 
   -- Find surround
   local pos = find_surround(char)
@@ -298,9 +280,7 @@ function M.replace()
   vim.api.nvim_echo({ { '' } }, false, {})
 
   -- Handle <Esc> or <C-c>
-  if new_char == '\27' or new_char == '' then
-    return
-  end
+  if new_char == '\27' or new_char == '' then return end
 
   -- Find old surround
   local pos = find_surround(old_char)
@@ -311,9 +291,7 @@ function M.replace()
 
   -- Get new surround pair
   local new_surround = M.config.surrounds[new_char]
-  if not new_surround then
-    new_surround = { new_char, new_char }
-  end
+  if not new_surround then new_surround = { new_char, new_char } end
 
   local new_left, new_right = new_surround[1], new_surround[2]
 
@@ -321,14 +299,10 @@ function M.replace()
   local line = vim.api.nvim_buf_get_lines(0, pos.line - 1, pos.line, false)[1]
 
   -- Replace right part first
-  local new_line = line:sub(1, pos.right_start - 1)
-      .. new_right
-      .. line:sub(pos.right_end + 1)
+  local new_line = line:sub(1, pos.right_start - 1) .. new_right .. line:sub(pos.right_end + 1)
 
   -- Then replace left part
-  new_line = new_line:sub(1, pos.left_start - 1)
-      .. new_left
-      .. new_line:sub(pos.left_end + 1)
+  new_line = new_line:sub(1, pos.left_start - 1) .. new_left .. new_line:sub(pos.left_end + 1)
 
   vim.api.nvim_buf_set_lines(0, pos.line - 1, pos.line, false, { new_line })
 
@@ -343,27 +317,21 @@ function M.setup(opts)
   -- Visual mode:  add surround
   vim.keymap.set('x', 'sa', ':<C-u>lua require("custom.surround").add_visual()<CR>', {
     silent = true,
-    desc = 'Add surround'
+    desc = 'Add surround',
   })
 
   -- Normal mode: add surround with motion/textobject (supports saiw, sa2w, etc.)
-  vim.keymap.set('n', 'sa', function()
-    return M.add_normal()
-  end, {
+  vim.keymap.set('n', 'sa', function() return M.add_normal() end, {
     expr = true,
     silent = true,
-    desc = 'Add surround with motion'
+    desc = 'Add surround with motion',
   })
 
   -- Normal mode: delete surround
-  vim.keymap.set('n', 'sd', function()
-    M.delete()
-  end, { desc = 'Delete surround' })
+  vim.keymap.set('n', 'sd', function() M.delete() end, { desc = 'Delete surround' })
 
   -- Normal mode:  replace surround
-  vim.keymap.set('n', 'sr', function()
-    M.replace()
-  end, { desc = 'Replace surround' })
+  vim.keymap.set('n', 'sr', function() M.replace() end, { desc = 'Replace surround' })
 end
 
 return M

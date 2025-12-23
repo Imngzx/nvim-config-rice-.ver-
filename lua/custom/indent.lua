@@ -1,13 +1,14 @@
 -- https://github.com/nvimdev/indentmini.nvim/blob/main/lua/indentmini/init.lua
+
 local M = {}
 local api = vim.api
-local ns = api.nvim_create_namespace("indent_guides")
+local ns = api.nvim_create_namespace('indent_guides')
 local config = {
   indent_width = vim.opt.shiftwidth:get(),
-  highlight = "LineIndent",
-  char = "│",
+  highlight = 'LineIndent',
+  char = '│',
   only_current = false,
-  exclude = { "dashboard", "lazy", "help", "nofile", "terminal", "prompt", "qf" },
+  exclude = { 'dashboard', 'lazy', 'help', 'nofile', 'terminal', 'prompt', 'qf' },
 }
 local context = {
   snapshot = {},
@@ -16,6 +17,7 @@ local context = {
   range_srow = nil,
   range_erow = nil,
 }
+
 -- Tree-sitter get syntax blocks
 local function get_blocks(buf)
   local ok, parser = pcall(vim.treesitter.get_parser, buf)
@@ -38,9 +40,7 @@ local function get_blocks(buf)
   local function walk(n)
     if targets[n:type()] then
       local s, _, e, _ = n:range()
-      if e > s then
-        blocks[#blocks + 1] = { s, e }
-      end
+      if e > s then blocks[#blocks + 1] = { s, e } end
     end
     for i = 0, n:child_count() - 1 do
       walk(n:child(i))
@@ -55,15 +55,13 @@ local function syntax_level(blocks, line)
   local lv = 0
   for i = 1, #blocks do
     local s, e = blocks[i][1], blocks[i][2]
-    if line >= s and line < e then
-      lv = lv + 1
-    end
+    if line >= s and line < e then lv = lv + 1 end
   end
   return lv
 end
 -- Calculate indent level
 local function indent_level(text, width)
-  local s = text:match("^%s*")
+  local s = text:match('^%s*')
   return math.floor(#s / width)
 end
 
@@ -84,10 +82,10 @@ local function unpack_snapshot(packed)
 end
 -- Build line snapshot
 local function make_snapshot(buf, lnum)
-  local text = api.nvim_buf_get_lines(buf, lnum, lnum + 1, false)[1] or ""
-  local is_empty = text:match("^%s*$") ~= nil
+  local text = api.nvim_buf_get_lines(buf, lnum, lnum + 1, false)[1] or ''
+  local is_empty = text:match('^%s*$') ~= nil
   local indent = is_empty and 0 or indent_level(text, config.indent_width)
-  local indent_cols = #text:match("^%s*")
+  local indent_cols = #text:match('^%s*')
   local packed = pack_snapshot(is_empty, indent, indent_cols)
   context.snapshot[lnum] = packed
   return unpack_snapshot(packed)
@@ -95,9 +93,7 @@ end
 -- Find line snapshot
 local function find_in_snapshot(buf, lnum)
   local packed = context.snapshot[lnum]
-  if not packed then
-    return make_snapshot(buf, lnum)
-  end
+  if not packed then return make_snapshot(buf, lnum) end
   return unpack_snapshot(packed)
 end
 -- Find current indent block range
@@ -136,10 +132,10 @@ local function render(buf)
   find_current_range(buf)
 
   for l = 0, lines - 1 do
-    local text = api.nvim_buf_get_lines(buf, l, l + 1, false)[1] or ""
+    local text = api.nvim_buf_get_lines(buf, l, l + 1, false)[1] or ''
     local syn = syntax_level(blocks, l)
     local lvl
-    if text:match("^%s*$") then
+    if text:match('^%s*$') then
       lvl = math.min(prev_lvl, syn)
     else
       lvl = math.min(indent_level(text, config.indent_width), syn)
@@ -148,10 +144,11 @@ local function render(buf)
 
     for i = 1, lvl do
       local hl = (config.only_current and l >= context.range_srow and l <= context.range_erow and i == lvl)
-          and "CursorColumn" or config.highlight
+          and 'CursorColumn'
+        or config.highlight
       api.nvim_buf_set_extmark(buf, ns, l, 0, {
         virt_text = { { config.char, hl } },
-        virt_text_pos = "overlay",
+        virt_text_pos = 'overlay',
         virt_text_win_col = (i - 1) * config.indent_width,
       })
     end
@@ -159,21 +156,20 @@ local function render(buf)
 end
 
 function M.setup(opts)
-  config = vim.tbl_extend("force", config, opts or {})
+  config = vim.tbl_extend('force', config, opts or {})
 
   local hl = vim.api.nvim_get_hl(0, { name = config.highlight })
-  if not hl.fg then
-    vim.api.nvim_set_hl(0, config.highlight, { fg = "#424A51" })
-  end
+  if not hl.fg then vim.api.nvim_set_hl(0, config.highlight, { fg = '#424A51' }) end
 
   vim.api.nvim_create_autocmd({
-    "BufEnter",
-    "TextChanged", "TextChangedI",
-    "CursorMoved",
+    'BufEnter',
+    'TextChanged',
+    'TextChangedI',
+    'CursorMoved',
   }, {
     callback = function(a)
       vim.schedule(function() render(a.buf) end)
-    end
+    end,
   })
 end
 

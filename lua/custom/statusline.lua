@@ -1,4 +1,4 @@
-local icons = require("libs.icons")
+local icons = require('libs.icons')
 
 local function pad(s, w)
   s = tostring(s)
@@ -8,16 +8,14 @@ end
 -- Elements
 local function filename()
   local name = vim.fn.expand('%')
-  if name == '' then
-    return '[No Name]'
-  end
+  if name == '' then return '[No Name]' end
   return name:gsub('\\', '/')
 end
 
 local function cursor_position()
   local cur = vim.api.nvim_win_get_cursor(0)
   local l, c = cur[1], cur[2]
-  return pad(string.format("%d:%d", l, c + 1), 7)
+  return pad(string.format('%d:%d', l, c + 1), 7)
 end
 
 local function screen_percent()
@@ -49,7 +47,6 @@ _G.statusline.filetype = filetype
 local left = ' %{v:lua.statusline.filename()} %m'
 -- local right =
 -- ' %=%{v:lua.statusline.filetype()} | %{v:lua.statusline.fileformat()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
-local right =
-' %=%{v:lua.statusline.filetype()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
+local right = ' %=%{v:lua.statusline.filetype()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
 
 vim.o.statusline = left .. right
