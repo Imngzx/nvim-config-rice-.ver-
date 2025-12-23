@@ -3,28 +3,30 @@ local M = {}
 M.setup = function()
   local colors = {
     -- Basic
-    bg            = "#1b1d1e",
-    fg            = "#ADBAC7",
-    comment       = "#768390",
-    string        = "#96D0FF",
-    func          = "#DCBDFB",
-    keyword       = "#569CD6",
-    ident         = "#F69D50",
-    cursorline    = "#343C42",
-    linenr        = "#778095",
-    visual_bg     = "#264F78",
-    error         = "#ff6b6b",
-    constant      = "#6CB6FF",
-    propname      = "#4EC9B0",
-    bracket       = "#6CB6FF",
+    bg             = "#1b1d1e",
+    fg             = "#ADBAC7",
+    comment        = "#768390",
+    string         = "#96D0FF",
+    func           = "#DCBDFB",
+    keyword        = "#569CD6",
+    ident          = "#F69D50",
+    cursorline     = "#343C42",
+    linenr         = "#778095",
+    visual_bg      = "#264F78",
+    error          = "#ff6b6b",
+    constant       = "#6CB6FF",
+    propname       = "#4EC9B0",
+    bracket        = "#6CB6FF",
 
-    -- StatusLine
-    status_bg     = "#37424B",
+    -- Statusline
+    status_bg      = "#37424B",
+    -- Tabline
+    tabline_sel_fg = "#E0E2EA",
 
     -- LSP
-    lsp_warn_fg   = "#FFB86B",
-    lsp_warn_bg   = "NONE",
-    lsp_warn_line = "#FFB86B",
+    lsp_warn_fg    = "#FFB86B",
+    lsp_warn_bg    = "NONE",
+    lsp_warn_line  = "#FFB86B",
   }
 
   vim.cmd("highlight clear")
@@ -63,9 +65,6 @@ M.setup = function()
   vim.api.nvim_set_hl(0, "PmenuSel", { fg = colors.bg, bg = colors.func })
   vim.api.nvim_set_hl(0, "Search", { fg = colors.bg, bg = colors.fg })
   vim.api.nvim_set_hl(0, "IncSearch", { fg = colors.bg, bg = colors.ident })
-  -- StatusLine / StatusLineNC）
-  vim.api.nvim_set_hl(0, "StatusLine", { fg = colors.fg, bg = colors.status_bg, bold = false })
-  vim.api.nvim_set_hl(0, "StatusLineNC", { fg = colors.fg, bg = colors.status_bg })
   -- LSP
   vim.api.nvim_set_hl(0, "DiagnosticWarn", { fg = colors.lsp_warn_fg, bg = colors.lsp_warn_bg })
   vim.api.nvim_set_hl(0, "DiagnosticSignWarn", { fg = colors.lsp_warn_fg, bg = colors.lsp_warn_bg })
@@ -75,6 +74,12 @@ M.setup = function()
   vim.api.nvim_set_hl(0, "LspDiagnosticsDefaultWarning", { fg = colors.lsp_warn_fg })
   vim.api.nvim_set_hl(0, "LspDiagnosticsDefaultWarningSign", { fg = colors.lsp_warn_fg })
   vim.api.nvim_set_hl(0, "LspDiagnosticsDefaultWarningVirtualText", { fg = colors.lsp_warn_fg })
+
+  -- StatusLine / StatusLineNC）
+  vim.api.nvim_set_hl(0, "StatusLine", { fg = colors.fg, bg = colors.status_bg, bold = false })
+  vim.api.nvim_set_hl(0, "StatusLineNC", { fg = colors.fg, bg = colors.status_bg })
+  -- Tabline
+  vim.api.nvim_set_hl(0, "TabLineSel", { fg = colors.tabline_sel_fg, bold = true })
 end
 
 return M

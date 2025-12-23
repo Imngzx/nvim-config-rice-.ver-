@@ -16,51 +16,6 @@ vim.keymap.set("n", "<leader>?",
   { desc = "Buffer Local Keymaps (which-key)" }
 )
 
--- [Buffer]
-vim.pack.add({ "https://github.com/akinsho/bufferline.nvim" })
-require("bufferline").setup({
-  options = {
-    always_show_bufferline = false,
-    -- themable = true,
-    style_preset = require("bufferline").style_preset.no_italic,
-    indicator = { style = "none" },
-    -- separator_style = { "│", "│" },
-    highlights = {
-      separator = { fg = "#768390" },
-    },
-    -- Close
-    close_command = function(bufnr)
-      vim.cmd("bdelete " .. bufnr)
-    end,
-    right_mouse_command = function(bufnr)
-      vim.cmd("bdelete " .. bufnr)
-    end,
-    -- LSP
-    diagnostics = "nvim_lsp",
-    diagnostics_indicator = function(_, _, diag)
-      local ret = (diag.error and icons.lsp.error .. diag.error .. " " or "")
-          .. (diag.warning and icons.lsp.warn .. diag.warning or "")
-      return vim.trim(ret)
-    end,
-    -- Icon
-    get_element_icon = function(element)
-      return icons.get_icon_by_ext(element.extension)
-          or icons.get_icon_by_ft(element.filetype)
-          or icons.basic.file
-    end,
-  }
-})
--- Fix bufferline when restoring a session
-vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
-  callback = function()
-    vim.schedule(function()
-      pcall(nvim_bufferline)
-    end)
-  end,
-})
-vim.keymap.set("n", "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", { desc = "Toggle Pin" })
-vim.keymap.set("n", "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", { desc = "Delete Non-Pinned Buffers" })
-
 -- [File explorer]
 vim.pack.add({ "https://github.com/nvim-mini/mini.files" })
 require('mini.files').setup({

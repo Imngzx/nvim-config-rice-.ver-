@@ -44,7 +44,9 @@ M.lsp = {
 -- [Filetype]
 M.basic = {
   directory = "",
-  file = ""
+  file = "",
+  modify = "●",
+  close = "󰅖"
 }
 M.ft = {
   -- A
