@@ -1,0 +1,46 @@
+{
+  "Features": {
+    "prefix": "feat",
+    "body": [ "feat(${1:part}): ${2:msg}" ]
+  },
+  "Bugs fixes": {
+    "prefix": "fix",
+    "body": [ "fix(${1:part}): ${2:msg}" ]
+  },
+  "Documentation": {
+    "prefix": "docs",
+    "body": [ "docs(${1:part}): ${2:msg}" ]
+  },
+  "Styles": {
+    "prefix": "style",
+    "body": [ "style(${1:part}): ${2:msg}" ]
+  },
+  "Code refactoring": {
+    "prefix": "refactor",
+    "body": [ "refactor(${1:part}): ${2:msg}" ]
+  },
+ "Performance improvements": {
+    "prefix": "perf",
+    "body": ["perf(${1:part}): ${2:msg}"]
+  },
+  "Tests": {
+    "prefix": "test",
+    "body": ["test(${1:part}): ${2:msg}"]
+  },
+  "Builds": {
+    "prefix": "build",
+    "body": ["build(${1:part}): ${2:msg}"]
+  },
+  "Continuous Integration": {
+    "prefix": "ci",
+    "body": ["ci(${1:part}): ${2:msg}"]
+  },
+  "Chore": {
+    "prefix": "chore",
+    "body": ["chore(${1:part}): ${2:msg}"]
+  },
+  "Reverts": {
+    "prefix": "revert",
+    "body": ["revert(${1:part}): ${2:msg}"]
+  }
+}
