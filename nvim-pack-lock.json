@@ -16,6 +16,10 @@
       "rev": "57e5a8addb8c71fb063ee4acda466c7cf6ad2800",
       "src": "https://github.com/mason-org/mason.nvim"
     },
+    "mini.files": {
+      "rev": "22c64f010eef047ed270e29e7cc266cd4740787e",
+      "src": "https://github.com/nvim-mini/mini.files"
+    },
     "nvim-lspconfig": {
       "rev": "07f4e93de92e8d4ea7ab99602e3a8c9ac0fb778a",
       "src": "https://github.com/neovim/nvim-lspconfig"
