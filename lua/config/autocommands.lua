@@ -16,7 +16,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
-
 -- [Autocmd] Auto set root
 -- https://github.com/nvim-mini/mini.misc/blob/main/lua/mini/misc.lua
 local H = {}

@@ -73,8 +73,6 @@ vim.keymap.set('n', '<C-Right>', '"<Cmd>vertical resize +" . v:count1 . "<CR>"',
 
 -- [Functions]
 vim.keymap.set("n", "<leader>fn", "<Cmd>enew<CR>", { desc = "New file" }) -- new file
--- File explorer
--- vim.keymap.set("n", "<leader>e", ":Lexplore<CR>", { desc = "Toggle file explorer" })
 -- Terminal
 vim.keymap.set("n", "<leader>`", "<Cmd>vert term fish.exe<CR>", { desc = "Open Term" })
 

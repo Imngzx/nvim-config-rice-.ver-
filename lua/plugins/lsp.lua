@@ -12,7 +12,7 @@ require("mason").setup({
     },
   },
 })
-vim.lsp.enable({ "lua_ls", "markdown", "clangd" })
+vim.lsp.enable({ "lua_ls", "markdown" })
 -- LSP attach
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("LspKepmap", {}),
