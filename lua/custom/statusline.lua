@@ -1,3 +1,5 @@
+local icons = require("libs.icons")
+
 local function pad(s, w)
   s = tostring(s)
   return #s > w and s:sub(1, w) or s .. string.rep(' ', w - #s)
@@ -26,32 +28,28 @@ local function screen_percent()
   return pad(tostring(p) .. '%', 3)
 end
 
-local function filetype() return vim.bo.filetype ~= '' and vim.bo.filetype or 'plain' end
+-- local function fileformat()
+--   local f = vim.bo.fileformat
+--   if f == 'unix' then return 'LF' elseif f == 'dos' then return 'CRLF' else return (f and f:upper()) or '' end
+-- end
 
-local function fileformat()
-  local f = vim.bo.fileformat
-  if f == 'unix' then return 'LF' elseif f == 'dos' then return 'CRLF' else return (f and f:upper()) or '' end
-end
-local function toggle_fileformat(minwid, clicks, button, mods)
-  local ff = vim.bo.fileformat
-  if ff == 'unix' then
-    vim.bo.fileformat = 'dos'
-  else
-    vim.bo.fileformat = 'unix'
-  end
-  vim.cmd('redrawstatus')
+local function filetype()
+  local ft = vim.bo.filetype ~= '' and vim.bo.filetype or 'plaintext'
+  return (icons.get_icon_by_ft(ft) or '') .. ' ' .. ft
 end
 
 _G.statusline = _G.statusline or {}
 _G.statusline.filename = filename
 _G.statusline.cursor = cursor_position
 _G.statusline.screen = screen_percent
+-- _G.statusline.fileformat = fileformat
 _G.statusline.filetype = filetype
-_G.statusline.fileformat = fileformat
 
 -- Display
-local left = '%{v:lua.statusline.filename()} %m'
+local left = ' %{v:lua.statusline.filename()} %m'
+-- local right =
+-- ' %=%{v:lua.statusline.filetype()} | %{v:lua.statusline.fileformat()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
 local right =
-' %=%{v:lua.statusline.fileformat()} | %{v:lua.statusline.filetype()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
+' %=%{v:lua.statusline.filetype()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
 
 vim.o.statusline = left .. right
