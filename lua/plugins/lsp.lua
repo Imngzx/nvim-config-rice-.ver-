@@ -1,17 +1,43 @@
--- [LSP]
-vim.pack.add({
-  { src = 'https://github.com/mason-org/mason.nvim' },
-  { src = 'https://github.com/neovim/nvim-lspconfig' },
-})
+-- [Config]
+local H = {}
+
+-- (Env) mason
+-- `:Mason` to see the list
+H.mason = {
+  -- LSP
+  'lua_ls', 'vtsls',
+  -- Formatter
+  'prettier', 'shfmt',
+}
+
+-- (Lsp) lspconfig
+-- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
+H.lsp = { 'lua_ls', 'vtsls' }
+
+-- (Formatter) conform
+-- https://github.com/stevearc/conform.nvim#formatters
+-- Or use `:help conform-formatters`
+H.conform = {
+  markdown = { 'prettier' },
+}
+
+-- (Specific)
+vim.g.markdown_fenced_languages = {
+  'sh', 'bash=sh',
+  'python', 'py=python',
+  'javascript', 'js=javascript',
+  'typescript', 'ts=typescript',
+  'html',
+  'css',
+  'json',
+  'lua',
+  'vim',
+}
+
+-- [Env]
+vim.pack.add({ 'https://github.com/mason-org/mason.nvim' })
 require('mason').setup({
-  ensure_installed = {
-    -- LSP
-    'vtsls',
-    -- Formatter
-    -- 'stylua',
-    'prettier',
-    'shfmt',
-  },
+  ensure_installed = H.mason,
   ui = {
     icons = {
       package_installed = '✓',
@@ -20,7 +46,10 @@ require('mason').setup({
     },
   },
 })
-vim.lsp.enable({ 'lua_ls', 'markdown' })
+
+-- [LSP]
+vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
+vim.lsp.enable(H.lsp)
 -- LSP attach
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('LspKepmap', {}),
@@ -44,23 +73,17 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- [Formatter]
 vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 require('conform').setup({
-  formatters_by_ft = {
-    -- lua = { 'stylua' },
-  },
-  format_on_save = {
-    -- These options will be passed to conform.format()
-    timeout_ms = 500,
+  formatters_by_ft = H.conform,
+  format_after_save = {
+    async = true,
     lsp_format = 'fallback',
   },
 })
-vim.keymap.set(
-  'n',
-  '<leader>cf',
+vim.keymap.set('n', '<leader>cf',
   function()
     require('conform').format({
       async = true,
-      lsp_fallback = true,
-      timeout_ms = 500,
+      lsp_format = 'fallback'
     })
   end,
   { desc = 'Format file' }
@@ -92,13 +115,11 @@ vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning'
 vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning' })
 
 -- [Completion]
-vim.pack.add({ 'https://github.com/Saghen/blink.cmp' })
+vim.pack.add({ { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') } })
 require('blink.cmp').setup({
   keymap = { preset = 'enter' },
   appearance = { nerd_font_variant = 'mono' },
-  -- completion = { documentation = { auto_show = false } },
+  completion = { documentation = { auto_show = true } },
   sources = { default = { 'lsp', 'path', 'snippets', 'buffer' }, },
-  -- build = 'cargo build --release'
-  -- fuzzy = { implementation = "prefer_rust_with_warning" },
-  fuzzy = { implementation = 'lua' },
+  fuzzy = { implementation = 'prefer_rust_with_warning' },
 })
