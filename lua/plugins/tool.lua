@@ -1,4 +1,4 @@
-local icons = require("custom.icons")
+local icons = require("libs.icons")
 
 -- [Key note]
 vim.pack.add({ "https://github.com/folke/which-key.nvim" })
@@ -38,24 +38,16 @@ require("bufferline").setup({
     -- LSP
     diagnostics = "nvim_lsp",
     diagnostics_indicator = function(_, _, diag)
-      local ret = (diag.error and icons.lsp.Error .. diag.error .. " " or "")
-          .. (diag.warning and icons.lsp.Warn .. diag.warning or "")
+      local ret = (diag.error and icons.lsp.error .. diag.error .. " " or "")
+          .. (diag.warning and icons.lsp.warn .. diag.warning or "")
       return vim.trim(ret)
     end,
     -- Icon
-    get_element_icon = function(opts)
-      return icons.ft[opts.filetype] or icons.ft.fallback
+    get_element_icon = function(element)
+      return icons.get_icon_by_ext(element.extension)
+          or icons.get_icon_by_ft(element.filetype)
+          or icons.basic.file
     end,
-    -- Offset
-    offsets = {
-      {
-        filetype = "netrw",
-        text = icons.ft.vim .. " Files",
-        highlight = "Directory",
-        text_align = "left",
-        separator = true,
-      }
-    }
   }
 })
 -- Fix bufferline when restoring a session
