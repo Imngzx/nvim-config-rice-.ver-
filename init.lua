@@ -3,7 +3,7 @@ require('custom.theme').setup() -- theme must be set before plugins
 -- [Config]
 require('config.options')
 require('config.keymaps')
-require('config.autocommands')
+require('config.autocmds')
 
 -- [Plugins]
 require('plugins.ui')
