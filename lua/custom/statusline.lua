@@ -1,8 +1,13 @@
+local git_cache = require('libs.git_branch_cache')
+
 local M = {}
 M.config = {
   -- Required: function(ft) -> icon
   ft_icon = nil,
   filename_width = nil,
+  icons = { branch = '' },
+  -- required: user must provide git resolver when calling setup via git_cache_setup
+  git_cache_setup = nil, -- optional: table passed to git_cache.setup
 }
 
 local function pad(s, w)
@@ -10,20 +15,22 @@ local function pad(s, w)
   return #s > w and s:sub(1, w) or s .. string.rep(' ', w - #s)
 end
 
+-- [Left]
+-- Filename
 local function filename(max_w)
   local name = vim.fn.expand('%')
   if name == '' then return '[No Name]' end
   name = name:gsub('\\', '/')
   if max_w and #name > max_w then
-    return name:sub(1, max_w - 1) .. '…'
+    return name:sub(1, max_w - 1) .. '...'
   end
   return name
 end
 
-local function cursor_position()
-  local cur = vim.api.nvim_win_get_cursor(0)
-  local l, c = cur[1], cur[2]
-  return pad(string.format('%d:%d', l, c + 1), 7)
+-- Right
+local function filetype(cfg)
+  local ft = vim.bo.filetype ~= '' and vim.bo.filetype or 'plaintext'
+  return (cfg.ft_icon(ft) or '') .. ' ' .. ft
 end
 
 local function screen_percent()
@@ -34,30 +41,45 @@ local function screen_percent()
   return pad(tostring(p) .. '%', 3)
 end
 
-local function filetype(cfg)
-  local ft = vim.bo.filetype ~= '' and vim.bo.filetype or 'plaintext'
-  return (cfg.ft_icon(ft) or '') .. ' ' .. ft
+local function cursor_position()
+  local cur = vim.api.nvim_win_get_cursor(0)
+  local l, c = cur[1], cur[2]
+  return pad(string.format('%d:%d', l, c + 1), 7)
 end
 
 -- Public API used by statusline expansion
 _G.my_statusline = _G.my_statusline or {}
-_G.my_statusline.filename = function() return filename(M.config.filename_width) end
-_G.my_statusline.cursor = cursor_position
-_G.my_statusline.screen = screen_percent
+_G.my_statusline.gitbranch = function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local br = git_cache.get_branch(bufnr)
+  if not br or br == '' then return '' end
+  local icon = (M.config.icons and M.config.icons.branch) or 'BR'
+  return icon .. ' ' .. br .. ' | '
+end
+_G.my_statusline.filename = function() return filename(M.config and M.config.filename_width) end
 _G.my_statusline.filetype = function() return filetype(M.config) end
+_G.my_statusline.screen = screen_percent
+_G.my_statusline.cursor = cursor_position
 
 local function apply()
-  local left = ' %{v:lua.my_statusline.filename()} %m'
+  local left = ' %{v:lua.my_statusline.gitbranch()}%{v:lua.my_statusline.filename()} %m'
   local right =
   ' %=%{v:lua.my_statusline.filetype()} | %{v:lua.my_statusline.screen()} | %{v:lua.my_statusline.cursor()}'
   vim.o.statusline = left .. right
 end
-
 M.setup = function(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
   -- validate ft_icon
   if type(M.config.ft_icon) ~= 'function' then
     error('my_statusline.setup requires ft_icon = function(ft) -> icon')
+  end
+  -- initialize git cache if user provided resolver via git_cache_setup or directly via M.config
+  local git_opts = M.config.git_cache_setup or {}
+  if git_opts.get_git_root == nil and type(M.config.get_git_root) == 'function' then
+    git_opts.get_git_root = M.config.get_git_root
+  end
+  if type(git_opts.get_git_root) == 'function' then
+    git_cache.setup(git_opts)
   end
   apply()
 end

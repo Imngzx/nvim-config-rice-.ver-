@@ -378,3 +378,5 @@ local init_snacks = function()
 end
 
 init_snacks()
+
+return Snacks
