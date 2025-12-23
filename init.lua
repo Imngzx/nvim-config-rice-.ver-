@@ -17,5 +17,5 @@ require('custom.transparent').setup({ auto_enable = true })
 require('custom.statusline')
 require('custom.tabline').setup({ hide_single_tab = true })
 -- Edit
--- require('custom.pairs').setup()
+require('custom.pairs').setup()
 require('custom.surround').setup()
