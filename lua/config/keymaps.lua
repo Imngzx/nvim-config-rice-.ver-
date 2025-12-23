@@ -84,7 +84,7 @@ vim.keymap.set('n', '<c-right>', '"<cmd>vertical resize +" . v:count1 . "<cr>"',
 
 -- [Functions]
 -- Terminal
-vim.keymap.set('n', '<leader>`', '<cmd>vert term fish.exe<cr>', { desc = 'Open Term' })
+vim.keymap.set('n', '<leader>`', '<cmd>vert term fish.exe<cr>', { desc = 'Open term' })
 
 -- Search
 -- Better n/N behavior https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
@@ -102,6 +102,9 @@ vim.keymap.set({ 'i', 'n', 's' }, '<esc>',
   end,
   { expr = true, desc = 'Escape and clear hlsearch' }
 )
+
+-- Package
+vim.keymap.set('n', '<leader>pu', '<cmd>lua vim.pack.update()<cr>', { desc = 'Update plugins' })
 
 -- [Others]
 -- -- location list
