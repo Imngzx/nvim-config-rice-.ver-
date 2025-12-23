@@ -85,7 +85,7 @@ function M.setup()
   hi('FoldColumn', { fg = colors.comment, bg = colors.bg })
 
   -- Syntax highlighting
-  hi('Comment', { fg = colors.comment, style = 'italic' })
+  hi('Comment', { fg = colors.comment })
   hi('Constant', { fg = colors.blue })
   hi('String', { fg = colors.cyan })
   hi('Character', { fg = colors.cyan })
