@@ -14,7 +14,8 @@ M.config = {
   on_close        = nil,
   -- icons: function(filename) -> string, string
   ---@diagnostic disable-next-line: unused-local
-  icons           = function(filename) return icons.basic.file, 'Normal' end,
+  file_icons      = function(filename) return '', 'Normal' end,
+  icons           = { close = '󰅖', modify = '●' },
   -- optional name for close highlight group
   close_hl        = 'TablineClose',
 }
@@ -33,7 +34,7 @@ end
 M.setup = function(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
 
-  -- Set initial showtabline value
+  -- Set initial show tabline value
   _G.SimpleTabline = M
   -- v:lua click handlers
   ---@diagnostic disable-next-line: unused-local
@@ -144,7 +145,7 @@ M.format_tab = function(buf_id, is_current)
   local bufname       = vim.api.nvim_buf_get_name(buf_id)
   local filename      = bufname ~= '' and vim.fn.fnamemodify(bufname, ':t') or '[No Name]'
 
-  local icon, icon_hl = M.config.icons(filename)
+  local icon, icon_hl = M.config.file_icons(filename)
   icon_hl             = icon_hl or 'Normal'
 
   local diag          = M.get_diagnostics(buf_id)
@@ -157,7 +158,7 @@ M.format_tab = function(buf_id, is_current)
   local switch      = '%' .. buf_id .. '@v:lua.SimpleTablineSwitch@'
   local close       = '%' .. buf_id .. '@v:lua.SimpleTablineClose@'
 
-  local close_icon  = vim.bo[buf_id].modified and icons.basic.modify or icons.basic.close
+  local close_icon  = vim.bo[buf_id].modified and M.config.icons.modify or M.config.icons.close
   local close_btn   = '%#' .. M.config.close_hl .. '# ' ..
     close .. close_icon .. '%X'
 
