@@ -1,15 +1,23 @@
-local icons = require('libs.icons')
+local M = {}
+M.config = {
+  -- Required: function(ft) -> icon
+  ft_icon = nil,
+  filename_width = nil,
+}
 
 local function pad(s, w)
   s = tostring(s)
   return #s > w and s:sub(1, w) or s .. string.rep(' ', w - #s)
 end
 
--- Elements
-local function filename()
+local function filename(max_w)
   local name = vim.fn.expand('%')
   if name == '' then return '[No Name]' end
-  return name:gsub('\\', '/')
+  name = name:gsub('\\', '/')
+  if max_w and #name > max_w then
+    return name:sub(1, max_w - 1) .. '…'
+  end
+  return name
 end
 
 local function cursor_position()
@@ -26,29 +34,32 @@ local function screen_percent()
   return pad(tostring(p) .. '%', 3)
 end
 
--- local function fileformat()
---   local f = vim.bo.fileformat
---   if f == 'unix' then return 'LF' elseif f == 'dos' then return 'CRLF' else return (f and f:upper()) or '' end
--- end
-
-local function filetype()
+local function filetype(cfg)
   local ft = vim.bo.filetype ~= '' and vim.bo.filetype or 'plaintext'
-  -- Snacks.util.icon(ft, 'fileype')
-  return (icons.get_icon_by_ft(ft) or '') .. ' ' .. ft
+  return (cfg.ft_icon(ft) or '') .. ' ' .. ft
 end
 
-_G.statusline = _G.statusline or {}
-_G.statusline.filename = filename
-_G.statusline.cursor = cursor_position
-_G.statusline.screen = screen_percent
--- _G.statusline.fileformat = fileformat
-_G.statusline.filetype = filetype
+-- Public API used by statusline expansion
+_G.my_statusline = _G.my_statusline or {}
+_G.my_statusline.filename = function() return filename(M.config.filename_width) end
+_G.my_statusline.cursor = cursor_position
+_G.my_statusline.screen = screen_percent
+_G.my_statusline.filetype = function() return filetype(M.config) end
 
--- Display
-local left = ' %{v:lua.statusline.filename()} %m'
--- local right =
--- ' %=%{v:lua.statusline.filetype()} | %{v:lua.statusline.fileformat()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
-local right =
-' %=%{v:lua.statusline.filetype()} | %{v:lua.statusline.screen()} | %{v:lua.statusline.cursor()}'
+local function apply()
+  local left = '%{v:lua.my_statusline.filename()} %m'
+  local right =
+  '%=%{v:lua.my_statusline.filetype()} | %{v:lua.my_statusline.screen()} | %{v:lua.my_statusline.cursor()}'
+  vim.o.statusline = left .. right
+end
 
-vim.o.statusline = left .. right
+M.setup = function(opts)
+  M.config = vim.tbl_deep_extend('force', M.config, opts or {})
+  -- validate ft_icon
+  if type(M.config.ft_icon) ~= 'function' then
+    error('my_statusline.setup requires ft_icon = function(ft) -> icon')
+  end
+  apply()
+end
+
+return M
