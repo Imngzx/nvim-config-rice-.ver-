@@ -1,46 +1,46 @@
 {
   "Features": {
     "prefix": "feat",
-    "body": [ "feat(${1:part}): ${2:msg}" ]
+    "body": [ "feat(${1}): ${2}" ]
   },
   "Bugs fixes": {
     "prefix": "fix",
-    "body": [ "fix(${1:part}): ${2:msg}" ]
+    "body": [ "fix(${1}): ${2}" ]
   },
   "Documentation": {
     "prefix": "docs",
-    "body": [ "docs(${1:part}): ${2:msg}" ]
+    "body": [ "docs(${1}): ${2}" ]
   },
   "Styles": {
     "prefix": "style",
-    "body": [ "style(${1:part}): ${2:msg}" ]
+    "body": [ "style(${1}): ${2}" ]
   },
   "Code refactoring": {
     "prefix": "refactor",
-    "body": [ "refactor(${1:part}): ${2:msg}" ]
+    "body": [ "refactor(${1}): ${2}" ]
   },
  "Performance improvements": {
     "prefix": "perf",
-    "body": ["perf(${1:part}): ${2:msg}"]
+    "body": ["perf(${1}): ${2}"]
   },
   "Tests": {
     "prefix": "test",
-    "body": ["test(${1:part}): ${2:msg}"]
+    "body": ["test(${1}): ${2}"]
   },
   "Builds": {
     "prefix": "build",
-    "body": ["build(${1:part}): ${2:msg}"]
+    "body": ["build(${1}): ${2}"]
   },
   "Continuous Integration": {
     "prefix": "ci",
-    "body": ["ci(${1:part}): ${2:msg}"]
+    "body": ["ci(${1}): ${2}"]
   },
   "Chore": {
     "prefix": "chore",
-    "body": ["chore(${1:part}): ${2:msg}"]
+    "body": ["chore(${1}): ${2}"]
   },
   "Reverts": {
     "prefix": "revert",
-    "body": ["revert(${1:part}): ${2:msg}"]
+    "body": ["revert(${1}): ${2}"]
   }
 }
