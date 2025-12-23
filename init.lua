@@ -15,6 +15,7 @@ require("custom.transparent").setup({ auto_enable = true })
 require("custom.statusline")
 -- Edit
 require("custom.pairs").setup()
+require('custom.surround').setup()
 require("custom.indent").setup()
 -- Tool
 require("custom.git")
