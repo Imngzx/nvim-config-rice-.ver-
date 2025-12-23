@@ -70,7 +70,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('i', '<c-k>', vim.lsp.buf.signature_help, opts('Signature help'))
   end,
 })
-vim.keymap.set('n', '<leader>ul', '<cmd>checkhealth vim.lsp<cr>', { desc = 'Lsp info' })
+vim.keymap.set('n', '<leader>pl', '<cmd>checkhealth vim.lsp<cr>', { desc = 'Lsp info' })
 
 -- [Formatter]
 vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
