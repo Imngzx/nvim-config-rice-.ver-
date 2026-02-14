@@ -104,7 +104,7 @@ vim.keymap.set({ 'i', 'n', 's' }, '<esc>',
 )
 
 -- Package
-vim.keymap.set('n', '<leader>pu', '<cmd>lua vim.pack.update()<cr>', { desc = 'Update plugins' })
+vim.keymap.set('n', '<leader>pu', function() vim.pack.update() end, { desc = 'Update plugins' })
 
 -- [Others]
 -- -- location list
