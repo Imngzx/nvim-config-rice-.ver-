@@ -247,6 +247,7 @@ Snacks.setup({
 
 local key = {
   { '<leader>e', function() Snacks.explorer() end, desc = 'File Explorer' },
+  { '<leader>o', function() Snacks.picker.lsp_symbols() end, desc = 'LSP symbols' },
   -- Find
   { '<leader><space>', function() Snacks.picker.smart() end, desc = 'Smart find' },
   { '<leader>fg', function() Snacks.picker.grep() end, desc = 'Grep' },
@@ -270,6 +271,7 @@ local key = {
   -- Search
   { '<leader>sc', function() Snacks.picker.command_history() end, desc = 'Command history' },
   { '<leader>s/', function() Snacks.picker.search_history() end, desc = 'Search history' },
+  { '<leader>sn', function() Snacks.picker.notifications() end, desc = 'Notification history' },
   { '<leader>sa', function() Snacks.picker.autocmds() end, desc = 'Autocmds' },
   { '<leader>sC', function() Snacks.picker.commands() end, desc = 'Commands' },
   { '<leader>sh', function() Snacks.picker.help() end, desc = 'Help pages' },
@@ -295,7 +297,6 @@ local key = {
   { 'gy', function() Snacks.picker.lsp_type_definitions() end, desc = 'Goto t[y]pe definition' },
   -- { 'gai', function() Snacks.picker.lsp_incoming_calls() end, desc = 'C[a]lls incoming' },
   -- { 'gao', function() Snacks.picker.lsp_outgoing_calls() end, desc = 'C[a]lls outgoing' },
-  -- { '<leader>ss', function() Snacks.picker.lsp_symbols() end, desc = 'LSP symbols' },
   -- { '<leader>sS', function() Snacks.picker.lsp_workspace_symbols() end, desc = 'LSP workspace symbols' },
   -- Other
   { '<leader>uz', function() Snacks.zen() end, desc = 'Toggle zen mode' },
