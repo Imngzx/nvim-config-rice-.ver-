@@ -1,221 +1,128 @@
 -- Lightweight lazy loading implementation
 local M = {}
 
---- Load plugins on specified events
----@param events string|table Event name(s) or {event, pattern} for User events
----@param plugins string|table Plugin URL(s) or config
----@param callback function|nil Callback after loading
-M.on_event = function(events, plugins, callback)
-  if type(events) == 'string' then events = { events } end
-  if type(plugins) == 'string' then plugins = { plugins } end
+--- Load the plugin(s) and run optional setup
+local function do_load(plugins, setup)
+  for _, plugin in ipairs(plugins) do
+    vim.pack.add({ plugin })
+  end
+  if setup then setup() end
+end
 
-  -- Check if it's a User event with pattern
+--- Create an autocmd that fires once and calls `do_load`
+local function add_event_autocmd(events, plugins, setup)
   local event_name = events[1]
   local pattern = events[2] or events.pattern
 
-  local autocmd_opts = {
+  local opts = {
     once = true,
-    callback = function()
-      for _, plugin in ipairs(plugins) do
-        vim.pack.add({ plugin })
-      end
-      if callback then callback() end
-      return true
-    end,
+    callback = function() do_load(plugins, setup) end,
   }
-
   -- Add pattern for User events
   if event_name == 'User' and pattern then
-    autocmd_opts.pattern = pattern
-    vim.api.nvim_create_autocmd(event_name, autocmd_opts)
+    opts.pattern = pattern
+    vim.api.nvim_create_autocmd(event_name, opts)
   else
-    vim.api.nvim_create_autocmd(events, autocmd_opts)
+    vim.api.nvim_create_autocmd(events, opts)
   end
 end
 
---- Load plugins on command execution
----@param cmds string|table Command name(s)
----@param plugins string|table Plugin URL(s) or config
----@param callback function|nil Callback after loading
-M.on_cmd = function(cmds, plugins, callback)
-  if type(cmds) == 'string' then cmds = { cmds } end
-  if type(plugins) == 'string' then plugins = { plugins } end
-
+--- Register a user command that loads the plugin on first use
+local function add_cmd_triggers(cmds, plugins, setup)
   for _, cmd in ipairs(cmds) do
-    vim.api.nvim_create_user_command(cmd, function(args)
-      -- Delete temporary command
-      vim.api.nvim_del_user_command(cmd)
-      -- Load plugins
-      for _, plugin in ipairs(plugins) do
-        vim.pack.add({ plugin })
-      end
-      if callback then callback() end
-      -- Re-execute command with original arguments
-      local cmd_string = cmd
-      if args.args and args.args ~= '' then
-        cmd_string = cmd_string .. ' ' .. args.args
-      end
-      if args.bang then
-        cmd_string = cmd_string .. '!'
-      end
-      vim.cmd(cmd_string)
-    end, { nargs = '*', bang = true, range = true, complete = 'file' })
-  end
-end
-
---- Load plugins on keymap
----@param mode string|table Mode(s)
----@param lhs string Key mapping
----@param plugins string|table Plugin URL(s) or config
----@param callback function|nil Callback after loading
----@param rhs string|function|nil Final command to execute
----@param opts table|nil Keymap options
-M.on_key = function(mode, lhs, plugins, callback, rhs, opts)
-  if type(plugins) == 'string' then plugins = { plugins } end
-  opts = opts or {}
-
-  vim.keymap.set(mode, lhs, function()
-    -- Delete temporary keymap
-    vim.keymap.del(mode, lhs)
-    -- Load plugins
-    for _, plugin in ipairs(plugins) do
-      vim.pack.add({ plugin })
-    end
-    if callback then callback() end
-    -- Execute actual functionality
-    if rhs then
-      if type(rhs) == 'function' then
-        rhs()
-      else
-        vim.cmd(rhs)
-      end
-    else
-      -- Re-trigger the key
-      local key = vim.api.nvim_replace_termcodes(lhs, true, false, true)
-      vim.api.nvim_feedkeys(key, 'i', false)
-    end
-  end, opts)
-end
-
---- Load plugins on filetype
----@param fts string|table Filetype(s)
----@param plugins string|table Plugin URL(s) or config
----@param callback function|nil Callback after loading
-M.on_ft = function(fts, plugins, callback)
-  if type(fts) == 'string' then fts = { fts } end
-  if type(plugins) == 'string' then plugins = { plugins } end
-
-  vim.api.nvim_create_autocmd('FileType', {
-    pattern = fts,
-    once = true,
-    callback = function()
-      for _, plugin in ipairs(plugins) do
-        vim.pack.add({ plugin })
-      end
-      if callback then callback() end
-      return true
-    end,
-  })
-end
-
---- Multi-trigger loader:  supports multiple loading conditions
----@param config table Configuration with triggers and setup
----  config.plugin:  string|table - Plugin URL(s)
----  config.event: string|table|nil - Event trigger(s)
----  config.cmd: string|table|nil - Command trigger(s)
----  config.keys: table|nil - Key trigger(s) { { mode, lhs, rhs, opts } }
----  config.ft: string|table|nil - Filetype trigger(s)
----  config.setup: function|nil - Setup function after loading
-M.load = function(config)
-  local loaded = false
-  local plugins = config.plugin
-  if type(plugins) == 'string' then plugins = { plugins } end
-
-  local function do_load()
-    if loaded then return end
-    loaded = true
-
-    -- Load plugins
-    for _, plugin in ipairs(plugins) do
-      vim.pack.add({ plugin })
-    end
-
-    -- Run setup
-    if config.setup then
-      config.setup()
-    end
-  end
-
-  -- Event triggers
-  if config.event then
-    local events = type(config.event) == 'string' and { config.event } or config.event
-    vim.api.nvim_create_autocmd(events, {
-      once = true,
-      callback = function()
-        do_load()
-        return true
-      end,
-    })
-  end
-
-  -- Command triggers
-  if config.cmd then
-    local cmds = type(config.cmd) == 'string' and { config.cmd } or config.cmd
-    for _, cmd in ipairs(cmds) do
-      vim.api.nvim_create_user_command(cmd, function(args)
+    vim.api.nvim_create_user_command(
+      cmd,
+      function(args)
         vim.api.nvim_del_user_command(cmd)
-        do_load()
-        -- Re-execute command with original arguments
+        do_load(plugins, setup)
+
+        -- Re‑execute the original command with its arguments
         local cmd_string = cmd
         if args.args and args.args ~= '' then
           cmd_string = cmd_string .. ' ' .. args.args
         end
-        if args.bang then
-          cmd_string = cmd_string .. '!'
-        end
+        if args.bang then cmd_string = cmd_string .. '!' end
         vim.cmd(cmd_string)
-      end, { nargs = '*', bang = true, range = true, complete = 'file' })
-    end
+      end,
+      { nargs = '*', bang = true, range = true, complete = 'file' }
+    )
   end
+end
 
-  -- Keymap triggers
-  if config.keys then
-    for _, key_config in ipairs(config.keys) do
-      local mode = key_config[1] or key_config.mode or 'n'
-      local lhs = key_config[2] or key_config.lhs
-      local rhs = key_config[3] or key_config.rhs
-      local opts = key_config[4] or key_config.opts or {}
+--- Register a key‑map that loads the plugin on first press
+local function add_key_triggers(keys, plugins, setup, restore_keys)
+  for _, key_cfg in ipairs(keys) do
+    local mode = key_cfg[1] or key_cfg.mode or 'n'
+    local lhs = key_cfg[2] or key_cfg.lhs
+    local rhs = key_cfg[3] or key_cfg.rhs
+    local opts = key_cfg[4] or key_cfg.opts or {}
 
-      if lhs then
-        vim.keymap.set(mode, lhs, function()
-          vim.keymap.del(mode, lhs)
-          do_load()
-          if rhs then
-            if type(rhs) == 'function' then
-              rhs()
-            else
-              vim.cmd(rhs)
-            end
+    if lhs then
+      vim.keymap.set(mode, lhs, function()
+        vim.keymap.del(mode, lhs)
+        do_load(plugins, setup)
+
+        if rhs then
+          if type(rhs) == 'function' then
+            rhs()
           else
-            local k = vim.api.nvim_replace_termcodes(lhs, true, false, true)
-            vim.api.nvim_feedkeys(k, 'i', false)
+            vim.cmd(rhs)
           end
-        end, opts)
-      end
+          if restore_keys then
+            vim.keymap.set(mode, lhs, rhs, opts)
+          end
+        else
+          local k = vim.api.nvim_replace_termcodes(lhs, true, false, true)
+          vim.api.nvim_feedkeys(k, 'i', false)
+        end
+      end, opts)
     end
   end
+end
 
-  -- Filetype triggers
+--- Autocmd for filetype triggers
+local function add_ft_autocmd(fts, plugins, setup)
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = fts,
+    once = true,
+    callback = function() do_load(plugins, setup) end,
+  })
+end
+
+--- Public API
+--- Multi‑trigger loader: supports multiple loading conditions
+--- @param config table Configuration with triggers and setup
+---   config.plugin        string|table – Plugin URL(s)
+---   config.event         string|table|nil – Event trigger(s)
+---   config.cmd           string|table|nil – Command trigger(s)
+---   config.keys          table|nil – Key trigger(s) { { mode, lhs, rhs, opts } }
+---   config.ft            string|table|nil – Filetype trigger(s)
+---   config.setup         function|nil – Setup function after loading
+---   config.restore_keys  boolean|nil – Restore keymaps after load (default true)
+function M.load(config)
+  -- Plugins
+  local plugins = config.plugin
+  -- if type(config[1]) ~= 'table' and config[1] ~= nil then
+  --   plugins = config[1]
+  -- end
+  if type(plugins) == 'string' then plugins = { plugins }
+  elseif plugins == nil then plugins = {} end
+
+  -- Triggers
+  if config.event then
+    local ev = type(config.event) == 'string' and { config.event } or config.event
+    add_event_autocmd(ev, plugins, config.setup)
+  end
+  if config.cmd then
+    local cmds = type(config.cmd) == 'string' and { config.cmd } or config.cmd
+    add_cmd_triggers(cmds, plugins, config.setup)
+  end
+  if config.keys then
+    add_key_triggers(config.keys, plugins, config.setup, config.restore_keys ~= false)
+  end
   if config.ft then
     local fts = type(config.ft) == 'string' and { config.ft } or config.ft
-    vim.api.nvim_create_autocmd('FileType', {
-      pattern = fts,
-      once = true,
-      callback = function()
-        do_load()
-        return true
-      end,
-    })
+    add_ft_autocmd(fts, plugins, config.setup)
   end
 end
 

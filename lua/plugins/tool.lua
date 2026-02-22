@@ -1,9 +1,10 @@
 local lazy = require('libs.lazy')
 
 -- [Key note] Load on VeryLazy
-lazy.on_event({ 'User', pattern = 'VeryLazy' },
-  'https://github.com/folke/which-key.nvim',
-  function()
+lazy.load({
+  plugin = 'https://github.com/folke/which-key.nvim',
+  event = { 'User', pattern = 'VeryLazy' },
+  setup = function()
     require('which-key').add({
       { '<leader>b', group = 'Buffer' },
       { '<leader>c', group = 'Code' },
@@ -19,12 +20,14 @@ lazy.on_event({ 'User', pattern = 'VeryLazy' },
       function() require('which-key').show({ global = false }) end,
       { desc = 'which-key local keymap' }
     )
-  end)
+  end
+})
 
 -- [Diff] Load on open a file
-lazy.on_event({ 'BufReadPost', 'BufNewFile' },
-  'https://github.com/nvim-mini/mini.diff',
-  function()
+lazy.load({
+  plugin = 'https://github.com/nvim-mini/mini.diff',
+  event = { 'BufReadPost', 'BufNewFile' },
+  setup = function()
     require('mini.diff').setup({
       view = {
         style = 'sign',
@@ -52,7 +55,7 @@ lazy.on_event({ 'BufReadPost', 'BufNewFile' },
       require('mini.diff').toggle_overlay()
     end, { desc = 'Toggle diff' })
   end
-)
+})
 
 -- [Clipboard]
 -- vim.pack.add({ "https://github.com/gbprod/yanky.nvim" })
