@@ -27,7 +27,7 @@ H.lsp = { 'lua_ls', 'vtsls', 'cssls', 'vue_ls', 'marksman', 'ty' }
 H.conform = {
   markdown = { 'prettier' },
   vue = { 'prettier' },
-  -- python = { 'ruff' }
+  python = { 'ruff' },
   css = { 'prettier' },
 }
 
