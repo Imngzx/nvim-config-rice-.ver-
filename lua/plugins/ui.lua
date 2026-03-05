@@ -9,8 +9,20 @@ lazy.load({
       smear_between_buffers = true,
     })
   end
-}) -- run after 100ms
+})
 
 -- [Icon]
 vim.pack.add({ 'https://github.com/nvim-mini/mini.icons' })
 require('mini.icons').setup()
+
+-- [Sticky scroll]
+lazy.load({
+  plugin = 'https://github.com/nvim-treesitter/nvim-treesitter-context',
+  event = { 'BufReadPost', 'BufNewFile' },
+  setup = function()
+    require('treesitter-context').setup({
+      max_lines = 3, -- How many lines the window should span. Values <= 0 mean no limit.
+      mode = 'topline', -- Line used to calculate context. Choices: 'cursor', 'topline'
+    })
+  end
+})
