@@ -130,10 +130,12 @@ vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 lazy.load({
   plugin = 'https://github.com/stevearc/conform.nvim',
   event = 'BufWritePre',
+  cmd = { 'ConformInfo' },
   keys = {
     { 'n', '<leader>cf', function()
       require('conform').format({ async = true, lsp_format = 'fallback' })
-    end, { desc = 'Format file' } }
+    end, { desc = 'Format file' } },
+    { 'n', '<leader>pc', function() vim.cmd('ConformInfo') end, { desc = '[Panel] Conform' } }
   },
   setup = function()
     require('conform').setup({
