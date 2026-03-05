@@ -183,14 +183,76 @@ lazy.load({
 -- [Completion] Load on InsertEnter
 lazy.load({
   plugin = { { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') } },
-  event = 'InsertEnter',
+  event = { 'InsertEnter', 'CmdlineEnter' },
   setup = function()
     require('blink.cmp').setup({
-      keymap = { preset = 'enter' },
+      -- https://cmp.saghen.dev/configuration/keymap.html#presets
+      keymap = { preset = 'super-tab' },
       appearance = { nerd_font_variant = 'mono' },
-      completion = { documentation = { auto_show = true } },
-      sources = { default = { 'lsp', 'path', 'snippets', 'buffer' }, },
+      sources = { default = { 'lsp', 'path', 'snippets', 'buffer' } },
       fuzzy = { implementation = 'prefer_rust_with_warning' },
+      signature = { enabled = true },
+      completion = {
+        documentation = {
+          auto_show = true,
+          window = { max_width = 65, }
+        },
+        ghost_text = { enabled = true },
+        menu = {
+          scrollbar = true,
+          auto_show_delay_ms = 200,
+          draw = {
+            columns = {
+              { 'kind_icon', 'label', gap = 1 },
+              { 'menu' }
+            },
+            components = {
+              -- https://cmp.saghen.dev/recipes.html#mini-icons
+              kind_icon = {
+                text = function(ctx)
+                  local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
+                  return kind_icon
+                end,
+                -- (optional) use highlights from mini.icons
+                highlight = function(ctx)
+                  local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
+                  return hl
+                end,
+              },
+              -- kind = {
+              --   -- (optional) use highlights from mini.icons
+              --   highlight = function(ctx)
+              --     local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
+              --     return hl
+              --   end,
+              -- },
+              label = {
+                width = { fill = true, max = 30 },
+                text = function(ctx) return ctx.label .. ctx.label_detail end,
+              },
+              menu = {
+                text = function(ctx)
+                  local menu_labels = {
+                    lsp = '[LSP]',
+                    buffer = '[Buffer]',
+                    snippets = '[Snippet]',
+                    path = '[Path]',
+                    Cmdline = '' -- no need to show text
+                  }
+                  return menu_labels[ctx.source_name] or ('[' .. ctx.source_name .. ']')
+                end,
+              },
+            },
+          },
+        }
+      },
+      cmdline = {
+        completion = {
+          menu = {
+            auto_show = true,
+          }
+        },
+      },
     })
   end
 })
