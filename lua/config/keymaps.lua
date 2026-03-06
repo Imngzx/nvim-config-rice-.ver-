@@ -16,8 +16,14 @@ vim.keymap.set('n', '<leader>ub', '<cmd>lua vim.o.bg = vim.o.bg == "dark" and "l
   { desc = 'Toggle background' }
 )
 
+-- [Mason]
+vim.keymap.set('n', '<leader>cm', '<cmd>Mason<cr>', { desc = 'Mason' })
+
 -- [Edit]
 -- Indent
+vim.keymap.set({ 'n', 'v' }, 'j', 'gj')
+vim.keymap.set({ 'n', 'v' }, 'k', 'gk')
+
 vim.keymap.set('x', '<', '<gv')
 vim.keymap.set('x', '>', '>gv')
 -- Comment
@@ -38,7 +44,6 @@ vim.keymap.set('n', '<leader>cs', 'z=', { desc = 'Spelling suggestions' })
 -- [Buffer]
 vim.keymap.set('n', '<s-h>', '<cmd>bprevious<cr>', { desc = 'Prev buffer' })
 vim.keymap.set('n', '<s-l>', '<cmd>bnext<cr>', { desc = 'Next buffer' })
--- Moved to Snacks
 -- vim.keymap.set('n', '<leader>bd', function()
 --   local cur = vim.api.nvim_get_current_buf()
 --   local alt = vim.fn.bufnr('#')
@@ -84,7 +89,7 @@ vim.keymap.set('n', '<c-right>', '"<cmd>vertical resize +" . v:count1 . "<cr>"',
 
 -- [Functions]
 -- Terminal
-vim.keymap.set('n', '<leader>`', '<cmd>vert term fish.exe<cr>', { desc = 'Open term' })
+vim.keymap.set('n', '<leader>at', '<cmd>vert term<cr>', { desc = 'Open Term' })
 
 -- Search
 -- Better n/N behavior https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
@@ -106,6 +111,7 @@ vim.keymap.set({ 'i', 'n', 's' }, '<esc>',
 -- Package
 vim.keymap.set('n', '<leader>pu', function() vim.pack.update() end, { desc = 'Update plugins' })
 
+
 -- [Others]
 -- -- location list
 -- vim.keymap.set("n", "<leader>xl", function()
@@ -113,11 +119,28 @@ vim.keymap.set('n', '<leader>pu', function() vim.pack.update() end, { desc = 'Up
 --   if not success and err then
 --     vim.notify(err, vim.log.levels.ERROR)
 --   end
--- end, { desc = "Location list" })
+-- end, { desc = "Location List" })
 -- -- quickfix list
 -- vim.keymap.set("n", "<leader>xq", function()
 --   local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
 --   if not success and err then
 --     vim.notify(err, vim.log.levels.ERROR)
 --   end
--- end, { desc = "Quickfix list" })
+-- end, { desc = "Quickfix List" })
+
+
+vim.keymap.set('t', '<Esc>', function()
+  -- if it's the 2nd press within 300ms, close terminal
+  if vim.g.__last_esc and (vim.loop.hrtime() - vim.g.__last_esc) / 1e6 < 300 then
+    vim.g.__last_esc = nil
+    -- if it's a floating terminal, close it
+    if vim.bo.buftype == 'terminal' then
+      vim.api.nvim_win_close(0, true)
+    end
+  else
+    vim.g.__last_esc = vim.loop.hrtime()
+    -- normal behavior: leave terminal-insert mode
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, false, true), 'n',
+      false)
+  end
+end, { noremap = true, silent = true })

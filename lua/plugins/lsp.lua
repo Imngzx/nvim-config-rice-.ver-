@@ -7,28 +7,41 @@ local H = {}
 H.mason = {
   -- LSP
   'lua_ls', -- lua
-  'vtsls', -- typescript
-  'css-lsp', -- css
+  -- 'vtsls',    -- typescript
+  -- 'css-lsp',  -- css
   'marksman', -- markdown
-  'ty', -- python
+  -- 'ty',       -- python
   -- Formatter
-  'prettier', -- front-end
+  -- 'prettier', -- front-end
   'shfmt', -- shell
   'ruff' -- python
 }
 
 -- (Lsp) lspconfig
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
-H.lsp = { 'lua_ls', 'vtsls', 'cssls', 'vue_ls', 'marksman', 'ty' }
+H.lsp = {
+  'lua_ls',
+  -- 'emmylua_ls',
+  -- 'vtsls',
+  -- 'cssls',
+  'jsonls',
+  -- 'vue_ls',
+  'marksman',
+  -- 'ty',
+  'clangd',
+  'qmlls6',
+  'ruff',
+  'basedpyright',
+}
 
 -- (Formatter) conform
 -- https://github.com/stevearc/conform.nvim#formatters
 -- Or use `:help conform-formatters`
 H.conform = {
-  markdown = { 'prettier' },
-  vue = { 'prettier' },
+  -- markdown = { 'prettier' },
+  -- vue = { 'prettier' },
   python = { 'ruff' },
-  css = { 'prettier' },
+  -- css = { 'prettier' },
 }
 
 -- (Specific)
@@ -52,6 +65,9 @@ vim.lsp.config('vtsls', {
   },
   filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
 })
+
+-- lsp configuration
+require('config.lspconfig')
 
 vim.g.markdown_fenced_languages = {
   'sh', 'bash=sh',
@@ -98,6 +114,11 @@ lazy.load({
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('LspKepmap', {}),
   callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client and client:supports_method('textDocument/inlayHint') then
+      -- 对当前 buffer 开启内联提示
+      vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
+    end
     -- LSP keymaps
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = ev.buf, desc = 'LSP hover' })
     vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, { buffer = ev.buf, desc = 'LSP hover' })
@@ -130,12 +151,10 @@ vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 lazy.load({
   plugin = 'https://github.com/stevearc/conform.nvim',
   event = 'BufWritePre',
-  cmd = { 'ConformInfo' },
   keys = {
     { 'n', '<leader>cf', function()
       require('conform').format({ async = true, lsp_format = 'fallback' })
-    end, { desc = 'Format file' } },
-    { 'n', '<leader>pc', function() vim.cmd('ConformInfo') end, { desc = '[Panel] Conform' } }
+    end, { desc = 'Format file' } }
   },
   setup = function()
     require('conform').setup({
@@ -156,9 +175,26 @@ lazy.load({
   setup = function()
     require('tiny-inline-diagnostic').setup({
       preset = 'powerline',
-      signs = { diag = '-' },
+      signs = { diag = '  ' },
     })
-    vim.diagnostic.config({ virtual_text = false })
+    -- 自定义诊断 UI：包含行号栏图标、下划线、排序等
+    vim.diagnostic.config({
+      virtual_text = false, -- 因为你用了 tiny-inline-diagnostic，所以关闭原生虚拟文本
+      underline = true,
+      update_in_insert = false,
+      severity_sort = true,
+      float = {
+        border = 'rounded',
+      },
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = ' ', -- 换成你喜欢的图标，比如 "✘"
+          [vim.diagnostic.severity.WARN] = ' ', -- 比如 "▲"
+          [vim.diagnostic.severity.HINT] = ' ', -- 比如 "⚑"
+          [vim.diagnostic.severity.INFO] = ' ', -- 比如 "»"
+        },
+      },
+    })
 
     -- Keymap
     local diagnostic_goto = function(next, severity)
@@ -180,79 +216,108 @@ lazy.load({
   end
 })
 
--- [Completion] Load on InsertEnter
+-- [Completion] Load on InsertEnter and CmdlineEnter
 lazy.load({
-  plugin = { { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') } },
-  event = { 'InsertEnter', 'CmdlineEnter' },
+  plugin = {
+    { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') },
+    'https://github.com/rafamadriz/friendly-snippets' -- 👇 新增：添加 friendly-snippets
+  },
+  -- 👇 1. 触发事件增加 CmdlineEnter
+  -- event = { 'InsertEnter', 'CmdlineEnter' },
+  event = { 'User', pattern = 'VeryLazy' },
   setup = function()
     require('blink.cmp').setup({
-      -- https://cmp.saghen.dev/configuration/keymap.html#presets
-      keymap = { preset = 'super-tab' },
+      keymap = { preset = 'enter' },
       appearance = { nerd_font_variant = 'mono' },
-      sources = { default = { 'lsp', 'path', 'snippets', 'buffer' } },
-      fuzzy = { implementation = 'prefer_rust_with_warning' },
-      signature = { enabled = true },
+
+      signature = {
+        window = {
+          border = {
+            'rounded',
+          },
+        },
+      },
       completion = {
+        ghost_text = {
+          enabled = true,
+        },
         documentation = {
           auto_show = true,
-          window = { max_width = 65, }
+          window = {
+            border = 'rounded',
+            winhighlight =
+            'Normal:Normal,FloatBorder:FloatBorder,CursorLine:BlinkCmpDocCursorLine,Search:None',
+          }
         },
-        ghost_text = { enabled = true },
         menu = {
+          -- winhighlight =
+          -- 'Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,CursorLine:slinkCmpDocCursorLine,Search:None',
+          -- winhighlight =
+          -- 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:BlinkCmpMenuSelection,Search:None',
           scrollbar = true,
           auto_show_delay_ms = 200,
+          border = 'rounded',
           draw = {
-            columns = {
-              { 'kind_icon', 'label', gap = 1 },
-              { 'menu' }
-            },
+            align_to = 'cursor',
+            columns = { { 'kind_icon' }, { 'label', gap = 1 }, { 'menu', gap = 1 } },
             components = {
-              -- https://cmp.saghen.dev/recipes.html#mini-icons
-              kind_icon = {
-                text = function(ctx)
-                  local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
-                  return kind_icon
-                end,
-                -- (optional) use highlights from mini.icons
-                highlight = function(ctx)
-                  local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
-                  return hl
-                end,
-              },
-              -- kind = {
-              --   -- (optional) use highlights from mini.icons
-              --   highlight = function(ctx)
-              --     local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
-              --     return hl
-              --   end,
-              -- },
               label = {
-                width = { fill = true, max = 30 },
-                text = function(ctx) return ctx.label .. ctx.label_detail end,
+                text = function(ctx)
+                  return require('colorful-menu').blink_components_text(ctx)
+                end,
+                highlight = function(ctx)
+                  return require('colorful-menu').blink_components_highlight(ctx)
+                end,
               },
+              -- new menu component
               menu = {
                 text = function(ctx)
                   local menu_labels = {
                     lsp = '[LSP]',
                     buffer = '[Buffer]',
-                    snippets = '[Snippet]',
+                    snippets = '[LuaSnip]',
                     path = '[Path]',
-                    Cmdline = '' -- no need to show text
+                    lazydev = '[LazyDev]',
                   }
                   return menu_labels[ctx.source_name] or ('[' .. ctx.source_name .. ']')
                 end,
+                highlight = 'Comment', -- you can change to match your theme
               },
             },
           },
-        }
+        },
       },
+
       cmdline = {
+        -- enabled = true,
+        --
+        -- keymap = { preset = 'super-tab' }, -- 命令行使用vs code命令
         completion = {
           menu = {
             auto_show = true,
-          }
+          },
         },
       },
+
+      sources = {
+        -- 在注释行时不显示菜单补全。并且在全局不会弹出中文补全
+        default = function()
+          -- 👇 将 unpack 改为直接获取并赋值，完美避开语法警告和兼容性问题
+          local cursor = vim.api.nvim_win_get_cursor(0)
+          local row, col = cursor[1], cursor[2]
+
+          local ok, node = pcall(vim.treesitter.get_node, {
+            bufnr = 0,
+            pos = { row - 1, math.max(0, col - 1) },
+          })
+          if ok and node and node.type and node:type():find('comment') then
+            return {}
+          end
+          return { 'lsp', 'path', 'snippets', 'buffer' }
+        end,
+      },
+
+      fuzzy = { implementation = 'prefer_rust_with_warning' },
     })
   end
 })

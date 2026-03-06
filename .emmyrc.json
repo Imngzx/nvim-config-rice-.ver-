@@ -1,0 +1,62 @@
+{
+  "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json",
+  "runtime": {
+    "version": "LuaJIT",
+    "requirePattern":[
+      "lua/?.lua",
+      "lua/?/init.lua",
+      "?/lua/?.lua",
+      "?/lua/?/init.lua"
+    ]
+  },
+  "workspace": {
+    "library":[
+      "$VIMRUNTIME/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt"
+    ],
+    "ignoreDir":[
+      ".git",
+      "doc",
+      "docs",
+      "test",
+      "tests",
+      "spec",
+      "specs",
+      "benchmark",
+      "benchmarks",
+      "build",
+      "dist",
+      "node_modules"
+    ],
+    "ignoreGlobs":[
+      "**/*_spec.lua",
+      "**/*_test.lua",
+      "**/doc/**",
+      "**/docs/**",
+      "**/test/**",
+      "**/tests/**",
+      "**/spec/**",
+      "**/specs/**",
+      "**/benchmark/**",
+      "**/benchmarks/**",
+      "**/build/**",
+      "**/dist/**",
+      "**/node_modules/**"
+    ]
+  },
+  "diagnostics": {
+    "globals":[
+      "vim",
+      "Snacks",
+      "MiniPairs",
+      "SimpleTabline"
+    ],
+    "disable": [
+      "missing-fields",
+      "missing-return"
+    ]
+  },
+  "completion": {
+    "callSnippet": true
+  }
+}

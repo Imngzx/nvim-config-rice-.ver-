@@ -84,8 +84,15 @@ function M.setup()
   hi('Folded', { fg = colors.comment, bg = colors.cursor_line })
   hi('FoldColumn', { fg = colors.comment, bg = colors.bg })
 
+  -- 👇 新增：强行切断 WinBar 链接，设定为透明！
+  hi('WinBar', { bg = 'NONE' })
+  hi('WinBarNC', { bg = 'NONE' })
+  -- 顺手把 dropbar 展开时的悬浮菜单也强行透明
+  hi('DropBarMenuNormalFloat', { bg = 'NONE' })
+  hi('DropBarMenuBorder', { bg = 'NONE', fg = colors.ruler })
+
   -- Syntax highlighting
-  hi('Comment', { fg = colors.comment })
+  hi('Comment', { fg = colors.comment, style = 'italic' })
   hi('Constant', { fg = colors.blue })
   hi('String', { fg = colors.cyan })
   hi('Character', { fg = colors.cyan })

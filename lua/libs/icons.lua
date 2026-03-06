@@ -2,10 +2,10 @@ local M = {}
 
 -- [LSP]
 M.lsp = {
-  error = 'E',
-  warn = 'W',
-  hint = 'H',
-  info = 'I',
+  error = ' ',
+  warn = ' ',
+  hint = ' ',
+  info = ' ',
 }
 
 M.basic = {

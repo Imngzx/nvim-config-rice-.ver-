@@ -15,7 +15,7 @@ Snacks.setup({
   -- https://github.com/folke/snacks.nvim/blob/main/docs/explorer.md
   explorer = { enabled = true },
   -- https://github.com/folke/snacks.nvim/blob/main/docs/indent.md
-  image = { enabled = false },
+  image = { enabled = true },
   indent = { enabled = true },
   input = { enabled = false },
   notifier = { enabled = false },
@@ -23,6 +23,7 @@ Snacks.setup({
   -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
   picker = {
     enabled = true,
+    hidden = true,
     -- Appearance
     prompt = ' ',
     layouts = {
@@ -38,7 +39,8 @@ Snacks.setup({
             {
               win = 'input',
               height = 1,
-              border = 'single',
+              -- border = 'single',
+              border = 'rounded',
               title = '{title} {live} {flags}',
               title_pos = 'left'
             },
@@ -46,7 +48,8 @@ Snacks.setup({
           },
           {
             win = 'preview',
-            border = 'single',
+            -- border = 'single',
+            border = 'rounded',
             title = '{preview:Preview}',
             title_pos = 'left',
             width = 0.65
@@ -57,7 +60,8 @@ Snacks.setup({
         layout = {
           width = 0.8,
           height = 0.9,
-          border = 'none',
+          -- border = 'none',
+          border = 'rounded',
           backdrop = false,
           box = 'vertical',
           {
@@ -67,8 +71,10 @@ Snacks.setup({
             title = '{title} {live} {flags}',
             title_pos = 'left'
           },
-          { win = 'list', border = 'single', height = 8 },
-          { win = 'preview', border = 'single' },
+          -- { win = 'list', border = 'single', height = 8 },
+          -- { win = 'preview', border = 'single' },
+          { win = 'list', border = 'rounded', height = 8 },
+          { win = 'preview', border = 'rounded' },
         },
       },
     },
@@ -161,7 +167,8 @@ Snacks.setup({
             relative = 'editor',
             external = false,
             focusable = false,
-            border = 'single',
+            -- border = 'single',
+            border = 'rounded',
             backdrop = false,
             show = show,
             bo = {
@@ -250,7 +257,7 @@ local key = {
   { '<leader>o', function() Snacks.picker.lsp_symbols() end, desc = 'LSP symbols' },
   -- Find
   { '<leader><space>', function() Snacks.picker.smart() end, desc = 'Smart find' },
-  { '<leader>fg', function() Snacks.picker.grep() end, desc = 'Grep' },
+  { '<leader>/', function() Snacks.picker.grep() end, desc = 'Grep' },
   { '<leader>fb', function() Snacks.picker.buffers() end, desc = 'Buffers' },
   { '<leader>ff', function() Snacks.picker.git_files() end, desc = 'Find git files' },
   { '<leader>fp', function() Snacks.picker.projects() end, desc = 'Projects' },

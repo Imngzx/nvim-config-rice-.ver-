@@ -10,11 +10,10 @@ local config = {
   groups = {
     'Normal', 'NormalNC', 'SignColumn', 'EndOfBuffer',
     'LineNr', 'CursorLineNr', 'NonText',
+
     'Comment', 'Constant', 'Special', 'Identifier', 'Statement',
     'PreProc', 'Type', 'Underlined', 'Todo', 'String', 'Function',
     'Conditional', 'Repeat', 'Operator', 'Structure',
-    -- Append from the origin list
-    'Folded',
   },
 
   extra_groups = {
@@ -25,6 +24,24 @@ local config = {
     -- Snacks
     'SnacksPickerInput', 'SnacksPickerInputBorder',
     'SnacksPickerList', 'SnacksPickerListBorder',
+
+    -- 👇 添加：Neovim 底层浮动窗口的 3 大件（背景、边框、标题）
+    'NormalFloat', 'FloatBorder', 'FloatTitle', 'FloatFooter',
+
+    -- 👇 添加：Blink.cmp 的菜单和文档浮窗透明
+    'BlinkCmpMenu', 'BlinkCmpMenuBorder',
+    'BlinkCmpDoc', 'BlinkCmpDocBorder',
+    'BlinkCmpSignatureHelp', 'BlinkCmpSignatureHelpBorder',
+
+    -- 👇 添加：LSP 悬浮文档 (Hover) 和 WhichKey 快捷键弹窗
+    'LspInfoBorder',
+    'WhichKeyFloat',
+
+    -- 👇 新增：强制透明化顶部路径栏 (WinBar)
+    'WinBar', 'WinBarNC',
+
+    -- 👇 新增：当你按下 <leader>; 展开 Dropbar 菜单时，让它的悬浮窗和边框也透明
+    'DropBarMenuNormalFloat', 'DropBarMenuBorder',
   },
 
   exclude_groups = {},

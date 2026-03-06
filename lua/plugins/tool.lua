@@ -5,25 +5,50 @@ lazy.load({
   plugin = 'https://github.com/folke/which-key.nvim',
   event = { 'User', pattern = 'VeryLazy' },
   setup = function()
-    require('which-key').add({
-      { '<leader>b', group = 'Buffer' },
-      { '<leader>c', group = 'Code' },
-      { '<leader>f', group = 'File' },
-      { '<leader>g', group = 'Git' },
-      { '<leader>q', group = 'Quit' },
-      { '<leader>s', group = 'Session' },
-      { '<leader>u', group = 'UI' },
-      { '<leader>p', group = 'Panel' },
+    local wk = require('which-key')
+
+    -- 1. 💅 配置最新版 Which-Key 的外观和行为
+    wk.setup({
+      preset = 'modern', -- 可选: classic, modern, helix
+      delay = function(ctx)
+        return ctx.plugin and 0 or 250 -- 稍微延迟，避免快速盲打时屏幕闪烁
+      end,
+      win = {
+        border = 'rounded', -- 与你全局的圆角风格统一
+        padding = { 1, 2 }, -- 上下 1 行，左右 2 列的内边距，呼吸感更好
+      },
     })
 
+    -- 2. 🏷️ 注册你所有的快捷键前缀和精美图标
+    wk.add({
+      { '<leader>b', group = 'Buffer', icon = '󰓩 ' },
+      { '<leader>c', group = 'Code', icon = ' ' },
+      { '<leader>d', group = 'Debug', icon = ' ' }, -- 为 dap.lua 补充
+      { '<leader>e', group = 'Explorer', icon = '󰙅 ' },
+      { '<leader>f', group = 'Find/File', icon = ' ' },
+      { '<leader>g', group = 'Git', icon = '󰊢 ' },
+      { '<leader>p', group = 'Panel/Project', icon = '󰏖 ' },
+      { '<leader>q', group = 'Quit', icon = '󰗼 ' },
+      { '<leader>r', group = 'Run', icon = ' ' }, -- 为 coderunner.lua 补充
+      { '<leader>s', group = 'Search', icon = '󰜎 ' }, -- 修正：Snacks 中 s 是 Search
+      { '<leader>u', group = 'UI/Toggles', icon = '󰙵 ' },
+
+      -- 顺手把内置/其他操作符的提示也加上
+      { '[', group = 'Prev', icon = '󰒮 ' },
+      { ']', group = 'Next', icon = '󰒭 ' },
+      { 'g', group = 'Goto', icon = '󰜎 ' },
+      { 's', group = 'Surround', icon = '󰑄 ' },
+      { 'z', group = 'Fold', icon = '󱃄 ' },
+    })
+
+    -- 局部按键绑定依然保留
     vim.keymap.set('n', '<leader>?',
-      function() require('which-key').show({ global = false }) end,
-      { desc = 'which-key local keymap' }
+      function() wk.show({ global = false }) end,
+      { desc = 'Buffer local keymaps' }
     )
   end
 })
 
--- [Diff] Load on open a file
 lazy.load({
   plugin = 'https://github.com/nvim-mini/mini.diff',
   event = { 'BufReadPost', 'BufNewFile' },
