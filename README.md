@@ -1,7 +1,7 @@
 # CWorld Neovim Config
 
 > [!NOTE]
-> This is a fork of the original [author's](https://github.com/cworld1/nvim-config)  config. This config is more focused on ui and colors
+> This is a fork of the original [author's](https://github.com/cworld1/nvim-config)  config. This config is more focused on UI and colors. Please have a look on his config too .
 
 ## About
 
@@ -16,11 +16,12 @@ This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop enviro
 
 ## Features
 
-- **Fast.** Less than **30ms** to start (Depends on SSD and CPU).
-- **Simple.** Run out of the box with only 11 plugins.
+- **Fast.** Less than **50ms** to start (Depends on SSD and CPU).
+- **Simple.** Run out of the box with only 28 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
-- **Powerful.** Almost full functionality to code.
+- **Powerful.** Near full functionality to code.
+- **Beautiful.** Uses catppuccin mocha colorscheme
 
 ## Info
 
@@ -35,14 +36,14 @@ Making sure you've installed [NeoVim](https://neovim.io/).
 _For Windows:_
 
 ```bash
-git clone https://github.com/cworld1/nvim-config.git ~/AppData/Local/nvim
+git clone https://github.com/Imngzx/nvim-config-rice-.ver-.git ~/AppData/Local/nvim
 nvim
 ```
 
 _For \*nix:_
 
 ```bash
-git clone https://github.com/cworld1/nvim-config.git $XDG_CONFIG_HOME/nvim
+git clone https://github.com/Imngzx/nvim-config-rice-.ver-.git $XDG_CONFIG_HOME/nvim
 nvim
 ```
 
