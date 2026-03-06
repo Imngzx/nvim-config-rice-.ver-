@@ -12,7 +12,7 @@ This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop enviro
 | ![Preview image](.github/assets/coderunner-support.png) | ![Preview image](.github/assets/new-key-hints-ui.png) |
 | --------------------------------------------------------- | --------------------------------------------------------- |
 
-![Preview image](.github/assets/file-finding.png) 
+| ![Preview image](.github/assets/rounded-corner-cmp.png) | ![Preview image](.github/assets/file-finding.png)  |
 
 ## Features
 
