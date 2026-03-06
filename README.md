@@ -1,7 +1,7 @@
 # CWorld Neovim Config
 
 > [!NOTE]
-> This is a fork of the original author's config. This config is more focused on ui and colors
+> This is a fork of the original [author's](https://github.com/cworld1/nvim-config)  config. This config is more focused on ui and colors
 
 ## About
 
