@@ -1,5 +1,8 @@
 # CWorld Neovim Config
 
+> [!NOTE]
+> This is a fork of the original author's config. This config is more focused on ui and colors
+
 ## About
 
 This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop environment.
