@@ -16,9 +16,6 @@ vim.keymap.set('n', '<leader>ub', '<cmd>lua vim.o.bg = vim.o.bg == "dark" and "l
   { desc = 'Toggle background' }
 )
 
--- [Mason]
-vim.keymap.set('n', '<leader>cm', '<cmd>Mason<cr>', { desc = 'Mason' })
-
 -- [Edit]
 -- Indent
 vim.keymap.set({ 'n', 'v' }, 'j', 'gj')
