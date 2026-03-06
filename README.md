@@ -7,10 +7,12 @@
 
 This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop environment.
 
-![Preview image](.github/assets/Img20251228160329175.png)
+![Preview image](.github/assets/lsp-ui.png)
 
-| ![Preview image](.github/assets/Img20251228160216984.png) | ![Preview image](.github/assets/Img20251228160529133.png) |
+| ![Preview image](.github/assets/coderunner-support.png) | ![Preview image](.github/assets/new-key-hints-ui.png) |
 | --------------------------------------------------------- | --------------------------------------------------------- |
+
+![Preview image](.github/assets/file-finding.png) 
 
 ## Features
 
