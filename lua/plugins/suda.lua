@@ -1,18 +1,18 @@
-local lazy = require('libs.lazy')
-
---[Suda] 自动提权保存/读取受保护的文件
--- 相当于 lazy.nvim 里的 init()，必须在插件加载前全局生效
-vim.g.suda_smart_edit = 1
--- vim.g["suda#prompt"] = "Password: "
-
-lazy.load({
-  plugin = 'https://github.com/lambdalisue/vim-suda.git',
-  -- 当读取或创建新文件时，静默加载以拦截权限不足的警告
-  event = { 'BufReadPre', 'BufNewFile' },
-  -- 如果你要手动触发，输入这俩命令也会自动唤醒插件
-  cmd = { 'SudaRead', 'SudaWrite' },
-  setup = function()
-    -- 对于 suda.vim 这种纯 Vimscript 插件，
-    -- setup 里不需要 require 任何东西，留空即可
-  end
-})
+-- local lazy = require('libs.lazy')
+--
+-- --[Suda] 自动提权保存/读取受保护的文件
+-- -- 相当于 lazy.nvim 里的 init()，必须在插件加载前全局生效
+-- vim.g.suda_smart_edit = 1
+-- -- vim.g["suda#prompt"] = "Password: "
+--
+-- lazy.load({
+--   plugin = 'https://github.com/lambdalisue/vim-suda.git',
+--   -- 当读取或创建新文件时，静默加载以拦截权限不足的警告
+--   event = { 'BufReadPre', 'BufNewFile' },
+--   -- 如果你要手动触发，输入这俩命令也会自动唤醒插件
+--   cmd = { 'SudaRead', 'SudaWrite' },
+--   setup = function()
+--     -- 对于 suda.vim 这种纯 Vimscript 插件，
+--     -- setup 里不需要 require 任何东西，留空即可
+--   end
+-- })

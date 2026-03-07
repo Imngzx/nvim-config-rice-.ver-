@@ -17,8 +17,13 @@ require('plugins.im-select')
 require('plugins.coderunner')
 require('plugins.venv-selector')
 
--- require('plugins.suda')
-require('custom.sudo')
+-- Write file with sudo privileges
+-- require('plugins.suda') --deleted plugin
+--
+--TODO: testing ongoing for line below
+-- require('custom.sudo.sudo')
+-- require('custom.sudo.sudo-v2')
+require('custom.sudo.sudo-v3') --current working-well version
 
 require('plugins.treesitter-context')
 require('plugins.csvview')
