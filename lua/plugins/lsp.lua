@@ -7,10 +7,14 @@ local H = {}
 H.mason = {
   -- LSP
   'lua_ls', -- lua
+  'emmylua_ls', --lua
+  'jsonls', --json
+  'basedpyright', --python
+  'marksman', -- markdown
   -- 'vtsls',    -- typescript
   -- 'css-lsp',  -- css
-  'marksman', -- markdown
   -- 'ty',       -- python
+
   -- Formatter
   -- 'prettier', -- front-end
   'shfmt', -- shell
@@ -40,7 +44,25 @@ H.lsp = {
 H.conform = {
   -- markdown = { 'prettier' },
   -- vue = { 'prettier' },
-  python = { 'ruff' },
+
+  python = function(bufnr)
+    if require('conform').get_formatter_info('ruff_format', bufnr).available then
+      return { 'ruff_format' }
+    else
+      return { 'isort', 'black' }
+    end
+  end,
+
+  javascript = { 'prettierd', 'prettier', stop_after_first = true },
+  rust = { 'rustfmt' },
+  c = { 'clang_format' },
+  cpp = { 'clang_format' },
+  scheme = { 'schemat' },
+  sh = { 'shfmt' },
+  bash = { 'shfmt' },
+  toml = { 'taplo' },
+  cmake = { 'cmake_format' },
+  json = { 'jq' },
   -- css = { 'prettier' },
 }
 
