@@ -88,6 +88,12 @@ vim.keymap.set('n', '<c-right>', '"<cmd>vertical resize +" . v:count1 . "<cr>"',
 -- Terminal
 vim.keymap.set('n', '<leader>at', '<cmd>vert term<cr>', { desc = 'Open Term' })
 
+--NOTE: enable this and disable above if you using windows
+--
+-- vim.keymap.set("n", "<leader>at", "<cmd>vert term pwsh.exe<CR>", { desc = "Open Powershell" })
+
+-- vim.keymap.set("n", "<leader>aT", "<cmd>vert term<CR>", { desc = "Open CMD" })
+
 -- Search
 -- Better n/N behavior https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
 vim.keymap.set('n', 'n', "'Nn'[v:searchforward].'zv'", { expr = true, desc = 'Next search result' })
