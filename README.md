@@ -16,12 +16,19 @@ This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop enviro
 
 ## Features
 
-- **Fast.** Less than **50ms** to start (Depends on SSD and CPU).
-- **Simple.** Run out of the box with only 28 plugins.
+### Summarization
+- **Fast.** Less than **50ms** to start on most of devices (Depends on SSD and CPU).
+- **Simple.** Run out of the box with only 27 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code.
 - **Beautiful.** Uses catppuccin mocha colorscheme
+
+### Extras 
+- **Pluginless** for flash, suda, and bufferline config
+
+> [!TIP]
+> you can press F for word jumping
 
 ## Info
 

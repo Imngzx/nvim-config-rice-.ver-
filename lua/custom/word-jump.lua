@@ -63,7 +63,7 @@ end
 -- 主函数
 function M.jump()
   local pattern = ''
-  print('Flash -> ')
+  print('⚡ Flash ❯  ')
 
   while true do
     local char = vim.fn.getcharstr()
