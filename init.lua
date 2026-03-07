@@ -36,7 +36,7 @@ local icons = require('libs.icons')
 -- })
 
 -- edit locked system files with sudo
-require('custom.sudo-v3') --current working-well version
+require('custom.sudo') --current working-well version
 
 -- show statusline that placed at below (above cmdline)
 require('custom.lualine')
