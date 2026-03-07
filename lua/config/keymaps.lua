@@ -86,12 +86,12 @@ vim.keymap.set('n', '<c-right>', '"<cmd>vertical resize +" . v:count1 . "<cr>"',
 
 -- [Functions]
 -- Terminal
-vim.keymap.set('n', '<leader>at', '<cmd>vert term<cr>', { desc = 'Open Term' })
+vim.keymap.set('n', '<leader>at', '<cmd>term<cr>', { desc = 'Open Terminal (linux)' })
+-- Vertical terminal
+-- vim.keymap.set('n', '<leader>at', '<cmd>vert term<cr>', { desc = 'Open Terminal (linux)' })
 
---NOTE: enable this and disable above if you using windows
---
+--NOTE: enable this and disable above if you using Windows
 -- vim.keymap.set("n", "<leader>at", "<cmd>vert term pwsh.exe<CR>", { desc = "Open Powershell" })
-
 -- vim.keymap.set("n", "<leader>aT", "<cmd>vert term<CR>", { desc = "Open CMD" })
 
 -- Search

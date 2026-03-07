@@ -21,6 +21,7 @@ lazy.load({
 
     -- 2. 🏷️ 注册你所有的快捷键前缀和精美图标
     wk.add({
+      { '<leader>a', group = 'Terminal', icon = ' ' },
       { '<leader>b', group = 'Buffer', icon = '󰓩 ' },
       { '<leader>c', group = 'Code', icon = ' ' },
       { '<leader>d', group = 'Debug', icon = ' ' }, -- 为 dap.lua 补充
