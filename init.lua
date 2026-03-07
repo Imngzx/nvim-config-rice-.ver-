@@ -19,11 +19,6 @@ require('plugins.venv-selector')
 
 -- Write file with sudo privileges
 -- require('plugins.suda') --deleted plugin
---
---TODO: testing ongoing for line below
--- require('custom.sudo.sudo')
--- require('custom.sudo.sudo-v2')
-require('custom.sudo.sudo-v3') --current working-well version
 
 require('plugins.treesitter-context')
 require('plugins.csvview')
@@ -39,7 +34,16 @@ local icons = require('libs.icons')
 --   hide_filename_by_ft = { snacks_picker_list = true },
 --   icons = { branch = icons.git.branch }
 -- })
+
+-- edit locked system files with sudo
+require('custom.sudo-v3') --current working-well version
+
+-- show statusline that placed at below (above cmdline)
 require('custom.lualine')
+
+--word jumping that similar as folke/flash.nvim
+require('custom.word-jump')
+
 require('custom.tabline').setup({
   hide_single_tab = true,
   on_close = function(buf_id) Snacks.bufdelete(buf_id) end,
@@ -53,6 +57,8 @@ require('custom.surround').setup()
 -- Trigger VeryLazy event after all are loaded
 require('libs.lazy').trigger_verylazy()
 
+--lsp loading
+require('custom.lsp-loading')
 
 if vim.g.neovide then
   vim.o.guifont =
