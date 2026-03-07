@@ -1,8 +1,5 @@
 local lazy = require('libs.lazy')
 
-vim.pack.add({ 'https://github.com/MeanderingProgrammer/render-markdown.nvim' })
-
-
 lazy.load({
   plugin = 'https://github.com/MeanderingProgrammer/render-markdown.nvim',
 
