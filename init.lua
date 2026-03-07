@@ -16,7 +16,10 @@ local Snacks = require('plugins.snacks')
 require('plugins.im-select')
 require('plugins.coderunner')
 require('plugins.venv-selector')
-require('plugins.suda')
+
+-- require('plugins.suda')
+require('custom.sudo')
+
 require('plugins.treesitter-context')
 require('plugins.csvview')
 require('plugins.dap')
