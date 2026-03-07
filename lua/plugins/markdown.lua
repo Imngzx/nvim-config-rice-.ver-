@@ -41,6 +41,26 @@ lazy.load({
       completions = { lsp = { enabled = false } },
 
     })
+    -- 2. 注入 Snacks Toggle 逻辑
+    -- 注意：这里直接 require('snacks') 确保能拿到 snacks 实例
+    local ok, snacks = pcall(require, 'snacks')
+    if ok then
+      snacks.toggle({
+        name = 'Render Markdown',
+        get = function()
+          -- 获取当前插件的启用状态
+          return require('render-markdown.state').enabled
+        end,
+        set = function(enabled)
+          local m = require('render-markdown')
+          if enabled then
+            m.enable()
+          else
+            m.disable()
+          end
+        end,
+      }):map('<leader>um')
+    end
   end
 
 })
