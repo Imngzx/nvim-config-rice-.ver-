@@ -272,10 +272,11 @@ lazy.load({
           }
         },
         menu = {
-          -- winhighlight =
-          -- 'Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,CursorLine:slinkCmpDocCursorLine,Search:None',
-          -- winhighlight =
-          -- 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:BlinkCmpMenuSelection,Search:None',
+
+          --can comment this if you want cmp menu with darker color bg
+          winhighlight =
+          'Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,CursorLine:BlinkCmpDocCursorLine,Search:None',
+
           scrollbar = true,
           auto_show_delay_ms = 200,
           border = 'rounded',
