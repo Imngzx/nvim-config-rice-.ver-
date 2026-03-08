@@ -22,9 +22,6 @@ require('plugins.im-select')
 require('plugins.coderunner')
 require('plugins.venv-selector')
 
--- Write file with sudo privileges
--- require('plugins.suda') --deleted plugin
-
 require('plugins.treesitter-context')
 require('plugins.csvview')
 require('plugins.dap')
