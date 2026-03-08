@@ -37,6 +37,12 @@ More photos can be found in [here](.github/assets)
 > [!TIP]
 > you can press F for word jumping (folke flash)
 
+> [!TIP]
+> can test launch speed with 
+```sh
+❯ nvim --startuptime nvim_speed.log +q && nvim nvim_speed.log
+```
+
 ## Info
 
 - Plugin manager: `vim.pack`
