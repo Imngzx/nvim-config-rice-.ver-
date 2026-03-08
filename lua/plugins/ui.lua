@@ -13,9 +13,18 @@ local lazy = require('libs.lazy')
 -- run after 100ms
 
 -- [Icon]
-vim.pack.add({ 'https://github.com/nvim-mini/mini.icons' })
-require('mini.icons').setup()
-require('mini.icons').mock_nvim_web_devicons()
+-- vim.pack.add({ 'https://github.com/nvim-mini/mini.icons' })
+-- require('mini.icons').setup()
+-- require('mini.icons').mock_nvim_web_devicons()
+lazy.load({
+  plugin = 'https://github.com/nvim-mini/mini.icons',
+  -- UI 渲染完毕后，在后台静默加载
+  event = { 'User', pattern = 'VeryLazy' },
+  setup = function()
+    require('mini.icons').setup()
+    require('mini.icons').mock_nvim_web_devicons()
+  end
+})
 
 lazy.load({
   plugin = 'https://github.com/bekaboo/dropbar.nvim',
