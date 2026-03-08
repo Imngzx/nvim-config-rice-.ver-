@@ -16,8 +16,10 @@ require('plugins.markdown')
 local Snacks = require('plugins.snacks')
 
 -- Input method swtich for non-English users
--- comment this out if you use windows or didnt use fcitx5
-require('plugins.im-select')
+-- 仅在非 Windows 系统（如 Linux/macOS）下加载 im-select
+if vim.fn.has('win32') == 0 then
+  require('plugins.im-select')
+end
 
 require('plugins.coderunner')
 require('plugins.venv-selector')
