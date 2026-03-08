@@ -8,7 +8,7 @@ H.mason = {
   -- LSP
   'lua_ls', -- lua
   'emmylua_ls', --lua
-  'jsonls', --json
+  'json-lsp', --json
   'basedpyright', --python
   'marksman', -- markdown
   -- 'vtsls',    -- typescript
