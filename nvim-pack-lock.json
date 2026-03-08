@@ -33,10 +33,6 @@
       "rev": "113a6905a1c95d2990269f96abcbad9718209557",
       "src": "https://github.com/keaising/im-select.nvim"
     },
-    "incline.nvim": {
-      "rev": "8b54c59bcb23366645ae10edca6edfb9d3a0853e",
-      "src": "https://github.com/b0o/incline.nvim"
-    },
     "lualine.nvim": {
       "rev": "47f91c416daef12db467145e16bed5bbfe00add8",
       "src": "https://github.com/nvim-lualine/lualine.nvim"

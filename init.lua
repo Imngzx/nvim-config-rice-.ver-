@@ -38,6 +38,10 @@ local icons = require('libs.icons')
 --   icons = { branch = icons.git.branch }
 -- })
 
+require('custom.incline').setup()
+-- this is the version with border
+-- require('custom.incline-border()').setup()
+
 -- edit locked system files with sudo
 require('custom.sudo') --current working-well version
 
