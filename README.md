@@ -1,7 +1,7 @@
 # CWorld Neovim Config
 
 > [!NOTE]
-> This is a fork of the original [author's](https://github.com/cworld1/nvim-config)  config. This config is more focused on UI and colors. Please have a look on his config too .
+> This is a fork of the original [author's](https://github.com/cworld1/nvim-config)  config. His config is more focused on simplicity. Please have a look on his config too .
 
 > [!NOTE]
 > nvim 0.12 still have font issues with neovide, please use neovide-git instead
