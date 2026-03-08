@@ -169,7 +169,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 -- [Formatter] Multi-trigger: load on save or keymap
-vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
+-- vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 lazy.load({
   plugin = 'https://github.com/stevearc/conform.nvim',
   event = 'BufWritePre',

@@ -1,3 +1,4 @@
+_G.start_time = vim.uv.hrtime()
 -- [Config]
 require('config.options')
 require('config.keymaps')

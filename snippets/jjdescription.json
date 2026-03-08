@@ -1,122 +1,156 @@
 {
   "Features": {
     "prefix": "feat",
-    "body": [ "feat: " ],
+    "body": [
+      "feat: "
+    ],
     "description": "Add a new feature"
   },
   "Features (with scope)": {
     "prefix": "feat()",
-    "body": [ "feat(${1:scope}): ${2:description}" ],
+    "body": [
+      "feat(${1:scope}): ${2:description}"
+    ],
     "description": "Add a new feature"
   },
-
   "Bug fixes": {
     "prefix": "fix",
-    "body": [ "fix: " ],
+    "body": [
+      "fix: "
+    ],
     "description": "Fix a bug"
   },
   "Bug fixes (with scope)": {
     "prefix": "fix()",
-    "body": [ "fix(${1:scope}): ${2:description}" ],
+    "body": [
+      "fix(${1:scope}): ${2:description}"
+    ],
     "description": "Fix a bug"
   },
-
   "Documentation": {
     "prefix": "docs",
-    "body": [ "docs: " ],
+    "body": [
+      "docs: "
+    ],
     "description": "Update documentation"
   },
   "Documentation (with scope)": {
     "prefix": "docs()",
-    "body": [ "docs(${1:scope}): ${2:description}" ],
+    "body": [
+      "docs(${1:scope}): ${2:description}"
+    ],
     "description": "Update documentation"
   },
-
   "Styles": {
     "prefix": "style",
-    "body": [ "style: " ],
+    "body": [
+      "style: "
+    ],
     "description": "Code style changes (no functional impact)"
   },
   "Styles (with scope)": {
     "prefix": "style()",
-    "body": [ "style(${1:scope}): ${2:description}" ],
+    "body": [
+      "style(${1:scope}): ${2:description}"
+    ],
     "description": "Code style changes (no functional impact)"
   },
-
   "Code refactoring": {
     "prefix": "refactor",
-    "body": [ "refactor: " ],
+    "body": [
+      "refactor: "
+    ],
     "description": "Refactor code"
   },
   "Code refactoring (with scope)": {
     "prefix": "refactor()",
-    "body": [ "refactor(${1:scope}): ${2:description}" ],
+    "body": [
+      "refactor(${1:scope}): ${2:description}"
+    ],
     "description": "Refactor code"
   },
-
   "Performance improvements": {
     "prefix": "perf",
-    "body": [ "perf: " ],
+    "body": [
+      "perf: "
+    ],
     "description": "Improve performance"
   },
   "Performance improvements (with scope)": {
     "prefix": "perf()",
-    "body": [ "perf(${1:scope}): ${2:description}" ],
+    "body": [
+      "perf(${1:scope}): ${2:description}"
+    ],
     "description": "Improve performance"
   },
-
   "Tests": {
     "prefix": "test",
-    "body": [ "test: " ],
+    "body": [
+      "test: "
+    ],
     "description": "Add or modify tests"
   },
   "Tests (with scope)": {
     "prefix": "test()",
-    "body": [ "test(${1:scope}): ${2:description}" ],
+    "body": [
+      "test(${1:scope}): ${2:description}"
+    ],
     "description": "Add or modify tests"
   },
-
   "Builds": {
     "prefix": "build",
-    "body": [ "build: " ],
+    "body": [
+      "build: "
+    ],
     "description": "Changes to the build system or dependencies"
   },
   "Builds (with scope)": {
     "prefix": "build()",
-    "body": [ "build(${1:scope}): ${2:description}" ],
+    "body": [
+      "build(${1:scope}): ${2:description}"
+    ],
     "description": "Changes to the build system or dependencies"
   },
-
   "Continuous Integration": {
     "prefix": "ci",
-    "body": [ "ci: " ],
+    "body": [
+      "ci: "
+    ],
     "description": "CI configuration changes"
   },
   "Continuous Integration (with scope)": {
     "prefix": "ci()",
-    "body": [ "ci(${1:scope}): ${2:description}" ],
+    "body": [
+      "ci(${1:scope}): ${2:description}"
+    ],
     "description": "CI configuration changes"
   },
-
   "Chore": {
     "prefix": "chore",
-    "body": [ "chore: " ],
+    "body": [
+      "chore: "
+    ],
     "description": "Other non‑code changes"
   },
   "Chore (with scope)": {
     "prefix": "chore()",
-    "body": [ "chore(${1:scope}): ${2:description}" ],
+    "body": [
+      "chore(${1:scope}): ${2:description}"
+    ],
     "description": "Other non‑code changes"
   },
-
   "Reverts": {
     "prefix": "revert",
-    "body": [ "revert: " ],
+    "body": [
+      "revert: "
+    ],
     "description": "Revert a previous commit"
   },
   "Reverts (with scope)": {
     "prefix": "revert()",
-    "body": [ "revert(${1:commitHash}): ${2:reason}" ],
+    "body": [
+      "revert(${1:commitHash}): ${2:reason}"
+    ],
     "description": "Revert a previous commit"
   }
 }

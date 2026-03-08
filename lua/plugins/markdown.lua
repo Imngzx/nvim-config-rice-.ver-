@@ -4,8 +4,9 @@ lazy.load({
   plugin = 'https://github.com/MeanderingProgrammer/render-markdown.nvim',
 
   -- event = { 'BufReadPost', 'BufNewFile' },
-  event = { 'User', pattern = 'VeryLazy' },
-
+  -- event = { 'User', pattern = 'VeryLazy' },
+  ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
+  
   setup = function()
     require('render-markdown').setup({
       ---@module 'render-markdown'

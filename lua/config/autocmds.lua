@@ -2,6 +2,13 @@ local function augroup(name)
   return vim.api.nvim_create_augroup('lazyvim_' .. name, { clear = true })
 end
 
+vim.api.nvim_create_autocmd('BufEnter', {
+  group = vim.api.nvim_create_augroup('DisableAutoComment', { clear = true }),
+  callback = function()
+    vim.opt.formatoptions:remove({ 'c', 'r', 'o' })
+  end,
+})
+
 -- [Autocmd] Highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('HighlightOnYank', {}),
@@ -12,7 +19,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_autocmd('BufReadPost', {
   pattern = '*.csv',
   callback = function()
-    vim.cmd([[CsvViewToggle delimiter=, display_mode=border header_lnum=1]])
+    -- 👇 将 Toggle 改为 Enable
+    vim.cmd([[CsvViewEnable delimiter=, display_mode=border header_lnum=1]])
   end,
 })
 

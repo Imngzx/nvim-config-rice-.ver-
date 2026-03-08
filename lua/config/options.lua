@@ -50,7 +50,7 @@ vim.opt.wildmode = 'longest:full,full' -- enhanced command completion
 -- Others
 vim.opt.jumpoptions = 'view' -- restore view after jump
 vim.opt.virtualedit = 'block' -- allow cursor past EOL in block mode
-vim.o.formatoptions = vim.o.formatoptions:gsub('[ro]', '') -- break comment new line
+-- vim.o.formatoptions = vim.o.formatoptions:gsub('[ro]', '') -- break comment new line
 
 -- [Functions]
 -- Clipboard
