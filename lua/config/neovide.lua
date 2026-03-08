@@ -1,3 +1,5 @@
+-- neovide will have fonts issues with nvim 0.12,
+-- please use nvim 0.12.2 instead if you want to use neovide
 if vim.g.neovide then
   vim.opt.guifont = { 'JetBrainsMono Nerd Font', ':h14' }
   -- vim.g.neovide_window_blurred = true
