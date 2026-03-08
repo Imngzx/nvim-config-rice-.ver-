@@ -12,8 +12,11 @@ require('plugins.colorful-lsp-menu')
 require('plugins.tool')
 require('plugins.markdown')
 local Snacks = require('plugins.snacks')
+
 -- Input method swtich for non-English users
+-- comment this out if you use windows or didnt use fcitx5
 require('plugins.im-select')
+
 require('plugins.coderunner')
 require('plugins.venv-selector')
 
