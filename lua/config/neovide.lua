@@ -7,7 +7,12 @@ if vim.g.neovide then
   vim.g.neovide_floating_blur_amount_x = 3.0
   vim.g.neovide_floating_blur_amount_y = 3.0
   vim.g.neovide_refresh_rate = 240
+
   vim.g.neovide_cursor_antialiasing = true
+  -- 光标闪烁动画
+  vim.g.neovide_cursor_smooth_blink = true
+  vim.opt.guicursor:append('a:blinkwait700-blinkon475-blinkoff475')
+
   vim.g.neovide_hide_titlebar = true
   -- vim.g.neovide_padding_bottom = -2
   vim.g.neovide_floating_shadow = false
