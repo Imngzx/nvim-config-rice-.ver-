@@ -19,43 +19,50 @@ Snacks.setup({
       -- { icon = ' ', title = 'Recent Files', section = 'recent_files', indent = 2, padding = 1 },
       -- { icon = ' ', title = 'Projects', section = 'projects', indent = 2, padding = 1 },
 
-      function()
-        -- 1. 统计【总插件数】(目录里有多少个文件夹)
-        local plugin_dir = vim.fn.stdpath('data') .. '/site/pack/core/opt'
-        local total_count = 0
-        if vim.fn.isdirectory(plugin_dir) == 1 then
-          total_count = #vim.fn.readdir(plugin_dir)
-        end
+      -- ==========================================
+      -- 👇 使用「闭包缓存」：只在第一次见面时计算，之后彻底冻结结果！
+      -- ==========================================
+      (function()
+        local cached_result = nil -- 记忆缓存罐
 
-        -- 2. 统计【已加载插件数】(运行环境里挂载了多少个)
-        local loaded_count = 0
-        for _, path in ipairs(vim.fn.split(vim.o.runtimepath, ',')) do
-          if path:find('pack/core/opt') then
-            loaded_count = loaded_count + 1
+        return function()
+          -- 如果已经计算过（缓存罐里有东西），直接扔出缓存，停止后续所有计算
+          if cached_result then
+            return cached_result
           end
+
+          -- 1. 统计【总插件数】
+          local plugin_dir = vim.fn.stdpath('data') .. '/site/pack/core/opt'
+          local total_count = 0
+          if vim.fn.isdirectory(plugin_dir) == 1 then
+            total_count = #vim.fn.readdir(plugin_dir)
+          end
+
+          -- 2. 统计【已加载插件数】并锁定视觉显示为 5
+          local loaded_count = 5
+
+          -- 3. 计算真实启动时间 (纳秒换算成毫秒)
+          local ms = 0
+          if _G.start_time then
+            ms = math.floor((vim.uv.hrtime() - _G.start_time) / 1e6 * 100 + 0.5) / 100
+          end
+
+          -- 4. 首次计算完毕，把结果放进缓存罐里冻结起来
+          cached_result = {
+            align = 'center',
+            text = {
+              { '󱐋 ', hl = 'Special' },
+              { tostring(loaded_count) .. ' / ' .. tostring(total_count), hl = 'Special' },
+              { ' plugins loaded in ', hl = 'Comment' },
+              { tostring(ms) .. ' ms', hl = 'Special' },
+            },
+            padding = 1,
+          }
+
+          return cached_result
         end
-
-        -- 3. 计算真实启动时间 (纳秒换算成毫秒)
-        local ms = 0
-        if _G.start_time then
-          -- 1毫秒 = 1000000纳秒，保留两位小数
-          ms = math.floor((vim.uv.hrtime() - _G.start_time) / 1e6 * 100 + 0.5) / 100
-        end
-
-        -- 4. 组合成你想要的格式
-        return {
-          align = 'center',
-          text = {
-            { '󱐋 ', hl = 'Special' }, -- 也可以换成emoji ⚡
-            { tostring(loaded_count) .. '/' .. tostring(total_count), hl = 'Special' },
-            { ' plugins loaded in ', hl = 'Comment' },
-            { tostring(ms) .. ' ms', hl = 'Special' },
-          },
-          padding = 1,
-        }
-      end,
-      -- 👆 函数结束
-
+      end)(),
+      -- 👆 闭包结束
     },
   },
   -- https://github.com/folke/snacks.nvim/blob/main/docs/explorer.md
