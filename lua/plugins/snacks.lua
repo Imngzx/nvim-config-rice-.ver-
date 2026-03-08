@@ -71,6 +71,7 @@ Snacks.setup({
   image = { enabled = true },
   indent = { enabled = true },
   input = { enabled = false },
+  profiler = { enabled = true },
   notifier = {
     enabled = true,
     timeout = 3000,

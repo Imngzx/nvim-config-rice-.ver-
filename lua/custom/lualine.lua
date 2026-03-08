@@ -2,7 +2,7 @@ local lazy = require('libs.lazy')
 
 lazy.load({
   plugin = 'https://github.com/nvim-lualine/lualine.nvim',
-  event = { 'User', pattern = 'VeryLazy' },
+  event = { 'BufReadPost', 'BufNewFile' },
   setup = function()
     require('lualine').setup({
       options = {
