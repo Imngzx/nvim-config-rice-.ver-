@@ -24,7 +24,7 @@ More photos can be found in [here](.github/assets)
 ## Features
 
 ### Summarization
-- **Fast.** Less than **50ms** to start on most of devices (Depends on SSD and CPU).
+- **Fast.** Less than **50ms** to start on most of devices (Depends on SSD, CPU, and OS (**Linux** is suggested)).
 - **Simple.** Run out of the box with only 25 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
@@ -32,10 +32,10 @@ More photos can be found in [here](.github/assets)
 - **Beautiful.** Uses catppuccin mocha colorscheme
 
 ### Extras 
-- **Pluginless** for flash, suda, and bufferline config
+- **Pluginless** for flash, suda, incline, fidget and bufferline features
 
 > [!TIP]
-> you can press F for word jumping
+> you can press F for word jumping (folke flash)
 
 ## Info
 
@@ -45,7 +45,7 @@ More photos can be found in [here](.github/assets)
 
 ## Installation
 
-Making sure you've installed [NeoVim](https://neovim.io/).
+Making sure you've installed [NeoVim 0.12](https://neovim.io/).
 
 _For Windows:_
 
