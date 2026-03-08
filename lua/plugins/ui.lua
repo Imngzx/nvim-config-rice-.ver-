@@ -15,6 +15,7 @@ local lazy = require('libs.lazy')
 -- [Icon]
 vim.pack.add({ 'https://github.com/nvim-mini/mini.icons' })
 require('mini.icons').setup()
+require('mini.icons').mock_nvim_web_devicons()
 
 local lazy = require('libs.lazy')
 
