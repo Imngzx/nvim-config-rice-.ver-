@@ -30,7 +30,11 @@ vim.opt.foldtext = "v:lua.vim.fn.getline(v:foldstart) .. ' …'" -- Fold text
 -- [Editor]
 vim.opt.fileformat = 'unix'
 vim.opt.mouse = 'a' -- enable mouse in all modes
-vim.opt.laststatus = 3 -- global satusline (once you add one)
+
+--changed, original is 3
+vim.opt.laststatus = 0 -- global satusline (once you add one)
+
+vim.opt.ruler = false
 -- vim.opt.colorcolumn = '80'   -- column ruler
 vim.opt.confirm = true -- confirm before quitting unsaved changes
 -- Case

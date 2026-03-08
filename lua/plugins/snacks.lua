@@ -26,28 +26,42 @@ Snacks.setup({
         local cached_result = nil -- 记忆缓存罐
 
         return function()
-          -- 如果已经计算过（缓存罐里有东西），直接扔出缓存，停止后续所有计算
           if cached_result then
             return cached_result
           end
 
-          -- 1. 统计【总插件数】
+          -- 1. 动态统计【总插件数】和【已加载插件数】
           local plugin_dir = vim.fn.stdpath('data') .. '/site/pack/core/opt'
           local total_count = 0
+          local loaded_count = 0
+
           if vim.fn.isdirectory(plugin_dir) == 1 then
-            total_count = #vim.fn.readdir(plugin_dir)
+            local plugins = vim.fn.readdir(plugin_dir)
+            total_count = #plugins
+
+            -- 获取当前所有被激活加载的运行时路径 (Runtime Paths)
+            local rtps = vim.api.nvim_list_runtime_paths()
+
+            -- 检查每一个下载的插件，看看它的路径是否已经被注入到 rtp 中
+            for _, p in ipairs(plugins) do
+              -- 使用 vim.fs.normalize 统一路径分隔符，防止跨平台路径匹配失败
+              local p_path = vim.fs.normalize(plugin_dir .. '/' .. p)
+              for _, rtp in ipairs(rtps) do
+                if vim.fs.normalize(rtp) == p_path then
+                  loaded_count = loaded_count + 1
+                  break
+                end
+              end
+            end
           end
 
-          -- 2. 统计【已加载插件数】并锁定视觉显示为 5
-          local loaded_count = 5
-
-          -- 3. 计算真实启动时间 (纳秒换算成毫秒)
+          -- 2. 计算真实启动时间 (纳秒换算成毫秒)
           local ms = 0
           if _G.start_time then
             ms = math.floor((vim.uv.hrtime() - _G.start_time) / 1e6 * 100 + 0.5) / 100
           end
 
-          -- 4. 首次计算完毕，把结果放进缓存罐里冻结起来
+          -- 3. 首次计算完毕，把结果放进缓存罐里冻结起来
           cached_result = {
             align = 'center',
             text = {
@@ -310,6 +324,10 @@ Snacks.setup({
 })
 
 local key = {
+  -- Profiler
+  { '<leader>spp', function() Snacks.profiler.toggle() end, desc = 'Toggle Profiler' },
+  { '<leader>sps', function() Snacks.profiler.scratch() end, desc = 'Profiler Scratch Buffer' },
+
   { '<leader>e', function() Snacks.explorer() end, desc = 'File Explorer' },
   { '<leader>o', function() Snacks.picker.lsp_symbols() end, desc = 'LSP symbols' },
   -- Find

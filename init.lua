@@ -1,3 +1,4 @@
+require('custom.startup')
 _G.start_time = vim.uv.hrtime()
 -- [Config]
 require('config.options')
