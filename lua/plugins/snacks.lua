@@ -71,7 +71,10 @@ Snacks.setup({
   image = { enabled = true },
   indent = { enabled = true },
   input = { enabled = false },
-  notifier = { enabled = false },
+  notifier = {
+    enabled = true,
+    timeout = 3000,
+  },
 
   -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
   picker = {
