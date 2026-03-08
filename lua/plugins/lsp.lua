@@ -15,6 +15,10 @@ H.mason = {
   -- 'css-lsp',  -- css
   -- 'ty',       -- python
 
+  -- Debugger
+  'codelldb',
+  'debugpy',
+
   -- Formatter
   -- 'prettier', -- front-end
   'shfmt', -- shell
@@ -113,7 +117,7 @@ lazy.load({
   },
   setup = function()
     require('mason').setup({
-      ensure_installed = H.mason,
+      -- 删除了无效的 ensure_installed
       ui = {
         icons = {
           package_installed = '✓',
@@ -122,6 +126,22 @@ lazy.load({
         },
       },
     })
+
+    -- 👇 手动实现 ensure_installed 的逻辑（支持 LSP、Formatter、Linter 等所有工具）
+    local registry = require('mason-registry')
+    -- 确保注册表已加载
+    registry.refresh(function()
+      for _, pkg_name in ipairs(H.mason) do
+        local ok, pkg = pcall(registry.get_package, pkg_name)
+        if ok and not pkg:is_installed() then
+          -- 使用 schedule 确保在安全的上下文中执行 UI/通知
+          vim.schedule(function()
+            pkg:install()
+            vim.notify('[Mason] Auto installing ' .. pkg_name, vim.log.levels.INFO)
+          end)
+        end
+      end
+    end)
   end
 })
 
