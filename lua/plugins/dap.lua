@@ -40,7 +40,7 @@ lazy.load({
     { 'n', '<leader>dw', function() require('dap.ui.widgets').hover() end, { desc = 'Widgets' } },
   },
   setup = function()
-    -- 1. 🎨 定义行号栏图标 (原 init 部分)
+    -- 1. 🎨 定义行号栏图标
     vim.fn.sign_define('DapBreakpoint',
       { text = ' ', texthl = 'DapBreakpoint', linehl = '', numhl = '' })
     vim.fn.sign_define('DapBreakpointCondition',
@@ -52,19 +52,35 @@ lazy.load({
     vim.fn.sign_define('DapBreakpointRejected',
       { text = ' ', texthl = 'DapBreakpointRejected', linehl = '', numhl = '' })
 
-    -- 2. 🔌 启动附属插件 (原 opts 自动启动的部分)
-    require('dap-view').setup()
+    -- 2. 🔌 启动附属插件
+    local dap_view = require('dap-view')
+    dap_view.setup()
     require('nvim-dap-virtual-text').setup({})
     require('dap-python').setup('python3', {})
 
-    -- 3. ⚙️ 配置 DAP 适配器和语言 (原 config 部分)
+    -- 3. ⚙️ 配置 DAP 核心与 UI 联动
     local dap = require('dap')
+
+    -- 👇 修复 1：监听 DAP 事件，自动打开/关闭 dap-view
+    dap.listeners.after.event_initialized['dap-view-auto-open'] = function()
+      dap_view.open()
+    end
+    -- 如果你想在调试结束后自动关闭窗口，保留下面两行；如果想保留窗口查看变量，可以注释掉
+    dap.listeners.before.event_terminated['dap-view-auto-close'] = function() dap_view.close() end
+    dap.listeners.before.event_exited['dap-view-auto-close'] = function() dap_view.close() end
+
+    -- 4. ⚙️ 配置 DAP 适配器
+    local mason_bin = vim.fn.stdpath('data') .. '/mason/bin/'
+    -- 兼容 Windows 系统
+    local codelldb_cmd = vim.fn.has('win32') == 1 and mason_bin .. 'codelldb.cmd' or
+    mason_bin .. 'codelldb'
 
     dap.adapters.codelldb = {
       type = 'server',
       port = '${port}',
       executable = {
-        command = 'codelldb',
+        -- 👇 修复：使用 Mason 里的绝对路径
+        command = codelldb_cmd,
         args = { '--port', '${port}' },
       },
     }
@@ -83,6 +99,23 @@ lazy.load({
       },
     }
 
+    -- 👇 修复 2：补充缺失的 cpp 配置，让 codelldb 知道怎么运行它
+    dap.configurations.cpp = {
+      {
+        name = 'Launch file',
+        type = 'codelldb',
+        request = 'launch',
+        program = function()
+          -- 按下继续后，会要求你输入编译好的可执行文件路径 (例如: ./out/main)
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+      },
+    }
+
+    -- 现在赋值给 C 和 Rust 才会生效
     dap.configurations.c = dap.configurations.cpp
     dap.configurations.rust = dap.configurations.cpp
   end
