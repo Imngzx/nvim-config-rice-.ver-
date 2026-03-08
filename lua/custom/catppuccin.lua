@@ -3,7 +3,7 @@
 -- nvim/lua/custom/catppuccin.lua
 vim.pack.add({ 'https://github.com/catppuccin/nvim' })
 require('catppuccin').setup({
-  flavour = 'macchiato',
+  flavour = 'mocha',
   transparent_background = false, -- 如果你想全局透明可以改成 true
   integrations = {
     blink_cmp = true,
