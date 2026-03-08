@@ -48,7 +48,7 @@ Making sure you've installed [NeoVim](https://neovim.io/).
 _For Windows:_
 
 ```bash
-git clone https://github.com/Imngzx/nvim-config-rice-.ver-.git ~/AppData/Local/nvim
+git clone https://github.com/Imngzx/linux-nvim-config2.git "${env:LOCALAPPDATA}\nvim"
 nvim
 ```
 
