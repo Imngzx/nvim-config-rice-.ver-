@@ -1,3 +1,4 @@
+---@diagnostic disable: annotation-usage-error
 ---@module 'snacks'
 
 local icons = require('libs.icons')
@@ -329,7 +330,7 @@ local key = {
   { '<leader>sps', function() Snacks.profiler.scratch() end, desc = 'Profiler Scratch Buffer' },
 
   { '<leader>e', function() Snacks.explorer() end, desc = 'File Explorer' },
-  { '<leader>o', function() Snacks.picker.lsp_symbols() end, desc = 'LSP symbols' },
+  { '<leader>co', function() Snacks.picker.lsp_symbols() end, desc = 'LSP symbols' },
   -- Find
   { '<leader><space>', function() Snacks.picker.smart() end, desc = 'Smart find' },
   { '<leader>/', function() Snacks.picker.grep() end, desc = 'Grep' },
