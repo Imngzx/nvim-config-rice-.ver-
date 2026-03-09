@@ -1,9 +1,9 @@
+--NOTE: 可选 'none', 'rounded', 'single'
 local M = {}
 local win_cache = {}
 local ns = vim.api.nvim_create_namespace('HandcraftedIncline')
 
 M.config = {
-  --NOTE: 可选 'none', 'rounded', 'single'
   border = 'none',
   panel_bg = '#44406e',
 }
@@ -41,12 +41,9 @@ local function update_incline()
     end
 
     if is_valid then
-      -- 检查光标位置
       local cursor = vim.api.nvim_win_get_cursor(win_id)
       local win_info = vim.fn.getwininfo(win_id)[1]
-
-      -- 如果光标所在的行 是 当前窗口显示的最顶端那一行 (topline)
-      -- 我们就隐藏面板，防止遮挡
+      -- 👇 如果光标移到了当前窗口可视区域的第一行 (topline)，隐藏它防止遮挡
       if win_info and cursor[1] == win_info.topline then
         is_valid = false
       end
@@ -57,16 +54,28 @@ local function update_incline()
       goto continue
     end
 
-    -- 渲染逻辑 (与之前一致)
+    -- === 性能优化核心：缓存 Diffing 机制 ===
     local buf_path = vim.api.nvim_buf_get_name(buf_id)
     local filename = buf_path ~= '' and vim.fn.fnamemodify(buf_path, ':t') or '[No Name]'
+    local modified = vim.bo[buf_id].modified
+    local win_width = vim.api.nvim_win_get_width(win_id)
+
+    -- 生成当前状态哈希
+    local state_hash = string.format('%d_%s_%s_%d', buf_id, tostring(modified), filename, win_width)
+    local state = win_cache[win_id] or {}
+
+    -- 如果状态没有任何改变，且窗口存活，直接跳过（极大地节省性能！）
+    if state.hash == state_hash and state.win and vim.api.nvim_win_is_valid(state.win) and state.buf and vim.api.nvim_buf_is_valid(state.buf) then
+      goto continue
+    end
+
+    -- 渲染逻辑
     local icon, hl = '', 'Normal'
     local ok_icons, mini_icons = pcall(require, 'mini.icons')
     if ok_icons then icon, hl = mini_icons.get('file', filename) end
 
     local ft_color = get_hl_hex(hl, 'fg') or '#ABB2BF'
     local contrast_fg = get_contrast_color(ft_color)
-    local modified = vim.bo[buf_id].modified
 
     local safe_hl = hl:gsub('[^%w_]', '_')
     vim.api.nvim_set_hl(0, 'CIncIcon_' .. safe_hl, { fg = contrast_fg, bg = ft_color })
@@ -82,7 +91,6 @@ local function update_incline()
     if modified then table.insert(chunks, { ' [+]', 'CIncMod' }) end
     table.insert(chunks, { ' ', 'CIncText' })
 
-    local state = win_cache[win_id] or {}
     if not state.buf or not vim.api.nvim_buf_is_valid(state.buf) then
       state.buf = vim.api.nvim_create_buf(false, true)
     end
@@ -103,7 +111,7 @@ local function update_incline()
       win = win_id,
       anchor = 'NE',
       row = 0,
-      col = vim.api.nvim_win_get_width(win_id) - 1,
+      col = win_width - 1,
       width = text_width,
       height = 1,
       style = 'minimal',
@@ -115,11 +123,14 @@ local function update_incline()
     if not state.win or not vim.api.nvim_win_is_valid(state.win) then
       state.win = vim.api.nvim_open_win(state.buf, false, win_opts)
       local winhl = M.config.border == 'none' and 'NormalFloat:Normal,FloatBorder:Normal' or
-        'NormalFloat:Normal'
+      'NormalFloat:Normal'
       vim.wo[state.win].winhighlight = winhl
     else
       pcall(vim.api.nvim_win_set_config, state.win, win_opts)
     end
+
+    -- 记录新状态
+    state.hash = state_hash
     win_cache[win_id] = state
     ::continue::
   end
@@ -129,12 +140,10 @@ function M.close(win_id)
   local state = win_cache[win_id]
   if state then
     if state.win and vim.api.nvim_win_is_valid(state.win) then
-      pcall(vim.api.nvim_win_close,
-        state.win, true)
+      pcall(vim.api.nvim_win_close, state.win, true)
     end
     if state.buf and vim.api.nvim_buf_is_valid(state.buf) then
-      pcall(vim.api.nvim_buf_delete,
-        state.buf, { force = true })
+      pcall(vim.api.nvim_buf_delete, state.buf, { force = true })
     end
     win_cache[win_id] = nil
   end
@@ -144,7 +153,6 @@ function M.setup(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
   local group = vim.api.nvim_create_augroup('HandcraftedIncline', { clear = true })
 
-  -- 重新加上 CursorMoved，这样你移动到第一行时它能立刻消失
   vim.api.nvim_create_autocmd(
     { 'WinScrolled', 'BufEnter', 'WinEnter', 'BufModifiedSet', 'VimResized', 'CursorMoved' }, {
       group = group,
