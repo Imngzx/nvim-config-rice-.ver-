@@ -71,18 +71,21 @@ vim.keymap.set('n', '<c-j>', '<c-w>j', { desc = 'Move to below window' })
 vim.keymap.set('n', '<c-k>', '<c-w>k', { desc = 'Move to above window' })
 vim.keymap.set('n', '<c-l>', '<c-w>l', { desc = 'Move to right window' })
 -- Resize splits
-vim.keymap.set('n', '<c-left>', '"<cmd>vertical resize -" . v:count1 . "<cr>"',
-  { expr = true, replace_keycodes = false, desc = 'Decrease window width' }
-)
-vim.keymap.set('n', '<c-down>', '"<cmd>resize -" . v:count1 . "<cr>"',
-  { expr = true, replace_keycodes = false, desc = 'Decrease window height' }
-)
-vim.keymap.set('n', '<c-up>', '"<cmd>resize +" . v:count1 . "<cr>"',
-  { expr = true, replace_keycodes = false, desc = 'Increase window height' }
-)
-vim.keymap.set('n', '<c-right>', '"<cmd>vertical resize +" . v:count1 . "<cr>"',
-  { expr = true, replace_keycodes = false, desc = 'Increase window width' }
-)
+vim.keymap.set('n', '<c-left>', function()
+  vim.cmd('vertical resize -' .. vim.v.count1)
+end, { desc = 'Decrease window width' })
+
+vim.keymap.set('n', '<c-down>', function()
+  vim.cmd('resize -' .. vim.v.count1)
+end, { desc = 'Decrease window height' })
+
+vim.keymap.set('n', '<c-up>', function()
+  vim.cmd('resize +' .. vim.v.count1)
+end, { desc = 'Increase window height' })
+
+vim.keymap.set('n', '<c-right>', function()
+  vim.cmd('vertical resize +' .. vim.v.count1)
+end, { desc = 'Increase window width' })
 
 -- [Functions]
 -- Terminal
