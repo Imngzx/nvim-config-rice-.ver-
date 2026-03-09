@@ -92,7 +92,16 @@ Snacks.setup({
   profiler = { enabled = true },
   notifier = {
     enabled = true,
-    timeout = 3000,
+    timeout = 3000, -- 提示框停留 3 秒后自动消失
+    width = { min = 40, max = 0.4 },
+    height = { min = 1, max = 0.1 },
+    margin = { top = 1, right = 1, bottom = 1 }, -- 距离屏幕边缘的呼吸感间距
+    padding = true,
+    sort = { 'level', 'added' },
+    style = 'compact', -- 可选 "compact"(极简), "fancy"(带彩条), "minimal"(纯文字)
+    top_down = true, -- true为右上角往下排，false为右下角往上排
+    date_format = '%R',
+    refresh = 50,
   },
 
   -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
