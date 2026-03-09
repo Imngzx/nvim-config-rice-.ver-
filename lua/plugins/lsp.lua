@@ -170,7 +170,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 lazy.load({
   plugin = 'https://github.com/stevearc/conform.nvim',
-  event = 'BufWritePre',
+  event = { 'BufReadPost', 'BufNewFile' },
   keys = {
     { 'n', '<leader>cf', function()
       require('conform').format({ async = true, lsp_format = 'fallback' })
