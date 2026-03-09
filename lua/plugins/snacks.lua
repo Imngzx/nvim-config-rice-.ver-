@@ -281,7 +281,7 @@ Snacks.setup({
             local dir = vim.fn.getcwd()
             if item and item.file then
               dir = vim.fn.isdirectory(item.file) == 1 and item.file or
-              vim.fn.fnamemodify(item.file, ':h')
+                vim.fn.fnamemodify(item.file, ':h')
             end
 
             -- 因为刚才启用了全局 Snacks.input，这里的 vim.ui.input 会自动变成漂亮的置中悬浮窗
@@ -317,7 +317,7 @@ Snacks.setup({
                     -- 贴心地给个小提示
                     if not fd then
                       vim.notify(
-                      '\n[Explorer] Read-only directory.\nFile opened in memory. Sudo will be required on save.',
+                        '\n[Explorer] Read-only directory.\nFile opened in memory. Sudo will be required on save.',
                         vim.log.levels.WARN)
                     end
                   end)
