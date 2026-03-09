@@ -37,17 +37,14 @@ require('plugins.dap')
 -- require('custom.transparent').setup({ auto_enable = true })
 -- Tools
 local icons = require('libs.icons')
--- require('custom.statusline').setup({
---   git_cache_setup = { get_git_root = Snacks.git.get_root },
---   hide_filename_by_ft = { snacks_picker_list = true },
---   icons = { branch = icons.git.branch }
--- })
--- require('custom.statusline').setup({
---   hide_filename_by_ft = { snacks_picker_list = true },
---   icons = { branch = icons.git.branch }
--- })
 
 -- show statusline that placed at below (above cmdline)
+-- minimal statusline
+-- require('custom.statusline').setup({
+--   hide_filename_by_ft = { snacks_picker_list = true },
+--   icons = { branch = icons.git.branch }
+-- })
+-- lualine
 require('custom.lualine')
 
 --file name displays on top right

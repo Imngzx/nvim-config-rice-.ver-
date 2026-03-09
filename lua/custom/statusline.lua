@@ -1,19 +1,10 @@
-local git_cache = require('libs.git_branch_cache')
-
 local M = {}
+
 M.config = {
   filename_width = nil,
   icons = { branch = '' },
-  -- required: user must provide git resolver when calling setup via git_cache_setup
-  git_cache_setup = nil, -- optional: table passed to git_cache.setup
-  -- Like: { lua = true, markdown = true }
   hide_filename_by_ft = {},
 }
-
-local function pad(s, w)
-  s = tostring(s)
-  return #s > w and s:sub(1, w) or s .. string.rep(' ', w - #s)
-end
 
 local function filetype()
   return vim.bo.filetype ~= '' and vim.bo.filetype or 'plaintext'
@@ -30,54 +21,79 @@ local function filename(max_w)
   return name
 end
 
-local function screen_percent()
-  local cur, tot = vim.fn.line('.'), vim.fn.line('$')
-  if cur == 1 then return pad('Top', 3) end
-  if cur == tot then return pad('Bot', 3) end
-  local p = math.floor(cur / math.max(1, tot) * 100)
-  return pad(tostring(p) .. '%', 3)
+-- ========================================================
+-- 🚀 原生异步 Git 分支获取器 (零卡顿 / 兼容 Worktree)
+-- ========================================================
+local function update_git_branch(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+  -- 防御：不处理终端、悬浮窗等非正常文件
+  if vim.bo[bufnr].buftype ~= '' then return end
+
+  local filepath = vim.api.nvim_buf_get_name(bufnr)
+  if filepath == '' then return end
+
+  local dir = vim.fn.fnamemodify(filepath, ':h')
+
+  -- 使用 Neovim 底层 vim.system 发起异步请求，完全不卡主线程
+  vim.system({ 'git', '-C', dir, 'branch', '--show-current' }, { text = true }, function(obj)
+    if obj.code == 0 and obj.stdout and obj.stdout ~= '' then
+      local branch = vim.trim(obj.stdout)
+      -- 回调到主线程更新变量并重绘状态栏
+      vim.schedule(function()
+        if vim.api.nvim_buf_is_valid(bufnr) then
+          vim.b[bufnr].my_git_branch = branch
+          vim.cmd('redrawstatus')
+        end
+      end)
+    else
+      vim.schedule(function()
+        if vim.api.nvim_buf_is_valid(bufnr) then
+          vim.b[bufnr].my_git_branch = ''
+        end
+      end)
+    end
+  end)
 end
 
-local function cursor_position()
-  local cur = vim.api.nvim_win_get_cursor(0)
-  local l, c = cur[1], cur[2]
-  return pad(string.format('%d:%d', l, c + 1), 7)
-end
+-- 只在切换 Buffer、保存文件、或窗口重新获得焦点时才去取 Git 分支
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'FocusGained' }, {
+  group = vim.api.nvim_create_augroup('MyStatuslineGit', { clear = true }),
+  callback = function(args)
+    update_git_branch(args.buf)
+  end,
+})
+-- ========================================================
 
 -- Public API used by statusline expansion
 _G.my_statusline = _G.my_statusline or {}
+
 _G.my_statusline.gitbranch = function()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local br = git_cache.get_branch(bufnr)
-  if not br or br == '' then return '' end
-  local icon = (M.config.icons and M.config.icons.branch) or 'BR'
-  return icon .. ' ' .. br .. ' | '
+  -- 渲染时直接读取缓存变量，0 计算量，0 GC 垃圾！
+  local branch = vim.b.my_git_branch
+  if not branch or branch == '' then return '' end
+
+  local icon = (M.config.icons and M.config.icons.branch) or ''
+  return icon .. ' ' .. branch .. ' | '
 end
+
 _G.my_statusline.filename = function()
   local fn = filename(M.config.filename_width)
   if fn and fn ~= '' then return fn .. ' ' end
   return ''
 end
+
 _G.my_statusline.filetype = filetype
-_G.my_statusline.screen = screen_percent
-_G.my_statusline.cursor = cursor_position
 
 local function apply()
   local left = ' %{v:lua.my_statusline.gitbranch()}%{v:lua.my_statusline.filename()}%m'
-  local right =
-  ' %=%{v:lua.my_statusline.filetype()} | %{v:lua.my_statusline.screen()} | %{v:lua.my_statusline.cursor()}'
+  -- 性能优化：直接使用 Neovim 原生的 C 引擎渲染行号和百分比
+  local right = ' %=%{v:lua.my_statusline.filetype()} | %3p%% | %l:%c '
+
   vim.o.statusline = left .. right
 end
+
 M.setup = function(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
-  -- initialize git cache if user provided resolver via git_cache_setup or directly via M.config
-  local git_opts = M.config.git_cache_setup or {}
-  if git_opts.get_git_root == nil and type(M.config.get_git_root) == 'function' then
-    git_opts.get_git_root = M.config.get_git_root
-  end
-  if type(git_opts.get_git_root) == 'function' then
-    git_cache.setup(git_opts)
-  end
   apply()
 end
 
