@@ -62,9 +62,10 @@ lazy.load({
           -- Python Venv 虚拟环境显示
           {
             function()
+              -- 只有当插件已经被加载过，才去获取 venv
+              if not package.loaded['venv-selector'] then return '' end
               local venv = require('venv-selector').venv()
               if venv ~= nil then
-                -- 只提取虚拟环境的最后一段名字
                 return string.match(venv, '([^/]+)$') or venv
               end
               return ''
