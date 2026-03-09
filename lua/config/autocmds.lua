@@ -47,7 +47,10 @@ vim.api.nvim_create_autocmd('BufWritePre', {
   callback = function()
     if vim.bo.readonly or vim.bo.buftype ~= '' then return end
     vim.bo.fileformat = 'unix'
-    vim.cmd([[ %s/\r\+$//e ]])
+    -- 👇 重点修复：保存光标位置和搜索历史！
+    local view = vim.fn.winsaveview()
+    vim.cmd([[keeppatterns silent! %s/\r\+$//e]])
+    vim.fn.winrestview(view)
   end,
 })
 
