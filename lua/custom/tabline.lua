@@ -160,7 +160,7 @@ M.render = function()
   local current = vim.api.nvim_get_current_buf()
   local current_idx = 0
 
-  local sep_str = '%#TablineFill# │ ' -- 分隔符换成了更好看的细实线
+  local sep_str = '%#TablineFill# | ' -- 分隔符换成了更好看的细实线
   local sep_width = 3
 
   -- 1. 收集所有 Tab，并预先计算它们的纯文本显示宽度
