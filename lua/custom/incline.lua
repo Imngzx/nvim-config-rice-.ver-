@@ -1,9 +1,9 @@
---NOTE: 可选 'none', 'rounded', 'single'
 local M = {}
 local win_cache = {}
 local ns = vim.api.nvim_create_namespace('HandcraftedIncline')
 
 M.config = {
+  --NOTE: 可选 'none', 'rounded', 'single'
   border = 'none',
   panel_bg = '#44406e',
 }
@@ -115,7 +115,7 @@ local function update_incline()
     if not state.win or not vim.api.nvim_win_is_valid(state.win) then
       state.win = vim.api.nvim_open_win(state.buf, false, win_opts)
       local winhl = M.config.border == 'none' and 'NormalFloat:Normal,FloatBorder:Normal' or
-      'NormalFloat:Normal'
+        'NormalFloat:Normal'
       vim.wo[state.win].winhighlight = winhl
     else
       pcall(vim.api.nvim_win_set_config, state.win, win_opts)
@@ -128,10 +128,14 @@ end
 function M.close(win_id)
   local state = win_cache[win_id]
   if state then
-    if state.win and vim.api.nvim_win_is_valid(state.win) then pcall(vim.api.nvim_win_close,
-        state.win, true) end
-    if state.buf and vim.api.nvim_buf_is_valid(state.buf) then pcall(vim.api.nvim_buf_delete,
-        state.buf, { force = true }) end
+    if state.win and vim.api.nvim_win_is_valid(state.win) then
+      pcall(vim.api.nvim_win_close,
+        state.win, true)
+    end
+    if state.buf and vim.api.nvim_buf_is_valid(state.buf) then
+      pcall(vim.api.nvim_buf_delete,
+        state.buf, { force = true })
+    end
     win_cache[win_id] = nil
   end
 end
@@ -142,12 +146,12 @@ function M.setup(opts)
 
   -- 重新加上 CursorMoved，这样你移动到第一行时它能立刻消失
   vim.api.nvim_create_autocmd(
-  { 'WinScrolled', 'BufEnter', 'WinEnter', 'BufModifiedSet', 'VimResized', 'CursorMoved' }, {
-    group = group,
-    callback = function()
-      vim.schedule(update_incline)
-    end
-  })
+    { 'WinScrolled', 'BufEnter', 'WinEnter', 'BufModifiedSet', 'VimResized', 'CursorMoved' }, {
+      group = group,
+      callback = function()
+        vim.schedule(update_incline)
+      end
+    })
 
   vim.api.nvim_create_autocmd('WinClosed', {
     group = group, callback = function(args) M.close(tonumber(args.match)) end
