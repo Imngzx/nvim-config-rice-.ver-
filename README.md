@@ -54,7 +54,7 @@ More photos can be found in [here](.github/assets)
 
 ## Installation
 
-Making sure you've installed [NeoVim 0.12](https://github.com/neovim/neovim/releases/nightly).
+Making sure you've installed [NeoVim 0.12](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli.
 
 _For Windows:_
 

@@ -12,6 +12,7 @@ require('custom.todo').setup()
 -- require('custom.theme').setup() -- theme must be set before plugins
 require('custom.catppuccin') -- theme must be set before plugins
 -- [Plugins]
+require('plugins.treesitter')
 require('plugins.ui')
 require('plugins.lsp')
 require('plugins.colorful-lsp-menu')
