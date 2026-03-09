@@ -134,18 +134,4 @@ vim.keymap.set('n', '<leader>pu', function() vim.pack.update() end, { desc = 'Up
 --   end
 -- end, { desc = "Quickfix List" })
 
-
-vim.keymap.set('t', '<Esc>', function()
-  -- 👇 修改 vim.loop 为 vim.uv
-  if vim.g.__last_esc and (vim.uv.hrtime() - vim.g.__last_esc) / 1e6 < 300 then
-    vim.g.__last_esc = nil
-    if vim.bo.buftype == 'terminal' then
-      vim.api.nvim_win_close(0, true)
-    end
-  else
-    -- 👇 修改 vim.loop 为 vim.uv
-    vim.g.__last_esc = vim.uv.hrtime()
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, false, true), 'n',
-      false)
-  end
-end, { noremap = true, silent = true })
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
