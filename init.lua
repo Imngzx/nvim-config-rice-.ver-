@@ -42,16 +42,20 @@ local icons = require('libs.icons')
 --   hide_filename_by_ft = { snacks_picker_list = true },
 --   icons = { branch = icons.git.branch }
 -- })
+-- require('custom.statusline').setup({
+--   hide_filename_by_ft = { snacks_picker_list = true },
+--   icons = { branch = icons.git.branch }
+-- })
 
+-- show statusline that placed at below (above cmdline)
+require('custom.lualine')
+
+--file name displays on top right
 require('custom.incline').setup()
--- this is the version with border
--- require('custom.incline-border()').setup()
 
 -- edit locked system files with sudo
 require('custom.sudo') --current working-well version
 
--- show statusline that placed at below (above cmdline)
-require('custom.lualine')
 
 --word jumping that similar as folke/flash.nvim
 require('custom.word-jump')

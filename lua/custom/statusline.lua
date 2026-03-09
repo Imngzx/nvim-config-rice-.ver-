@@ -52,15 +52,6 @@ _G.my_statusline.gitbranch = function()
   if not br or br == '' then return '' end
   local icon = (M.config.icons and M.config.icons.branch) or 'BR'
   return icon .. ' ' .. br .. ' | '
-  -- 直接白嫖 Snacks 的极速异步缓存获取 git 分支，它处理了 worktree 等一切异常！
-  -- local ok, snacks = pcall(require, 'snacks')
-  -- if not ok then return '' end
-  --
-  -- local branch = snacks.git.get_branch()
-  -- if not branch or branch == '' then return '' end
-  --
-  -- local icon = (M.config.icons and M.config.icons.branch) or ''
-  -- return icon .. ' ' .. branch .. ' | '
 end
 _G.my_statusline.filename = function()
   local fn = filename(M.config.filename_width)
