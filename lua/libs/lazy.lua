@@ -65,8 +65,10 @@ local function add_key_triggers(keys, plugins, setup, restore_keys)
         if rhs then
           if type(rhs) == 'function' then
             rhs()
-          else
-            vim.cmd(rhs)
+          elseif type(rhs) == 'string' then
+            -- 👇 完美支持 <cmd>...<cr> 等字符串映射
+            local k = vim.api.nvim_replace_termcodes(rhs, true, false, true)
+            vim.api.nvim_feedkeys(k, 'm', false)
           end
           if restore_keys then
             vim.keymap.set(mode, lhs, rhs, opts)
@@ -90,25 +92,14 @@ local function add_ft_autocmd(fts, plugins, setup)
 end
 
 --- Public API
---- Multi‑trigger loader: supports multiple loading conditions
---- @param config table Configuration with triggers and setup
----   config.plugin        string|table – Plugin URL(s)
----   config.event         string|table|nil – Event trigger(s)
----   config.cmd           string|table|nil – Command trigger(s)
----   config.keys          table|nil – Key trigger(s) { { mode, lhs, rhs, opts } }
----   config.ft            string|table|nil – Filetype trigger(s)
----   config.setup         function|nil – Setup function after loading
----   config.restore_keys  boolean|nil – Restore keymaps after load (default true)
 function M.load(config)
-  -- Plugins
   local plugins = config.plugin
-  -- if type(config[1]) ~= 'table' and config[1] ~= nil then
-  --   plugins = config[1]
-  -- end
-  if type(plugins) == 'string' then plugins = { plugins }
-  elseif plugins == nil then plugins = {} end
+  if type(plugins) == 'string' then
+    plugins = { plugins }
+  elseif plugins == nil then
+    plugins = {}
+  end
 
-  -- Triggers
   if config.event then
     local ev = type(config.event) == 'string' and { config.event } or config.event
     add_event_autocmd(ev, plugins, config.setup)
@@ -128,6 +119,14 @@ end
 
 -- Trigger VeryLazy event after UI is ready
 M.trigger_verylazy = function()
+  -- 👇 修复 Headless 模式（如终端无UI跑脚本）时 VeryLazy 死寂的问题
+  if #vim.api.nvim_list_uis() == 0 then
+    vim.schedule(function()
+      vim.api.nvim_exec_autocmds('User', { pattern = 'VeryLazy' })
+    end)
+    return
+  end
+
   vim.api.nvim_create_autocmd('UIEnter', {
     once = true,
     callback = function()
