@@ -3,14 +3,14 @@
 
 local M = {}
 
--- 1. 配置标签和专属颜色 (完美契合 Catppuccin Macchiato)
+-- 1. 配置标签和专属颜色 (完美契合 Catppuccin Mocha ☕)
 local keywords = {
-  TODO = '#a6da95', -- 绿色 (待办/新功能)
-  FIXME = '#ed8796', -- 红色 (修 Bug)
-  NOTE = '#8aadf4', -- 蓝色 (笔记/记录)
-  WARN = '#f5a97f', -- 橙色 (警告)
-  HACK = '#eed49f', -- 黄色 (临时硬编码/魔法)
-  PERF = '#c6a0f6', -- 紫色 (性能优化)
+  TODO = '#a6e3a1', -- Mocha Green (待办/新功能)
+  FIXME = '#f38ba8', -- Mocha Red (修 Bug)
+  NOTE = '#89b4fa', -- Mocha Blue (笔记/记录)
+  WARN = '#fab387', -- Mocha Peach (警告/注意)
+  HACK = '#f9e2af', -- Mocha Yellow (临时硬编码/魔法)
+  PERF = '#cba6f7', -- Mocha Mauve (性能优化)
 }
 
 function M.setup()
