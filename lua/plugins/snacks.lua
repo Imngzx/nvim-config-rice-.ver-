@@ -325,6 +325,8 @@ Snacks.setup({
 })
 
 local key = {
+  --todo
+  { '<leader>st', function() require('custom.todo').search() end, desc = 'Search TODOs' },
   -- Profiler
   { '<leader>spp', function() Snacks.profiler.toggle() end, desc = 'Toggle Profiler' },
   { '<leader>sps', function() Snacks.profiler.scratch() end, desc = 'Profiler Scratch Buffer' },

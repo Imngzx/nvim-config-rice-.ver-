@@ -4,6 +4,10 @@ _G.start_time = vim.uv.hrtime()
 require('config.options')
 require('config.keymaps')
 require('config.autocmds')
+
+--Todo
+require('custom.todo').setup()
+
 -- Theme
 -- require('custom.theme').setup() -- theme must be set before plugins
 require('custom.catppuccin') -- theme must be set before plugins
