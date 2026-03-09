@@ -41,6 +41,8 @@ More photos can be found in [here](.github/assets)
 > can test launch speed with 
 ```sh
 ❯ nvim --startuptime nvim_speed.log +q && nvim nvim_speed.log
+# or
+❯ PROF=1 nvim 
 ```
 
 ## Info
@@ -52,7 +54,7 @@ More photos can be found in [here](.github/assets)
 
 ## Installation
 
-Making sure you've installed [NeoVim 0.12](https://neovim.io/).
+Making sure you've installed [NeoVim 0.12](https://github.com/neovim/neovim/releases/nightly).
 
 _For Windows:_
 
