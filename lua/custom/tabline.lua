@@ -1,4 +1,4 @@
--- Simple Tabline with icons, LSP diagnostics, and close button
+-- Simple Tabline with icons, LSP diagnostics, and close button (Viewport Scroll Enabled)
 local icons = require('libs.icons')
 local M = {}
 
@@ -15,6 +15,8 @@ M.config = {
   end,
   icons = { close = '󰅖', modify = '●' },
 }
+
+M.viewport_start = 1 -- 滑动窗口的起始索引
 
 M.close_buffer = function(buf_id)
   if type(M.config.on_close) == 'function' then
@@ -96,7 +98,6 @@ end
 
 M.get_diagnostics = function(buf_id)
   local counts = { error = 0, warn = 0, info = 0, hint = 0 }
-  -- 👇 性能修复：使用 O(1) 的 count 方法，拒绝在重绘时生成大字典
   if vim.diagnostic.count then
     local d = vim.diagnostic.count(buf_id)
     counts.error = d[vim.diagnostic.severity.ERROR] or 0
@@ -155,43 +156,88 @@ M.format_tab = function(buf_id, is_current)
 end
 
 M.render = function()
-  local pre_tabs = {}
-  local post_tabs = {}
-  local current_tab_str = ''
-
+  local tabs = {}
   local current = vim.api.nvim_get_current_buf()
-  local found_current = false
+  local current_idx = 0
 
+  local sep_str = '%#TablineFill# │ ' -- 分隔符换成了更好看的细实线
+  local sep_width = 3
+
+  -- 1. 收集所有 Tab，并预先计算它们的纯文本显示宽度
   for _, buf_id in ipairs(vim.api.nvim_list_bufs()) do
     if vim.bo[buf_id].buflisted then
       local is_current = (buf_id == current)
-      local tab_str = M.format_tab(buf_id, is_current)
+      local str = M.format_tab(buf_id, is_current)
 
-      -- 把标签拆分成：当前之前、当前、当前之后
-      if is_current then
-        current_tab_str = tab_str
-        found_current = true
-      elseif not found_current then
-        table.insert(pre_tabs, tab_str)
-      else
-        table.insert(post_tabs, tab_str)
-      end
+      -- 去除 Neovim 的 % 高亮和点击标识，用来计算真实的占据宽度
+      local clean_str = str:gsub('%%#.-#', ''):gsub('%%%d+@.-@', ''):gsub('%%X', '')
+      local width = vim.fn.strdisplaywidth(clean_str)
+
+      table.insert(tabs, { str = str, width = width })
+      if is_current then current_idx = #tabs end
     end
   end
 
-  local separator = '%#TablineFill# | '
-  local res = ''
+  if #tabs == 0 then return '' end
 
-  if #pre_tabs > 0 then
-    res = res .. table.concat(pre_tabs, separator) .. separator
+  -- 避免光标不在 tab 里（如在文件树树里）时乱跳
+  if current_idx == 0 then current_idx = M.viewport_start end
+
+  -- 2. 验证滑动窗口位置
+  if current_idx < M.viewport_start then
+    M.viewport_start = current_idx
   end
 
-  -- 👇 核心魔法：使用 `%<` 截断标记。
-  -- 放在当前活动窗口的正前方，当长度超出屏幕时，Neovim 会自动吃掉左侧不可见的窗口，让当前窗口永远展示在屏幕上！
-  res = res .. '%<' .. current_tab_str
+  local max_width = vim.o.columns
+  local left_ind = '%#TablineHidden#  '
+  local right_ind = '%#TablineHidden#  '
+  local ind_width = 3
 
-  if #post_tabs > 0 then
-    res = res .. separator .. table.concat(post_tabs, separator)
+  -- 计算从 start_idx 开始，最多能显示到哪一个 tab
+  local function get_visible_end(start_idx)
+    local w = 0
+    if start_idx > 1 then w = w + ind_width end
+    local end_idx = start_idx
+
+    for i = start_idx, #tabs do
+      local next_w = w + tabs[i].width
+      if i > start_idx then next_w = next_w + sep_width end
+      if i < #tabs then next_w = next_w + ind_width end -- 预留右侧箭头的空间
+
+      if next_w > max_width and i > start_idx then
+        break
+      end
+
+      w = w + tabs[i].width
+      if i > start_idx then w = w + sep_width end
+      end_idx = i
+    end
+    return end_idx
+  end
+
+  local end_idx = get_visible_end(M.viewport_start)
+
+  -- 如果当前标签超出了右侧边界，将窗口向右推
+  while current_idx > end_idx do
+    M.viewport_start = M.viewport_start + 1
+    end_idx = get_visible_end(M.viewport_start)
+  end
+
+  -- 3. 渲染最终字符串
+  local res = ''
+  if M.viewport_start > 1 then
+    res = res .. left_ind .. sep_str
+  end
+
+  for i = M.viewport_start, end_idx do
+    res = res .. tabs[i].str
+    if i < end_idx then
+      res = res .. sep_str
+    end
+  end
+
+  if end_idx < #tabs then
+    res = res .. sep_str .. right_ind
   end
 
   return res .. '%#TablineFill#'
