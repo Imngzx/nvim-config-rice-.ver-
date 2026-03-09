@@ -31,8 +31,7 @@ vim.opt.foldtext = "v:lua.vim.fn.getline(v:foldstart) .. ' …'" -- Fold text
 vim.opt.fileformat = 'unix'
 vim.opt.mouse = 'a' -- enable mouse in all modes
 
---changed, original is 3
-vim.opt.laststatus = 0 -- global satusline (once you add one)
+vim.opt.laststatus = 3 -- global satusline (once you add one)
 
 vim.opt.ruler = false
 -- vim.opt.colorcolumn = '80'   -- column ruler
@@ -60,7 +59,7 @@ vim.opt.virtualedit = 'block' -- allow cursor past EOL in block mode
 -- Clipboard
 vim.opt.clipboard = vim.env.SSH_CONNECTION and '' or 'unnamedplus'
 -- Check spelling
-vim.opt.spell = true
+vim.opt.spell = false
 vim.opt.spelllang = { 'en_us', 'ms' }
 vim.opt.spellsuggest = 'best,5' -- show only first best 5
 vim.opt.spelloptions = 'camel' --support CamelCase

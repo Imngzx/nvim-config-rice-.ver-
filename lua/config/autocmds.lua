@@ -2,6 +2,22 @@ local function augroup(name)
   return vim.api.nvim_create_augroup('lazyvim_' .. name, { clear = true })
 end
 
+-- [Autocmd] 仅对文书类文件开启拼写检查
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('TextSpellCheck', { clear = true }),
+  pattern = {
+    'markdown',
+    'text',
+    'gitcommit',
+    'plaintex',
+    'typst' -- 如果你写 Typst 的话
+  },
+  callback = function()
+    vim.opt_local.spell = true
+    vim.opt_local.spelllang = { 'en_us', 'ms' } -- 保持你的语言偏好
+  end,
+})
+
 vim.api.nvim_create_autocmd('BufEnter', {
   group = vim.api.nvim_create_augroup('DisableAutoComment', { clear = true }),
   callback = function()
