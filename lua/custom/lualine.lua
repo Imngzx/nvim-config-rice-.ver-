@@ -87,19 +87,13 @@ lazy.load({
         },
         lualine_z = {
           function()
-            -- local time = os.date('*t')
-            -- local hour = time.hour
-            -- local suffix = 'AM'
-            -- if hour >= 12 then
-            --   suffix = 'PM'
-            --   if hour > 12 then
-            --     hour = hour - 12
-            --   end
-            -- elseif hour == 0 then
-            --   hour = 12
-            -- end
-            -- return string.format(' %02d:%02d %s', hour, time.min, suffix)
-            return os.date(' %I:%M %p')
+            local t = os.date('*t')
+            local is_pm = t.hour >= 12
+            -- 12小时制转换 (例如: 13%12=1, 0%12=0)
+            local hour12 = t.hour % 12
+            if hour12 == 0 then hour12 = 12 end -- 处理 0 点和 12 点
+
+            return string.format(' %02d:%02d %s', hour12, t.min, is_pm and 'PM' or 'AM')
           end,
         },
       },
