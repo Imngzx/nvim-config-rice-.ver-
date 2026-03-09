@@ -18,7 +18,7 @@ lazy.load({
         -- { left = '', right = '' },
         -- { left = '', right = '' }
         always_divide_middle = true,
-        refresh_time = 16,
+        refresh_time = 1000,
       },
       sections = {
         lualine_a = {
