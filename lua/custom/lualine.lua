@@ -87,18 +87,19 @@ lazy.load({
         },
         lualine_z = {
           function()
-            local time = os.date('*t')
-            local hour = time.hour
-            local suffix = 'AM'
-            if hour >= 12 then
-              suffix = 'PM'
-              if hour > 12 then
-                hour = hour - 12
-              end
-            elseif hour == 0 then
-              hour = 12
-            end
-            return string.format(' %02d:%02d %s', hour, time.min, suffix)
+            -- local time = os.date('*t')
+            -- local hour = time.hour
+            -- local suffix = 'AM'
+            -- if hour >= 12 then
+            --   suffix = 'PM'
+            --   if hour > 12 then
+            --     hour = hour - 12
+            --   end
+            -- elseif hour == 0 then
+            --   hour = 12
+            -- end
+            -- return string.format(' %02d:%02d %s', hour, time.min, suffix)
+            return os.date(' %I:%M %p')
           end,
         },
       },
