@@ -102,6 +102,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
   nested = true,
   callback = vim.schedule_wrap(function(data)
     if data.buf ~= vim.api.nvim_get_current_buf() then return end
+    if vim.bo[data.buf].buftype ~= '' then return end
     local root = find_root(data.buf, H.names, H.fallback)
     if root == nil then return end
     vim.fn.chdir(root)
