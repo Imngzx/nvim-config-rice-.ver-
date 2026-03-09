@@ -1,0 +1,6 @@
+require('lsp.c-language')
+require('lsp.python')
+require('lsp.qml')
+require('lsp.lua-language.lua_ls')
+require('lsp.lua-language.emmy_ls')
+require('lsp.vue')
