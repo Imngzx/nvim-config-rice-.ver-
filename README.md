@@ -29,7 +29,7 @@ More photos can be found in [here](.github/assets)
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code.
-- **Beautiful.** Uses catppuccin mocha colorscheme
+- **Beautiful.** Uses catppuccin theme, deeply integrated with snacks.nvim
 
 ### Extras 
 - **Pluginless** for flash, suda, incline, fidget and bufferline features
