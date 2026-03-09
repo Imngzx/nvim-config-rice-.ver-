@@ -85,7 +85,10 @@ Snacks.setup({
   -- https://github.com/folke/snacks.nvim/blob/main/docs/indent.md
   image = { enabled = true },
   indent = { enabled = true },
-  input = { enabled = false },
+
+  -- 👇 修改点 1：将 false 改为 true，全局启用优雅的输入框（解决 r 键重命名没有 UI 的问题）
+  input = { enabled = true },
+
   profiler = { enabled = true },
   notifier = {
     enabled = true,
@@ -271,6 +274,57 @@ Snacks.setup({
         actions = {
           --[[Override]]
           toggle_preview = function(picker) picker.preview.win:toggle() end,
+
+          -- 👇 修改点 2：覆盖原生的新建文件动作，完美绕过只读目录越权崩溃 Bug
+          explorer_add = function(picker)
+            local item = picker:current()
+            local dir = vim.fn.getcwd()
+            if item and item.file then
+              dir = vim.fn.isdirectory(item.file) == 1 and item.file or
+              vim.fn.fnamemodify(item.file, ':h')
+            end
+
+            -- 因为刚才启用了全局 Snacks.input，这里的 vim.ui.input 会自动变成漂亮的置中悬浮窗
+            vim.ui.input({ prompt = 'Add a new file or directory (directories end with a "/"): ' },
+              function(input)
+                if not input or input == '' then return end
+                local path = vim.fs.normalize(dir .. '/' .. input)
+                local is_dir = input:sub(-1) == '/'
+
+                -- 尝试创建父目录 (如果没权限会静默失败，没关系)
+                local target_dir = is_dir and path or vim.fn.fnamemodify(path, ':h')
+                if vim.fn.isdirectory(target_dir) == 0 then
+                  pcall(vim.fn.mkdir, target_dir, 'p')
+                end
+
+                if is_dir then
+                  picker:update()
+                else
+                  -- 🚀 核心修复：安全地尝试创建文件，绝不让它崩溃
+                  local fd = io.open(path, 'w')
+                  if fd then
+                    fd:close()
+                    picker:update()
+                  end
+
+                  -- 核心逻辑：无论物理文件刚才有没有创建成功，
+                  -- 直接将它强行作为 Buffer 在内存中打开！
+                  -- 这一步会瞬间唤醒我们在 sudo.lua 里写的挂载机制！
+                  vim.schedule(function()
+                    vim.cmd('edit ' .. vim.fn.fnameescape(path))
+                    picker:close()
+
+                    -- 贴心地给个小提示
+                    if not fd then
+                      vim.notify(
+                      '\n[Explorer] Read-only directory.\nFile opened in memory. Sudo will be required on save.',
+                        vim.log.levels.WARN)
+                    end
+                  end)
+                end
+              end)
+          end,
+          -- 👆 修复结束
         },
         -- win = {
         --   list = {
@@ -278,10 +332,10 @@ Snacks.setup({
         --       ['<BS>'] = 'explorer_up',
         --       ['o'] = 'explorer_open', -- open with system application
         --       ['P'] = 'toggle_preview',
-        --       ['u'] = 'explorer_update',
+        --['u'] = 'explorer_update',
         --       ['<c-c>'] = 'tcd',
         --       ['<leader>fg'] = 'picker_grep',
-        --       ['<c-t>'] = 'terminal',
+        --['<c-t>'] = 'terminal',
         --       ['.'] = 'explorer_focus',
         --       ['I'] = 'toggle_ignored',
         --       ['H'] = 'toggle_hidden',
