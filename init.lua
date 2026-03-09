@@ -50,8 +50,6 @@ local icons = require('libs.icons')
 -- show statusline that placed at below (above cmdline)
 require('custom.lualine')
 
--- require('custom.breadcrumbs').setup()
-
 --file name displays on top right
 require('custom.incline').setup()
 
