@@ -48,6 +48,7 @@ local function do_sudo_save(buf, path)
 
   if obj.code == 0 then
     vim.bo[buf].modified = false
+    vim.cmd('checktime ' .. buf)
     vim.notify('\n[Sudo] Successfully saved: ' .. path, vim.log.levels.INFO)
   else
     vim.notify('\n[Sudo] Failed to save: ' .. (obj.stderr or ''), vim.log.levels.ERROR)

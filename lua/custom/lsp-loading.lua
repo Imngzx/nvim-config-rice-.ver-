@@ -85,13 +85,13 @@ local function update_window()
   end
 
   -- 显示/移动窗口
-  if not win_id or not vim.api.nvim_win_is_valid(win_id) then
-    win_id = vim.api.nvim_open_win(buf_id, false, get_win_config(#lines))
-    vim.wo[win_id].winblend = 15
-    vim.wo[win_id].winhl = 'Normal:NormalFloat'
-  else
-    vim.api.nvim_win_set_config(win_id, get_win_config(#lines))
-  end
+  -- if not win_id or not vim.api.nvim_win_is_valid(win_id) then
+  --   win_id = vim.api.nvim_open_win(buf_id, false, get_win_config(#lines))
+  --   vim.wo[win_id].winblend = 15
+  --   vim.wo[win_id].winhl = 'Normal:NormalFloat'
+  -- else
+  --   vim.api.nvim_win_set_config(win_id, get_win_config(#lines))
+  -- end
   if not win_id or not vim.api.nvim_win_is_valid(win_id) then
     win_id = vim.api.nvim_open_win(buf_id, false, get_win_config(#lines))
     -- 👇 1. 取消 winblend 混合，防止产生灰蒙蒙的暗色蒙层
