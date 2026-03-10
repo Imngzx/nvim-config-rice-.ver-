@@ -88,14 +88,31 @@ vim.g.markdown_fenced_languages = {
 -- [Dependencies] Load on run `Mason` command, key, and event
 lazy.load({
   plugin = 'https://github.com/mason-org/mason.nvim',
+  -- 保留事件触发，目的是让 Mason 把 bin 目录注入环境变量，否则 LSP 会找不到工具
   event = { 'BufReadPost', 'BufNewFile' },
   cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonLog', 'MasonUpdate' },
   keys = {
-    { 'n', '<leader>pm', function() vim.cmd('Mason') end, { desc = '[Panel] Mason' } }
+    { 'n', '<leader>pm', function()
+      -- 1. 先瞬间打开 Mason UI 面板
+      vim.cmd('Mason')
+
+      -- 2. 在后台静默执行联网刷新和自动安装逻辑
+      local registry = require('mason-registry')
+      registry.refresh(function()
+        for _, pkg_name in ipairs(H.mason) do
+          local ok, pkg = pcall(registry.get_package, pkg_name)
+          if ok and not pkg:is_installed() then
+            vim.schedule(function()
+              pkg:install()
+              vim.notify('[Mason] Auto installing ' .. pkg_name, vim.log.levels.INFO)
+            end)
+          end
+        end
+      end)
+    end, { desc = '[Panel] Mason' } }
   },
   setup = function()
     require('mason').setup({
-      -- 删除了无效的 ensure_installed
       ui = {
         icons = {
           package_installed = '✓',
@@ -104,22 +121,8 @@ lazy.load({
         },
       },
     })
-
-    -- 👇 手动实现 ensure_installed 的逻辑（支持 LSP、Formatter、Linter 等所有工具）
-    local registry = require('mason-registry')
-    -- 确保注册表已加载
-    registry.refresh(function()
-      for _, pkg_name in ipairs(H.mason) do
-        local ok, pkg = pcall(registry.get_package, pkg_name)
-        if ok and not pkg:is_installed() then
-          -- 使用 schedule 确保在安全的上下文中执行 UI/通知
-          vim.schedule(function()
-            pkg:install()
-            vim.notify('[Mason] Auto installing ' .. pkg_name, vim.log.levels.INFO)
-          end)
-        end
-      end
-    end)
+    -- 🗑️ 核心优化：把原本写在这里的 registry.refresh 逻辑彻底删除了！
+    -- 现在打开文件时，CPU 消耗为 0，网络请求为 0。
   end
 })
 
