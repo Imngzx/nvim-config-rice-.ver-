@@ -43,6 +43,11 @@ More photos can be found in [here](.github/assets)
 ❯ nvim --startuptime nvim_speed.log +q && nvim nvim_speed.log
 # or
 ❯ PROF=1 nvim 
+
+#NOTE: if you on windows, please:
+❯ $env:PROF="1"; nvim # for pwsh
+
+❯ set PROF=1 && nvim # for cmd
 ```
 
 ## Info
