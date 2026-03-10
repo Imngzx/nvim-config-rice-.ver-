@@ -15,32 +15,29 @@ lazy.load({
     end
 
     local ts = require('nvim-treesitter')
-
-    -- 2. 核心解析器列表
     local parsers = {
       'c', 'cpp', 'python', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
       'bash', 'json', 'yaml', 'toml', 'rust', 'zig', 'javascript', 'typescript', 'vue',
       'latex', 'html'
     }
 
-    -- 3. 异步安装 (如果是已安装的，这里瞬间跳过，0 损耗)
+    -- 异步安装 (如果是已安装的，这里瞬间跳过，0 损耗)
     ts.install(parsers, { summary = false })
 
-    -- 4. 破解懒加载的核心补丁 🪄
-    -- 因为我们是懒加载，这错过了 Neovim 第一时间的 FileType 侦测。
-    -- 所以我们要手动告诉 Neovim：“现在立刻把当前文件的 AST 语法树高亮给我跑起来！”
-    local bufnr = vim.api.nvim_get_current_buf()
-    local filetype = vim.bo[bufnr].filetype
-    local lang = vim.treesitter.language.get_lang(filetype)
-
-    if lang then
-      -- 启动高亮
-      pcall(vim.treesitter.start, bufnr, lang)
-      -- 启动基于语法树的智能缩进
-      vim.bo[bufnr].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-      -- 启动基于语法树的代码折叠
-      vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-      vim.wo.foldmethod = 'expr'
-    end
+    -- 👇 核心修复：用 Autocmd 动态监听，确保每个文件都能挂载！
+    vim.api.nvim_create_autocmd('FileType', {
+      group = vim.api.nvim_create_augroup('TreesitterAttach', { clear = true }),
+      callback = function(args)
+        local lang = vim.treesitter.language.get_lang(args.match)
+        if lang then
+          -- 尝试启动语法树高亮
+          local ok = pcall(vim.treesitter.start, args.buf, lang)
+          if ok then
+            -- 挂载成功后，开启智能缩进
+            vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end
+      end,
+    })
   end
 })

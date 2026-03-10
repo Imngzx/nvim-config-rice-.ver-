@@ -55,6 +55,13 @@ vim.opt.jumpoptions = 'view' -- restore view after jump
 vim.opt.virtualedit = 'block' -- allow cursor past EOL in block mode
 -- vim.o.formatoptions = vim.o.formatoptions:gsub('[ro]', '') -- break comment new line
 
+-- [Fold] 完美还原 LazyVim 的自动折叠体验
+vim.opt.foldlevel = 99 -- 默认展开所有代码（设为 0 会一打开文件全折叠）
+vim.opt.foldlevelstart = 99 -- 新开 buffer 时默认打开折叠
+vim.opt.foldenable = true -- 允许折叠
+vim.opt.foldmethod = 'expr' -- 使用表达式进行折叠（核心！）
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- 叫 Treesitter 自动帮你根据语法树生成折叠
+
 -- [Functions]
 -- Clipboard
 require('config.clipboard')
