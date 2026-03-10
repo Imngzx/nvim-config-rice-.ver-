@@ -247,11 +247,11 @@ Snacks.setup({
             end
             win:update()
           end
+
           local preview_win = Snacks.win.new {
             relative = 'editor',
             external = false,
             focusable = false,
-            -- border = 'single',
             border = 'rounded',
             backdrop = false,
             show = show,
@@ -264,17 +264,42 @@ Snacks.setup({
             },
             on_win = function(win)
               update(win)
-              picker:show_preview()
+              -- 注意：这里我将你原本的 picker:show_preview() 移除了
+              -- 统一交由下方的防抖逻辑去接管首次渲染
             end,
           }
+
           rel:on('WinLeave', function()
             vim.schedule(function()
               if not picker:is_focused() then picker.preview.win:close() end
             end)
           end)
           rel:on('WinResized', function() update(preview_win) end)
+
           picker.preview.win = preview_win
           picker.main = preview_win.win
+
+          -- ==========================================================
+          -- 👇[新增：性能优化] 核心科技：为预览模块注入底层 防抖 (Debounce)
+          -- ==========================================================
+          local orig_show_preview = picker.show_preview
+          local timer = vim.uv.new_timer()
+          picker.show_preview = function(self)
+            -- 当你疯狂按 j/k 移动时，立刻拦截并摧毁上一次还没来得及渲染的任务
+            timer:stop()
+            -- 设立 60 毫秒的"冷静期" (老旧电脑如果依然卡，可以改成 80 或 100)
+            -- 只有光标彻底停下 60 毫秒后，才会真正触发文件读取和高亮解析
+            timer:start(60, 0, vim.schedule_wrap(function()
+              -- 安全护航：防止你在 60ms 内手速极快地按了 `q` 关掉面板导致抛出空指针异常
+              if self.preview and self.preview.win and self.preview.win:valid() then
+                orig_show_preview(self)
+              end
+            end))
+          end
+
+          -- 初始化面板时，手动呼叫一次以显示光标第一项的预览
+          picker:show_preview()
+          -- ==========================================================
         end,
         on_close = function(picker)
           vim.g.explorer_size = picker.layout.root:size()
@@ -284,7 +309,7 @@ Snacks.setup({
           --[[Override]]
           toggle_preview = function(picker) picker.preview.win:toggle() end,
 
-          -- 👇 修改点 2：覆盖原生的新建文件动作，完美绕过只读目录越权崩溃 Bug
+          -- 原有的强力越权保护修复逻辑 (保持不动)
           explorer_add = function(picker)
             local item = picker:current()
             local dir = vim.fn.getcwd()
@@ -293,14 +318,12 @@ Snacks.setup({
                 vim.fn.fnamemodify(item.file, ':h')
             end
 
-            -- 因为刚才启用了全局 Snacks.input，这里的 vim.ui.input 会自动变成漂亮的置中悬浮窗
             vim.ui.input({ prompt = 'Add a new file or directory (directories end with a "/"): ' },
               function(input)
                 if not input or input == '' then return end
                 local path = vim.fs.normalize(dir .. '/' .. input)
                 local is_dir = input:sub(-1) == '/'
 
-                -- 尝试创建父目录 (如果没权限会静默失败，没关系)
                 local target_dir = is_dir and path or vim.fn.fnamemodify(path, ':h')
                 if vim.fn.isdirectory(target_dir) == 0 then
                   pcall(vim.fn.mkdir, target_dir, 'p')
@@ -309,21 +332,16 @@ Snacks.setup({
                 if is_dir then
                   picker:update()
                 else
-                  -- 🚀 核心修复：安全地尝试创建文件，绝不让它崩溃
                   local fd = io.open(path, 'w')
                   if fd then
                     fd:close()
                     picker:update()
                   end
 
-                  -- 核心逻辑：无论物理文件刚才有没有创建成功，
-                  -- 直接将它强行作为 Buffer 在内存中打开！
-                  -- 这一步会瞬间唤醒我们在 sudo.lua 里写的挂载机制！
                   vim.schedule(function()
                     vim.cmd('edit ' .. vim.fn.fnameescape(path))
                     picker:close()
 
-                    -- 贴心地给个小提示
                     if not fd then
                       vim.notify(
                         '\n[Explorer] Read-only directory.\nFile opened in memory. Sudo will be required on save.',
@@ -333,7 +351,6 @@ Snacks.setup({
                 end
               end)
           end,
-          -- 👆 修复结束
         },
         -- win = {
         --   list = {
