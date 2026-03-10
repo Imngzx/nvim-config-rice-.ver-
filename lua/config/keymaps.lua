@@ -93,7 +93,7 @@ vim.keymap.set('n', '<leader>at', '<cmd>term<cr>', { desc = 'Open Terminal (linu
 -- Vertical terminal
 -- vim.keymap.set('n', '<leader>at', '<cmd>vert term<cr>', { desc = 'Open Terminal (linux)' })
 
---NOTE: enable this and disable above if you using Windows
+--NOTE: enable below and disable above if you using Windows
 -- vim.keymap.set("n", "<leader>at", "<cmd>vert term pwsh.exe<CR>", { desc = "Open Powershell" })
 -- vim.keymap.set("n", "<leader>aT", "<cmd>vert term<CR>", { desc = "Open CMD" })
 

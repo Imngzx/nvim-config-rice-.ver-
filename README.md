@@ -54,7 +54,10 @@ More photos can be found in [here](.github/assets)
 
 ## Installation
 
-Making sure you've installed [NeoVim 0.12](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli.
+Making sure you've installed [NeoVim 0.12](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli, and zig on windows.
+
+> [!TIP]
+> Install tectonic for latex rendering, it is supported in this config
 
 _For Windows:_
 
@@ -77,6 +80,7 @@ Then please having fun!
 - `lua/config`: basic settings
 - `lua/custom`: custom tools & functions
 - `lua/libs`: shared libraries
+- `lua/lsp`: LSP configuration for separate languages
 - `lua/plugins`: plugin configurations
 - `snippets/`: code snippets
 - `init.lua`: entry point

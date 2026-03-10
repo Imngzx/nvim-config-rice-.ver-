@@ -4,9 +4,9 @@
 
 -- Execution window mode: "float", "tab", or "term"
 local RUNNER_MODE = 1
--- C build type: 1 = Release (GCC -O2); 2 = Debug (Clang -g -fsanitize) NOTE:: Only available on UNIX
+-- C build type: 1 = Release (GCC -O2); 2 = Debug (Clang -g -fsanitize) NOTE: Only available on UNIX
 local C_BUILD_TYPE = 2
--- C++ build type: 1 = Release (G++ -O2); 2 = Debug (Clang++ -g -fsanitize) NOTE:: Only available on UNIX
+-- C++ build type: 1 = Release (G++ -O2); 2 = Debug (Clang++ -g -fsanitize) NOTE: Only available on UNIX
 local CPP_BUILD_TYPE = 2
 
 -- ====================================================================

@@ -312,7 +312,7 @@ lazy.load({
       cmdline = {
         -- enabled = true,
         --
-        -- keymap = { preset = 'super-tab' }, -- 命令行使用vs code命令
+        keymap = { preset = 'enter' }, -- 命令行使用vs code命令
         completion = {
           menu = {
             auto_show = true,
