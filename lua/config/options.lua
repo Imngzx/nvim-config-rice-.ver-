@@ -57,7 +57,7 @@ vim.opt.virtualedit = 'block' -- allow cursor past EOL in block mode
 
 -- [Functions]
 -- Clipboard
-vim.opt.clipboard = vim.env.SSH_CONNECTION and '' or 'unnamedplus'
+require('config.clipboard')
 -- Check spelling
 vim.opt.spell = false
 vim.opt.spelllang = { 'en_us', 'ms' }
