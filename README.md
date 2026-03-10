@@ -54,7 +54,7 @@ More photos can be found in [here](.github/assets)
 
 ## Installation
 
-Making sure you've installed [NeoVim 0.12](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli, and zig on windows.
+Making sure you've installed [NeoVim 0.12](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli, and zig/other c compilers on Windows and Linux.
 
 > [!TIP]
 > Install tectonic for latex rendering, it is supported in this config
