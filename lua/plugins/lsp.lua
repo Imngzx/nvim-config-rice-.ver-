@@ -28,8 +28,8 @@ H.mason = {
 -- (Lsp) lspconfig
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
 H.lsp = {
-  -- 'lua_ls',
-  'emmylua_ls',
+  'lua_ls',
+  -- 'emmylua_ls',
   -- 'vtsls',
   -- 'cssls',
   'jsonls',
