@@ -7,7 +7,7 @@ local H = {}
 H.mason = {
   -- LSP
   'lua-language-server', -- lua
-  'emmylua-ls', --lua
+  'emmylua_ls', --lua
   'json-lsp', --json
   'basedpyright', --python
   'marksman', -- markdown
