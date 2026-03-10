@@ -9,12 +9,9 @@ lazy.load({
   event = { 'BufReadPre', 'BufNewFile' },
 
   setup = function()
-    -- 1. Windows Zig 编译器防御逻辑 (完美保留你的神操作)
     if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
-      if vim.fn.executable('zig') == 1 then
-        vim.env.CC = 'zig cc'
-        vim.env.CXX = 'zig c++'
-      end
+      vim.env.CC = 'gcc' -- C 编译器
+      vim.env.CXX = 'g++' -- C++ 编译器
     end
 
     local ts = require('nvim-treesitter')
