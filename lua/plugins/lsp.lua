@@ -6,8 +6,8 @@ local H = {}
 -- `:Mason` to see the list
 H.mason = {
   -- LSP
-  'lua_ls', -- lua
-  'emmylua_ls', --lua
+  'lua-language-server', -- lua
+  'emmylua-ls', --lua
   'json-lsp', --json
   'basedpyright', --python
   'marksman', -- markdown
