@@ -45,7 +45,7 @@ vim.api.nvim_create_autocmd('BufWritePre', {
   group = vim.api.nvim_create_augroup('WriteWithLF', {}),
   pattern = '*',
   callback = function()
-    if vim.bo.readonly or vim.bo.buftype ~= '' then return end
+    if vim.bo.readonly or vim.bo.buftype ~= '' or vim.bo.binary then return end
     vim.bo.fileformat = 'unix'
     -- 👇 重点修复：保存光标位置和搜索历史！
     local view = vim.fn.winsaveview()
