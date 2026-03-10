@@ -92,15 +92,15 @@ local function update_window()
   else
     vim.api.nvim_win_set_config(win_id, get_win_config(#lines))
   end
-  -- if not win_id or not vim.api.nvim_win_is_valid(win_id) then
-  --   win_id = vim.api.nvim_open_win(buf_id, false, get_win_config(#lines))
-  --   -- 👇 1. 取消 winblend 混合，防止产生灰蒙蒙的暗色蒙层
-  --   vim.wo[win_id].winblend = 0
-  --   -- 👇 2. 强制将窗口的主背景设为 NONE (完全透明)，文字直接悬浮在空气中！
-  --   vim.wo[win_id].winhl = 'Normal:NONE'
-  -- else
-  --   vim.api.nvim_win_set_config(win_id, get_win_config(#lines))
-  -- end
+  if not win_id or not vim.api.nvim_win_is_valid(win_id) then
+    win_id = vim.api.nvim_open_win(buf_id, false, get_win_config(#lines))
+    -- 👇 1. 取消 winblend 混合，防止产生灰蒙蒙的暗色蒙层
+    vim.wo[win_id].winblend = 0
+    -- 👇 2. 强制将窗口的主背景设为 NONE (完全透明)，文字直接悬浮在空气中！
+    vim.wo[win_id].winhl = 'Normal:NONE'
+  else
+    vim.api.nvim_win_set_config(win_id, get_win_config(#lines))
+  end
 end
 
 -- 启动动画循环
