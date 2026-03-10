@@ -1,3 +1,5 @@
+-- nvim/lua/custom/todo.lua
+
 -- 手搓版 Todo Comments
 -- 利用底层 C 正则引擎，极速高亮，零性能损耗
 
@@ -31,15 +33,16 @@ function M.setup()
   vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter' }, {
     group = group,
     callback = function()
-      -- 过滤掉悬浮窗、终端等非代码界面
-      if vim.bo.buftype ~= '' then return end
-
-      -- 先清理旧的匹配，防止重复叠加
+      -- 👇 核心修复：必须【先无条件清理】当前窗口的旧匹配！
+      -- 如果不这么做，当一个代码 Buffer 被切换成终端时，它会在下方的 return 被拦截，导致旧高亮永远残留在屏幕上。
       for _, m in ipairs(vim.fn.getmatches()) do
         if m.group:match('^HandcraftedTodo_') then
           pcall(vim.fn.matchdelete, m.id)
         end
       end
+
+      -- 过滤掉悬浮窗、终端等非代码界面
+      if vim.bo.buftype ~= '' then return end
 
       -- 遍历注入正则高亮
       for kw, _ in pairs(keywords) do
