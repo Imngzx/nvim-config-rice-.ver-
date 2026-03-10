@@ -179,8 +179,8 @@ lazy.load({
   setup = function()
     require('conform').setup({
       formatters_by_ft = H.conform,
-      format_after_save = {
-        async = true,
+      format_on_save = {
+        timeout_ms = 800, -- 给 800 毫秒的宽限时间
         lsp_format = 'fallback',
       },
     })
