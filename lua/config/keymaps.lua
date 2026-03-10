@@ -89,13 +89,13 @@ end, { desc = 'Increase window width' })
 
 -- [Functions]
 -- Terminal
-vim.keymap.set('n', '<leader>at', '<cmd>term<cr>', { desc = 'Open Terminal (linux)' })
+vim.keymap.set('n', '<leader>pt', '<cmd>term<cr>', { desc = 'Open Terminal (linux)' })
 -- Vertical terminal
--- vim.keymap.set('n', '<leader>at', '<cmd>vert term<cr>', { desc = 'Open Terminal (linux)' })
+-- vim.keymap.set('n', '<leader>pt', '<cmd>vert term<cr>', { desc = 'Open Terminal (linux)' })
 
 --NOTE: enable below and disable above if you using Windows
--- vim.keymap.set("n", "<leader>at", "<cmd>vert term pwsh.exe<CR>", { desc = "Open Powershell" })
--- vim.keymap.set("n", "<leader>aT", "<cmd>vert term<CR>", { desc = "Open CMD" })
+-- vim.keymap.set("n", "<leader>pt", "<cmd>vert term pwsh.exe<CR>", { desc = "Open Powershell" })
+-- vim.keymap.set("n", "<leader>pT", "<cmd>vert term<CR>", { desc = "Open CMD" })
 
 -- Search
 -- Better n/N behavior https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
