@@ -17,19 +17,19 @@ require('catppuccin').setup({
   custom_highlights = function(colors)
     return {
       -- === 现有：清空 Markdown 语法的背景色 ===
-      ['@markup.heading.1.markdown'] = { bg = 'NONE' },
-      ['@markup.heading.2.markdown'] = { bg = 'NONE' },
-      ['@markup.heading.3.markdown'] = { bg = 'NONE' },
-      ['@markup.heading.4.markdown'] = { bg = 'NONE' },
-      ['@markup.heading.5.markdown'] = { bg = 'NONE' },
-      ['@markup.heading.6.markdown'] = { bg = 'NONE' },
-      ['@markup.heading.markdown'] = { bg = 'NONE' },
-      ['markdownH1'] = { bg = 'NONE' },
-      ['markdownH2'] = { bg = 'NONE' },
-      ['markdownH3'] = { bg = 'NONE' },
-      ['markdownH4'] = { bg = 'NONE' },
-      ['markdownH5'] = { bg = 'NONE' },
-      ['markdownH6'] = { bg = 'NONE' },
+      -- ['@markup.heading.1.markdown'] = { bg = 'NONE' },
+      -- ['@markup.heading.2.markdown'] = { bg = 'NONE' },
+      -- ['@markup.heading.3.markdown'] = { bg = 'NONE' },
+      -- ['@markup.heading.4.markdown'] = { bg = 'NONE' },
+      -- ['@markup.heading.5.markdown'] = { bg = 'NONE' },
+      -- ['@markup.heading.6.markdown'] = { bg = 'NONE' },
+      -- ['@markup.heading.markdown'] = { bg = 'NONE' },
+      -- ['markdownH1'] = { bg = 'NONE' },
+      -- ['markdownH2'] = { bg = 'NONE' },
+      -- ['markdownH3'] = { bg = 'NONE' },
+      -- ['markdownH4'] = { bg = 'NONE' },
+      -- ['markdownH5'] = { bg = 'NONE' },
+      -- ['markdownH6'] = { bg = 'NONE' },
 
       -- === 👇 新增：强制清空所有浮动窗口和边框的背景色 ===
       -- 原生 LSP 和通用浮动窗口边框
