@@ -50,7 +50,7 @@ More photos can be found in [here](.github/assets)
 - Plugin manager: `vim.pack`
 - Language server protocol: `nvim-lspconfig`
 - Leader key: `Space`
-- Default LSP for Lua-language: `emmylua_ls`
+- Default LSP for Lua-language: `lua_ls`
 
 ## Installation
 
