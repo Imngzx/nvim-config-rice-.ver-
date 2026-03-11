@@ -30,7 +30,7 @@ H.mason = {
 H.lsp = {
   'lua_ls',
   -- 'emmylua_ls',
-  -- 'vtsls',
+  'vtsls',
   -- 'cssls',
   'jsonls',
   -- 'vue_ls',
