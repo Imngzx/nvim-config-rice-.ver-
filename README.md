@@ -55,6 +55,7 @@ More photos can be found in [here](.github/assets)
 - Plugin manager: `vim.pack`
 - Language server protocol: `nvim-lspconfig`
 - Leader key: `Space`
+- Doc: [Simple-keybinding-documentations](/.github/assets/simple-doc.md)
 - Default LSP for Lua-language: `lua_ls`
 
 ## Installation
