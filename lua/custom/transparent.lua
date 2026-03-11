@@ -27,7 +27,6 @@ local config = {
     -- 在 custom/transparent.lua 的 extra_groups 加入：
     'SnacksBackdrop',
     'SnacksNormal',
-    'SnacksPickerList',
 
     -- 👇 添加：Neovim 底层浮动窗口的 3 大件（背景、边框、标题）
     'NormalFloat', 'FloatBorder', 'FloatTitle', 'FloatFooter',
