@@ -1,21 +1,19 @@
 local M = {}
 
+-- [本地私有变量与配置] (保持不变)
 local config = {
   spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' },
   icons = { lsp = '󰒋' },
-  highlights = {
-    icon = 'DiagnosticWarn',
-    msg = 'Comment',
-  }
+  highlights = { icon = 'DiagnosticWarn', msg = 'Comment' }
 }
 
-local active_tasks = {} -- 存储 client_id -> { title, message, percentage }
+local active_tasks = {}
 local frame = 1
 local timer = nil
 local win_id = nil
 local buf_id = nil
 
--- 清理函数：彻底关闭窗口和定时器
+-- [本地私有函数] (保持不变)
 local function cleanup()
   if timer then
     timer:stop()
@@ -28,7 +26,6 @@ local function cleanup()
   end
 end
 
--- 获取窗口配置
 local function get_win_config(lines_count)
   local width = 40
   return {
@@ -45,9 +42,7 @@ local function get_win_config(lines_count)
   }
 end
 
--- 更新窗口 UI
 local function update_window()
-  -- 如果没有活跃任务，直接清理并退出
   if vim.tbl_isempty(active_tasks) then
     cleanup()
     return
@@ -71,39 +66,26 @@ local function update_window()
     return
   end
 
-  -- 创建/维护 Buffer
   if not buf_id or not vim.api.nvim_buf_is_valid(buf_id) then
     buf_id = vim.api.nvim_create_buf(false, true)
   end
   vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, lines)
 
-  -- 高亮处理
   local ns = vim.api.nvim_create_namespace('diy_fidget')
   vim.api.nvim_buf_clear_namespace(buf_id, ns, 0, -1)
   for i = 0, #lines - 1 do
     vim.api.nvim_buf_add_highlight(buf_id, ns, config.highlights.icon, i, 1, 4)
   end
 
-  -- 显示/移动窗口
-  -- if not win_id or not vim.api.nvim_win_is_valid(win_id) then
-  --   win_id = vim.api.nvim_open_win(buf_id, false, get_win_config(#lines))
-  --   vim.wo[win_id].winblend = 15
-  --   vim.wo[win_id].winhl = 'Normal:NormalFloat'
-  -- else
-  --   vim.api.nvim_win_set_config(win_id, get_win_config(#lines))
-  -- end
   if not win_id or not vim.api.nvim_win_is_valid(win_id) then
     win_id = vim.api.nvim_open_win(buf_id, false, get_win_config(#lines))
-    -- 👇 1. 取消 winblend 混合，防止产生灰蒙蒙的暗色蒙层
     vim.wo[win_id].winblend = 0
-    -- 👇 2. 强制将窗口的主背景设为 NONE (完全透明)，文字直接悬浮在空气中！
     vim.wo[win_id].winhl = 'Normal:NONE'
   else
     vim.api.nvim_win_set_config(win_id, get_win_config(#lines))
   end
 end
 
--- 启动动画循环
 local function start_animation()
   if timer then return end
   timer = vim.uv.new_timer()
@@ -113,36 +95,53 @@ local function start_animation()
   end))
 end
 
--- 监听进度
-vim.api.nvim_create_autocmd('LspProgress', {
-  group = vim.api.nvim_create_augroup('diy_fidget_lsp', { clear = true }),
-  callback = function(args)
-    local client_id = args.data.client_id
-    local value = args.data.params.value
-    local client = vim.lsp.get_client_by_id(client_id)
-    if not client then return end
+-- ====================================================================
+-- 🚀 核心架构优化：将自动命令封装进 setup 函数中
+-- ====================================================================
+function M.setup()
+  local group = vim.api.nvim_create_augroup('diy_fidget_lsp', { clear = true })
 
-    if value.kind == 'begin' or value.kind == 'report' then
-      active_tasks[client_id] = {
-        title = client.name,
-        message = value.message or value.title,
-        percentage = value.percentage,
-      }
-      start_animation()
-    elseif value.kind == 'end' then
-      active_tasks[client_id] = nil
-      -- 延迟一会给 update_window 机会清理
+  -- 监听进度
+  vim.api.nvim_create_autocmd('LspProgress', {
+    group = group,
+    callback = function(args)
+      local client_id = args.data.client_id
+      local value = args.data.params.value
+      local client = vim.lsp.get_client_by_id(client_id)
+      if not client then return end
+
+      if value.kind == 'begin' or value.kind == 'report' then
+        active_tasks[client_id] = {
+          title = client.name,
+          message = value.message or value.title,
+          percentage = value.percentage,
+        }
+        start_animation()
+      elseif value.kind == 'end' then
+        active_tasks[client_id] = nil
+        vim.schedule(update_window)
+      end
+    end,
+  })
+
+  -- 监听 LSP 断开
+  vim.api.nvim_create_autocmd('LspDetach', {
+    group = group,
+    callback = function(args)
+      active_tasks[args.data.client_id] = nil
       vim.schedule(update_window)
     end
-  end,
-})
+  })
 
--- 监听 LSP 断开
-vim.api.nvim_create_autocmd('LspDetach', {
-  callback = function(args)
-    active_tasks[args.data.client_id] = nil
-    vim.schedule(update_window)
-  end
-})
+  -- 💡 合理的优化建议：窗口大小改变时（比如终端最大化），重新计算位置
+  vim.api.nvim_create_autocmd('VimResized', {
+    group = group,
+    callback = function()
+      if win_id and vim.api.nvim_win_is_valid(win_id) then
+        vim.api.nvim_win_set_config(win_id, get_win_config(vim.api.nvim_buf_line_count(buf_id)))
+      end
+    end
+  })
+end
 
 return M
