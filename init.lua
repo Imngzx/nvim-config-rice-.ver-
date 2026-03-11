@@ -45,10 +45,7 @@ require('plugins.venv-selector')
 require('plugins.dap')
 require('plugins.AI')
 -- Input method swtich for non-English users
--- 仅在非 Windows 系统（如 Linux/macOS）下加载 im-select
-if vim.fn.has('win32') == 0 then
-  require('plugins.im-select')
-end
+require('plugins.im-select')
 
 --     [Editing assistance]
 require('custom.pairs').setup()
