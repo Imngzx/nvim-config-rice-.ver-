@@ -32,6 +32,7 @@ require('plugins.venv-selector')
 require('plugins.treesitter-context')
 require('plugins.csvview')
 require('plugins.dap')
+require('plugins.AI')
 
 -- [Custom]
 -- UI

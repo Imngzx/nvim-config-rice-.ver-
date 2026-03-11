@@ -2,15 +2,15 @@ local lazy = require('libs.lazy')
 
 lazy.load({
   plugin = 'https://github.com/MeanderingProgrammer/render-markdown.nvim',
-
-  -- event = { 'BufReadPost', 'BufNewFile' },
-  -- event = { 'User', pattern = 'VeryLazy' },
   ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
-  
   setup = function()
+    -- 👇 修复 2：强行提前加载图标插件，保证渲染时绝对不会崩溃！
+    vim.pack.add({ 'https://github.com/nvim-mini/mini.icons' })
+
     require('render-markdown').setup({
-      ---@module 'render-markdown'
-      ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
+      -- 👇 修复 1：名字必须是 file_types！把 codecompanion 真正加进去
+      file_types = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
+
       code = {
         sign = true,
         width = 'block',
@@ -29,7 +29,6 @@ lazy.load({
       quote = {
         enabled = true,
       },
-
       latex = {
         enabled = true,
         render_modes = false,
@@ -40,16 +39,20 @@ lazy.load({
         bottom_pad = 0,
       },
       completions = { lsp = { enabled = false } },
-
     })
-    -- 2. 注入 Snacks Toggle 逻辑
-    -- 注意：这里直接 require('snacks') 确保能拿到 snacks 实例
+
+    -- 👇 修复 3：填补懒加载的时间差！
+    -- 强行告诉 Neovim：“重新触发一下当前文件的事件，让插件立刻给我渲染！”
+    vim.schedule(function()
+      vim.cmd('doautocmd FileType ' .. vim.bo.filetype)
+    end)
+
+    -- Snacks toggle 保持不变
     local ok, snacks = pcall(require, 'snacks')
     if ok then
       snacks.toggle({
         name = 'Render Markdown',
         get = function()
-          -- 获取当前插件的启用状态
           return require('render-markdown.state').enabled
         end,
         set = function(enabled)
@@ -63,5 +66,4 @@ lazy.load({
       }):map('<leader>um')
     end
   end
-
 })
