@@ -1,79 +1,65 @@
+-- [Startup]
 require('custom.startup')
-_G.start_time = vim.uv.hrtime()
+
+
 -- [Config]
 require('config.options')
 require('config.keymaps')
 require('config.autocmds')
 
---TODO:
-require('custom.todo').setup()
 
--- Theme
+-- [Theme]
 -- require('custom.theme').setup() -- theme must be set before plugins
 require('custom.catppuccin') -- theme must be set before plugins
--- [Plugins]
+
+
+-- [Plugins & diy plugins]
+--     [Treesitter]
 require('plugins.treesitter')
+require('plugins.treesitter-context')
+
+--     [Rice]
 require('plugins.ui')
-require('plugins.lsp')
-require('plugins.colorful-lsp-menu')
 require('plugins.tool')
 require('plugins.markdown')
+require('custom.todo').setup() --TODO:
 local Snacks = require('plugins.snacks')
-
--- Input method swtich for non-English users
--- 仅在非 Windows 系统（如 Linux/macOS）下加载 im-select
-if vim.fn.has('win32') == 0 then
-  require('plugins.im-select')
-end
-
-require('plugins.coderunner')
-require('plugins.venv-selector')
-
-require('plugins.treesitter-context')
 require('plugins.csvview')
-require('plugins.dap')
-require('plugins.AI')
-
--- [Custom]
--- UI
--- require('custom.transparent').setup({ auto_enable = true })
--- Tools
-local icons = require('libs.icons')
-
--- show statusline that placed at below (above cmdline)
--- minimal statusline
--- require('custom.statusline').setup({
---   hide_filename_by_ft = { snacks_picker_list = true },
---   icons = { branch = icons.git.branch }
--- })
--- lualine
 require('custom.lualine')
-
---file name displays on top right
+require('custom.lsp-loading')
 require('custom.incline').setup()
-
--- edit locked system files with sudo
-require('custom.sudo') --current working-well version
-
-
---word jumping that similar as folke/flash.nvim
-require('custom.word-jump')
-
+-- require('custom.transparent').setup({ auto_enable = true })
+local icons = require('libs.icons')
 require('custom.tabline').setup({
   hide_single_tab = true,
   on_close = function(buf_id) Snacks.bufdelete(buf_id) end,
   file_icons = function(name) return Snacks.util.icon(name, 'file') end,
   icons = { close = icons.basic.close, modify = icons.basic.modify }
 })
--- Edit
+
+--     [coding]
+require('plugins.lsp')
+require('plugins.colorful-lsp-menu')
+require('plugins.coderunner')
+require('plugins.venv-selector')
+require('plugins.dap')
+require('plugins.AI')
+-- Input method swtich for non-English users
+-- 仅在非 Windows 系统（如 Linux/macOS）下加载 im-select
+if vim.fn.has('win32') == 0 then
+  require('plugins.im-select')
+end
+
+--     [Editing assistance]
 require('custom.pairs').setup()
 require('custom.surround').setup()
+require('custom.word-jump')
+require('custom.sudo') --current working-well version
 
--- Trigger VeryLazy event after all are loaded
-require('libs.lazy').trigger_verylazy()
 
---lsp loading
-require('custom.lsp-loading')
-
---neovide
+-- [neovide]
 require('config.neovide')
+
+
+-- [Lazy-loading engine]
+require('libs.lazy').trigger_verylazy()

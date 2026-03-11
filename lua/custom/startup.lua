@@ -1,3 +1,5 @@
+_G.start_time = vim.uv.hrtime()
+
 --[Startup Profiler]
 -- 只有在终端输入 PROF=1 nvim 时才会触发，平时完全不占用性能！
 if vim.env.PROF then
