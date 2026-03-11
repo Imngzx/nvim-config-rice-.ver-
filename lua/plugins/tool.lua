@@ -77,7 +77,7 @@ lazy.load({
         goto_last = ']H',
       },
     })
-    vim.keymap.set('n', '<leader>gd', function()
+    vim.keymap.set('n', '<leader>go', function()
       require('mini.diff').toggle_overlay()
     end, { desc = 'Toggle diff' })
   end

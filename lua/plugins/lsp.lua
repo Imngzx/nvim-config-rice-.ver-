@@ -148,11 +148,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- Moved to Snacks
     -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = ev.buf, desc='Goto definition'})
     -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = ev.buf, desc='Goto declaration'})
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, {
-      buffer = ev.buf,
-      desc =
-      'List references'
-    })
+    -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, {
+    --   buffer = ev.buf,
+    --   desc =
+    --   'List references'
+    -- })
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation,
       { buffer = ev.buf, desc = 'Goto implementation' })
     vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition,

@@ -424,7 +424,7 @@ local key = {
   { '<leader>fr', function() Snacks.picker.registers() end, desc = 'Registers' },
   -- { '<leader>fr', function() Snacks.picker.recent() end, desc = 'Recent' },
   -- Grep
-  { '<leader>fb', function() Snacks.picker.lines() end, desc = 'Buffer lines' },
+  { '<leader>fl', function() Snacks.picker.lines() end, desc = 'Buffer lines' },
   { '<leader>fB', function() Snacks.picker.grep_buffers() end, desc = 'Grep open buffers' },
   { '<leader>fw', function() Snacks.picker.grep_word() end, desc = 'Visual selection or word', mode = { 'n', 'x' } },
   -- Git
@@ -434,7 +434,7 @@ local key = {
   { '<leader>gl', function() Snacks.picker.git_log() end, desc = 'Git log' },
   { '<leader>gs', function() Snacks.picker.git_status() end, desc = 'Git status' },
   { '<leader>gS', function() Snacks.picker.git_stash() end, desc = 'Git stash' },
-  { '<leader>gd', function() Snacks.picker.git_diff() end, desc = 'Git diff (hunks)' },
+  { '<leader>gf', function() Snacks.picker.git_diff() end, desc = 'Git diff (hunks)' },
   -- Search
   { '<leader>sc', function() Snacks.picker.command_history() end, desc = 'Command history' },
   { '<leader>s/', function() Snacks.picker.search_history() end, desc = 'Search history' },
