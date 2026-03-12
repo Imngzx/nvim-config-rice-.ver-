@@ -290,14 +290,12 @@ Snacks.setup({
           -- 👇[新增：性能优化] 核心科技：为预览模块注入底层 防抖 (Debounce)
           -- ==========================================================
           local orig_show_preview = picker.show_preview
-          local timer = vim.uv.new_timer()
+          picker._preview_timer = vim.uv.new_timer() -- 🌟 挂载为私有变量
+
           picker.show_preview = function(self)
-            -- 当你疯狂按 j/k 移动时，立刻拦截并摧毁上一次还没来得及渲染的任务
-            timer:stop()
-            -- 设立 60 毫秒的"冷静期" (老旧电脑如果依然卡，可以改成 80 或 100)
-            -- 只有光标彻底停下 60 毫秒后，才会真正触发文件读取和高亮解析
-            timer:start(60, 0, vim.schedule_wrap(function()
-              -- 安全护航：防止你在 60ms 内手速极快地按了 `q` 关掉面板导致抛出空指针异常
+            -- 💡 优化：内部使用 self._preview_timer 比闭包捕获 picker 更严谨
+            self._preview_timer:stop()
+            self._preview_timer:start(60, 0, vim.schedule_wrap(function()
               if self.preview and self.preview.win and self.preview.win:valid() then
                 orig_show_preview(self)
               end
@@ -309,6 +307,15 @@ Snacks.setup({
           -- ==========================================================
         end,
         on_close = function(picker)
+          -- 🌟 修复：彻底清理底层的 libuv timer，防止句柄与内存泄漏
+          if picker._preview_timer then
+            picker._preview_timer:stop()
+            if not picker._preview_timer:is_closing() then
+              picker._preview_timer:close()
+            end
+            picker._preview_timer = nil -- 顺手置空，帮助 Lua 垃圾回收器更快释放
+          end
+
           vim.g.explorer_size = picker.layout.root:size()
           picker.preview.win:close()
         end,
