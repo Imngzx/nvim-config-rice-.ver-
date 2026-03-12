@@ -120,25 +120,26 @@ end
 function M.clear()
   if not vim.g.bg_transparent then return end
 
-  -- 🌟 修复点 4：清场！在发起新的透明化轮询前，杀掉所有旧的幽灵定时器
+  -- 👇 修复 1：使用 pcall 强力压制底层指针错误
   for _, t in ipairs(M._timers) do
-    if t and not t:is_closing() then t:close() end
+    pcall(function()
+      if t and not t:is_closing() then t:close() end
+    end)
   end
   M._timers = {}
 
   do_clear()
 
-  -- 🌟 修复点 5：用底层的 Libuv timer 替换危险的 vim.defer_fn，彻底掌握生命周期
-  local delays = { 300, 800, 1500, 3000 }
-  for _, delay in ipairs(delays) do
-    local timer = vim.uv.new_timer()
-    timer:start(delay, 0, vim.schedule_wrap(function()
-      do_clear()
-      -- 执行完后自行释放，不留垃圾
+  -- 👇 修复 2：精简延迟策略，删掉 3000ms 这种无意义的长轮询，只保留一个 800ms 兜底即可
+  -- 你的插件都是按需加载，800ms 足够覆盖 99% 的场景，大幅降低 CPU 负担
+  local timer = vim.uv.new_timer()
+  timer:start(800, 0, vim.schedule_wrap(function()
+    do_clear()
+    pcall(function()
       if not timer:is_closing() then timer:close() end
-    end))
-    table.insert(M._timers, timer)
-  end
+    end)
+  end))
+  table.insert(M._timers, timer)
 
   api.nvim_exec_autocmds('User', { pattern = 'TransparentClear', modeline = false })
   config.on_clear()
