@@ -44,7 +44,9 @@ local function do_sudo_save(buf, path)
   end
 
   -- 3. 使用 sudo tee 执行保存
-  local obj = vim.system({ 'sudo', '-S', 'tee', path }, { stdin = stdin_data }):wait()
+  local obj = vim.system({ 'sh', '-c', 'sudo -S tee "$1" >/dev/null', '--', path }, {
+    stdin = stdin_data
+  }):wait()
 
   if obj.code == 0 then
     vim.bo[buf].modified = false
