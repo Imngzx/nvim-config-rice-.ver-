@@ -219,6 +219,13 @@ Snacks.setup({
               position = 'left',
               width = (vim.g.explorer_size or { width = 30 }).width,
               box = 'vertical',
+              {
+                win = 'input',
+                height = 1,
+                border = 'rounded', -- 使用圆角边框
+                title = '{title} {live} {flags}',
+                title_pos = 'center' -- 让 Explorer 标题像官方图一样居中
+              },
               { win = 'list', border = 'none' },
               { win = 'preview', title = '{preview}', height = 0.4, border = 'top' },
             },
