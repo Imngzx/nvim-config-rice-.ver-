@@ -28,7 +28,7 @@ require('plugins.csvview')
 require('custom.lualine')
 require('custom.lsp-loading').setup()
 require('custom.incline').setup()
--- require('custom.transparent').setup({ auto_enable = true })
+require('custom.transparent').setup({ auto_enable = false })
 local icons = require('libs.icons')
 require('custom.tabline').setup({
   hide_single_tab = true,
