@@ -139,14 +139,14 @@ local function escape(s)
 end
 
 H.keys = {
-  above      = escape('<C-o>O'),
-  bs         = escape('<BS>'),
-  cr         = escape('<CR>'),
-  del        = escape('<Del>'),
-  ctrl_y     = escape('<C-y>'),
-  left       = escape('<Left>'),
-  right      = escape('<Right>'),
-  left_undo  = escape('<C-g>U<Left>'),
+  above = escape('<C-o>O'),
+  bs = escape('<BS>'),
+  cr = escape('<CR>'),
+  del = escape('<Del>'),
+  ctrl_y = escape('<C-y>'),
+  left = escape('<Left>'),
+  right = escape('<Right>'),
+  left_undo = escape('<C-g>U<Left>'),
   right_undo = escape('<C-g>U<Right>'),
 }
 
@@ -177,12 +177,31 @@ H.apply_config = function(config)
 end
 
 H.create_autocommands = function()
-  local gr = vim.api.nvim_create_augroup('MiniPairs', {})
+  -- 👇 修改点 1：加上 clear = true 防止多次 sourcing 配置时组内堆积
+  local gr = vim.api.nvim_create_augroup('MiniPairs', { clear = true })
+
   vim.api.nvim_create_autocmd('FileType', {
     group = gr,
-    pattern = { 'TelescopePrompt', 'fzf' },
+    -- 👇 修改点 2：把 snacks_picker_input 顺手加上，防止在搜索输入框里自动补全括号
+    pattern = { 'TelescopePrompt', 'fzf', 'snacks_picker_input' },
     callback = function() vim.b.minipairs_disable = true end,
     desc = 'Disable locally'
+  })
+
+  -- ==========================================================
+  -- 👇 修改点 3：新增内存清理钩子！彻底解决死 Buffer 驻留内存问题
+  -- ==========================================================
+  vim.api.nvim_create_autocmd('BufWipeout', {
+    group = gr,
+    callback = function(args)
+      local buf = args.buf
+      for _, mode in ipairs({ 'i', 'c', 't' }) do
+        if H.registered_pairs[mode] and H.registered_pairs[mode][buf] then
+          H.registered_pairs[mode][buf] = nil -- 释放废弃内存
+        end
+      end
+    end,
+    desc = 'Clear memory leak on buffer wipeout'
   })
 end
 
