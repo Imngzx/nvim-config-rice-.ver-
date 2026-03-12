@@ -3,6 +3,7 @@ local function augroup(name)
 end
 
 vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('LspAttachFolding', { clear = true }),
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if client:supports_method('textDocument/foldingRange') then
@@ -43,6 +44,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.api.nvim_create_autocmd('BufReadPost', {
+  group = vim.api.nvim_create_augroup('CsvViewAutoEnable', { clear = true }),
   pattern = '*.csv',
   callback = function()
     -- 👇 将 Toggle 改为 Enable
