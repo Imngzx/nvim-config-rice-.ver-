@@ -24,6 +24,11 @@ local function cleanup()
     vim.api.nvim_win_close(win_id, true)
     win_id = nil
   end
+  -- 👇 新增：彻底销毁加载器专用的 Buffer，防止内存泄露
+  if buf_id and vim.api.nvim_buf_is_valid(buf_id) then
+    vim.api.nvim_buf_delete(buf_id, { force = true })
+    buf_id = nil
+  end
 end
 
 local function get_win_config(lines_count)
