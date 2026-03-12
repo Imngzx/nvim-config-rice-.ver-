@@ -373,6 +373,7 @@
 | `<leader>ul` | n | Toggle line numbers |
 | `<leader>ub` | n | Toggle dark / light background |
 | `<leader>uc` | n | Toggle conceal level |
+| `<leader>ut` | n | Toggle transparency |
 | `<leader>uT` | n | Toggle Treesitter highlight |
 | `<leader>uh` | n | Toggle inlay hints |
 | `<leader>ug` | n | Toggle indent guides |
