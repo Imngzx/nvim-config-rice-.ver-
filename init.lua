@@ -26,6 +26,7 @@ require('custom.todo').setup() --TODO:
 local Snacks = require('plugins.snacks')
 require('plugins.csvview')
 require('custom.lualine')
+-- require('custom.statusline')
 require('custom.lsp-loading').setup()
 require('custom.incline').setup()
 require('custom.transparent').setup({ auto_enable = false })
