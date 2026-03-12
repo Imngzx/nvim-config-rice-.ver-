@@ -128,7 +128,7 @@ Snacks.setup({
               title = '{title} {live} {flags}',
               title_pos = 'left'
             },
-            { win = 'list', border = 'single' },
+            { win = 'list', border = 'rounded' },
           },
           {
             win = 'preview',
@@ -150,7 +150,7 @@ Snacks.setup({
           box = 'vertical',
           {
             win = 'input',
-            border = 'single',
+            border = 'rounded',
             height = 1,
             title = '{title} {live} {flags}',
             title_pos = 'left'
