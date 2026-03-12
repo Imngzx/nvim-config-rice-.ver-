@@ -61,7 +61,12 @@ function M.jump()
   print('⚡ Flash ❯  ')
 
   while true do
-    local char = vim.fn.getcharstr()
+    local ok, char = pcall(vim.fn.getcharstr)
+    if not ok then
+      cleanup()
+      print('Cancelled')
+      break
+    end
     local code = char:byte()
 
     if code == 27 then
