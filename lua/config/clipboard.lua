@@ -12,15 +12,18 @@ if vim.fn.has('wsl') == 1 then
       name = 'AsyncWslClipboard',
       copy = {
         ['+'] = function(lines, _)
+          -- 🛡️ 物理防御：判断是否在机器全速“执行”宏。如果是，直接拦截，拒绝跨越 WSL 边界
+          if vim.fn.reg_executing() ~= '' then return end
+
           local text = table.concat(lines, '\n')
-          -- 🔥 核心提速秘籍：detach = true 并且纯异步执行！
-          -- 我们把复制任务直接丢给后台操作系统，Neovim 主线程不等待结果，瞬间返回！
-          -- 彻底消除 WSL 跨系统调用导致的 y 键打字卡顿！
-          vim.system({ win32yank, '-i', '--crlf' }, { stdin = text, detach = true })
+          -- ✨ 你的优雅方案：纯异步 + Libuv 自动句柄回收
+          vim.system({ win32yank, '-i', '--crlf' }, { stdin = text }, function() end)
         end,
         ['*'] = function(lines, _)
+          if vim.fn.reg_executing() ~= '' then return end
+
           local text = table.concat(lines, '\n')
-          vim.system({ win32yank, '-i', '--crlf' }, { stdin = text, detach = true })
+          vim.system({ win32yank, '-i', '--crlf' }, { stdin = text }, function() end)
         end,
       },
       paste = {
