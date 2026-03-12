@@ -6,7 +6,7 @@ if vim.g.neovide then
   -- vim.g.neovide_opacity = 0.93
   vim.g.neovide_floating_blur_amount_x = 3.0
   vim.g.neovide_floating_blur_amount_y = 3.0
-  vim.g.neovide_refresh_rate = 240
+  vim.g.neovide_refresh_rate = 60
 
   vim.g.neovide_cursor_antialiasing = true
   -- 光标闪烁动画
