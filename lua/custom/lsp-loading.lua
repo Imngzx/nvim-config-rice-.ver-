@@ -43,6 +43,14 @@ local function get_win_config(lines_count)
 end
 
 local function update_window()
+  -- 👇【新增核心修复：每次刷新动画前，检测 LSP 进程是不是已经死了，死了就强行清理】
+  for client_id, _ in pairs(active_tasks) do
+    if not vim.lsp.get_client_by_id(client_id) then
+      active_tasks[client_id] = nil
+    end
+  end
+  -- 👆 新增结束
+
   if vim.tbl_isempty(active_tasks) then
     cleanup()
     return
