@@ -53,6 +53,7 @@ M.setup = function(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
   _G.SimpleTabline = M
 
+  -- 点击 Tab 切换/关闭的回调
   _G.SimpleTablineSwitch = function(buf_id, clicks, button, mods)
     if button == 'l' then
       vim.api.nvim_set_current_buf(buf_id)
@@ -63,6 +64,17 @@ M.setup = function(opts)
 
   _G.SimpleTablineClose = function(buf_id, clicks, button, mods)
     _G.SimpleTabline.close_buffer(buf_id)
+  end
+
+  -- 👇 新增：鼠标点击左右箭头的滚动回调
+  _G.SimpleTablineScrollLeft = function()
+    M.viewport_start = math.max(1, M.viewport_start - 1)
+    vim.cmd('redrawtabline')
+  end
+
+  _G.SimpleTablineScrollRight = function()
+    M.viewport_start = M.viewport_start + 1
+    vim.cmd('redrawtabline')
   end
 
   if M.config.hide_single_tab then M.update_showtabline() else vim.o.showtabline = 2 end
@@ -160,7 +172,8 @@ M.render = function()
   local current = vim.api.nvim_get_current_buf()
   local current_idx = 0
 
-  local sep_str = '%#TablineFill# | ' -- 分隔符换成了更好看的细实线
+  -- 尊重你的选择：保留原版竖线分隔符
+  local sep_str = '%#TablineFill# | '
   local sep_width = 3
 
   -- 1. 收集所有 Tab，并预先计算它们的纯文本显示宽度
@@ -180,6 +193,10 @@ M.render = function()
 
   if #tabs == 0 then return '' end
 
+  -- 👇 核心安全锁：防止越界报错
+  if M.viewport_start > #tabs then M.viewport_start = #tabs end
+  if M.viewport_start < 1 then M.viewport_start = 1 end
+
   -- 避免光标不在 tab 里（如在文件树树里）时乱跳
   if current_idx == 0 then current_idx = M.viewport_start end
 
@@ -189,8 +206,10 @@ M.render = function()
   end
 
   local max_width = vim.o.columns
-  local left_ind = '%#TablineHidden#  '
-  local right_ind = '%#TablineHidden#  '
+
+  -- 👇 修复瑕疵 2 + 添加点击滚动：颜色完全融入背景，带有鼠标点击属性
+  local left_ind = '%0@v:lua.SimpleTablineScrollLeft@%#TablineFill#  %X'
+  local right_ind = '%0@v:lua.SimpleTablineScrollRight@%#TablineFill#  %X'
   local ind_width = 3
 
   -- 计算从 start_idx 开始，最多能显示到哪一个 tab
