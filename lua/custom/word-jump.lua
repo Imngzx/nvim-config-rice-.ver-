@@ -62,7 +62,7 @@ function M.jump()
 
   while true do
     local ok, char = pcall(vim.fn.getcharstr)
-    if not ok then
+    if not ok or not char or char == '' then
       cleanup()
       print('Cancelled')
       break
