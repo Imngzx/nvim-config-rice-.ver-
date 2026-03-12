@@ -89,7 +89,8 @@ vim.g.markdown_fenced_languages = {
 lazy.load({
   plugin = 'https://github.com/mason-org/mason.nvim',
   -- 保留事件触发，目的是让 Mason 把 bin 目录注入环境变量，否则 LSP 会找不到工具
-  event = { 'BufReadPost', 'BufNewFile' },
+  -- event = { 'BufReadPost', 'BufNewFile' },
+  event = { 'User', pattern = 'VeryLazy' },
   cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonLog', 'MasonUpdate' },
   keys = {
     { 'n', '<leader>pm', function()
