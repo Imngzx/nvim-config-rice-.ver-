@@ -34,42 +34,50 @@ local function update_incline()
     local buf_id = vim.api.nvim_win_get_buf(win_id)
     local ok_conf, config = pcall(vim.api.nvim_win_get_config, win_id)
 
-    -- === 核心逻辑：躲避光标 ===
-    local is_valid = true
-    if not ok_conf or config.zindex or config.relative ~= '' or not vim.api.nvim_buf_is_valid(buf_id) then
-      is_valid = false
-    end
-
-    if is_valid then
-      local cursor = vim.api.nvim_win_get_cursor(win_id)
-      local win_info = vim.fn.getwininfo(win_id)[1]
-      -- 👇 如果光标移到了当前窗口可视区域的第一行 (topline)，隐藏它防止遮挡
-      if win_info and cursor[1] == win_info.topline then
-        is_valid = false
-      end
-    end
-
-    if not is_valid or vim.bo[buf_id].buftype ~= '' then
+    -- === 1. 甄别是否需要彻底销毁 ===
+    -- 排除浮动窗口、无效 Buffer、终端/特殊页
+    if not ok_conf or config.zindex or config.relative ~= '' or not vim.api.nvim_buf_is_valid(buf_id) or vim.bo[buf_id].buftype ~= '' then
       M.close(win_id)
       goto continue
     end
 
-    -- === 性能优化核心：缓存 Diffing 机制 ===
+    -- === 2. 甄别是否需要暂时“隐身”防遮挡 ===
+    local should_hide = false
+    local cursor = vim.api.nvim_win_get_cursor(win_id)
+    local win_info = vim.fn.getwininfo(win_id)[1]
+    -- 当光标到达当前视口第一行时触发隐身
+    if win_info and cursor[1] == win_info.topline then
+      should_hide = true
+    end
+
+    -- === 3. 核心科技：状态 Hash 缓存器 ===
     local buf_path = vim.api.nvim_buf_get_name(buf_id)
     local filename = buf_path ~= '' and vim.fn.fnamemodify(buf_path, ':t') or '[No Name]'
     local modified = vim.bo[buf_id].modified
     local win_width = vim.api.nvim_win_get_width(win_id)
 
-    -- 生成当前状态哈希
-    local state_hash = string.format('%d_%s_%s_%d', buf_id, tostring(modified), filename, win_width)
+    -- 🌟 修复：将 should_hide 状态加入指纹 Hash，确保能触发状态翻转
+    local state_hash = string.format('%d_%s_%s_%d_%s', buf_id, tostring(modified), filename,
+      win_width, tostring(should_hide))
     local state = win_cache[win_id] or {}
 
-    -- 如果状态没有任何改变，且窗口存活，直接跳过（极大地节省性能！）
+    -- 如果一切没变（或者窗口没变且 Buffer 没丢），直接跳过（极致省 CPU 核心逻辑）
     if state.hash == state_hash and state.win and vim.api.nvim_win_is_valid(state.win) and state.buf and vim.api.nvim_buf_is_valid(state.buf) then
       goto continue
     end
 
-    -- 渲染逻辑
+    -- === 4. 处理隐身动作（不摧毁 Buffer）===
+    if should_hide then
+      if state.win and vim.api.nvim_win_is_valid(state.win) then
+        -- 🌟 性能大杀器：使用 hide = true 仅仅让其隐身，阻止垃圾回收器的剧烈抖动
+        pcall(vim.api.nvim_win_set_config, state.win, { hide = true })
+      end
+      state.hash = state_hash
+      win_cache[win_id] = state
+      goto continue
+    end
+
+    -- === 5. 渲染新内容并显示 ===
     local icon, hl = '', 'Normal'
     local ok_icons, mini_icons = pcall(require, 'mini.icons')
     if ok_icons then icon, hl = mini_icons.get('file', filename) end
@@ -99,6 +107,7 @@ local function update_incline()
     for _, chunk in ipairs(chunks) do line_text = line_text .. chunk[1] end
     vim.api.nvim_buf_set_lines(state.buf, 0, -1, false, { line_text })
     vim.api.nvim_buf_clear_namespace(state.buf, ns, 0, -1)
+
     local byte_col = 0
     for _, chunk in ipairs(chunks) do
       vim.api.nvim_buf_add_highlight(state.buf, ns, chunk[2], 0, byte_col, byte_col + #chunk[1])
@@ -118,12 +127,13 @@ local function update_incline()
       focusable = false,
       zindex = 50,
       border = M.config.border,
+      hide = false, -- 🌟 确保从顶端离开时，解除隐身重新显示！
     }
 
     if not state.win or not vim.api.nvim_win_is_valid(state.win) then
       state.win = vim.api.nvim_open_win(state.buf, false, win_opts)
       local winhl = M.config.border == 'none' and 'NormalFloat:Normal,FloatBorder:Normal' or
-      'NormalFloat:Normal'
+        'NormalFloat:Normal'
       vim.wo[state.win].winhighlight = winhl
     else
       pcall(vim.api.nvim_win_set_config, state.win, win_opts)
