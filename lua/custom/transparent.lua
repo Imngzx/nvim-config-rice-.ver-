@@ -1,49 +1,40 @@
 -- Transparent background
--- https://github.com/xiyaowong/transparent.nvim/blob/main/lua/transparent/init.lua
+-- Highly optimized for Neovim 0.12+ (Safe Libuv Timer Management & Cache Sync)
 
 local M = {}
 local api, fn = vim.api, vim.fn
 local ORIGINAL_HL_CACHE = {}
+
+-- 🌟 修复点 1：创建一个私有表，用于集中管理和监视所有的底层定时器句柄
+M._timers = {}
 
 -- Config Module
 local config = {
   groups = {
     'Normal', 'NormalNC', 'SignColumn', 'EndOfBuffer',
     'LineNr', 'CursorLineNr', 'NonText',
-
     'Comment', 'Constant', 'Special', 'Identifier', 'Statement',
     'PreProc', 'Type', 'Underlined', 'Todo', 'String', 'Function',
     'Conditional', 'Repeat', 'Operator', 'Structure',
   },
 
   extra_groups = {
-    -- NeoTree
-    -- 'NeoTreeNormal', 'NeoTreeNormalNC',
-    -- BufferLine
-    -- 'Tabline', 'WildMenu', 'BufferLineFill',
     -- Snacks
     'SnacksPickerInput', 'SnacksPickerInputBorder',
     'SnacksPickerList', 'SnacksPickerListBorder',
-    -- 在 custom/transparent.lua 的 extra_groups 加入：
     'SnacksBackdrop',
     'SnacksNormal',
-
-    -- 👇 添加：Neovim 底层浮动窗口的 3 大件（背景、边框、标题）
+    -- Neovim 浮窗三剑客
     'NormalFloat', 'FloatBorder', 'FloatTitle', 'FloatFooter',
-
-    -- 👇 添加：Blink.cmp 的菜单和文档浮窗透明
+    -- Blink.cmp
     'BlinkCmpMenu', 'BlinkCmpMenuBorder',
     'BlinkCmpDoc', 'BlinkCmpDocBorder',
     'BlinkCmpSignatureHelp', 'BlinkCmpSignatureHelpBorder',
-
-    -- 👇 添加：LSP 悬浮文档 (Hover) 和 WhichKey 快捷键弹窗
+    -- LSP & WhichKey
     'LspInfoBorder',
     'WhichKeyFloat',
-
-    -- 👇 新增：强制透明化顶部路径栏 (WinBar)
+    -- WinBar & DropBar
     'WinBar', 'WinBarNC',
-
-    -- 👇 新增：当你按下 <leader>; 展开 Dropbar 菜单时，让它的悬浮窗和边框也透明
     'DropBarMenuNormalFloat', 'DropBarMenuBorder',
   },
 
@@ -63,15 +54,35 @@ function M.setup(opts)
       end,
     })
   end
+
+  -- 🌟 修复点 2：监听主题变化事件，防止缓存污染和背景复辟！
+  vim.api.nvim_create_autocmd('ColorScheme', {
+    group = vim.api.nvim_create_augroup('TransparentThemeSync', { clear = true }),
+    callback = function()
+      if vim.g.bg_transparent then
+        -- 切换主题后，新主题的原始颜色变了，必须清空旧缓存并重新执行剥离
+        ORIGINAL_HL_CACHE = {}
+        M.clear()
+      end
+    end,
+  })
 end
 
 -- [Cache Module] persist state
 local cache_path = fn.stdpath('data') .. package.config:sub(1, 1) .. 'transparent_state'
+
 local function cache_read()
   local ok, data = pcall(fn.readfile, cache_path)
   vim.g.bg_transparent = ok and #data > 0 and vim.trim(data[1]) == 'true'
 end
-local function cache_write() fn.writefile({ tostring(vim.g.bg_transparent) }, cache_path) end
+
+local function cache_write()
+  -- 🌟 修复点 3：确保缓存文件的父目录一定存在，防止由于环境差异导致写入崩溃
+  local dir = fn.fnamemodify(cache_path, ':h')
+  if fn.isdirectory(dir) == 0 then fn.mkdir(dir, 'p') end
+  fn.writefile({ tostring(vim.g.bg_transparent) }, cache_path)
+end
+
 cache_read() -- load state on startup
 
 -- [Core] Clear highlight groups
@@ -80,15 +91,14 @@ local function clear_group(group)
 
   for _, g in ipairs(list) do
     if not vim.tbl_contains(config.exclude_groups, g) then
-      -- Preserve original highlight (only save on first transparency)
-      if ORIGINAL_HL_CACHE[g] == nil then
-        local ok, prev = pcall(api.nvim_get_hl, 0, { name = g, link = false })
-        if ok and prev then ORIGINAL_HL_CACHE[g] = vim.deepcopy(prev) end
-      end
-
-      -- Set transparent
       local ok, prev = pcall(api.nvim_get_hl, 0, { name = g, link = false })
       if ok and prev then
+        -- Preserve original highlight (only save on first transparency)
+        if ORIGINAL_HL_CACHE[g] == nil then
+          ORIGINAL_HL_CACHE[g] = vim.deepcopy(prev)
+        end
+
+        -- Set transparent (Neovim API standard)
         if prev.bg or prev.ctermbg then
           prev.bg, prev.ctermbg = 'NONE', 'NONE'
           api.nvim_set_hl(0, g, prev)
@@ -110,12 +120,25 @@ end
 function M.clear()
   if not vim.g.bg_transparent then return end
 
+  -- 🌟 修复点 4：清场！在发起新的透明化轮询前，杀掉所有旧的幽灵定时器
+  for _, t in ipairs(M._timers) do
+    if t and not t:is_closing() then t:close() end
+  end
+  M._timers = {}
+
   do_clear()
 
-  vim.defer_fn(do_clear, 300)
-  vim.defer_fn(do_clear, 800)
-  vim.defer_fn(do_clear, 1500)
-  vim.defer_fn(do_clear, 3000)
+  -- 🌟 修复点 5：用底层的 Libuv timer 替换危险的 vim.defer_fn，彻底掌握生命周期
+  local delays = { 300, 800, 1500, 3000 }
+  for _, delay in ipairs(delays) do
+    local timer = vim.uv.new_timer()
+    timer:start(delay, 0, vim.schedule_wrap(function()
+      do_clear()
+      -- 执行完后自行释放，不留垃圾
+      if not timer:is_closing() then timer:close() end
+    end))
+    table.insert(M._timers, timer)
+  end
 
   api.nvim_exec_autocmds('User', { pattern = 'TransparentClear', modeline = false })
   config.on_clear()
@@ -132,12 +155,21 @@ function M.disable()
   vim.g.bg_transparent = false
   cache_write()
 
+  -- 🌟 修复点 6：极端防御！关闭透明时，必须拦截并粉碎还在排队的 do_clear 定时器
+  -- 否则会出现“刚关闭透明，过几秒系统又自动把背景变透明了”的闹鬼现象！
+  for _, t in ipairs(M._timers) do
+    if t and not t:is_closing() then t:close() end
+  end
+  M._timers = {}
+
   -- Restore original highlights
   for group, attrs in pairs(ORIGINAL_HL_CACHE) do
     api.nvim_set_hl(0, group, attrs)
   end
+
   -- Clear cache for next save
   ORIGINAL_HL_CACHE = {}
+
   -- If the theme plugin reloads the highlight, reset the theme
   if vim.g.colors_name then pcall(vim.cmd.colorscheme, vim.g.colors_name) end
 end
@@ -148,8 +180,6 @@ function M.toggle(opt)
   else
     vim.g.bg_transparent = not vim.g.bg_transparent
   end
-
-  cache_write()
 
   if vim.g.bg_transparent then
     M.enable()
