@@ -95,7 +95,12 @@ local function update_window()
 end
 
 local function start_animation()
-  if timer then return end
+  -- 👇 修改：确保不仅 timer 不存在，而且当前不是正在回收状态
+  if timer and not timer:is_closing() then return end
+
+  -- 如果存在且正在关闭，将其置空，重新生成
+  if timer and timer:is_closing() then timer = nil end
+
   timer = vim.uv.new_timer()
   timer:start(0, 80, vim.schedule_wrap(function()
     frame = (frame % #config.spinner) + 1
