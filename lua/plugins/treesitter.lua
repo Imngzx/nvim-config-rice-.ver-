@@ -28,12 +28,19 @@ lazy.load({
     vim.api.nvim_create_autocmd('FileType', {
       group = vim.api.nvim_create_augroup('TreesitterAttach', { clear = true }),
       callback = function(args)
+        -- 👇 新增：使用底层 C API 获取文件大小（零 IO 阻塞）
+        local file_name = vim.api.nvim_buf_get_name(args.buf)
+        local stats = vim.uv.fs_stat(file_name)
+        -- 如果文件大于 1.5MB，直接放弃挂载 Treesitter，保护内存！
+        if stats and stats.size > 1.5 * 1024 * 1024 then
+          vim.notify('大文件检测：已自动禁用 Treesitter 保护内存', vim.log.levels.WARN)
+          return
+        end
+
         local lang = vim.treesitter.language.get_lang(args.match)
         if lang then
-          -- 尝试启动语法树高亮
           local ok = pcall(vim.treesitter.start, args.buf, lang)
           if ok then
-            -- 挂载成功后，开启智能缩进
             vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
           end
         end
