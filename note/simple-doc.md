@@ -25,6 +25,7 @@
 - [Word Jump (Flash-like)](#word-jump-flash-like)
 - [Surround](#surround)
 - [TODO](#todo)
+- [CSV reading assistance](#csv-tsv-csvview) 
 - [Plugin Management](#plugin-management)
 - [Profiler](#profiler)
 
@@ -67,6 +68,7 @@
 | `<leader>bd` | n | Delete current buffer (via Snacks) |
 | `<leader>bo` | n | Delete all other buffers |
 | `<leader>br` | n | Rename current file |
+| `q` | n | Close special buffers (Help, Quickfix, LSP Info, etc.) |
 
 ### Windows / Splits
 
@@ -404,7 +406,7 @@
 
 | Key | Mode | Action |
 |-----|------|--------|
-| `F` | n | Activate word jump — type label letters to teleport |
+| `f` | n | Activate word jump — type label letters to teleport |
 
 ---
 
@@ -428,6 +430,20 @@
 | Key | Mode | Action |
 |-----|------|--------|
 | `<leader>st` | n | Search all TODOs in project |
+
+---
+
+## CSV / TSV (CsvView)
+
+> Active only in `.csv` and `.tsv` files.
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `if` / `af` | o, x | Inner / outer field textobject |
+| `<Tab>` | n, v | Jump to next field |
+| `<S-Tab>` | n, v | Jump to previous field |
+| `<Enter>` | n, v | Jump to next row |
+| `<S-Enter>` | n, v | Jump to previous row |
 
 ---
 
@@ -460,4 +476,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-03-11.*
+*Last updated based on commit pushed 2026-03-13.*
