@@ -32,6 +32,7 @@ vim.api.nvim_create_autocmd('FileType', {
 vim.api.nvim_create_autocmd('BufEnter', {
   group = vim.api.nvim_create_augroup('DisableAutoComment', { clear = true }),
   callback = function()
+    ---@diagnostic disable-next-line: undefined-field
     vim.opt.formatoptions:remove({ 'c', 'r', 'o' })
   end,
 })

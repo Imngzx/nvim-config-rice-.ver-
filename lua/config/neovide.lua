@@ -19,11 +19,9 @@ if vim.g.neovide then
   vim.g.neovide_window_blurred = true
   -- vim.g.neovide_opacity = 0.8
   -- vim.g.neovide_normal_opacity = 0.8
-  if vim.g.neovide then
-    -- Running in Neovide → disable snacks scroll
-    vim.g.snacks_scroll = false
-  else
-    -- Running in terminal → enable snacks scroll
-    vim.g.snacks_scroll = true
-  end
+  -- Running in Neovide → disable snacks scroll
+  vim.g.snacks_scroll = false
+else
+  -- Running in terminal → enable snacks scroll
+  vim.g.snacks_scroll = true
 end
