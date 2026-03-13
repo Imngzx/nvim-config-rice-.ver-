@@ -46,9 +46,11 @@ More photos can be found in [here](.github/assets)
     - [x] [mini.surround](https://github.com/nvim-mini/mini.surround) 
     - [x] [mini.pairs](https://github.com/nvim-mini/mini.pairs?tab=readme-ov-file) 
     - [x] [aerial.nvim](https://github.com/stevearc/aerial.nvim) (Key: `<Leader>co`)
+    - [x] [trouble.nvim](https://github.com/folke/trouble.nvim) (Key: `<Leader>cD`)
+
 
 > [!TIP]
-> can test launch speed with 
+> Can test launch speed with:
 ```sh
 ❯ nvim --startuptime nvim_speed.log +q && nvim nvim_speed.log
 # or
