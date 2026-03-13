@@ -1,7 +1,7 @@
-# CWorld Neovim Config
+# Cameron's NeoVim Config *forked from CWorld 
 
 > [!NOTE]
-> This is a fork of the original [author's](https://github.com/cworld1/nvim-config)  config. His config is more focused on simplicity. Please have a look on his config too .
+> This is a fork of the original [author's](https://github.com/cworld1/nvim-config) config. His config is the bone of my config. So please have a look on his config too.
 
 > [!NOTE]
 > nvim 0.12 still have font issues with neovide, please use neovide-git instead
@@ -26,17 +26,25 @@ More photos can be found in [here](.github/assets)
 ## Features
 
 ### Summarization
-- **Fast.** Less than **50ms** to start on most of devices (Depends on SSD, CPU, and OS (**Linux** is suggested)).
+- **Fast.** Less than **50ms** to start 
 - **Simple.** Run out of the box with only 27 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code.
-- **Beautiful.** Uses catppuccin theme, deeply integrated with snacks.nvim
+- **Beautiful.** Uses catppuccin theme
+- **Minimalist.** Plugins(DIY) with snacks integration
 
 ### Extras 
 
-- **Pluginless** for flash, suda, incline, fidget and bufferline features
-
+- List of features that became **Pluginless** 
+    - [x] [flash.nvim](https://github.com/folke/flash.nvim) 
+    - [x] [incline.nvim](https://github.com/b0o/incline.nvim) 
+    - [x] [vim-suda](https://github.com/lambdalisue/vim-suda) 
+    - [x] [bufferline.nvim](github.com/akinsho/bufferline.nvim) 
+    - [x] [todo-comments](https://github.com/folke/todo-comments.nvim) 
+    - [x] [fidget.nvim](https://github.com/j-hui/fidget.nvim) 
+    - [x] [mini.surround](https://github.com/nvim-mini/mini.surround) 
+    - [x] [mini.pairs](https://github.com/nvim-mini/mini.pairs?tab=readme-ov-file) 
 > [!TIP]
 > you can press F for word jumping (folke flash)
 
@@ -55,16 +63,17 @@ More photos can be found in [here](.github/assets)
 
 ## Info
 
+- Supported nvim version: `nightly 0.12`
 - Plugin manager: `vim.pack`
 - Language server protocol: `nvim-lspconfig`
 - Leader key: `Space`
 - Default LSP for Lua-language: `lua_ls`
-- Doc: [Simple-keybinding-documentations](/note/simple-doc.md)
+- Key doc: [Simple-keybinding-documentations](/note/simple-doc.md)
 - This is the [file structure](/note/file-structure.md) of my config.
 
 ## Installation
 
-Making sure you've installed [NeoVim 0.12](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli, and GCC on both Windows and Linux.
+Making sure you've installed [NeoVim-nightly 0.12](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli, and GCC on both Windows and Linux.
 
 > [!TIP]
 > Install tectonic for latex rendering, it is supported in this config
