@@ -268,7 +268,7 @@ Snacks.setup({
               buflisted = false,
               swapfile = false,
               undofile = false,
-              bufhidden = 'wipe',
+              -- bufhidden = 'wipe',
             },
             on_win = function(win)
               update(win)
