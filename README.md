@@ -37,16 +37,15 @@ More photos can be found in [here](.github/assets)
 ### Extras 
 
 - List of features that became **Pluginless** 
-    - [x] [flash.nvim](https://github.com/folke/flash.nvim) 
-    - [x] [incline.nvim](https://github.com/b0o/incline.nvim) 
-    - [x] [vim-suda](https://github.com/lambdalisue/vim-suda) 
-    - [x] [bufferline.nvim](github.com/akinsho/bufferline.nvim) 
-    - [x] [todo-comments](https://github.com/folke/todo-comments.nvim) 
+    - [x] [flash.nvim](https://github.com/folke/flash.nvim) (Key: **f**)
+    - [x] [incline.nvim](https://github.com/b0o/incline.nvim)
+    - [x] [vim-suda](https://github.com/lambdalisue/vim-suda)
+    - [x] [bufferline.nvim](github.com/akinsho/bufferline.nvim)
+    - [x] [todo-comments](https://github.com/folke/todo-comments.nvim) (Key: `<Leader>st`)
     - [x] [fidget.nvim](https://github.com/j-hui/fidget.nvim) 
     - [x] [mini.surround](https://github.com/nvim-mini/mini.surround) 
     - [x] [mini.pairs](https://github.com/nvim-mini/mini.pairs?tab=readme-ov-file) 
-> [!TIP]
-> you can press F for word jumping (folke flash)
+    - [x] [aerial.nvim](https://github.com/stevearc/aerial.nvim) (Key: `<Leader>co`)
 
 > [!TIP]
 > can test launch speed with 
