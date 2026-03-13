@@ -18,7 +18,9 @@ lazy.load({
         -- { left = '', right = '' },
         -- { left = '', right = '' }
         always_divide_middle = true,
-        refresh_time = 1000,
+        -- update every minutes, matches our lualine's clock format
+        -- able to save cpu and battery with this
+        refresh_time = 60000,
       },
       sections = {
         lualine_a = {
