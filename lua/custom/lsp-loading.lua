@@ -47,6 +47,7 @@ local function get_win_config(lines_count)
   }
 end
 
+local ns = vim.api.nvim_create_namespace('diy_fidget')
 local function update_window()
   -- 👇【新增核心修复：每次刷新动画前，检测 LSP 进程是不是已经死了，死了就强行清理】
   for client_id, _ in pairs(active_tasks) do
@@ -85,7 +86,6 @@ local function update_window()
   end
   vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, lines)
 
-  local ns = vim.api.nvim_create_namespace('diy_fidget')
   vim.api.nvim_buf_clear_namespace(buf_id, ns, 0, -1)
   for i = 0, #lines - 1 do
     vim.api.nvim_buf_add_highlight(buf_id, ns, config.highlights.icon, i, 1, 4)
