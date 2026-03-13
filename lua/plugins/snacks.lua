@@ -101,7 +101,7 @@ Snacks.setup({
     style = 'compact', -- 可选 "compact"(极简), "fancy"(带彩条), "minimal"(纯文字)
     top_down = true, -- true为右上角往下排，false为右下角往上排
     date_format = '%R',
-    refresh = 50,
+    refresh = 150,
   },
 
   -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
