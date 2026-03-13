@@ -41,22 +41,23 @@ local function update_git_branch(bufnr)
   local dir = vim.fn.fnamemodify(filepath, ':h')
   vim.b[bufnr].my_git_fetching = true -- 🔒 上锁
 
-  vim.system({ 'git', '-C', dir, 'branch', '--show-current' }, { text = true }, function(obj)
-    vim.schedule(function()
-      if vim.api.nvim_buf_is_valid(bufnr) then
-        vim.b[bufnr].my_git_fetching = false -- 🔓 解锁
+  vim.system({ 'git', '-C', dir, 'rev-parse', '--abbrev-ref', 'HEAD' }, { text = true },
+    function(obj)
+      vim.schedule(function()
+        if vim.api.nvim_buf_is_valid(bufnr) then
+          vim.b[bufnr].my_git_fetching = false -- 🔓 解锁
 
-        if obj.code == 0 and obj.stdout and obj.stdout ~= '' then
-          vim.b[bufnr].my_git_branch = vim.trim(obj.stdout)
-        else
-          -- 👇 优化 3：一旦发现查不到分支，说明不是 Git 仓库，拉入黑名单，永远不再消耗 CPU 查询！
-          vim.b[bufnr].my_git_branch = ''
-          vim.b[bufnr].my_git_not_repo = true
+          if obj.code == 0 and obj.stdout and obj.stdout ~= '' then
+            vim.b[bufnr].my_git_branch = vim.trim(obj.stdout)
+          else
+            -- 👇 优化 3：一旦发现查不到分支，说明不是 Git 仓库，拉入黑名单，永远不再消耗 CPU 查询！
+            vim.b[bufnr].my_git_branch = ''
+            vim.b[bufnr].my_git_not_repo = true
+          end
+          vim.cmd('redrawstatus')
         end
-        vim.cmd('redrawstatus')
-      end
+      end)
     end)
-  end)
 end
 
 -- 只在切换 Buffer、保存文件、或窗口重新获得焦点时才去取 Git 分支
