@@ -34,6 +34,7 @@ More photos can be found in [here](.github/assets)
 - **Beautiful.** Uses catppuccin theme, deeply integrated with snacks.nvim
 
 ### Extras 
+
 - **Pluginless** for flash, suda, incline, fidget and bufferline features
 
 > [!TIP]
@@ -57,8 +58,9 @@ More photos can be found in [here](.github/assets)
 - Plugin manager: `vim.pack`
 - Language server protocol: `nvim-lspconfig`
 - Leader key: `Space`
-- Doc: [Simple-keybinding-documentations](/note/simple-doc.md)
 - Default LSP for Lua-language: `lua_ls`
+- Doc: [Simple-keybinding-documentations](/note/simple-doc.md)
+- This is the [file structure](/note/file-structure.md) of my config.
 
 ## Installation
 
