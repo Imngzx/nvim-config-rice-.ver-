@@ -101,6 +101,7 @@ local function update_incline()
 
     if not state.buf or not vim.api.nvim_buf_is_valid(state.buf) then
       state.buf = vim.api.nvim_create_buf(false, true)
+      vim.bo[state.buf].bufhidden = 'wipe'
     end
 
     local line_text = ''
@@ -163,11 +164,21 @@ function M.setup(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
   local group = vim.api.nvim_create_augroup('HandcraftedIncline', { clear = true })
 
+  -- 👇 核心修复：引入一个状态锁，防止高频按键把事件队列塞爆
+  local update_queued = false
+
   vim.api.nvim_create_autocmd(
     { 'WinScrolled', 'BufEnter', 'WinEnter', 'BufModifiedSet', 'VimResized', 'CursorMoved' }, {
       group = group,
       callback = function()
-        vim.schedule(update_incline)
+        -- 如果队列里已经有一个正在排队的更新任务，就忽略新的请求（极大减少内存垃圾）
+        if update_queued then return end
+        update_queued = true
+
+        vim.schedule(function()
+          update_queued = false
+          update_incline()
+        end)
       end
     })
 

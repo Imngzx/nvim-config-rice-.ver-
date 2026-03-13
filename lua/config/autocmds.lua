@@ -2,16 +2,16 @@ local function augroup(name)
   return vim.api.nvim_create_augroup('lazyvim_' .. name, { clear = true })
 end
 
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('LspAttachFolding', { clear = true }),
-  callback = function(args)
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if client:supports_method('textDocument/foldingRange') then
-      local win = vim.api.nvim_get_current_win()
-      vim.wo[win][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
-    end
-  end,
-})
+-- vim.api.nvim_create_autocmd('LspAttach', {
+--   group = vim.api.nvim_create_augroup('LspAttachFolding', { clear = true }),
+--   callback = function(args)
+--     local client = vim.lsp.get_client_by_id(args.data.client_id)
+--     if client:supports_method('textDocument/foldingRange') then
+--       local win = vim.api.nvim_get_current_win()
+--       vim.wo[win][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
+--     end
+--   end,
+-- })
 
 -- [Autocmd] 仅对文书类文件开启拼写检查
 vim.api.nvim_create_autocmd('FileType', {
@@ -114,4 +114,47 @@ vim.api.nvim_create_autocmd('FileType', {
       })
     end)
   end,
+})
+
+-- ==========================================================
+-- 🧹 终极防泄露：强制释放 LuaJIT 无法感知的 C 内存碎片
+-- ==========================================================
+local gc_group = vim.api.nvim_create_augroup('GarbageCollector', { clear = true })
+
+-- 1. 失去焦点时：执行全量深度回收 (最安全、完全无感)
+vim.api.nvim_create_autocmd('FocusLost', {
+  group = gc_group,
+  callback = function()
+    collectgarbage('collect')
+  end,
+  desc = 'Deep memory clean when Neovim loses focus',
+})
+
+-- 2. 关闭浮动窗口时 (如 Snacks Picker, LSP Hover 退出)：产生大量临时字符串和AST，进行全量清理
+vim.api.nvim_create_autocmd('WinClosed', {
+  group = gc_group,
+  callback = function(args)
+    local win = tonumber(args.match)
+    if not win then return end
+
+    local ok, config = pcall(vim.api.nvim_win_get_config, win)
+    if ok and config.zindex then -- 确认这是一个浮动窗口
+      -- 稍微延迟，等窗口真正从屏幕上剥离后再执行 GC
+      vim.schedule(function()
+        collectgarbage('collect')
+      end)
+    end
+  end,
+  desc = 'Deep memory clean when floating windows are closed',
+})
+
+-- 3. Buffer 彻底销毁时：步进式回收，防主线程卡顿
+vim.api.nvim_create_autocmd('BufWipeout', {
+  group = gc_group,
+  callback = function()
+    vim.schedule(function()
+      collectgarbage('step', 200)
+    end)
+  end,
+  desc = 'Trigger incremental GC on buffer wipeout',
 })

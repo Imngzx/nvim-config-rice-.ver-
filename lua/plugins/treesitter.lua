@@ -28,13 +28,19 @@ lazy.load({
     vim.api.nvim_create_autocmd('FileType', {
       group = vim.api.nvim_create_augroup('TreesitterAttach', { clear = true }),
       callback = function(args)
-        -- 👇 新增：使用底层 C API 获取文件大小（零 IO 阻塞）
+        -- 👇 修复 1：绝对禁止为 Snacks 预览框、终端、AI 聊天框等特殊 Buffer 挂载全局 TS！
+        -- 它们要么有自己的渲染引擎，要么不需要庞大的 AST 语法树。
+        if vim.bo[args.buf].buftype ~= '' then return end
+
+        -- 👇 使用底层 C API 获取文件大小
         local file_name = vim.api.nvim_buf_get_name(args.buf)
-        local stats = vim.uv.fs_stat(file_name)
-        -- 如果文件大于 1.5MB，直接放弃挂载 Treesitter，保护内存！
-        if stats and stats.size > 1.5 * 1024 * 1024 then
-          vim.notify('大文件检测：已自动禁用 Treesitter 保护内存', vim.log.levels.WARN)
-          return
+        if file_name ~= '' then
+          local stats = vim.uv.fs_stat(file_name)
+          if stats and stats.size > 1.5 * 1024 * 1024 then
+            vim.notify('Big file detected: Disabled treesitter for memory safety',
+              vim.log.levels.WARN)
+            return
+          end
         end
 
         local lang = vim.treesitter.language.get_lang(args.match)

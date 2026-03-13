@@ -81,6 +81,7 @@ local function update_window()
 
   if not buf_id or not vim.api.nvim_buf_is_valid(buf_id) then
     buf_id = vim.api.nvim_create_buf(false, true)
+    vim.bo[buf_id].bufhidden = 'wipe'
   end
   vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, lines)
 

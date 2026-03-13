@@ -268,6 +268,7 @@ Snacks.setup({
               buflisted = false,
               swapfile = false,
               undofile = false,
+              bufhidden = 'wipe',
             },
             on_win = function(win)
               update(win)
@@ -484,9 +485,11 @@ local key = {
   -- { '<leader>Z',  function() Snacks.zen.zoom() end,                    desc = 'Toggle zoom' },
   { '<leader>bs', function() Snacks.scratch() end, desc = 'Toggle scratch buffer' },
   -- { '<leader>S',  function() Snacks.scratch.select() end,              desc = 'Select scratch buffer' },
-  { '<leader>bd', function() Snacks.bufdelete() end, desc = 'Delete buffer' },
 
-  { '<leader>bo', function() Snacks.bufdelete.other() end, desc = 'Delete other buffers' },
+  { '<leader>bd', function() Snacks.bufdelete(0, { wipe = true }) end, desc = 'Wipeout buffer' },
+
+  { '<leader>bo', function() Snacks.bufdelete.other({ wipe = true }) end, desc = 'Wipeout other buffers' },
+
   { '<leader>br', function() Snacks.rename.rename_file() end, desc = 'Rename file' },
   { '<c-/>', function() Snacks.terminal() end, desc = 'Toggle terminal' },
   { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'Next reference', mode = { 'n', 't' } },
