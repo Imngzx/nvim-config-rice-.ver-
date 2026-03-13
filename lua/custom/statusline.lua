@@ -26,32 +26,36 @@ end
 -- ========================================================
 local function update_git_branch(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
-  -- 防御：不处理终端、悬浮窗等非正常文件
-  if vim.bo[bufnr].buftype ~= '' then return end
+
+  -- 👇 优化 1：不仅检查 fetching，还要检查 not_repo 黑名单
+  if vim.bo[bufnr].buftype ~= ''
+    or vim.b[bufnr].my_git_fetching
+    or vim.b[bufnr].my_git_not_repo then
+    return
+  end
 
   local filepath = vim.api.nvim_buf_get_name(bufnr)
-  if filepath == '' then return end
+  -- 👇 优化 2：拦截网络/虚拟路径 (如 ssh://, oil://)，防止 git -C 报错
+  if filepath == '' or filepath:match('^[%w%+%.%-]+://') then return end
 
   local dir = vim.fn.fnamemodify(filepath, ':h')
+  vim.b[bufnr].my_git_fetching = true -- 🔒 上锁
 
-  -- 使用 Neovim 底层 vim.system 发起异步请求，完全不卡主线程
   vim.system({ 'git', '-C', dir, 'branch', '--show-current' }, { text = true }, function(obj)
-    if obj.code == 0 and obj.stdout and obj.stdout ~= '' then
-      local branch = vim.trim(obj.stdout)
-      -- 回调到主线程更新变量并重绘状态栏
-      vim.schedule(function()
-        if vim.api.nvim_buf_is_valid(bufnr) then
-          vim.b[bufnr].my_git_branch = branch
-          vim.cmd('redrawstatus')
-        end
-      end)
-    else
-      vim.schedule(function()
-        if vim.api.nvim_buf_is_valid(bufnr) then
+    vim.schedule(function()
+      if vim.api.nvim_buf_is_valid(bufnr) then
+        vim.b[bufnr].my_git_fetching = false -- 🔓 解锁
+
+        if obj.code == 0 and obj.stdout and obj.stdout ~= '' then
+          vim.b[bufnr].my_git_branch = vim.trim(obj.stdout)
+        else
+          -- 👇 优化 3：一旦发现查不到分支，说明不是 Git 仓库，拉入黑名单，永远不再消耗 CPU 查询！
           vim.b[bufnr].my_git_branch = ''
+          vim.b[bufnr].my_git_not_repo = true
         end
-      end)
-    end
+        vim.cmd('redrawstatus')
+      end
+    end)
   end)
 end
 
