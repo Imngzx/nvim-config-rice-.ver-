@@ -28,7 +28,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
 
 -- [Autocmd] Highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
-  group = vim.api.nvim_create_augroup('HighlightOnYank', {}),
+  group = vim.api.nvim_create_augroup('HighlightOnYank', { clear = true }),
   callback = function() (vim.hl or vim.highlight).on_yank() end,
   desc = 'Highlight yanked text',
 })
