@@ -10,6 +10,8 @@ return {
   { '<leader><space>', function() Snacks.picker.smart() end, desc = 'Smart find' },
   { '<leader>/', function() Snacks.picker.grep() end, desc = 'Grep' },
   { '<leader>fb', function() Snacks.picker.buffers() end, desc = 'Buffers' },
+  { '<leader>fc', function() Snacks.picker.files({ cwd = vim.fn.stdpath('config') }) end, desc = 'Find Neovim Config' },
+  { '<leader>fC', function() Snacks.picker.grep({ cwd = vim.fn.stdpath('config') }) end, desc = 'Grep Neovim Config' },
   { '<leader>ff', function() Snacks.picker.git_files() end, desc = 'Find git files' },
   { '<leader>fp', function() Snacks.picker.projects() end, desc = 'Projects' },
   { '<leader>fr', function() Snacks.picker.registers() end, desc = 'Registers' },
