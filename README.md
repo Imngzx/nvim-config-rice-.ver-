@@ -93,6 +93,8 @@ git clone https://github.com/Imngzx/nvim-config-rice-.ver-.git $XDG_CONFIG_HOME/
 nvim
 ```
 
+After those steps above, please `<Leader>pm` to open Mason panel
+
 Then please having fun!
 
 ## Project Structure
