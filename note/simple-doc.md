@@ -65,8 +65,8 @@
 | `<S-h>` | n | Previous buffer |
 | `<S-l>` | n | Next buffer |
 | `<leader>bn` | n | New empty file |
-| `<leader>bd` | n | Delete current buffer (via Snacks) |
-| `<leader>bo` | n | Delete all other buffers |
+| `<leader>bd` | n |  Wipeout current buffer (completely free memory)|
+| `<leader>bo` | n | Wipeout all other buffers |
 | `<leader>br` | n | Rename current file |
 | `q` | n | Close special buffers (Help, Quickfix, LSP Info, etc.) |
 
@@ -157,9 +157,11 @@
 | Key | Mode | Action |
 |-----|------|--------|
 | `<leader><space>` | n | Smart find (git files + recent) |
+| `<leader>fb` | n | List open buffers |
+| `<leader>fc` | n | Find Neovim Config files (from anywhere)|
+| `<leader>fC` | n | Grep inside Neovim Config (from anywhere) |
 | `<leader>ff` | n | Find git-tracked files |
 | `<leader>fp` | n | Browse projects |
-| `<leader>fb` | n | List open buffers |
 
 ### Grep / Search in Files
 
@@ -476,4 +478,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-03-13.*
+*Last updated based on commit pushed 2026-03-14.*
