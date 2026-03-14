@@ -1,8 +1,7 @@
-vim.lsp.config('clangd', {
+return {
   cmd = {
     'clangd',
     '--background-index',
-    -- '-j=8', -- 并发数，根据你的 CPU 调整
     '--clang-tidy',
     '--completion-style=detailed',
     '--function-arg-placeholders',
@@ -17,4 +16,4 @@ vim.lsp.config('clangd', {
       '/EHsc',
     },
   },
-})
+}

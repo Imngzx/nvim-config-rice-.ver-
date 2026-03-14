@@ -1,54 +1,12 @@
 local lazy = require('libs.lazy')
--- [Config]
 local H = {}
 
--- (Env) mason
--- `:Mason` to see the list
-H.mason = {
-  -- LSP
-  'lua-language-server', -- lua
-  'emmylua_ls', --lua
-  'json-lsp', --json
-  'basedpyright', --python
-  'marksman', -- markdown
-  -- 'vtsls',    -- typescript
-  -- 'css-lsp',  -- css
-  -- 'ty',       -- python
+-- 🌟 1. 唤醒 LSP 调度中心
+local lsp_manager = require('lsp.init')
+lsp_manager.setup()
 
-  -- Debugger
-  'codelldb',
-  'debugpy',
-
-  -- Formatter
-  -- 'prettier', -- front-end
-  'shfmt', -- shell
-  'ruff' -- python
-}
-
--- (Lsp) lspconfig
--- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
-H.lsp = {
-  'lua_ls',
-  -- 'emmylua_ls',
-  'vtsls',
-  -- 'cssls',
-  'jsonls',
-  -- 'vue_ls',
-  'marksman',
-  -- 'ty',
-  'clangd',
-  'qmlls6',
-  'ruff',
-  'basedpyright',
-}
-
--- (Formatter) conform
--- https://github.com/stevearc/conform.nvim#formatters
--- Or use `:help conform-formatters`
+-- (Formatter) conform 保持原样
 H.conform = {
-  -- markdown = { 'prettier' },
-  -- vue = { 'prettier' },
-
   python = function(bufnr)
     if require('conform').get_formatter_info('ruff_format', bufnr).available then
       return { 'ruff_format' }
@@ -56,7 +14,6 @@ H.conform = {
       return { 'isort', 'black' }
     end
   end,
-
   javascript = { 'prettierd', 'prettier', stop_after_first = true },
   rust = { 'rustfmt' },
   c = { 'clang_format' },
@@ -67,40 +24,25 @@ H.conform = {
   toml = { 'taplo' },
   cmake = { 'cmake_format' },
   json = { 'jq' },
-  -- css = { 'prettier' },
 }
-
--- lsp configuration
-require('config.lsp_config')
 
 vim.g.markdown_fenced_languages = {
-  'sh', 'bash=sh',
-  'python', 'py=python',
-  'javascript', 'js=javascript',
-  'typescript', 'ts=typescript',
-  'html',
-  'css',
-  'json',
-  'lua',
-  'vim',
+  'sh', 'bash=sh', 'python', 'py=python', 'javascript', 'js=javascript',
+  'typescript', 'ts=typescript', 'html', 'css', 'json', 'lua', 'vim',
 }
 
--- [Dependencies] Load on run `Mason` command, key, and event
+-- [Dependencies] Mason 自动化安装
 lazy.load({
   plugin = 'https://github.com/mason-org/mason.nvim',
-  -- 保留事件触发，目的是让 Mason 把 bin 目录注入环境变量，否则 LSP 会找不到工具
-  -- event = { 'BufReadPost', 'BufNewFile' },
-  event = { 'User', pattern = 'VeryLazy' },
+  event = { 'BufReadPost', 'BufNewFile' },
   cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonLog', 'MasonUpdate' },
   keys = {
     { 'n', '<leader>pm', function()
-      -- 1. 先瞬间打开 Mason UI 面板
       vim.cmd('Mason')
-
-      -- 2. 在后台静默执行联网刷新和自动安装逻辑
       local registry = require('mason-registry')
       registry.refresh(function()
-        for _, pkg_name in ipairs(H.mason) do
+        -- 🌟 2. 直接遍历大脑里计算好的工具名单！
+        for _, pkg_name in ipairs(lsp_manager.mason_tools) do
           local ok, pkg = pcall(registry.get_package, pkg_name)
           if ok and not pkg:is_installed() then
             vim.schedule(function()
@@ -114,27 +56,21 @@ lazy.load({
   },
   setup = function()
     require('mason').setup({
-      ui = {
-        icons = {
-          package_installed = '✓',
-          package_pending = '➜',
-          package_uninstalled = '✗',
-        },
-      },
+      ui = { icons = { package_installed = '✓', package_pending = '➜', package_uninstalled = '✗' } },
     })
-    -- 🗑️ 核心优化：把原本写在这里的 registry.refresh 逻辑彻底删除了！
-    -- 现在打开文件时，CPU 消耗为 0，网络请求为 0。
   end
 })
 
--- [LSP] Load when opening files or delay
+-- [LSP] 极速启动！
 lazy.load({
   plugin = 'https://github.com/neovim/nvim-lspconfig',
   event = { 'User', pattern = 'VeryLazy' },
   setup = function()
-    vim.lsp.enable(H.lsp)
+    -- 🌟 3. 把开启名单喂给引擎
+    vim.lsp.enable(lsp_manager.enabled_servers)
   end
 })
+
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('LspKepmap', {}),
   callback = function(ev)
