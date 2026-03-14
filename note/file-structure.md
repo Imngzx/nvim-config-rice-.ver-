@@ -1,7 +1,7 @@
 ```markdown
 #This is how my config structure looks like 
 
-nvim nvim-native ⇡13m21s 
+nvim nvim-native 
 ❯ tree
 .
 ├── init.lua
@@ -11,7 +11,6 @@ nvim nvim-native ⇡13m21s
 │   │   ├── autocmds.lua
 │   │   ├── clipboard.lua
 │   │   ├── keymaps.lua
-│   │   ├── lsp_config.lua
 │   │   ├── neovide.lua
 │   │   └── options.lua
 │   ├── custom
@@ -33,13 +32,13 @@ nvim nvim-native ⇡13m21s
 │   │   ├── icons.lua
 │   │   └── lazy.lua
 │   ├── lsp
-│   │   ├── c-language.lua
-│   │   ├── lua-language
-│   │   │   ├── emmy_ls.lua
-│   │   │   └── lua_ls.lua
-│   │   ├── python.lua
-│   │   ├── qml.lua
-│   │   └── vue.lua
+│   │   ├── init.lua
+│   │   └── servers
+│   │       ├── c-language.lua
+│   │       ├── lua.lua
+│   │       ├── python.lua
+│   │       ├── qml.lua
+│   │       └── vue.lua
 │   └── plugins
 │       ├── AI.lua
 │       ├── coderunner.lua
@@ -49,6 +48,10 @@ nvim nvim-native ⇡13m21s
 │       ├── im-select.lua
 │       ├── lsp.lua
 │       ├── markdown.lua
+│       ├── snacks_config
+│       │   ├── dashboard.lua
+│       │   ├── keys.lua
+│       │   └── picker.lua
 │       ├── snacks.lua
 │       ├── tool.lua
 │       ├── treesitter-context.lua
@@ -66,8 +69,8 @@ nvim nvim-native ⇡13m21s
 │   └── jjdescription.json
 └── stylua.toml
 
-10 directories, 52 files
+11 directories, 54 files
 
-nvim nvim-native ⇡
+nvim nvim-native 
 ❯ 
 ```
