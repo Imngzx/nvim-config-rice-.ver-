@@ -41,7 +41,8 @@ local function update_git_branch(bufnr)
   local dir = vim.fn.fnamemodify(filepath, ':h')
   vim.b[bufnr].my_git_fetching = true -- 🔒 上锁
 
-  vim.system({ 'git', '-C', dir, 'rev-parse', '--abbrev-ref', 'HEAD' }, { text = true },
+  vim.system({ 'git', '-C', dir, 'rev-parse', '--abbrev-ref', 'HEAD' },
+    { text = true, timeout = 1000 },
     function(obj)
       vim.schedule(function()
         if vim.api.nvim_buf_is_valid(bufnr) then
