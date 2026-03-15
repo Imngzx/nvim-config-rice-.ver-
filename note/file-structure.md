@@ -1,7 +1,7 @@
 ```markdown
 #This is how my config structure looks like 
 
-nvim nvim-native 
+nvim nvim-native
 ❯ tree
 .
 ├── init.lua
@@ -66,10 +66,11 @@ nvim nvim-native
 ├── nvim-pack-lock.json
 ├── README.md
 ├── snippets
+│   ├── gitcommit.json
 │   └── jjdescription.json
 └── stylua.toml
 
-11 directories, 54 files
+11 directories, 55 files
 
 nvim nvim-native 
 ❯ 
