@@ -30,6 +30,11 @@ require('custom.tabline').setup({
 })
 
 require('custom.lualine')
+-- require('custom.statusline').setup({
+--   git_cache_setup = { get_git_root = Snacks.git.get_root },
+--   hide_filename_by_ft = { snacks_picker_list = true },
+--   icons = { branch = icons.git.branch }
+-- })
 
 -- ==========================================================
 -- 🌟 第二梯队：注册 Lazy-loading 监听器与核心文件钩子
