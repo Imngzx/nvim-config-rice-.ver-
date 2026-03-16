@@ -66,6 +66,7 @@ vim.api.nvim_create_autocmd('User', {
     require('custom.pairs').setup()
     require('custom.surround').setup()
     require('custom.word-jump')
+    require('plugins.minimap')
   end
 })
 

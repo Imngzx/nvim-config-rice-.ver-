@@ -48,6 +48,7 @@ nvim nvim-native
 │       ├── im-select.lua
 │       ├── lsp.lua
 │       ├── markdown.lua
+│       ├── minimap.lua
 │       ├── snacks_config
 │       │   ├── dashboard.lua
 │       │   ├── keys.lua
@@ -70,7 +71,7 @@ nvim nvim-native
 │   └── jjdescription.json
 └── stylua.toml
 
-11 directories, 55 files
+11 directories, 56 files
 
 nvim nvim-native 
 ❯ 

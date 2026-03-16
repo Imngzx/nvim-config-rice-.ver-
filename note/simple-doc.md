@@ -387,6 +387,12 @@
 | `<leader>uz` | n | Toggle Zen mode |
 | `<leader>uZ` | n | Toggle zoom (maximize window) |
 | `<leader>bs` | n | Toggle scratch buffer |
+| `<leader>nm` | n | Toggle  minimap |
+| `<leader>no` | n | Open  minimap |
+| `<leader>nc` | n | Close  minimap |
+| `<leader>ns` | n | Toggle focus minimap |
+| `<leader>nr` | n | Refresh minimap |
+
 
 ---
 

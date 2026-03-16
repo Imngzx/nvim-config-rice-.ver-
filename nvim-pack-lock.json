@@ -53,6 +53,10 @@
       "rev": "ff2e4f1d29f659cc2bad0f9256f2f6195c6b2428",
       "src": "https://github.com/nvim-mini/mini.icons"
     },
+    "neominimap.nvim": {
+      "rev": "6a9d8b0d2f2c0d9d7853b377fa225990cb24837a",
+      "src": "https://github.com/Isrothy/neominimap.nvim"
+    },
     "nvim": {
       "rev": "ce8d176faa4643e026e597ae3c31db59b63cef09",
       "src": "https://github.com/catppuccin/nvim"

@@ -28,6 +28,7 @@ lazy.load({
       { '<leader>e', group = 'Explorer', icon = '󰙅 ' },
       { '<leader>f', group = 'Find/File', icon = ' ' },
       { '<leader>g', group = 'Git', icon = '󰊢 ' },
+      { '<leader>n', group = 'Minimap', icon = '🗺️ ' },
       { '<leader>p', group = 'Panel/Project', icon = '󰏖 ' },
       { '<leader>q', group = 'Quit', icon = '󰗼 ' },
       { '<leader>r', group = 'Run', icon = ' ' }, -- 为 coderunner.lua 补充
