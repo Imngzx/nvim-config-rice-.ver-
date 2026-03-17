@@ -6,6 +6,9 @@
 > [!NOTE]
 > nvim 0.12 still have font issues with neovide, please use neovide-git instead
 
+> [!WARNING]
+> Please read the [disclaimer](/note/manifesto-%26-disclaimer.md) before copy or use this config  
+
 ## About
 
 This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop environment.
