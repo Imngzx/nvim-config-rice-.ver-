@@ -48,4 +48,6 @@ If you are brave enough to try this and you spot a bug, a memory leak, or have i
 
 ---
 [me fr](https://github.com/user-attachments/assets/1f03f06c-a458-47e2-a234-584d8eb6da13)
+
+
 *I'm not using chatgpt for this config, no chatgpt was harmed in this config 
