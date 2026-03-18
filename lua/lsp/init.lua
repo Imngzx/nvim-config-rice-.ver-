@@ -13,8 +13,9 @@ local custom_servers = {
   -- vtsls = require('lsp.servers.vue'),
   lua_ls = require('lsp.servers.lua').lua_ls,
   -- emmylua_ls = require('lsp.servers.lua').emmylua_ls,
-  -- ruff = require('lsp.servers.python').ruff,
   -- basedpyright = require('lsp.servers.python').basedpyright,
+  -- ruff = require('lsp.servers.python').ruff,
+  -- ty = require('lsp.servers.python').ty,
 }
 
 -- 【3】其他开发工具：仅用 Mason 安装，不作为 LSP 启动

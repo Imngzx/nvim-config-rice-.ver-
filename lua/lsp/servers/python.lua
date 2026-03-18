@@ -36,5 +36,13 @@ return {
     capabilities = {
       offsetEncoding = { 'utf-16' },
     },
+  },
+  ty = {
+    -- NOTE: uv tool install ty
+    mason = false,
+    cmd = { 'ty', 'server' },
+    capabilities = {
+      offsetEncoding = { 'utf-16' },
+    },
   }
 }
