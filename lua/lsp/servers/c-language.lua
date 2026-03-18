@@ -1,4 +1,5 @@
 return {
+  mason = false, --NOTE: uncomment this to make mason install it
   cmd = {
     'clangd',
     '--background-index',

@@ -17,7 +17,19 @@ return {
     settings = {
       basedpyright = {
         analysis = {
-          typeCheckingMode = 'off',
+          diagnosticSeverityOverrides = {
+            reportUnknownMemberType = 'none',
+            reportUnknownArgumentType = 'none',
+          },
+          typeCheckingMode = 'basic',
+          diagnosticMode = 'openFilesOnly',
+          useLibraryCodeForTypes = true,
+          inlayHints = {
+            variableTypes = true,
+            functionReturnTypes = true,
+            callArgumentNames = true,
+            pytestParameters = true,
+          },
         },
       },
     },
