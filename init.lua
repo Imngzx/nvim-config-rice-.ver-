@@ -18,6 +18,7 @@ require('plugins.markdown')
 require('plugins.csvview')
 require('custom.incline').setup()
 require('custom.transparent').setup({ auto_enable = false })
+require('custom.ui2').setup()
 
 -- Tabline 必须同步，否则启动时顶部会突然闪现出标签栏
 local icons = require('libs.icons')

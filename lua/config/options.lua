@@ -30,6 +30,7 @@ vim.opt.winminwidth = 5 -- prevent tiny splits
 vim.opt.foldtext = "v:lua.vim.fn.getline(v:foldstart) .. ' …'" -- Fold text
 
 -- [Editor]
+vim.opt.cmdheight = 0
 vim.opt.fileformat = 'unix'
 vim.opt.mouse = 'a' -- enable mouse in all modes
 
