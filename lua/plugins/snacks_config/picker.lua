@@ -136,6 +136,7 @@ return {
         picker._preview_timer = vim.uv.new_timer()
 
         picker.show_preview = function(self)
+          if not self._preview_timer then return end
           self._preview_timer:stop()
           self._preview_timer:start(60, 0, vim.schedule_wrap(function()
             if self.preview and self.preview.win and self.preview.win:valid() then
@@ -164,7 +165,7 @@ return {
           local dir = vim.fn.getcwd()
           if item and item.file then
             dir = vim.fn.isdirectory(item.file) == 1 and item.file or
-            vim.fn.fnamemodify(item.file, ':h')
+              vim.fn.fnamemodify(item.file, ':h')
           end
           vim.ui.input({ prompt = 'Add a new file or directory (directories end with a "/"): ' },
             function(input)
@@ -183,9 +184,11 @@ return {
                 vim.schedule(function()
                   vim.cmd('edit ' .. vim.fn.fnameescape(path))
                   picker:close()
-                  if not fd then vim.notify(
-                    '\n[Explorer] Read-only directory.\nFile opened in memory. Sudo will be required on save.',
-                      vim.log.levels.WARN) end
+                  if not fd then
+                    vim.notify(
+                      '\n[Explorer] Read-only directory.\nFile opened in memory. Sudo will be required on save.',
+                      vim.log.levels.WARN)
+                  end
                 end)
               end
             end)
