@@ -7,12 +7,14 @@ vim.opt.winborder = 'rounded'
 vim.opt.showmode = false -- Hide mode status
 -- Line edit
 vim.opt.fillchars = { eob = ' ' }
-vim.opt.cursorline = false -- highlight current line
+vim.opt.cursorline = true -- highlight current line
+vim.opt.cursorlineopt = 'number'
 vim.opt.scrolloff = 4 -- keep 4 lines visible around cursor
 vim.opt.sidescrolloff = 8 -- keep 8 columns visible horizontally
 -- Line number
 vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.numberwidth = 4
 -- Indent
 vim.opt.expandtab = true -- use spaces instead of tabs
 vim.opt.shiftwidth = 2 -- indent size

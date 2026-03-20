@@ -33,6 +33,10 @@ require('catppuccin').setup({
       -- ['markdownH6'] = { bg = 'NONE' },
 
       -- === 👇 新增：强制清空所有浮动窗口和边框的背景色 ===
+      --line number config
+      CursorLineNr = { bold = true },
+      LineNr = { fg = colors.surface1 },
+
       -- 原生 LSP 和通用浮动窗口边框
       NormalFloat = { bg = 'NONE' },
       FloatBorder = { bg = 'NONE', fg = colors.pink }, -- fg可以换成你喜欢的边框颜色
