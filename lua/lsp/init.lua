@@ -9,7 +9,7 @@ local default_servers = {
 -- 【2】定制版 LSP：引入你在 lua/lsp/servers/ 下写的配置
 local custom_servers = {
   clangd = require('lsp.servers.c-language'), --NOTE: mason = false
-  zls = require('lsp.servers.zig'),
+  zls = require('lsp.servers.zig'), --NOTE: mason = false
   qmlls6 = require('lsp.servers.qml'), --NOTE: mason = false
   -- vtsls = require('lsp.servers.vue'),
   lua_ls = require('lsp.servers.lua').lua_ls,
