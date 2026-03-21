@@ -72,7 +72,9 @@ Use this on Linux for best experience
 - Leader key: `Space`
 - Default LSP for Lua-language: `lua_ls`
 - Key doc: [Simple-keybinding-documentations](/note/simple-doc.md)
-- This is the [file structure](/note/file-structure.md) of my config.
+
+> [!NOTE]
+> If you want to see the file structure of my config, please use `tree` in terminal
 
 ## Installation
 
