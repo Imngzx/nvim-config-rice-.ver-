@@ -1,5 +1,3 @@
-local Snacks = require('snacks')
-
 return {
   { '<leader>uZ', function() Snacks.zen.zoom() end, desc = 'Toggle Zoom (Maximize window)' },
   { '<leader>st', function() require('custom.todo').search() end, desc = 'Search TODOs' },

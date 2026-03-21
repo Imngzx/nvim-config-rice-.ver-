@@ -2,6 +2,7 @@
 ---@module 'snacks'
 
 local lazy = require('libs.lazy')
+local utils = require('libs.utils')
 
 -- 1. 加载核心插件
 vim.pack.add({ 'https://github.com/folke/snacks.nvim' })
@@ -78,7 +79,7 @@ lazy.load({
     set_keys(key)
 
     _G.dd = function(...) Snacks.debug.inspect(...) end
-    if vim.fn.has('nvim-0.11') == 1 then
+    if utils.is_compatible_version('0.11') then
       vim._print = function(_, ...) dd(...) end
     else
       vim.print = _G.dd

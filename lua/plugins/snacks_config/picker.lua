@@ -1,5 +1,4 @@
 local icons = require('libs.icons')
-local Snacks = require('snacks')
 local common_exclude = { '.git', '~', '.idea', '.DS_Store' }
 
 return {

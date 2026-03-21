@@ -1,3 +1,5 @@
+local utils = require('libs.utils')
+
 _G.start_time = vim.uv.hrtime()
 
 --[Startup Profiler]
@@ -12,7 +14,7 @@ if vim.env.PROF then
   })
 end
 
-if vim.fn.has('nvim-0.12') == 0 then
-  vim.notify('此配置强依赖 Neovim 0.12+ 的 vim.pack 机制，请升级 Neovim！', vim.log.levels.ERROR)
+if utils.is_compatible_version('0.12') then
+  vim.notify('Need Neovim 0.12+', vim.log.levels.ERROR)
   return
 end

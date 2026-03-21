@@ -1,6 +1,8 @@
+local utils = require('libs.utils')
+
 -- [Appearance]
 vim.opt.signcolumn = 'yes' -- always show sign column
-if vim.fn.has('nvim-0.10') == 0 then
+if utils.is_compatible_version('0.10') then
   vim.opt.termguicolors = true -- enable 24-bit RGB colors
 end
 vim.opt.winborder = 'rounded'
