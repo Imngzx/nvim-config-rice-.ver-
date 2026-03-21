@@ -8,26 +8,26 @@ local default_servers = {
 
 -- 【2】定制版 LSP：引入你在 lua/lsp/servers/ 下写的配置
 local custom_servers = {
-  -- clangd = require('lsp.servers.c-language'), --NOTE: mason = false
-  -- zls = require('lsp.servers.zig'),
-  -- qmlls6 = require('lsp.servers.qml'), --NOTE: mason = false
+  clangd = require('lsp.servers.c-language'), --NOTE: mason = false
+  zls = require('lsp.servers.zig'),
+  qmlls6 = require('lsp.servers.qml'), --NOTE: mason = false
   -- vtsls = require('lsp.servers.vue'),
   lua_ls = require('lsp.servers.lua').lua_ls,
   -- emmylua_ls = require('lsp.servers.lua').emmylua_ls,
-  -- basedpyright = require('lsp.servers.python').basedpyright,
-  -- ruff = require('lsp.servers.python').ruff,
+  basedpyright = require('lsp.servers.python').basedpyright,
+  ruff = require('lsp.servers.python').ruff,
   -- -- ty = require('lsp.servers.python').ty, --NOTE: mason = false
 }
 
 -- 【3】其他开发工具：仅用 Mason 安装，不作为 LSP 启动
 M.mason_tools = {
-  -- 'codelldb', -- C/C++/Rust 调试器
-  -- 'debugpy', -- Python 调试器
-  -- 'shfmt', -- Shell 格式化器
-  -- 'prettier',
-  -- 'prettierd',
-  -- 'taplo'
-  -- 'cmakelang'
+  'codelldb', -- C/C++/Rust 调试器
+  'debugpy', -- Python 调试器
+  'shfmt', -- Shell 格式化器
+  'prettier',
+  'prettierd',
+  'taplo',
+  'cmakelang',
   -- 'vue-language-server',
 }
 
