@@ -18,12 +18,12 @@ H.conform = {
   rust = { 'rustfmt' },
   c = { 'clang_format' },
   cpp = { 'clang_format' },
-  scheme = { 'schemat' },
   sh = { 'shfmt' },
   bash = { 'shfmt' },
   toml = { 'taplo' },
   cmake = { 'cmake_format' },
   json = { 'jq' },
+  zig = { 'zigfmt' },
 }
 
 vim.g.markdown_fenced_languages = {

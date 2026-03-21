@@ -27,6 +27,7 @@ nvim nvim-native
 │   │   ├── theme.lua
 │   │   ├── todo.lua
 │   │   ├── transparent.lua
+│   │   ├── ui2.lua
 │   │   └── word-jump.lua
 │   ├── libs
 │   │   ├── icons.lua
@@ -38,7 +39,8 @@ nvim nvim-native
 │   │       ├── lua.lua
 │   │       ├── python.lua
 │   │       ├── qml.lua
-│   │       └── vue.lua
+│   │       ├── vue.lua
+│   │       └── zig.lua
 │   └── plugins
 │       ├── AI.lua
 │       ├── coderunner.lua
@@ -62,6 +64,7 @@ nvim nvim-native
 ├── note
 │   ├── file-structure.md
 │   ├── index.md
+│   ├── manifesto-&-disclaimer.md
 │   ├── nvim.md
 │   └── simple-doc.md
 ├── nvim-pack-lock.json
@@ -71,7 +74,7 @@ nvim nvim-native
 │   └── jjdescription.json
 └── stylua.toml
 
-11 directories, 56 files
+11 directories, 59 files
 
 nvim nvim-native 
 ❯ 
