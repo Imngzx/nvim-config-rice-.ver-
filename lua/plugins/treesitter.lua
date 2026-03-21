@@ -9,7 +9,7 @@ lazy.load({
   event = { 'BufReadPre', 'BufNewFile' },
 
   setup = function()
-    if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
+    if require('libs.utils').is_windows() then
       vim.env.CC = 'gcc' -- C 编译器
       vim.env.CXX = 'g++' -- C++ 编译器
     end

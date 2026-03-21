@@ -72,7 +72,7 @@ lazy.load({
     -- 4. ⚙️ 配置 DAP 适配器
     local mason_bin = vim.fn.stdpath('data') .. '/mason/bin/'
     -- 兼容 Windows 系统
-    local codelldb_cmd = vim.fn.has('win32') == 1 and mason_bin .. 'codelldb.cmd' or
+    local codelldb_cmd = require('libs.utils').is_windows() and mason_bin .. 'codelldb.cmd' or
     mason_bin .. 'codelldb'
 
     dap.adapters.codelldb = {

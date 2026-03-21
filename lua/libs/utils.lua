@@ -8,10 +8,7 @@ end
 --- @param expected_version string
 --- @return boolean
 function M.is_compatible_version(expected_version)
-  -- Old method
-  -- return vim.fn.has(string.format('nvim-%s', expected_version)) == 0
-  -- New method
-  return vim.version.lt(expected_version, vim.version())
+  return vim.fn.has('nvim-' .. expected_version) == 1
 end
 
 return M

@@ -1,7 +1,7 @@
 -- nvim/lua/custom/sudo.lua
 
 -- Windows 系统直接退出，不加载此功能
-if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
+if require('libs.utils').is_windows() then
   return
 end
 

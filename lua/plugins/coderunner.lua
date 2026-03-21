@@ -2,6 +2,8 @@
 -- ⚡ CONFIGURATION SWITCHES (Set these at the top)
 -- ====================================================================
 
+local utils = require('libs.utils')
+
 -- Execution window mode: "float", "tab", or "term"
 local RUNNER_MODE = 1
 -- C build type: 1 = Release (GCC -O2); 2 = Debug (Clang -g -fsanitize) NOTE: Only available on UNIX
@@ -32,8 +34,8 @@ local function get_c_mode()
     return {
       'cd $dir &&',
       'mkdir -p out &&',
-      -- "gcc -Wall -Wextra -O2 -o out/$fileNameWithoutExt $fileName -lm &&",
-      'gcc -Wall -Wextra -O2 -o out/$fileNameWithoutExt $fileName -lm -lraylib &&',
+      'gcc -Wall -Wextra -O2 -o out/$fileNameWithoutExt $fileName -lm &&',
+      -- 'gcc -Wall -Wextra -O2 -o out/$fileNameWithoutExt $fileName -lm -lraylib &&',
       './out/$fileNameWithoutExt',
     }
   else
@@ -41,8 +43,8 @@ local function get_c_mode()
     return {
       'cd $dir &&',
       'mkdir -p out &&',
-      -- "clang -Wall -Wextra -g -fsanitize=address,undefined -o out/$fileNameWithoutExt $fileName -lm &&",
-      'clang -Wall -Wextra -g -fsanitize=address,undefined -o out/$fileNameWithoutExt $fileName -lm -lraylib &&',
+      'clang -Wall -Wextra -g -fsanitize=address,undefined -o out/$fileNameWithoutExt $fileName -lm &&',
+      -- 'clang -Wall -Wextra -g -fsanitize=address,undefined -o out/$fileNameWithoutExt $fileName -lm -lraylib &&',
       './out/$fileNameWithoutExt',
     }
   end
@@ -54,8 +56,8 @@ local function get_cpp_mode()
     return {
       'cd $dir &&',
       'mkdir -p out &&',
-      -- "g++ -std=c++23 -Wall -Wextra -O2 -o out/$fileNameWithoutExt $fileName &&",
-      'g++ -std=c++23 -Wall -Wextra -O2 -o out/$fileNameWithoutExt $fileName -lm -lraylib &&',
+      'g++ -std=c++23 -Wall -Wextra -O2 -o out/$fileNameWithoutExt $fileName &&',
+      -- 'g++ -std=c++23 -Wall -Wextra -O2 -o out/$fileNameWithoutExt $fileName -lm -lraylib &&',
       './out/$fileNameWithoutExt',
     }
   else
@@ -63,8 +65,8 @@ local function get_cpp_mode()
     return {
       'cd $dir &&',
       'mkdir -p out &&',
-      -- "clang++ -std=c++23 -Wall -Wextra -g -fsanitize=address,undefined -o out/$fileNameWithoutExt $fileName -lm &&",
-      'clang++ -std=c++23 -Wall -Wextra -g -fsanitize=address,undefined -o out/$fileNameWithoutExt $fileName -lm -lraylib &&',
+      'clang++ -std=c++23 -Wall -Wextra -g -fsanitize=address,undefined -o out/$fileNameWithoutExt $fileName -lm &&',
+      -- 'clang++ -std=c++23 -Wall -Wextra -g -fsanitize=address,undefined -o out/$fileNameWithoutExt $fileName -lm -lraylib &&',
       './out/$fileNameWithoutExt',
     }
   end
@@ -74,13 +76,10 @@ end
 -- 💻 OS DETECTION AND FINAL CONFIG
 -- ====================================================================
 
--- Detect OS
-local is_windows = vim.uv.os_uname().sysname:match('Windows')
-
 -- compiler configs
 local filetype = {}
 
-if is_windows then
+if utils.is_windows() then
   filetype = {
     cpp = {
       -- MSVC CL on Windows (unchanged)
