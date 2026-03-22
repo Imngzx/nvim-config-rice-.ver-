@@ -114,6 +114,11 @@ vim.keymap.set({ 'i', 'n', 's' }, '<esc>',
   { expr = true, desc = 'Escape and clear hlsearch' }
 )
 
+-- Yazi integragtion
+vim.keymap.set('n', '<leader>fy', function()
+  require('custom.yazi').open()
+end, { desc = 'Find via Yazi (File Manager)' })
+
 -- Package
 vim.keymap.set('n', '<leader>pu', function() vim.pack.update() end, { desc = 'Update plugins' })
 
