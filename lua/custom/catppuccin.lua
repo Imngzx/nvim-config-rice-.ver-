@@ -1,8 +1,16 @@
 -- [Theme & Bug Fix]
--- 引入 Catppuccin 主题
+local utils = require('libs.utils')
+
+local path_sep = utils.is_windows() and '\\' or '/'
+
 -- nvim/lua/custom/catppuccin.lua
 vim.pack.add({ 'https://github.com/catppuccin/nvim' })
 require('catppuccin').setup({
+
+  -- NOTE: remember to :CatppuccinCompile first before long term of usage
+  -- Because it can reduce the coloring time
+  compile_path = vim.fn.stdpath('cache') .. path_sep .. 'catppuccin',
+
   -- HACK: mocha, frappe, macchiato, latte
   flavour = 'mocha',
   transparent_background = false, -- 如果你想全局透明可以改成 true
