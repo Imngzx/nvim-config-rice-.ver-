@@ -18,7 +18,7 @@ lazy.load({
     local parsers = {
       'c', 'cpp', 'python', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
       'bash', 'json', 'yaml', 'toml', 'rust', 'zig', 'javascript', 'typescript', 'vue',
-      'latex', 'html'
+      'latex', 'html', 'regex',
     }
 
     -- 异步安装 (如果是已安装的，这里瞬间跳过，0 损耗)
