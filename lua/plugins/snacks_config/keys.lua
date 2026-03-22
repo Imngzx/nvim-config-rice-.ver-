@@ -49,7 +49,7 @@ return {
   { '<leader>bo', function() Snacks.bufdelete.other({ wipe = true }) end, desc = 'Wipeout other buffers' },
 
   { '<leader>br', function() Snacks.rename.rename_file() end, desc = 'Rename file' },
-  { '<c-/>', function() Snacks.terminal() end, desc = 'Toggle terminal' },
+  { '<leader>pT', function() Snacks.terminal() end, desc = 'Toggle half terminal' },
   { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'Next reference', mode = { 'n', 't' } },
   { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'Prev reference', mode = { 'n', 't' } },
   {
