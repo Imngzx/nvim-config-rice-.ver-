@@ -10,7 +10,7 @@
       "src": "https://github.com/CRAG666/code_runner.nvim"
     },
     "codecompanion.nvim": {
-      "rev": "9827dbdde55217e7b4185e744eae15f74e9c5e8b",
+      "rev": "d5551b1aac60e164fb569eba422ea9b65cd2d6f4",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {

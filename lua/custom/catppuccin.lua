@@ -6,6 +6,10 @@ require('catppuccin').setup({
   -- HACK: mocha, frappe, macchiato, latte
   flavour = 'mocha',
   transparent_background = false, -- 如果你想全局透明可以改成 true
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false
+  },
   integrations = {
     blink_cmp = true,
     markdown = true,
@@ -14,6 +18,7 @@ require('catppuccin').setup({
     snacks = true,
     which_key = true,
     mini = true,
+    treesitter_context = true,
   },
   custom_highlights = function(colors)
     return {
