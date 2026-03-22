@@ -92,7 +92,7 @@
 | Key | Mode | Action |
 |-----|------|--------|
 | `<leader>pt` | n | Open terminal (horizontal split) |
-| `<C-/>` | n | Toggle floating terminal (Snacks) |
+| `<leader>pT` | n | Toggle floating terminal (Snacks) |
 | `<Esc><Esc>` | t | Exit terminal mode |
 
 ---
@@ -162,6 +162,7 @@
 | `<leader>fC` | n | Grep inside Neovim Config (from anywhere) |
 | `<leader>ff` | n | Find git-tracked files |
 | `<leader>fp` | n | Browse projects |
+| `<leader>fy` | n | Find file via Yazi |
 
 ### Grep / Search in Files
 
@@ -484,4 +485,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-03-14.*
+*Last updated based on commit pushed 2026-03-22.*
