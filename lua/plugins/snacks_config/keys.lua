@@ -23,6 +23,7 @@ return {
   { '<leader>gs', function() Snacks.picker.git_status() end, desc = 'Git status' },
   { '<leader>gS', function() Snacks.picker.git_stash() end, desc = 'Git stash' },
   { '<leader>gf', function() Snacks.picker.git_diff() end, desc = 'Git diff (hunks)' },
+  { '<leader>H', function() Snacks.dashboard() end, desc = 'Open Dashboard (Home)' },
   { '<leader>sc', function() Snacks.picker.command_history() end, desc = 'Command history' },
   { '<leader>s/', function() Snacks.picker.search_history() end, desc = 'Search history' },
   { '<leader>sn', function() Snacks.picker.notifications() end, desc = 'Notification history' },
