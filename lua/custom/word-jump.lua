@@ -2,111 +2,134 @@ local M = {}
 local ns_id = vim.api.nvim_create_namespace('flash_diy')
 
 local config = {
-  labels = 'asdfghjklqwertyuiopzxcvbnm',
-  hl_match = 'Search',
-  hl_label = 'ErrorMsg',
+  labels = 'asdfghjklqwertyuiopzxcvbnmASDFGHJKLQWERTYUIOPZXCVBNM1234567890',
 }
+
+local function init_hl()
+  local set_hl = vim.api.nvim_set_hl
+  -- Backdrop: Dim unrelated text
+  set_hl(0, 'FlashDiyBackdrop', { fg = '#545c7e', default = false })
+  -- Match: Highlight targeted characters
+  set_hl(0, 'FlashDiyMatch', { fg = '#c0caf5', bg = '#3d59a1', bold = true, default = false })
+  -- Label: Jump indicators
+  set_hl(0, 'FlashDiyLabel', { fg = '#15161e', bg = '#ff007c', bold = true, default = false })
+end
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+  group = vim.api.nvim_create_augroup('FlashDiyHL', { clear = true }),
+  callback = init_hl,
+})
+
+init_hl()
 
 local function cleanup()
   vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
   vim.cmd('redraw')
 end
 
-local function get_matches(pattern)
+local function get_matches(target_char)
   local matches = {}
   local win_info = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
   local top = win_info.topline
   local bot = win_info.botline
 
-  -- 👇 性能修复：一次性把视口的所有行全部抽出到内存中，避免在 Lua 循环里反复跨 C API 边界
   local lines = vim.api.nvim_buf_get_lines(0, top - 1, bot, false)
 
   for i, line in ipairs(lines) do
     local lnum = top + i - 1
     local col = 1
     while true do
-      local s, e = line:find(pattern, col, true)
+      -- Plain text search
+      local s, e = line:find(target_char, col, true)
       if not s then break end
+
       table.insert(matches, { lnum, s })
       col = e + 1
-      if #matches >= #config.labels then return matches end -- 达到上限尽早退出
+      if #matches >= #config.labels then return matches end
     end
   end
   return matches
 end
 
-local function render(matches)
+local function render(matches, top, bot)
   vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
-  local label_map = {}
 
+  -- Apply backdrop filter to viewport
+  local lines = vim.api.nvim_buf_get_lines(0, top - 1, bot, false)
+  for i, line in ipairs(lines) do
+    local lnum = top + i - 2
+    if #line > 0 then
+      vim.api.nvim_buf_set_extmark(0, ns_id, lnum, 0, {
+        end_col = #line,
+        hl_group = 'FlashDiyBackdrop',
+        priority = 4000,
+      })
+    end
+  end
+
+  local label_map = {}
   for i, m in ipairs(matches) do
     local char = config.labels:sub(i, i)
     label_map[char] = m
 
-    vim.api.nvim_buf_add_highlight(0, ns_id, config.hl_match, m[1] - 1, m[2] - 1, m[2])
+    local lnum = m[1] - 1
+    local start_col = m[2] - 1
+    local end_col = m[2]
 
-    vim.api.nvim_buf_set_extmark(0, ns_id, m[1] - 1, m[2] - 1, {
-      virt_text = { { char:upper(), config.hl_label } },
-      virt_text_pos = 'overlay',
-      hl_mode = 'combine',
-      priority = 10000,
+    -- Highlight match
+    vim.api.nvim_buf_set_extmark(0, ns_id, lnum, start_col, {
+      end_col = end_col,
+      hl_group = 'FlashDiyMatch',
+      priority = 5000,
+    })
+
+    -- Inline virtual text for labels
+    vim.api.nvim_buf_set_extmark(0, ns_id, lnum, end_col, {
+      virt_text = { { char, 'FlashDiyLabel' } },
+      virt_text_pos = 'inline',
+      priority = 6000,
     })
   end
+
   vim.cmd('redraw')
   return label_map
 end
 
 function M.jump()
-  local pattern = ''
   print('⚡ Flash ❯  ')
+  local ok, target_char = pcall(vim.fn.getcharstr)
 
-  while true do
-    local ok, char = pcall(vim.fn.getcharstr)
-    if not ok or not char or char == '' then
-      cleanup()
-      print('Cancelled')
-      break
-    end
-    local code = char:byte()
+  if not ok or not target_char or target_char == '' or target_char:byte() == 27 then
+    cleanup()
+    return
+  end
 
-    if code == 27 then
-      cleanup()
-      print('Cancelled')
-      break
-    end
+  local matches = get_matches(target_char)
 
-    if #pattern > 0 then
-      local matches = get_matches(pattern)
-      local label_map = render(matches)
+  if #matches == 0 then
+    cleanup()
+    return
+  elseif #matches == 1 then
+    -- Jump immediately if single match found
+    cleanup()
+    vim.api.nvim_win_set_cursor(0, { matches[1][1], matches[1][2] - 1 })
+    return
+  end
 
-      if label_map[char:lower()] then
-        local target = label_map[char:lower()]
-        cleanup()
-        vim.api.nvim_win_set_cursor(0, { target[1], target[2] - 1 })
-        break
-      end
-    end
+  local win_info = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
+  local label_map = render(matches, win_info.topline, win_info.botline)
 
-    if code >= 32 and code <= 126 then
-      pattern = pattern .. char
-      local matches = get_matches(pattern)
+  print('⚡ Flash ❯  ')
+  local ok_lbl, label_char = pcall(vim.fn.getcharstr)
+  cleanup()
 
-      if #matches == 0 then
-        cleanup()
-        print('No matches for: ' .. pattern)
-        break
-      elseif #matches == 1 then
-        cleanup()
-        vim.api.nvim_win_set_cursor(0, { matches[1][1], matches[1][2] - 1 })
-        break
-      else
-        render(matches)
-        print('⚡ Flash ❯  ' .. pattern)
-      end
-    else
-      cleanup()
-      break
-    end
+  if not ok_lbl or not label_char or label_char == '' or label_char:byte() == 27 then
+    return
+  end
+
+  local target = label_map[label_char]
+  if target then
+    vim.api.nvim_win_set_cursor(0, { target[1], target[2] - 1 })
   end
 end
 
