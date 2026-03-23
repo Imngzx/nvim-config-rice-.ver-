@@ -87,15 +87,35 @@ vim.keymap.set('n', '<c-right>', function()
   vim.cmd('vertical resize +' .. vim.v.count1)
 end, { desc = 'Increase window width' })
 
--- [Functions]
+--[Functions]
 -- Terminal
-vim.keymap.set('n', '<leader>pt', '<cmd>term<cr>', { desc = 'Open Terminal (linux)' })
--- Vertical terminal
--- vim.keymap.set('n', '<leader>pt', '<cmd>vert term<cr>', { desc = 'Open Terminal (linux)' })
+local utils = require('libs.utils')
 
---NOTE: enable below and disable above if you using Windows
--- vim.keymap.set("n", "<leader>pt", "<cmd>vert term pwsh.exe<CR>", { desc = "Open Powershell" })
--- vim.keymap.set("n", "<leader>pT", "<cmd>vert term<CR>", { desc = "Open CMD" })
+vim.keymap.set('n', '<leader>pt', function()
+  local shell = ''
+
+  if utils.is_windows() then
+    if vim.fn.executable('pwsh') == 1 then
+      shell = 'pwsh'
+    elseif vim.fn.executable('powershell') == 1 then
+      shell = 'powershell'
+    else
+      shell = 'cmd'
+    end
+  else
+    if vim.fn.executable('fish') == 1 then
+      shell = 'fish'
+    else
+      shell = vim.env.SHELL or 'bash'
+    end
+  end
+
+  vim.cmd('term ' .. shell)
+  -- vim.cmd('split | term ' .. shell)
+  -- vim.cmd('vsplit | term ' .. shell)
+
+  vim.cmd('startinsert')
+end, { desc = 'Open Smart Terminal' })
 
 -- Search
 -- Better n/N behavior https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
