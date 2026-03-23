@@ -69,6 +69,8 @@
 | `<leader>bo` | n | Wipeout all other buffers |
 | `<leader>br` | n | Rename current file |
 | `q` | n | Close special buffers (Help, Quickfix, LSP Info, etc.) |
+| `H` | n | Return to Snacks dashboard |
+
 
 ### Windows / Splits
 
@@ -485,4 +487,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-03-22.*
+*Last updated based on commit pushed 2026-03-23.*
