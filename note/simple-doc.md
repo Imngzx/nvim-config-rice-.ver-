@@ -69,7 +69,7 @@
 | `<leader>bo` | n | Wipeout all other buffers |
 | `<leader>br` | n | Rename current file |
 | `q` | n | Close special buffers (Help, Quickfix, LSP Info, etc.) |
-| `H` | n | Return to Snacks dashboard |
+| `<leader>H` | n | Return to Snacks dashboard |
 
 
 ### Windows / Splits
