@@ -4,6 +4,7 @@ local M = {}
 local default_servers = {
   marksman = true,
   jsonls = 'json-lsp',
+  taplo = true,
 }
 
 -- 【2】定制版 LSP：引入你在 lua/lsp/servers/ 下写的配置
@@ -26,7 +27,6 @@ M.mason_tools = {
   'shfmt', -- Shell 格式化器
   'prettier',
   'prettierd',
-  'taplo',
   'cmakelang',
   -- 'vue-language-server',
 }
