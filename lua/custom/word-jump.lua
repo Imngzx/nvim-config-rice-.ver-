@@ -1,98 +1,91 @@
 local M = {}
-local ns_id = vim.api.nvim_create_namespace('flash_diy')
+local api = vim.api
 
-local config = {
-  labels = 'asdfghjklqwertyuiopzxcvbnmASDFGHJKLQWERTYUIOPZXCVBNM1234567890',
-}
+-- Cache C-API handles to bypass metatable lookups in hot loops (LuaJIT optimization)
+local set_extmark = api.nvim_buf_set_extmark
+local clear_namespace = api.nvim_buf_clear_namespace
+local ns_id = api.nvim_create_namespace('flash_diy')
+
+-- Pre-split character pools to avoid runtime slicing
+local lower = 'asdfghjklqwertyuiopzxcvbnm'
+local upper = 'ASDFGHJKLQWERTYUIOPZXCVBNM'
+local digits = '1234567890'
+
+local lower_chars, upper_chars, digit_chars = {}, {}, {}
+for i = 1, 26 do lower_chars[i] = lower:sub(i, i) end
+for i = 1, 26 do upper_chars[i] = upper:sub(i, i) end
+for i = 1, 10 do digit_chars[i] = digits:sub(i, i) end
+
+-- Max capacity: 26 (lower) + 676 (upper+lower) + 260 (digit+lower) = 962
+local MAX_MATCHES = 962
 
 local function init_hl()
-  local set_hl = vim.api.nvim_set_hl
-  -- Backdrop: Dim unrelated text
+  local set_hl = api.nvim_set_hl
   set_hl(0, 'FlashDiyBackdrop', { fg = '#545c7e', default = false })
-  -- Match: Highlight targeted characters
   set_hl(0, 'FlashDiyMatch', { fg = '#c0caf5', bg = '#3d59a1', bold = true, default = false })
-  -- Label: Jump indicators
   set_hl(0, 'FlashDiyLabel', { fg = '#15161e', bg = '#ff007c', bold = true, default = false })
 end
 
-vim.api.nvim_create_autocmd('ColorScheme', {
-  group = vim.api.nvim_create_augroup('FlashDiyHL', { clear = true }),
+api.nvim_create_autocmd('ColorScheme', {
+  group = api.nvim_create_augroup('FlashDiyHL', { clear = true }),
   callback = init_hl,
 })
-
 init_hl()
 
 local function cleanup()
-  vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
+  clear_namespace(0, ns_id, 0, -1)
   vim.cmd('redraw')
 end
 
-local function get_matches(target_char)
-  local matches = {}
-  local win_info = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
-  local top = win_info.topline
-  local bot = win_info.botline
+-- Hierarchical label generator: Single > Double Letter > Digit+Letter
+local function generate_labels(N)
+  local P = 0 -- Required uppercase prefixes
+  local D = 0 -- Required digit prefixes
+  local U_singles = 26
 
-  local lines = vim.api.nvim_buf_get_lines(0, top - 1, bot, false)
-
-  for i, line in ipairs(lines) do
-    local lnum = top + i - 1
-    local col = 1
-    while true do
-      -- Plain text search
-      local s, e = line:find(target_char, col, true)
-      if not s then break end
-
-      table.insert(matches, { lnum, s })
-      col = e + 1
-      if #matches >= #config.labels then return matches end
-    end
-  end
-  return matches
-end
-
-local function render(matches, top, bot)
-  vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
-
-  -- Apply backdrop filter to viewport
-  local lines = vim.api.nvim_buf_get_lines(0, top - 1, bot, false)
-  for i, line in ipairs(lines) do
-    local lnum = top + i - 2
-    if #line > 0 then
-      vim.api.nvim_buf_set_extmark(0, ns_id, lnum, 0, {
-        end_col = #line,
-        hl_group = 'FlashDiyBackdrop',
-        priority = 4000,
-      })
-    end
+  if N <= 52 then
+    U_singles = N > 26 and (N - 26) or 0
+  elseif N <= 702 then
+    P = math.ceil((N - 52) / 25)
+    U_singles = 26 - P
+  else
+    P = 26
+    U_singles = 0
+    D = math.ceil((N - 702) / 26)
+    if D > 10 then D = 10 end
   end
 
-  local label_map = {}
-  for i, m in ipairs(matches) do
-    local char = config.labels:sub(i, i)
-    label_map[char] = m
+  local labels, label_to_idx, prefix_map = {}, {}, {}
+  local idx = 1
 
-    local lnum = m[1] - 1
-    local start_col = m[2] - 1
-    local end_col = m[2]
-
-    -- Highlight match
-    vim.api.nvim_buf_set_extmark(0, ns_id, lnum, start_col, {
-      end_col = end_col,
-      hl_group = 'FlashDiyMatch',
-      priority = 5000,
-    })
-
-    -- Inline virtual text for labels
-    vim.api.nvim_buf_set_extmark(0, ns_id, lnum, end_col, {
-      virt_text = { { char, 'FlashDiyLabel' } },
-      virt_text_pos = 'inline',
-      priority = 6000,
-    })
+  local function add_label(lbl)
+    if idx > N then return end
+    labels[idx] = lbl
+    label_to_idx[lbl] = idx
+    idx = idx + 1
   end
 
-  vim.cmd('redraw')
-  return label_map
+  -- Priority 1: Lowercase singles
+  for i = 1, math.min(N, 26) do add_label(lower_chars[i]) end
+
+  -- Priority 2: Uppercase singles
+  for i = 1, U_singles do add_label(upper_chars[i]) end
+
+  -- Priority 3: Double letters (Prefix Z, X, C... to preserve home row singles)
+  for i = 1, P do
+    local prefix = upper_chars[26 - P + i]
+    prefix_map[prefix] = true
+    for j = 1, 26 do add_label(prefix .. lower_chars[j]) end
+  end
+
+  -- Priority 4: Digit + Letter
+  for i = 1, D do
+    local prefix = digit_chars[i]
+    prefix_map[prefix] = true
+    for j = 1, 26 do add_label(prefix .. lower_chars[j]) end
+  end
+
+  return labels, label_to_idx, prefix_map
 end
 
 function M.jump()
@@ -104,35 +97,114 @@ function M.jump()
     return
   end
 
-  local matches = get_matches(target_char)
+  local win_info = vim.fn.getwininfo(api.nvim_get_current_win())[1]
+  local top, bot = win_info.topline, win_info.botline
 
-  if #matches == 0 then
+  -- SoA (Struct of Arrays) design for cache-friendly access
+  local match_rows, match_cols = {}, {}
+  local count = 0
+
+  -- Fetch buffer lines once to minimize C-API overhead
+  local lines = api.nvim_buf_get_lines(0, top - 1, bot, false)
+
+  for i = 1, #lines do
+    local line = lines[i]
+    local lnum = top + i - 1
+    local col = 1
+    while true do
+      local s, e = line:find(target_char, col, true)
+      if not s then break end
+      count = count + 1
+      match_rows[count] = lnum
+      match_cols[count] = s
+      if count >= MAX_MATCHES then break end
+      col = e + 1
+    end
+    if count >= MAX_MATCHES then break end
+  end
+
+  if count == 0 then
     cleanup()
     return
-  elseif #matches == 1 then
-    -- Jump immediately if single match found
+  elseif count == 1 then
     cleanup()
-    vim.api.nvim_win_set_cursor(0, { matches[1][1], matches[1][2] - 1 })
+    api.nvim_win_set_cursor(0, { match_rows[1], match_cols[1] - 1 })
     return
   end
 
-  local win_info = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
-  local label_map = render(matches, win_info.topline, win_info.botline)
+  local labels, label_to_idx, prefix_map = generate_labels(count)
+
+  local function fast_render(prefix_filter)
+    clear_namespace(0, ns_id, 0, -1)
+    local e_row = math.min(bot, api.nvim_buf_line_count(0))
+
+    -- Batch backdrop dimming in a single call
+    set_extmark(0, ns_id, top - 1, 0, {
+      end_row = e_row,
+      end_col = 0,
+      hl_group = 'FlashDiyBackdrop',
+      priority = 4000,
+    })
+
+    for i = 1, count do
+      local char = labels[i]
+      -- Use byte comparison for faster prefix filtering
+      if not prefix_filter or char:byte(1) == prefix_filter:byte(1) then
+        local display_char = prefix_filter and char:sub(2) or char
+        local r, c = match_rows[i] - 1, match_cols[i] - 1
+
+        set_extmark(0, ns_id, r, c, {
+          end_col = c + 1,
+          hl_group = 'FlashDiyMatch',
+          priority = 5000,
+        })
+
+        set_extmark(0, ns_id, r, c + 1, {
+          virt_text = { { display_char, 'FlashDiyLabel' } },
+          virt_text_pos = 'inline',
+          priority = 6000,
+        })
+      end
+    end
+    vim.cmd('redraw')
+  end
+
+  fast_render(nil)
 
   print('⚡ Flash ❯  ')
-  local ok_lbl, label_char = pcall(vim.fn.getcharstr)
-  cleanup()
-
-  if not ok_lbl or not label_char or label_char == '' or label_char:byte() == 27 then
+  local ok1, char1 = pcall(vim.fn.getcharstr)
+  if not ok1 or not char1 or char1 == '' or char1:byte() == 27 then
+    cleanup()
     return
   end
 
-  local target = label_map[label_char]
-  if target then
-    vim.api.nvim_win_set_cursor(0, { target[1], target[2] - 1 })
+  -- Case A: Single character match, jump immediately
+  if label_to_idx[char1] then
+    local idx = label_to_idx[char1]
+    cleanup()
+    api.nvim_win_set_cursor(0, { match_rows[idx], match_cols[idx] - 1 })
+    return
+  end
+
+  -- Case B: Prefix match, filter view and wait for second char
+  if prefix_map[char1] then
+    fast_render(char1)
+
+    print('⚡ Flash ❯ ' .. char1)
+    local ok2, char2 = pcall(vim.fn.getcharstr)
+    cleanup()
+    if not ok2 or not char2 or char2 == '' or char2:byte() == 27 then return end
+
+    local full_char = char1 .. char2
+    local idx = label_to_idx[full_char]
+    if idx then
+      api.nvim_win_set_cursor(0, { match_rows[idx], match_cols[idx] - 1 })
+    end
+  else
+    cleanup()
   end
 end
 
-vim.keymap.set('n', 'f', M.jump, { desc = 'DIY Flash Jump' })
+vim.keymap.set({ 'n', 'x', 'o' }, 'f', M.jump, { desc = 'DIY Flash Jump' })
 
 return M
