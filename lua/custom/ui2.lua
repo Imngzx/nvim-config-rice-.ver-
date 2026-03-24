@@ -9,7 +9,19 @@ function M.setup()
     enable = true,
     msg = {
       targets = 'msg',
-      timeout = 4000,
+
+      cmd = {
+        height = 0.5,
+      },
+
+      msg = {
+        height = 0.5,
+        timeout = 4000,
+      },
+
+      dialog = {
+        height = 0.5,
+      },
     },
   })
 end
