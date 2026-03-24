@@ -54,8 +54,8 @@ lazy.load({
           {
             'diff',
             symbols = {
-              added = ' ',
-              modified = ' ',
+              added = ' ',
+              modified = ' ',
               removed = ' ',
             },
           },
