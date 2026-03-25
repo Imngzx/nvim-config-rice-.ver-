@@ -50,6 +50,10 @@ require('config.neovide')
 
 require('custom.sudo')
 require('custom.todo').setup()
+require('custom.git').setup({
+  stage_action = Snacks.picker.actions.git_stage,
+  get_git_root = Snacks.git.get_root
+})
 
 vim.api.nvim_create_autocmd('User', {
   pattern = 'VeryLazy',
