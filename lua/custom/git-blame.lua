@@ -3,12 +3,10 @@ local M = {}
 local NS = vim.api.nvim_create_namespace('DIYGitBlame')
 local EXT_ID = 1
 
--- 缓存池
 local b_state = {}
 local fetch_timers = {}
 local current_author = nil
 
--- 默认配置
 local config = {
   enabled = true,
   message_template = '  󰊢 <sha> •  <author> •  <date> • 󰈔 <summary>',
@@ -18,7 +16,6 @@ local config = {
   ignored_filetypes = {},
   delay = 250,
   max_summary_length = 50,
-  -- 👇 新增：解耦设计，默认提供基于 0.10+ 原生 API 的降级方案
   get_git_root = function(filepath)
     return vim.fs.root(filepath, '.git')
   end,
@@ -30,7 +27,6 @@ local function truncate(str, max)
   return (max and max > 0 and #str > max) and (str:sub(1, max) .. '...') or str
 end
 
--- 高性能相对时间计算
 local function time_ago(time)
   local diff = math.max(0, os.time() - time)
   if diff < 60 then return 'just now' end
@@ -46,7 +42,6 @@ local function time_ago(time)
   return years .. (years == 1 and ' yr ago' or ' yrs ago')
 end
 
--- 极简解析器
 local function parse_porcelain(stdout)
   local blames, commit_cache = {}, {}
   local c_sha, c_final, c_size = nil, nil, nil
@@ -91,7 +86,6 @@ local function format_blame(commit)
     if config.date_format == '%r' then
       date_str = time_ago(commit.date)
     else
-      -- 👇 修复图2警告：用强制断言告诉 LSP 这绝对是个字符串
       date_str = os.date(config.date_format, commit.date) --[[@as string]]
     end
   end
@@ -110,12 +104,16 @@ end
 
 local function clear_blame(bufnr)
   if vim.api.nvim_buf_is_valid(bufnr) then
-    pcall(vim.api.nvim_buf_del_extmark, bufnr, NS, EXT_ID)
+    vim.api.nvim_buf_del_extmark(bufnr, NS, EXT_ID)
   end
 end
 
+local function is_insert_mode()
+  return vim.api.nvim_get_mode().mode:sub(1, 1) == 'i'
+end
+
 local function show_blame(bufnr)
-  if not config.enabled or vim.api.nvim_get_current_buf() ~= bufnr or vim.fn.mode() == 'i' then return end
+  if not config.enabled or vim.api.nvim_get_current_buf() ~= bufnr or is_insert_mode() then return end
 
   local st = b_state[bufnr]
   if not st or not st.blames or st.tick ~= vim.api.nvim_buf_get_changedtick(bufnr) then
@@ -127,7 +125,7 @@ local function show_blame(bufnr)
   local text = format_blame(st.blames[line])
   if not text then return clear_blame(bufnr) end
 
-  pcall(vim.api.nvim_buf_set_extmark, bufnr, NS, line - 1, 0, {
+  vim.api.nvim_buf_set_extmark(bufnr, NS, line - 1, 0, {
     id = EXT_ID,
     virt_text = { { text, config.highlight_group } },
     virt_text_pos = 'eol',
@@ -142,7 +140,6 @@ local function fetch_blame(bufnr)
   if filepath == '' or filepath:match('^[%w%+%.%-]+://') then return end
   if vim.tbl_contains(config.ignored_filetypes, vim.bo[bufnr].filetype) then return end
 
-  -- 👇 依赖注入：调用用户配置传进来的函数，绝不在此写死 snacks
   local root = config.get_git_root(filepath)
   if not root then return end
 
@@ -168,7 +165,7 @@ local function fetch_blame(bufnr)
       if obj.code == 0 and obj.stdout then
         st.blames = parse_porcelain(obj.stdout)
         st.tick = tick
-        if vim.api.nvim_get_current_buf() == bufnr and vim.fn.mode() ~= 'i' then show_blame(bufnr) end
+        if vim.api.nvim_get_current_buf() == bufnr and not is_insert_mode() then show_blame(bufnr) end
       end
     end)
   end)
@@ -185,13 +182,13 @@ function M.setup(opts)
   local aug = vim.api.nvim_create_augroup('DIYGitBlame', { clear = true })
 
   vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'BufWritePost', 'InsertLeave' }, {
-    group = aug, callback = function(args) if vim.fn.mode() ~= 'i' then queue_fetch(args.buf) end end
+    group = aug, callback = function(args) if not is_insert_mode() then queue_fetch(args.buf) end end
   })
   vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
     group = aug,
     callback = function(args)
       clear_blame(args.buf)
-      if vim.fn.mode() ~= 'i' then queue_fetch(args.buf) end
+      if not is_insert_mode() then queue_fetch(args.buf) end
     end
   })
   vim.api.nvim_create_autocmd('CursorMoved', {
@@ -216,9 +213,11 @@ function M.setup(opts)
   })
 
   if config.enabled then
-    vim.system({ 'git', 'config', 'user.name' }, { text = true }, function(obj)
-      if obj.code == 0 and obj.stdout then current_author = vim.trim(obj.stdout) end
-    end)
+    if not current_author then
+      vim.system({ 'git', 'config', 'user.name' }, { text = true }, function(obj)
+        if obj.code == 0 and obj.stdout then current_author = vim.trim(obj.stdout) end
+      end)
+    end
     for _, win in ipairs(vim.api.nvim_list_wins()) do queue_fetch(vim.api.nvim_win_get_buf(win)) end
   end
 end
