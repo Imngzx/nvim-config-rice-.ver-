@@ -4,6 +4,8 @@ vim.g.maplocalleader = ' '
 -- [Basic]
 -- Quit
 vim.keymap.set('n', '<leader>qq', '<cmd>qa<cr>', { desc = 'Quit all' })
+vim.keymap.set('n', '<leader>qr', '<cmd>restart<cr>', { desc = 'Restart' })
+
 -- Save
 vim.keymap.set('n', '<leader>w', '<cmd>w<cr>', { desc = 'Save file' })
 vim.keymap.set({ 'i', 'x', 'n', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save file' })
