@@ -58,10 +58,10 @@ require('custom.git').setup({
 })
 require('custom.git-blame').setup({
   enabled = true,
-  message_template = '  <author> • <date> • <summary> • <sha>',
+  message_template = '  󰈔 <summary>,  <author> (<date>)',
   date_format = '%r',
   delay = 1000,
-  max_summary_length = 50,
+  max_summary_length = 30,
   get_git_root = Snacks.git.get_root
 })
 
