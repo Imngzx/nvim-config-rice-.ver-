@@ -71,7 +71,11 @@ vim.api.nvim_create_autocmd('User', {
     require('custom.lsp-loading').setup()
     require('custom.pairs').setup()
     require('custom.surround').setup()
-    require('custom.word-jump')
+
+    -- you can try it out if you want ฅ₍^•⩊ •マⳊ
+    -- require('custom.word-jump')
+
+    require('plugins.flash')
     require('plugins.minimap')
   end
 })

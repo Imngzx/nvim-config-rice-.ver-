@@ -39,7 +39,7 @@ Use this on Linux for best experience
 ### Extras 
 
 - List of features that became **Pluginless** 
-    - [x] [flash.nvim](https://github.com/folke/flash.nvim) (Key: `f`)
+    - [ ]  [flash.nvim](https://github.com/folke/flash.nvim) (Key: `f`)
     - [x] [incline.nvim](https://github.com/b0o/incline.nvim)
     - [x] [vim-suda](https://github.com/lambdalisue/vim-suda)
     - [x] [bufferline.nvim](github.com/akinsho/bufferline.nvim)
