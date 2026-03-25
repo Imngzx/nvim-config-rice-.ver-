@@ -35,26 +35,29 @@ vim.opt.foldtext = "v:lua.vim.fn.getline(v:foldstart) .. ' …'" -- Fold text
 vim.opt.cmdheight = 0
 vim.opt.fileformat = 'unix'
 vim.opt.mouse = 'a' -- enable mouse in all modes
-
 vim.opt.laststatus = 3 -- global satusline (once you add one)
-
 vim.opt.ruler = false
 -- vim.opt.colorcolumn = '80'   -- column ruler
 vim.opt.confirm = true -- confirm before quitting unsaved changes
+
 -- Case
 vim.opt.ignorecase = true -- case-insensitive by default
 vim.opt.incsearch = true -- show search results while typing
 vim.opt.smartcase = true -- but smart if uppercase is used
+
 -- Split
 vim.opt.splitbelow = true -- horizontal splits below
 vim.opt.splitright = true -- vertical splits to the right
 vim.opt.splitkeep = 'screen' -- preserve layout when splitting
+
 -- Format
 vim.opt.formatoptions =
 'jcroqlnt' -- keep comments, wrap text, autoformat when possible
+
 -- Command
 vim.opt.inccommand = 'nosplit' -- live preview for :substitute
 vim.opt.wildmode = 'longest:full,full' -- enhanced command completion
+
 -- Others
 vim.opt.jumpoptions = 'view' -- restore view after jump
 vim.opt.virtualedit = 'block' -- allow cursor past EOL in block mode
@@ -70,10 +73,10 @@ vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- 叫 Treesitter 自动帮
 -- [Functions]
 -- Clipboard
 require('config.clipboard')
+
 -- Check spelling
 vim.opt.spell = false
 vim.opt.spelllang = { 'en_us', 'ms', 'cjk' }
 vim.opt.spellsuggest = 'best,5' -- show only first best 5
 vim.opt.spelloptions = 'camel' --support CamelCase
 -- vim.opt.spelloptions = 'underscore'
---
