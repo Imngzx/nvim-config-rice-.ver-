@@ -46,6 +46,7 @@ return {
   { '<leader>gs', function() Snacks.picker.git_status() end, desc = 'Git status' },
   { '<leader>gS', function() Snacks.picker.git_stash() end, desc = 'Git stash' },
   { '<leader>gD', function() Snacks.picker.git_diff() end, desc = 'Git diff (hunks)' },
+  { '<leader>uB', function() require('custom.git-blame').toggle() end, desc = 'Toggle Git Blame' },
 
   -- ==========================================
   -- 💡 [ LSP & Diagnostics ]

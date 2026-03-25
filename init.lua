@@ -50,8 +50,18 @@ require('config.neovide')
 
 require('custom.sudo')
 require('custom.todo').setup()
+
+-- [git]
 require('custom.git').setup({
   stage_action = Snacks.picker.actions.git_stage,
+  get_git_root = Snacks.git.get_root
+})
+require('custom.git-blame').setup({
+  enabled = true,
+  message_template = '  <author> • <date> • <summary> • <sha>',
+  date_format = '%r',
+  delay = 250,
+  max_summary_length = 50,
   get_git_root = Snacks.git.get_root
 })
 
