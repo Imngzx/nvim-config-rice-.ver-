@@ -29,7 +29,7 @@ if vim.fn.has('wsl') == 1 then
       paste = {
         ['+'] = function()
           -- 粘贴必须是同步的（因为 Neovim 需要立刻拿到文字），所以这里用 :wait()
-          local obj = vim.system({ win32yank, '-o', '--lf' }, { text = true }):wait()
+          local obj = vim.system({ win32yank, '-o', '--lf' }, { text = true }):wait(1000)
           if obj.code ~= 0 or not obj.stdout then return {}, 'v' end
 
           local text = obj.stdout
@@ -38,7 +38,7 @@ if vim.fn.has('wsl') == 1 then
           return vim.split(text, '\n', { plain = true }), 'v'
         end,
         ['*'] = function()
-          local obj = vim.system({ win32yank, '-o', '--lf' }, { text = true }):wait()
+          local obj = vim.system({ win32yank, '-o', '--lf' }, { text = true }):wait(1000)
           if obj.code ~= 0 or not obj.stdout then return {}, 'v' end
 
           local text = obj.stdout
