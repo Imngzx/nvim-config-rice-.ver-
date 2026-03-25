@@ -8,7 +8,7 @@ require('config.autocmds')
 
 -- [Theme]
 -- load theme first to avoid flickering
-require('custom.catppuccin')
+require('plugins.catppuccin')
 -- require('custom.theme')
 
 -- load core ui elements at the same time
@@ -29,7 +29,7 @@ require('custom.tabline').setup({
   icons = { close = icons.basic.close, modify = icons.basic.modify }
 })
 
-require('custom.lualine')
+require('plugins.lualine')
 -- require('custom.statusline').setup({
 --   git_cache_setup = { get_git_root = Snacks.git.get_root },
 --   hide_filename_by_ft = { snacks_picker_list = true },
