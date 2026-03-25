@@ -60,7 +60,7 @@ require('custom.git-blame').setup({
   enabled = true,
   message_template = '  <author> • <date> • <summary> • <sha>',
   date_format = '%r',
-  delay = 250,
+  delay = 1000,
   max_summary_length = 50,
   get_git_root = Snacks.git.get_root
 })
