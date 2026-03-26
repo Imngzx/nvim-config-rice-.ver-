@@ -77,6 +77,7 @@ vim.api.nvim_create_autocmd('User', {
 
     require('plugins.flash')
     require('plugins.minimap')
+    require('plugins.mini-hipatterns')
   end
 })
 
