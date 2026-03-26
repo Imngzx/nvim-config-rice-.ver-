@@ -8,7 +8,6 @@ vim.keymap.set('n', '<leader>qr', '<cmd>restart<cr>', { desc = 'Restart' })
 
 -- Save
 vim.keymap.set('n', '<leader>w', '<cmd>w<cr>', { desc = 'Save file' })
-vim.keymap.set({ 'i', 'x', 'n', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save file' })
 vim.keymap.set('n', '<leader>wq', '<cmd>wq<cr>', { desc = 'Save and quit' })
 
 -- [View]
