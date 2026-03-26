@@ -8,22 +8,23 @@
 
 ## Table of Contents
 
-- [Core — File & Session](#core--file--session)
+-[Core — File & Session](#core--file--session)
 - [Navigation — Windows & Buffers](#navigation--windows--buffers)
--[Editing & Formatting](#editing--formatting)
-- [Search & Picker (Snacks)](#search--picker-snacks)
+- [Editing & Formatting](#editing--formatting)
+-[Search & Picker (Snacks)](#search--picker-snacks)
 - [File Explorer (Snacks)](#file-explorer-snacks)
 - [LSP & Diagnostics](#lsp--diagnostics)
 - [Git](#git)
-- [Code Runner](#code-runner)
--[Debugger (DAP)](#debugger-dap)
-- [AI (CodeCompanion)](#ai-codecompanion)
+-[Code Runner](#code-runner)
+- [Debugger (DAP)](#debugger-dap)
+-[AI (CodeCompanion)](#ai-codecompanion)
 - [UI Toggles & Widgets](#ui-toggles--widgets)
--[Word Jump (Flash-like)](#word-jump-flash-like)
+- [Flash & Word Jump](#flash--word-jump)
 - [Surround](#surround)
--[CSV / TSV Assistance](#csv--tsv-csvview) 
+- [CSV / TSV Assistance](#csv--tsv-csvview) 
 - [Plugin Management](#plugin-management)
 - [Profiler](#profiler)
+- [Treesitter Context](#treesitter-context)
 
 ---
 
@@ -176,6 +177,7 @@
 | `<leader>gh` | n, x | Apply hunk(s) |
 | `<leader>gH` | n, x | Reset hunk(s) |
 | `]h` / `[h` | n | Next / Prev hunk |
+| `<leader>uB` | n | Toggle Git Blame inline text |
 
 ---
 
@@ -231,7 +233,6 @@
 | `<leader>uw` | n | Toggle Line Wrap |
 | `<leader>uL` | n | Toggle Relative Line Numbers |
 | `<leader>um` | n | Toggle Markdown Rendering |
-| `<leader>uB` | n | Toggle Git Blame inline text |
 | `<leader>bs` | n | Toggle Scratch Buffer |
 
 ### Winbar (Dropbar Breadcrumbs)
@@ -243,11 +244,16 @@
 
 ---
 
-## Word Jump (Flash-like)
+## Flash & Word Jump
 
 | Key | Mode | Action |
 |-----|------|--------|
-| `f` | n,x,o | Activate word jump — type label letters to teleport |
+| `f` | n,x,o | **DIY Word Jump:** Single-char teleport (Fastest blind jump) |
+| `s` | n,x,o | **Flash:** Multi-char search & jump |
+| `S` | n,x,o | **Flash Treesitter:** Select AST node (e.g., function, block) |
+| `r` | o     | **Flash Remote:** Execute operator on a remote location |
+| `R` | o,x   | **Flash Treesitter Search:** Remote AST node operation |
+| `<C-s>` | c | **Toggle Flash:** Convert regular `/` search to Flash labels |
 
 ---
 
@@ -301,4 +307,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-03-25.*
+*Last updated based on commit pushed 2026-03-26.*
