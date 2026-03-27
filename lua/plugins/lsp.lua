@@ -136,6 +136,11 @@ lazy.load({
     require('tiny-inline-diagnostic').setup({
       preset = 'powerline',
       signs = { diag = '  ' },
+      options = {
+        show_source = {
+          enabled = true,
+        },
+      },
     })
     -- 自定义诊断 UI：包含行号栏图标、下划线、排序等
     vim.diagnostic.config({
