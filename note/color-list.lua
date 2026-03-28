@@ -2,7 +2,9 @@
 -- 🎨 48-Color Palette for Ricing
 -- ========================================================
 
-local ricer_palette = {
+M = {}
+
+M.colors = {
   abyssal_void = {
     hex = '#0B090A',
     rgb = 'rgb(11, 9, 10)',
@@ -245,3 +247,5 @@ local ricer_palette = {
     hsl = 'hsl(0, 0%, 0%)'
   }
 }
+
+return M
