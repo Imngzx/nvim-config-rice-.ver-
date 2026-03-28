@@ -106,6 +106,8 @@ vim.keymap.set('n', '<leader>pt', function()
   else
     if vim.fn.executable('fish') == 1 then
       shell = 'fish'
+    elseif vim.fn.executable('zsh') == 1 then
+      shell = 'zsh'
     else
       shell = vim.env.SHELL or 'bash'
     end
