@@ -18,7 +18,6 @@ require('plugins.markdown')
 require('plugins.csvview')
 require('custom.incline').setup()
 require('custom.transparent').setup({ auto_enable = false })
-require('custom.ui2').setup()
 
 local icons = require('libs.icons')
 require('custom.tabline').setup({
