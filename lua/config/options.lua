@@ -10,7 +10,7 @@ vim.opt.showmode = false -- Hide mode status
 -- Line edit
 vim.opt.fillchars = { eob = ' ' }
 vim.opt.cursorline = true -- highlight current line
-vim.opt.cursorlineopt = 'number'
+-- vim.opt.cursorlineopt = 'number'
 vim.opt.scrolloff = 4 -- keep 4 lines visible around cursor
 vim.opt.sidescrolloff = 8 -- keep 8 columns visible horizontally
 -- Line number
