@@ -130,6 +130,7 @@ local function show_blame(bufnr)
     virt_text = { { text, config.highlight_group } },
     virt_text_pos = 'eol',
     hl_mode = 'combine',
+    priority = 1000,
   })
 end
 
