@@ -4,7 +4,7 @@
 > This is a fork of the original [author's](https://github.com/cworld1/nvim-config) config. His config is the bone of my config. So please have a look on his config too.
 
 > [!NOTE]
-> nvim 0.12 still have font issues with neovide, please use neovide-git instead
+> nvim 0.12 & 0.13 still have font issues with neovide, please use neovide-git instead
 
 > [!WARNING]
 > Please read the [disclaimer](/note/manifesto-%26-disclaimer.md) before copy or use this config  
@@ -68,7 +68,7 @@ Use this on Linux for best experience
 
 ## Info
 
-- Supported nvim version: `nightly 0.12`
+- Supported nvim version: `nightly 0.13`
 - Plugin manager: `vim.pack`
 - Language server protocol: `nvim-lspconfig`
 - Leader key: `Space`
@@ -80,7 +80,7 @@ Use this on Linux for best experience
 
 ## Installation
 
-Making sure you've installed [NeoVim-nightly 0.12](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli, and GCC on both Windows and Linux.
+Making sure you've installed [NeoVim-nightly 0.13](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli, and GCC on both Windows and Linux.
 
 > [!TIP]
 > Install tectonic for latex rendering, it is supported in this config

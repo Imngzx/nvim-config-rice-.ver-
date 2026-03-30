@@ -20,7 +20,7 @@ This config was built utilizing the bleeding edge of LLMs, specifically **Gemini
 *   **RTFM (Read The F***ing Manual):** I never rely on the AI's outdated training data. I constantly feed them the latest Neovim documentation such as NeoVim news (leader pN)and the raw source code of existing plugins, alongside my own strict feedback and architectural directions.
 
 ## ⚡ The Engineering Mandate
-My strict prompt to the AIs was to **squeeze every last drop out of Neovim 0.12+ APIs**. 
+My strict prompt to the AIs was to **squeeze every last drop out of Neovim 0.13+ APIs**. 
 *   I heavily utilize `libuv` for background tasks.
 *   Everything that can be asynchronous, *is* asynchronous.
 *   I bypass slow Lua wrappers and directly invoke native **C-level APIs** whenever possible.
@@ -39,7 +39,7 @@ I actually use this. I have completely uninstalled VSCode and Zed. This is my ex
 ## ⚠️ STRICT LIABILITY WARNING FOR PRODUCTION
 Although this is my stable daily driver, but please **DO NOT blindly deploy this config in strict, mission-critical production environments.** 
 
-Because this pushes the boundaries of Neovim nightly (0.12+) and relies on highly customized, hand-rolled asynchronous C-API calls, edge cases *will* exist. I take **zero liability** for any unrecoverable errors, data loss, or downtime that might occur in a corporate/production setting. Use it, learn some from it, but **use it at your own risk.**
+Because this pushes the boundaries of Neovim nightly (0.13+) and relies on highly customized, hand-rolled asynchronous C-API calls, edge cases *will* exist. I take **zero liability** for any unrecoverable errors, data loss, or downtime that might occur in a corporate/production setting. Use it, learn some from it, but **use it at your own risk.**
 
 ---
 
