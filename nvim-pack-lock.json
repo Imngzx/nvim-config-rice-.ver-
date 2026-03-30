@@ -10,7 +10,7 @@
       "src": "https://github.com/CRAG666/code_runner.nvim"
     },
     "codecompanion.nvim": {
-      "rev": "c1a932ea07817bba01b84b0e242cf19b8288b179",
+      "rev": "af6f43c6af1dd18f01ad173b71bd58a6071edde0",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -70,7 +70,7 @@
       "src": "https://github.com/catppuccin/nvim"
     },
     "nvim-dap": {
-      "rev": "2a8799ad91a1495c6bdf753f9b2179b3ff0f5bba",
+      "rev": "4f5deb110d9ff8994d96c21df95e2271d11214f9",
       "src": "https://github.com/mfussenegger/nvim-dap"
     },
     "nvim-dap-python": {
