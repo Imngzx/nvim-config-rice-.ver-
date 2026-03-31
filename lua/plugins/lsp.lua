@@ -127,6 +127,25 @@ lazy.load({
   end
 })
 
+lazy.load({
+  plugin = 'https://github.com/folke/lazydev.nvim',
+  ft = 'lua',
+  setup = function()
+    require('lazydev').setup({
+      library = {
+        vim.fn.stdpath('data') .. '/site/pack/core/opt/*',
+        vim.fn.stdpath('config') .. '/lua',
+        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
+      },
+    })
+  end
+})
+
+lazy.load({
+  plugin = 'https://github.com/Bilal2453/luvit-meta',
+  ft = 'lua'
+})
+
 -- [Diagnostic] Load after LSP attaches
 -- https://github.com/rachartier/tiny-inline-diagnostic.nvim/issues/112#issuecomment-2784644922
 lazy.load({
@@ -283,8 +302,18 @@ lazy.load({
           if ok and node and node.type and node:type():find('comment') then
             return {}
           end
+          if vim.bo.filetype == 'lua' then
+            return { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' }
+          end
           return { 'lsp', 'path', 'snippets', 'buffer' }
         end,
+        providers = {
+          lazydev = {
+            name = 'LazyDev',
+            module = 'lazydev.integrations.blink',
+            score_offset = 100,
+          },
+        },
       },
 
       fuzzy = { implementation = 'prefer_rust_with_warning' },
