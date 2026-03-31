@@ -3,6 +3,11 @@ local common_exclude = { '.git', '~', '.idea', '.DS_Store' }
 
 return {
   enabled = true,
+  matcher = {
+    cwd_bonus = true, -- 当前目录加权。更倾向于当前路径下的文件
+    frecency = true, -- 开启记忆加权。打开次数越多越靠前。
+    sort_empty = true, --  首次打开时预览器就显示排序后的结果
+  },
   hidden = true,
   prompt = ' ',
   layouts = {
