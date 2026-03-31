@@ -90,10 +90,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
     --   desc =
     --   'List references'
     -- })
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation,
-      { buffer = ev.buf, desc = 'Goto implementation' })
-    vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition,
-      { buffer = ev.buf, desc = 'Type definition' })
+
+    -- commented conflicted keymaps with keys.lua around line 60 and 61
+    -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation,
+    --   { buffer = ev.buf, desc = 'Goto implementation' })
+    -- vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition,
+    --   { buffer = ev.buf, desc = 'Type definition' })
+
     vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename,
       { buffer = ev.buf, desc = 'Rename symbol' })
     vim.keymap.set({ 'n', 'x' }, '<leader>ca', vim.lsp.buf.code_action,
