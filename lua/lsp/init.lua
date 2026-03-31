@@ -6,7 +6,7 @@ local default_servers = {
   jsonls = 'json-lsp',
   taplo = true,
   fish_lsp = 'fish-lsp',
-  bashls = 'bash-language-server',
+  bashls = 'bash-language-server', -- HACK: install shellcheck for inline diagnos
 }
 
 -- 【2】定制版 LSP：引入你在 lua/lsp/servers/ 下写的配置
