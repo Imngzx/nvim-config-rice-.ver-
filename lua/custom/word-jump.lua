@@ -34,7 +34,7 @@ init_hl()
 
 local function cleanup()
   clear_namespace(0, ns_id, 0, -1)
-  vim.cmd('redraw')
+  vim.cmd.redraw()
 end
 
 -- Hierarchical label generator: Single > Double Letter > Digit+Letter
@@ -166,7 +166,7 @@ function M.jump()
         })
       end
     end
-    vim.cmd('redraw')
+    vim.cmd.redraw()
   end
 
   fast_render(nil)

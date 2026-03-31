@@ -69,12 +69,12 @@ M.setup = function(opts)
   -- 👇 新增：鼠标点击左右箭头的滚动回调
   _G.SimpleTablineScrollLeft = function()
     M.viewport_start = math.max(1, M.viewport_start - 1)
-    vim.cmd('redrawtabline')
+    vim.cmd.redrawtabline()
   end
 
   _G.SimpleTablineScrollRight = function()
     M.viewport_start = M.viewport_start + 1
-    vim.cmd('redrawtabline')
+    vim.cmd.redrawtabline()
   end
 
   if M.config.hide_single_tab then M.update_showtabline() else vim.o.showtabline = 2 end

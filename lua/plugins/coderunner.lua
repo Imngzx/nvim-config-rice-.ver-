@@ -160,17 +160,17 @@ lazy.load({
   keys = {
     -- 💡 修复点：将带有 <cmd> 和 <CR> 的字符串，全部改写为安全的 Lua 函数
     { 'n', '<F5>', function()
-      vim.cmd('w'); vim.cmd('RunCode')
+      vim.cmd.write(); vim.cmd('RunCode')
     end, { desc = 'Save and Run Code' } },
     { 'n', '<S-F5>', function() vim.cmd('RunClose') end, { desc = 'Stop Running' } },
     { 'n', '<C-F5>', function()
-      vim.cmd('w'); vim.cmd('RunFile')
+      vim.cmd.write(); vim.cmd('RunFile')
     end, { desc = 'Save and Run File' } },
     { 'n', '<leader>rc', function()
-      vim.cmd('w'); vim.cmd('RunCode')
+      vim.cmd.write(); vim.cmd('RunCode')
     end, { desc = 'Save and Run Code' } },
     { 'n', '<leader>rf', function()
-      vim.cmd('w'); vim.cmd('RunFile')
+      vim.cmd.write(); vim.cmd('RunFile')
     end, { desc = 'Save and Run File' } },
     { 'n', '<leader>rp', function() vim.cmd('RunProject') end, { desc = 'Run Project' } },
     { 'n', '<leader>rx', function() vim.cmd('RunClose') end, { desc = 'Close Runner' } }, },
