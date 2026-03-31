@@ -8,6 +8,12 @@ lazy.load({
     require('lualine').setup({
       options = {
         theme = 'auto',
+        globalstatus = true,
+
+        disabled_filetypes = {
+          statusline = { 'snacks_picker_list', 'snacks_picker_input', 'snacks_dashboard', 'snacks_terminal', 'snacks_notif' },
+          winbar = { 'snacks_picker_list', 'snacks_picker_input', 'snacks_dashboard', 'snacks_terminal', 'snacks_notif' },
+        },
         section_separators = { left = '', right = '' },
         component_separators = { left = ' ', right = ' ' },
         -- Seperators :
