@@ -44,7 +44,7 @@ require('plugins.coderunner')
 require('plugins.venv-selector')
 require('plugins.dap')
 require('plugins.AI')
-require('plugins.im-select')
+require('plugins.im-select') -- NOTE: comment this if you encounter any erro on windows os
 require('config.neovide')
 
 require('custom.sudo')
