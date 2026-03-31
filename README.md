@@ -4,7 +4,8 @@
 > This is a fork of the original [author's](https://github.com/cworld1/nvim-config) config. His config is the bone of my config. So please have a look on his config too.
 
 > [!NOTE]
-> nvim 0.12 & 0.13 still have font issues with neovide, please use neovide-git instead
+> nvim 0.12 & 0.13 have font issues with neovide, please use neovide-git instead
+> I also made ui2 disabled automatically once using neovide, there's some small issues with it 
 
 > [!WARNING]
 > Please read the [disclaimer](/note/manifesto-%26-disclaimer.md) before copy or use this config  
