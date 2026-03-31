@@ -29,7 +29,7 @@ Use this on Linux for best experience
 
 ### Summarization
 - **Fast.** Less than **50ms** to start 
-- **Simple.** Run out of the box with only 32 plugins.
+- **Simple.** Run out of the box with only 33 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code.

@@ -35,6 +35,7 @@ require('plugins.lualine')
 --   icons = { branch = icons.git.branch }
 -- })
 
+require('plugins.persistence')
 require('plugins.tool')
 require('plugins.treesitter')
 require('plugins.treesitter-context')

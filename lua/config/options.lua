@@ -1,5 +1,7 @@
 local utils = require('libs.utils')
 
+vim.opt.undofile = true
+
 -- [Appearance]
 vim.opt.signcolumn = 'yes' -- always show sign column
 if utils.is_compatible_version('0.10') then
