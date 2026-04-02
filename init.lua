@@ -45,7 +45,10 @@ require('plugins.coderunner')
 require('plugins.venv-selector')
 require('plugins.dap')
 require('plugins.AI')
-require('plugins.im-select') -- NOTE: comment this if you encounter any erro on windows os
+if not require('libs.utils').is_windows() then
+  require('custom.language-switcher').setup()
+end
+-- require('plugins.im-select') -- NOTE: comment this if you encounter any erro on windows os
 require('config.neovide')
 
 require('custom.sudo')

@@ -37,10 +37,6 @@
       "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
       "src": "https://github.com/rafamadriz/friendly-snippets"
     },
-    "im-select.nvim": {
-      "rev": "963a4e9d528ef8a8d328eeff690593b0146d30e2",
-      "src": "https://github.com/keaising/im-select.nvim"
-    },
     "lazydev.nvim": {
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
       "src": "https://github.com/folke/lazydev.nvim"
