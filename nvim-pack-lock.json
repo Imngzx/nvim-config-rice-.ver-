@@ -10,7 +10,7 @@
       "src": "https://github.com/CRAG666/code_runner.nvim"
     },
     "codecompanion.nvim": {
-      "rev": "190cb215a449f0a7dba49951d90f1f167aa708c5",
+      "rev": "e0fe366cf3af6c80dcac86cb053ef3fe48aae911",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -70,7 +70,7 @@
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "neominimap.nvim": {
-      "rev": "6a9d8b0d2f2c0d9d7853b377fa225990cb24837a",
+      "rev": "b0fffd0cfbf9c249bc0f08922993579f143a750d",
       "src": "https://github.com/Isrothy/neominimap.nvim"
     },
     "nvim": {
@@ -94,11 +94,11 @@
       "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-lspconfig": {
-      "rev": "16812abf0e8d8175155f26143a8504e8253e92b0",
+      "rev": "8e2084bf5e40c79c1f42210a6ef96a0a4793a763",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
-      "rev": "7caec274fd19c12b55902a5b795100d21531391f",
+      "rev": "c82bf96f0a773d85304feeb695e1e23b2207ac35",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
@@ -115,7 +115,7 @@
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "render-markdown.nvim": {
-      "rev": "e3c18ddd27a853f85a6f513a864cf4f2982b9f26",
+      "rev": "c7188a8f9d2953696b6303caccbf39c51fa2c1b1",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "snacks.nvim": {
@@ -127,7 +127,7 @@
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
     "venv-selector.nvim": {
-      "rev": "42e8faadf9b819654f29eb1a785797a3a328f301",
+      "rev": "bcb2f58533c59b01565285eba49693f00bc460f5",
       "src": "https://github.com/linux-cultist/venv-selector.nvim"
     },
     "which-key.nvim": {
