@@ -10,7 +10,16 @@ local Snacks = require('snacks')
 
 -- 2. 组装化配置（加载刚刚拆分出来的文件！）
 Snacks.setup({
-  bigfile = { enabled = true },
+  bigfile = {
+    enabled = true,
+    notify = true,
+    size = 1.5 * 1024 * 1024, -- 1.5MB
+    setup = function(ctx)
+      vim.schedule(function()
+        vim.bo[ctx.buf].syntax = ctx.ft
+      end)
+    end,
+  },
   explorer = { enabled = true },
   image = { enabled = true },
   indent = { enabled = true },

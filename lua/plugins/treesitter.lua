@@ -33,14 +33,8 @@ lazy.load({
         if vim.bo[args.buf].buftype ~= '' then return end
 
         -- 👇 使用底层 C API 获取文件大小
-        local file_name = vim.api.nvim_buf_get_name(args.buf)
-        if file_name ~= '' then
-          local stats = vim.uv.fs_stat(file_name)
-          if stats and stats.size > 1.5 * 1024 * 1024 then
-            vim.notify('Big file detected: Disabled treesitter for memory safety',
-              vim.log.levels.WARN)
-            return
-          end
+        if vim.b[args.buf].snacks_bigfile then
+          return
         end
 
         local lang = vim.treesitter.language.get_lang(args.match)
