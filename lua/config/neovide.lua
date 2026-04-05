@@ -1,5 +1,5 @@
 -- neovide will have fonts issues with nvim 0.12,
--- please use nvim 0.12.2 instead if you want to use neovide
+-- please use neovide-git instead if you want to use neovide
 if vim.g.neovide then
   vim.opt.guifont = { 'JetBrainsMono Nerd Font', ':h13' }
   -- vim.g.neovide_window_blurred = true
@@ -9,7 +9,6 @@ if vim.g.neovide then
   vim.g.neovide_refresh_rate = 60
 
   vim.g.neovide_cursor_antialiasing = true
-  -- 光标闪烁动画
   vim.g.neovide_cursor_smooth_blink = true
   vim.opt.guicursor:append('a:blinkwait700-blinkon475-blinkoff475')
 
