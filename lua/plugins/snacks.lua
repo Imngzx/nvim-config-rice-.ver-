@@ -51,7 +51,6 @@ Snacks.setup({
     refresh = 150,
   },
 
-  -- 👇 核心魔法：直接 require 刚才拆分出去的大组件
   dashboard = require('plugins.snacks_config.dashboard'),
   picker = require('plugins.snacks_config.picker'),
 })
