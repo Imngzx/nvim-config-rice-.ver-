@@ -7,9 +7,7 @@ return {
       { icon = ' ', key = 'g', desc = 'Find Text', action = ":lua Snacks.dashboard.pick('live_grep')" },
       { icon = ' ', key = 'r', desc = 'Recent Files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
       { icon = ' ', key = 'c', desc = 'Config', action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
-      -- 👇 点击 s 键时，触发你上面定义的命令，瞬间唤醒手搓懒加载引擎！
       -- { icon = ' ', key = 's', desc = 'Restore Session', action = ':RestoreSession' },
-      -- 把 action = ':RestoreSession' 替换为下面这行
       { icon = ' ', key = 's', desc = 'Restore Session', action = ":lua require('custom.session').load(false)" },
       { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
     },
@@ -18,7 +16,6 @@ return {
     { section = 'header' },
     { section = 'keys', gap = 1, padding = 1 },
 
-    -- 使用「闭包缓存」：只在第一次见面时计算，之后彻底冻结结果
     (function()
       local cached_result = nil
 
