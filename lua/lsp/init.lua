@@ -7,6 +7,8 @@ local default_servers = {
   taplo = true,
   fish_lsp = 'fish-lsp',
   bashls = 'bash-language-server', -- HACK: install shellcheck for inline diagnos
+  html = 'html-lsp',
+  emmet_language_server = 'emmet-language-server',
 }
 
 -- 【2】定制版 LSP：引入你在 lua/lsp/servers/ 下写的配置

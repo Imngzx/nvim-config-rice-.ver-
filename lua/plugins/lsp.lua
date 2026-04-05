@@ -15,6 +15,8 @@ H.conform = {
     end
   end,
   javascript = { 'prettierd', 'prettier', stop_after_first = true },
+  html = { 'prettierd', 'prettier', stop_after_first = true },
+  css = { 'prettierd', 'prettier', stop_after_first = true },
   rust = { 'rustfmt' },
   c = { 'clang_format' },
   cpp = { 'clang_format' },
