@@ -24,7 +24,6 @@ local function cleanup()
     vim.api.nvim_win_close(win_id, true)
     win_id = nil
   end
-  -- 👇 新增：彻底销毁加载器专用的 Buffer，防止内存泄露
   if buf_id and vim.api.nvim_buf_is_valid(buf_id) then
     vim.api.nvim_buf_delete(buf_id, { force = true })
     buf_id = nil
@@ -49,13 +48,11 @@ end
 
 local ns = vim.api.nvim_create_namespace('diy_fidget')
 local function update_window()
-  -- 👇【新增核心修复：每次刷新动画前，检测 LSP 进程是不是已经死了，死了就强行清理】
   for client_id, _ in pairs(active_tasks) do
     if not vim.lsp.get_client_by_id(client_id) then
       active_tasks[client_id] = nil
     end
   end
-  -- 👆 新增结束
 
   if vim.tbl_isempty(active_tasks) then
     cleanup()
@@ -88,7 +85,10 @@ local function update_window()
 
   vim.api.nvim_buf_clear_namespace(buf_id, ns, 0, -1)
   for i = 0, #lines - 1 do
-    vim.api.nvim_buf_add_highlight(buf_id, ns, config.highlights.icon, i, 1, 4)
+    vim.api.nvim_buf_set_extmark(buf_id, ns, i, 1, {
+      end_col = 4,
+      hl_group = config.highlights.icon,
+    })
   end
 
   if not win_id or not vim.api.nvim_win_is_valid(win_id) then
@@ -108,10 +108,12 @@ local function start_animation()
   if timer and timer:is_closing() then timer = nil end
 
   timer = vim.uv.new_timer()
-  timer:start(0, 80, vim.schedule_wrap(function()
-    frame = (frame % #config.spinner) + 1
-    update_window()
-  end))
+  if timer then
+    timer:start(0, 80, vim.schedule_wrap(function()
+      frame = (frame % #config.spinner) + 1
+      update_window()
+    end))
+  end
 end
 
 -- ====================================================================
@@ -156,7 +158,7 @@ function M.setup()
   vim.api.nvim_create_autocmd('VimResized', {
     group = group,
     callback = function()
-      if win_id and vim.api.nvim_win_is_valid(win_id) then
+      if win_id and buf_id and vim.api.nvim_win_is_valid(win_id) and vim.api.nvim_buf_is_valid(buf_id) then
         vim.api.nvim_win_set_config(win_id, get_win_config(vim.api.nvim_buf_line_count(buf_id)))
       end
     end
