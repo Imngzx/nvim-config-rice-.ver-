@@ -5,7 +5,8 @@
 
 > [!NOTE]
 > nvim 0.12 & 0.13 have font issues with neovide, please use neovide-git instead
-> I also made ui2 disabled automatically once using neovide, there's some small issues with it 
+> I also made ui2 disabled automatically if using neovide, there's some small issues with it 
+>[issue](https://github.com/neovide/neovide/issues/3446) 
 
 > [!WARNING]
 > Please read the [disclaimer](/note/manifesto-%26-disclaimer.md) before copy or use this config  
@@ -14,8 +15,7 @@
 
 This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop environment.
 
-Use this on Linux for best experience
-
+Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 
 ![Preview image](https://github.com/user-attachments/assets/a2d65e96-0da7-4591-a646-f328792597ef)
 
@@ -83,7 +83,7 @@ Use this on Linux for best experience
 
 ## Installation
 
-Making sure you've installed [NeoVim-nightly 0.13](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli, and GCC on both Windows and Linux.
+Making sure you've installed [NeoVim-nightly 0.13](https://github.com/neovim/neovim/releases/nightly), tree-sitter-cli-git, and GCC on both Windows and Linux.
 
 > [!TIP]
 > Install tectonic for latex rendering, it is supported in this config
@@ -102,7 +102,7 @@ git clone https://github.com/Imngzx/nvim-config-rice-.ver-.git $XDG_CONFIG_HOME/
 nvim
 ```
 
-After those steps above, please `<Leader>pm` to open Mason panel
+After those steps above, please `<Leader>pm` to open Mason panel, it'll handle auto install as soon as you open it. 
 
 Then please having fun!
 
