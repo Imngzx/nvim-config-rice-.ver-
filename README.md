@@ -30,7 +30,7 @@ Use this on Linux for best experience
 
 ### Summarization
 - **Fast.** Less than **50ms** to start 
-- **Simple.** Run out of the box with only 33 plugins.
+- **Simple.** Run out of the box with only 30 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code.
@@ -52,6 +52,8 @@ Use this on Linux for best experience
     - [x] [trouble.nvim](https://github.com/folke/trouble.nvim) (Key: `<Leader>cD`)
     - [x] [yazi.nvim](https://github.com/mikavilpas/yazi.nvim) (Key: `<Leader>fy`)
     - [x] [git-blame.nvim](https://github.com/f-person/git-blame.nvim.git) (Key: `<Leader>uB`)
+    - [x] [persistence.nvim](https://github.com/folke/persistence.nvim) 
+    - [x] [im-select.nvim](https://github.com/keaising/im-select.nvim) 
 
 
 > [!TIP]
