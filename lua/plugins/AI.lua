@@ -21,7 +21,7 @@ lazy.load({
       --  在 Chat buffer 内按 `ga` 可以随时切换 adapter 和 model
       -- ──────────────────────────────────────────────────────────────
       interactions = {
-        chat = { adapter = 'gemini' }, -- 默认 HTTP adapter
+        chat = { adapter = 'gemini' },
         inline = { adapter = 'gemini' },
         cmd = { adapter = 'gemini' },
       },
@@ -66,11 +66,11 @@ lazy.load({
               },
               schema = {
                 model = {
-                  default = 'claude-sonnet-4-6', -- 速度与质量最佳平衡
+                  default = 'claude-sonnet-4-6',
                   choices = {
-                    'claude-opus-4-6', -- 最强，适合复杂推理
-                    'claude-sonnet-4-6', -- 推荐日常使用
-                    'claude-haiku-4-5-20251001', -- 最快，适合简单任务
+                    'claude-opus-4-6',
+                    'claude-sonnet-4-6',
+                    'claude-haiku-4-5-20251001',
                   },
                 },
                 max_tokens = {
@@ -106,7 +106,6 @@ lazy.load({
                 -- CLAUDE_CODE_OAUTH_TOKEN = 'CLAUDE_CODE_OAUTH_TOKEN',
               },
               defaults = {
-                -- 用函数形式可绕过 Claude Code SDK 的已知限制（见文档）
                 ---@param self CodeCompanion.ACPAdapter
                 ---@return string
                 model = function(self) return 'sonnet' end,
@@ -138,11 +137,10 @@ lazy.load({
 
       display = {
         action_palette = {
-          provider = 'snacks', -- 联动你的 Snacks 选择器
+          provider = 'snacks',
         },
         chat = {
           window = { width = 0.4 },
-          -- 关闭内置分割线，让 render-markdown 接管渲染
           show_header_separator = false,
         },
       },
