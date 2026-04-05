@@ -319,6 +319,15 @@ lazy.load({
             module = 'lazydev.integrations.blink',
             score_offset = 100,
           },
+          snippets = {
+            opts = {
+              friendly_snippets = true,
+              -- markdown = { 'jekyll' },
+              -- sh = { 'shelldoc' },
+              -- php = { 'phpdoc' },
+              -- cpp = { 'unreal' }
+            }
+          }
         },
       },
 
