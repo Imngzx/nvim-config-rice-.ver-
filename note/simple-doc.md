@@ -8,16 +8,16 @@
 
 ## Table of Contents
 
--[Core — File & Session](#core--file--session)
+- [Core — File & Session](#core--file--session)
 - [Navigation — Windows & Buffers](#navigation--windows--buffers)
 - [Editing & Formatting](#editing--formatting)
--[Search & Picker (Snacks)](#search--picker-snacks)
+- [Search & Picker (Snacks)](#search--picker-snacks)
 - [File Explorer (Snacks)](#file-explorer-snacks)
 - [LSP & Diagnostics](#lsp--diagnostics)
 - [Git](#git)
--[Code Runner](#code-runner)
+- [Code Runner](#code-runner)
 - [Debugger (DAP)](#debugger-dap)
--[AI (CodeCompanion)](#ai-codecompanion)
+- [AI (CodeCompanion)](#ai-codecompanion)
 - [UI Toggles & Widgets](#ui-toggles--widgets)
 - [Flash & Word Jump](#flash--word-jump)
 - [Surround](#surround)
@@ -37,6 +37,10 @@
 | `<leader>wq` | n | Save and quit |
 | `<leader>qq` | n | Quit all |
 | `<leader>qr` | n | Restart Neovim |
+| `<leader>?` | n | Show buffer-local keymaps (Which-Key) |
+
+> **Session Management:** Sessions are automatically saved on exit per Git-branch/Directory. 
+> To manually restore, open Dashboard (`<leader>H`) and press `s`, or type `:RestoreSession`, `:RestoreLastSession`.
 
 ---
 
@@ -99,6 +103,7 @@
 |-----|------|--------|
 | `<leader><space>` | n | Smart find (git files + recent) |
 | `<leader>ff` | n | Find git-tracked files |
+| `<leader>fp` | n | Pick Projects |
 | `<leader>/` | n | Live grep across project |
 | `<leader>fl` | n | Search lines in current buffer |
 | `<leader>fB` | n | Grep across all open buffers |
@@ -119,6 +124,12 @@
 | `<leader>su` | n | Undo history (visual tree) |
 | `<leader>st` | n | Search TODOs (`TODO`, `FIXME`, etc.) |
 | `<leader>sk` | n | Keymaps |
+| `<leader>sa` | n | List Autocmds |
+| `<leader>sC` | n | List Neovim Commands |
+| `<leader>sh` | n | Search Help Pages |
+| `<leader>sH` | n | Search Highlights (Colors) |
+| `<leader>si` | n | Search Icons (Mini.icons) |
+| `<leader>sm` | n | Search Marks |
 
 ---
 
@@ -144,7 +155,7 @@
 | `gr` | n | Find all references (Snacks picker) |
 | `gI` | n | Go to implementation (Snacks picker) |
 | `gy` | n | Go to type definition (Snacks picker) |
-| `]]` / `[[` | n | Next / Prev reference of word under cursor |
+| `]]` / `[[` | n, t | Next / Prev reference of word under cursor |
 
 ### Actions & Diagnostics
 
@@ -157,9 +168,12 @@
 | `<leader>co` | n | LSP symbols in file (Snacks picker) |
 | `<leader>cv` | n | Select Python Virtual Environment |
 | `<leader>cl` | n | Show line diagnostics (float) |
+| `<leader>cd` | n | Buffer diagnostics (Snacks picker) |
 | `<leader>cD` | n | Project diagnostics (Snacks picker) |
-| `]d` / `[d` | n | Next / Prev diagnostic |
+| `<leader>pl` | n | Check LSP Info (`:checkhealth vim.lsp`) |
+| `]d` / `[d` | n | Next / Prev Diagnostic |
 | `]e` / `[e` | n | Next / Prev Error |
+| `]w` / `[w` | n | Next / Prev Warning |
 
 ---
 
@@ -183,7 +197,7 @@
 
 ## Code Runner
 
-> Configuration via `RUNNER_MODE` and `BUILD_TYPE` in `lua/plugins/coderunner.lua`.
+> Configuration via `RUNNER_MODE` and `BUILD_TYPE` in `lua/custom/coderunner.lua`.
 
 | Key | Mode | Action |
 |-----|------|--------|
@@ -204,8 +218,16 @@
 | `<leader>dc` | n | Continue / Start |
 | `<leader>dC` | n | Run to cursor |
 | `<leader>di` / `dO` / `do` | n | Step Into / Over / Out |
+| `<leader>dl` | n | Run Last (Repeat last debug session) |
+| `<leader>dp` | n | Pause execution |
+| `<leader>dj` / `<leader>dk` | n | Go Down / Up in call stack |
+| `<leader>dg` | n | Go to line (No execute) |
+| `<leader>dr` | n | Toggle REPL window |
+| `<leader>ds` | n | View active debug Session |
 | `<leader>dt` | n | Terminate Session |
+| `<leader>dw` | n | Widgets hover (Evaluate variable under cursor) |
 | `<localleader>pdt` | n | Debug Method (Python only) |
+| `<localleader>pdc` | n | Debug Class (Python only) |
 
 ---
 
@@ -223,17 +245,35 @@
 
 ## UI Toggles & Widgets
 
+### General Toggles
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<leader>ut` | n | Toggle Transparency |
+| `<leader>ub` | n | Toggle Background (Dark / Light) |
+| `<leader>uz` | n | Toggle Zen Mode |
+| `<leader>uZ` | n | Toggle Zoom (Maximize window) |
+| `<leader>uw` | n | Toggle Line Wrap |
+| `<leader>ul` | n | Toggle Line Numbers |
+| `<leader>uL` | n | Toggle Relative Line Numbers |
+| `<leader>ud` | n | Toggle Diagnostics (Show/Hide error lines) |
+| `<leader>uc` | n | Toggle Conceal Level (Hide/Show markdown syntax) |
+| `<leader>uT` | n | Toggle Treesitter Highlighting |
+| `<leader>uh` | n | Toggle Inlay Hints (LSP) |
+| `<leader>ug` | n | Toggle Indent Guides |
+| `<leader>uD` | n | Toggle Dim (Focus mode for current scope) |
+| `<leader>um` | n | Toggle Markdown Rendering |
+| `<leader>bs` | n | Toggle Scratch Buffer |
+
+### Minimap
+
 | Key | Mode | Action |
 |-----|------|--------|
 | `<leader>nm` | n | Toggle Minimap |
 | `<leader>ns` | n | Focus Minimap |
-| `<leader>ut` | n | Toggle Transparency |
-| `<leader>uz` | n | Toggle Zen Mode |
-| `<leader>uZ` | n | Toggle Zoom (Maximize window) |
-| `<leader>uw` | n | Toggle Line Wrap |
-| `<leader>uL` | n | Toggle Relative Line Numbers |
-| `<leader>um` | n | Toggle Markdown Rendering |
-| `<leader>bs` | n | Toggle Scratch Buffer |
+| `<leader>no` | n | Open minimap explicitly |
+| `<leader>nc` | n | Close minimap explicitly |
+| `<leader>nr` | n | Refresh minimap manually |
 
 ### Winbar (Dropbar Breadcrumbs)
 
@@ -285,7 +325,6 @@
 | `<leader>pm` | n | Open Mason (Install/Update LSP tools) |
 | `<leader>pu` | n | Update all Neovim Plugins |
 | `<leader>pN` | n | Open Neovim News (`:h news.txt`) |
-| `<leader>pl` | n | Check LSP Health |
 
 ---
 
@@ -297,6 +336,7 @@
 |-----|------|--------|
 | `<leader>spp` | n | Toggle profiler recording |
 | `<leader>sps` | n | Open profiler scratch buffer |
+
 ---
 
 ## Treesitter Context
@@ -307,4 +347,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-03-26.*
+*Last updated based on commit pushed 2026-04-05.*
