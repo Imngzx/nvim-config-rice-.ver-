@@ -12,10 +12,11 @@ lazy.load({
     { 'n', '<leader>cv', function() vim.cmd('VenvSelect') end, { desc = 'Select Python Venv' } },
   },
   setup = function()
+    ---@diagnostic disable-next-line: missing-fields
     require('venv-selector').setup({
       settings = {
         options = {
-          notify_user_on_venv_activation = true, -- 切换成功后在右下角给个提示
+          notify_user_on_venv_activation = true,
         },
       },
       -- VenvSelector 最新版会自动检测你安装的 Picker，
