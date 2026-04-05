@@ -134,7 +134,7 @@ local function execute_cmd(cmd)
   })
 
   vim.cmd('startinsert')
-  vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { buffer = active_term.buf, nowait = true })
+  vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { buf = active_term.buf, nowait = true })
 end
 
 function M.run()

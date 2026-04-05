@@ -48,8 +48,8 @@ function M.open()
 
   vim.cmd('startinsert')
 
-  vim.keymap.set('t', '<Esc><Esc>', '<Esc><Esc>', { buffer = win.buf, nowait = true })
-  vim.keymap.set('t', '<C-\\><C-n>', '<NOP>', { buffer = win.buf, nowait = true })
+  vim.keymap.set('t', '<Esc><Esc>', '<Esc><Esc>', { buf = win.buf, nowait = true })
+  vim.keymap.set('t', '<C-\\><C-n>', '<NOP>', { buf = win.buf, nowait = true })
 end
 
 return M

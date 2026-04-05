@@ -80,8 +80,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
     end
     -- LSP keymaps
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = ev.buf, desc = 'LSP hover' })
-    vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, { buffer = ev.buf, desc = 'LSP hover' })
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buf = ev.buf, desc = 'LSP hover' })
+    vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, { buf = ev.buf, desc = 'LSP hover' })
     -- Moved to Snacks
     -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = ev.buf, desc='Goto definition'})
     -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = ev.buf, desc='Goto declaration'})
@@ -97,12 +97,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition,
     --   { buffer = ev.buf, desc = 'Type definition' })
 
-    vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename,
-      { buffer = ev.buf, desc = 'Rename symbol' })
+    vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { buf = ev.buf, desc = 'Rename symbol' })
     vim.keymap.set({ 'n', 'x' }, '<leader>ca', vim.lsp.buf.code_action,
-      { buffer = ev.buf, desc = 'Code action' })
+      { buf = ev.buf, desc = 'Code action' })
     vim.keymap.set('i', '<c-k>', vim.lsp.buf.signature_help,
-      { buffer = ev.buf, desc = 'Signature help' })
+      { buf = ev.buf, desc = 'Signature help' })
     vim.keymap.set('n', '<leader>pl', '<cmd>checkhealth vim.lsp<cr>', { desc = '[Panel] Lsp info' })
     -- vim.keymap.set('n', '<leader>cf', vim.lsp.buf.format,
     --   { buffer = ev.buf, desc = 'Format code' })
@@ -193,7 +192,9 @@ lazy.load({
         vim.diagnostic.jump({
           count = (next and 1 or -1) * vim.v.count1,
           severity = severity and vim.diagnostic.severity[severity] or nil,
-          float = true,
+          on_jump = function()
+            vim.diagnostic.open_float()
+          end,
         })
       end
     end
