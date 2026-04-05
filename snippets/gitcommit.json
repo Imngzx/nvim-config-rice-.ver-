@@ -1,122 +1,117 @@
 {
-  "Features": {
-    "prefix": "feat",
-    "body": [ "feat: " ],
-    "description": "Add a new feature"
+  "conventional commit": {
+    "prefix": "cc",
+    "body": [
+      "${1:type}(${2:scope}): ${3:title}",
+      "",
+      "$0"
+    ]
   },
-  "Features (with scope)": {
-    "prefix": "feat()",
-    "body": [ "feat(${1:scope}): ${2:description}" ],
-    "description": "Add a new feature"
-  },
-
-  "Bug fixes": {
+  "fix conventional commit": {
     "prefix": "fix",
-    "body": [ "fix: " ],
-    "description": "Fix a bug"
+    "body": [
+      "fix(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ]
   },
-  "Bug fixes (with scope)": {
-    "prefix": "fix()",
-    "body": [ "fix(${1:scope}): ${2:description}" ],
-    "description": "Fix a bug"
+  "feat conventional commit": {
+    "prefix": "feat",
+    "body": [
+      "feat(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ]
   },
-
-  "Documentation": {
-    "prefix": "docs",
-    "body": [ "docs: " ],
-    "description": "Update documentation"
-  },
-  "Documentation (with scope)": {
-    "prefix": "docs()",
-    "body": [ "docs(${1:scope}): ${2:description}" ],
-    "description": "Update documentation"
-  },
-
-  "Styles": {
-    "prefix": "style",
-    "body": [ "style: " ],
-    "description": "Code style changes (no functional impact)"
-  },
-  "Styles (with scope)": {
-    "prefix": "style()",
-    "body": [ "style(${1:scope}): ${2:description}" ],
-    "description": "Code style changes (no functional impact)"
-  },
-
-  "Code refactoring": {
-    "prefix": "refactor",
-    "body": [ "refactor: " ],
-    "description": "Refactor code"
-  },
-  "Code refactoring (with scope)": {
-    "prefix": "refactor()",
-    "body": [ "refactor(${1:scope}): ${2:description}" ],
-    "description": "Refactor code"
-  },
-
-  "Performance improvements": {
-    "prefix": "perf",
-    "body": [ "perf: " ],
-    "description": "Improve performance"
-  },
-  "Performance improvements (with scope)": {
-    "prefix": "perf()",
-    "body": [ "perf(${1:scope}): ${2:description}" ],
-    "description": "Improve performance"
-  },
-
-  "Tests": {
-    "prefix": "test",
-    "body": [ "test: " ],
-    "description": "Add or modify tests"
-  },
-  "Tests (with scope)": {
-    "prefix": "test()",
-    "body": [ "test(${1:scope}): ${2:description}" ],
-    "description": "Add or modify tests"
-  },
-
-  "Builds": {
+  "build conventional commit": {
     "prefix": "build",
-    "body": [ "build: " ],
-    "description": "Changes to the build system or dependencies"
+    "body": [
+      "build(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ]
   },
-  "Builds (with scope)": {
-    "prefix": "build()",
-    "body": [ "build(${1:scope}): ${2:description}" ],
-    "description": "Changes to the build system or dependencies"
-  },
-
-  "Continuous Integration": {
-    "prefix": "ci",
-    "body": [ "ci: " ],
-    "description": "CI configuration changes"
-  },
-  "Continuous Integration (with scope)": {
-    "prefix": "ci()",
-    "body": [ "ci(${1:scope}): ${2:description}" ],
-    "description": "CI configuration changes"
-  },
-
-  "Chore": {
+  "chore conventional commit": {
     "prefix": "chore",
-    "body": [ "chore: " ],
-    "description": "Other non‑code changes"
+    "body": [
+      "chore(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ]
   },
-  "Chore (with scope)": {
-    "prefix": "chore()",
-    "body": [ "chore(${1:scope}): ${2:description}" ],
-    "description": "Other non‑code changes"
+  "ci conventional commit": {
+    "prefix": "ci",
+    "body": [
+      "ci(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ]
   },
-
-  "Reverts": {
-    "prefix": "revert",
-    "body": [ "revert: " ],
-    "description": "Revert a previous commit"
+  "docs conventional commit": {
+    "prefix": "docs",
+    "body": [
+      "docs(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ]
   },
-  "Reverts (with scope)": {
-    "prefix": "revert()",
-    "body": [ "revert(${1:commitHash}): ${2:reason}" ],
-    "description": "Revert a previous commit"
+  "style conventional commit": {
+    "prefix": "style",
+    "body": [
+      "style(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ]
+  },
+  "refactor conventional commit": {
+    "prefix": "refactor",
+    "body": [
+      "refactor(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ]
+  },
+  "perf conventional commit": {
+    "prefix": "perf",
+    "body": [
+      "perf(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ]
+  },
+  "test conventional commit": {
+    "prefix": "test",
+    "body": [
+      "test(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ]
+  },
+  "breaking change conventional commit footer": {
+    "prefix": "BREAK",
+    "body": [
+      "BREAKING CHANGE: $0"
+    ]
+  },
+  "co-authored by": {
+    "prefix": "co",
+    "body": [
+      "Co-authored-by: ${1:name} <${2:email}>",
+      "$0"
+    ]
+  },
+  "signed off by": {
+    "prefix": "si",
+    "body": [
+      "Signed-off-by: ${1:name} <${2:email}>",
+      "$0"
+    ]
+  },
+  "on behalf of": {
+    "prefix": "on",
+    "body": [
+      "On-behalf-of: ${1:org} <${2:email}>",
+      "$0"
+    ]
   }
 }
