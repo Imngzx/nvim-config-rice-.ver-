@@ -57,13 +57,11 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 vim.api.nvim_create_autocmd('BufEnter', {
   group = vim.api.nvim_create_augroup('AutoSetRoot', { clear = true }),
   callback = function(args)
-    -- 排除特殊 buffer（终端、浮动窗口等）
+    if vim.g.SessionLoad then return end
     if vim.bo[args.buf].buftype ~= '' then return end
 
-    -- 使用 Nvim 0.10+ 原生 C API，性能极高且无 Lua 内存泄漏
     local root = vim.fs.root(args.buf, { '.git', 'Makefile', '.jj' })
     if root then
-      -- 使用纯原生 API 替代 vim.fn.chdir，跳过 vimscript 转换层，速度拉满
       vim.api.nvim_set_current_dir(root)
     end
   end,
