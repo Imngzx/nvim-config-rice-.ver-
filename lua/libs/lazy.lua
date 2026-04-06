@@ -63,7 +63,6 @@ local function add_key_triggers(keys, loader, restore_keys)
           if type(rhs) == 'function' then
             rhs()
           elseif type(rhs) == 'string' then
-            -- 修复：安全执行字符串映射 (完美支持 <cmd>...<CR>)
             local k = vim.api.nvim_replace_termcodes(rhs, true, false, true)
             vim.api.nvim_feedkeys(k, 'm', false)
           end
@@ -97,7 +96,6 @@ function M.load(config)
     plugins = {}
   end
 
-  -- 核心修复：引入闭包状态锁，防止多重触发条件导致 setup 重复执行
   local loaded = false
   local function load_now()
     if loaded then return end
@@ -108,7 +106,6 @@ function M.load(config)
     if config.setup then config.setup() end
   end
 
-  -- 绑定触发器
   if config.event then
     local ev = type(config.event) == 'string' and { config.event } or config.event
     add_event_autocmd(ev, load_now)
@@ -126,9 +123,8 @@ function M.load(config)
   end
 end
 
--- Trigger VeryLazy event after UI is ready (图1 Headless 终极修复)
+-- Trigger VeryLazy event after UI is ready
 M.trigger_verylazy = function()
-  -- 正常情况：等待 UI 绘制完毕后加载
   vim.api.nvim_create_autocmd('UIEnter', {
     once = true,
     callback = function()
@@ -138,7 +134,6 @@ M.trigger_verylazy = function()
     end,
   })
 
-  -- Headless 模式补救：如果启动完毕了还没有 UI，说明是无头脚本模式
   vim.api.nvim_create_autocmd('VimEnter', {
     once = true,
     callback = function()

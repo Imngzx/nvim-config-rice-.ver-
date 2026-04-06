@@ -1,14 +1,12 @@
 local lazy = require('libs.lazy')
 
 -- [CSV View]
--- 像 Excel 一样按列对齐和高亮 CSV/TSV 文件
 lazy.load({
   plugin = 'https://github.com/hat0uma/csvview.nvim',
   ft = { 'csv', 'tsv' },
   cmd = { 'CsvViewEnable', 'CsvViewDisable', 'CsvViewToggle' },
   setup = function()
     require('csvview').setup({
-      -- 👇 修复点 1：display_mode 必须放在 view 里面！
       view = {
         display_mode = 'border',
       },

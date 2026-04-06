@@ -1,5 +1,4 @@
 return {
-  -- 1. 原本 lua_ls 的配置
   lua_ls = {
     mason_name = 'lua-language-server',
     settings = {
@@ -13,7 +12,6 @@ return {
     }
   },
 
-  -- 2. 原本 emmylua_ls 的配置
   emmylua_ls = {
     cmd = { 'emmylua_ls' },
     filetypes = { 'lua' },

@@ -14,7 +14,7 @@ function M.open()
     width = 0.8,
     height = 0.8,
     border = 'rounded',
-    backdrop = 100,
+    backdrop = 60,
     title = ' 󰇥 Yazi ',
     title_pos = 'center',
     zindex = 45,

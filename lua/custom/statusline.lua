@@ -27,7 +27,6 @@ end
 local function update_git_branch(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
 
-  -- 👇 优化 1：不仅检查 fetching，还要检查 not_repo 黑名单
   if vim.bo[bufnr].buftype ~= ''
     or vim.b[bufnr].my_git_fetching
     or vim.b[bufnr].my_git_not_repo then
@@ -35,7 +34,6 @@ local function update_git_branch(bufnr)
   end
 
   local filepath = vim.api.nvim_buf_get_name(bufnr)
-  -- 👇 优化 2：拦截网络/虚拟路径 (如 ssh://, oil://)，防止 git -C 报错
   if filepath == '' or filepath:match('^[%w%+%.%-]+://') then return end
 
   local dir = vim.fn.fnamemodify(filepath, ':h')
@@ -51,7 +49,6 @@ local function update_git_branch(bufnr)
           if obj.code == 0 and obj.stdout and obj.stdout ~= '' then
             vim.b[bufnr].my_git_branch = vim.trim(obj.stdout)
           else
-            -- 👇 优化 3：一旦发现查不到分支，说明不是 Git 仓库，拉入黑名单，永远不再消耗 CPU 查询！
             vim.b[bufnr].my_git_branch = ''
             vim.b[bufnr].my_git_not_repo = true
           end

@@ -1,7 +1,6 @@
 local lazy = require('libs.lazy')
 
 -- [Colorful Menu]
--- 美化自动补全菜单，依赖 treesitter 高亮
 lazy.load({
   plugin = 'https://github.com/xzbdmw/colorful-menu.nvim',
   event = { 'InsertEnter', 'CmdlineEnter' },

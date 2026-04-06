@@ -1,4 +1,3 @@
--- 🚀 Neovim 0.12+ Native UI2 Engine
 local M = {}
 
 function M.setup()

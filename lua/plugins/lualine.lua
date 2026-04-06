@@ -67,10 +67,8 @@ lazy.load({
           },
         },
         lualine_x = {
-          -- Python Venv 虚拟环境显示
           {
             function()
-              -- 只有当插件已经被加载过，才去获取 venv
               if not package.loaded['venv-selector'] then return '' end
               local venv = require('venv-selector').venv()
               if venv ~= nil then
@@ -97,7 +95,6 @@ lazy.load({
           function()
             local t = os.date('*t')
             local is_pm = t.hour >= 12
-            -- 12小时制转换 (例如: 13%12=1, 0%12=0)
             local hour12 = t.hour % 12
             if hour12 == 0 then hour12 = 12 end -- 处理 0 点和 12 点
 

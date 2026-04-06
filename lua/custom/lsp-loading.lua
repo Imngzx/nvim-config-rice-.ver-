@@ -101,7 +101,6 @@ local function update_window()
 end
 
 local function start_animation()
-  -- 👇 修改：确保不仅 timer 不存在，而且当前不是正在回收状态
   if timer and not timer:is_closing() then return end
 
   -- 如果存在且正在关闭，将其置空，重新生成
@@ -116,9 +115,6 @@ local function start_animation()
   end
 end
 
--- ====================================================================
--- 🚀 核心架构优化：将自动命令封装进 setup 函数中
--- ====================================================================
 function M.setup()
   local group = vim.api.nvim_create_augroup('diy_fidget_lsp', { clear = true })
 

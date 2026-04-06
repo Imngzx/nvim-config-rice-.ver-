@@ -1,30 +1,55 @@
 local M = {}
 
--- 【1】纯净版 LSP：只需名字，无需配置，Mason 自动装，Nvim 自动启
+-- 【1】this section just handles lsp installation
 local default_servers = {
+
+  -- [markdown]
   marksman = true,
+
+  -- [json]
   jsonls = 'json-lsp',
+
+  -- [toml]
   taplo = true,
+
+  -- [for .fish files]
   fish_lsp = 'fish-lsp',
-  bashls = 'bash-language-server', -- HACK: install shellcheck for inline diagnos
+
+  -- [bash, sh]
+  bashls = 'bash-language-server', -- HACK: install shellcheck for inline diagnostic
+
+  --[HTML]
   html = 'html-lsp',
   emmet_language_server = 'emmet-language-server',
 }
 
--- 【2】定制版 LSP：引入你在 lua/lsp/servers/ 下写的配置
+-- 【2】this section can handle installation + configurations
+-- tools that noted with mason=false wont be installed via Mason automatically
 local custom_servers = {
+
+  -- [c/c++ and etc]
   clangd = require('lsp.servers.c-language'), --NOTE: mason = false
+
+  -- [zig]
   zls = require('lsp.servers.zig'), --NOTE: mason = false
+
+  -- [qml]
   qmlls6 = require('lsp.servers.qml'), --NOTE: mason = false
-  -- vtsls = require('lsp.servers.vue'),
+
+  -- [lua]
   lua_ls = require('lsp.servers.lua').lua_ls,
   -- emmylua_ls = require('lsp.servers.lua').emmylua_ls,
+
+  -- [python]
   basedpyright = require('lsp.servers.python').basedpyright,
   ruff = require('lsp.servers.python').ruff,
   -- ty = require('lsp.servers.python').ty, --NOTE: mason = false
+
+
+  -- vtsls = require('lsp.servers.vue'),
 }
 
--- 【3】其他开发工具：仅用 Mason 安装，不作为 LSP 启动
+-- 【3】this handles tool installation from mason other than lsp
 M.mason_tools = {
   'codelldb', -- C/C++/Rust 调试器
   'debugpy', -- Python 调试器

@@ -177,20 +177,15 @@ H.apply_config = function(config)
 end
 
 H.create_autocommands = function()
-  -- 👇 修改点 1：加上 clear = true 防止多次 sourcing 配置时组内堆积
   local gr = vim.api.nvim_create_augroup('MiniPairs', { clear = true })
 
   vim.api.nvim_create_autocmd('FileType', {
     group = gr,
-    -- 👇 修改点 2：把 snacks_picker_input 顺手加上，防止在搜索输入框里自动补全括号
     pattern = { 'TelescopePrompt', 'fzf', 'snacks_picker_input' },
     callback = function() vim.b.minipairs_disable = true end,
     desc = 'Disable locally'
   })
 
-  -- ==========================================================
-  -- 👇 修改点 3：新增内存清理钩子！彻底解决死 Buffer 驻留内存问题
-  -- ==========================================================
   vim.api.nvim_create_autocmd('BufWipeout', {
     group = gr,
     callback = function(args)

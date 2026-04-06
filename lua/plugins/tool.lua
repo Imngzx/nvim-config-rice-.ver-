@@ -7,7 +7,6 @@ lazy.load({
   setup = function()
     local wk = require('which-key')
 
-    -- 1. 💅 配置最新版 Which-Key 的外观和行为
     wk.setup({
       preset = 'modern', -- 可选: classic, modern, helix
       delay = function(ctx)

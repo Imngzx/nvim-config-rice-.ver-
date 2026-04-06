@@ -5,7 +5,6 @@ local M = {}
 local api, fn = vim.api, vim.fn
 local ORIGINAL_HL_CACHE = {}
 
--- 🌟 修复点 1：创建一个私有表，用于集中管理和监视所有的底层定时器句柄
 M._timers = {}
 
 -- Config Module
@@ -55,7 +54,6 @@ function M.setup(opts)
     })
   end
 
-  -- 🌟 修复点 2：监听主题变化事件，防止缓存污染和背景复辟！
   vim.api.nvim_create_autocmd('ColorScheme', {
     group = vim.api.nvim_create_augroup('TransparentThemeSync', { clear = true }),
     callback = function()
@@ -130,9 +128,6 @@ function M.clear()
 
   do_clear()
 
-  -- 👇 修复 2：精简延迟策略，删掉 3000ms 这种无意义的长轮询，只保留一个 800ms 兜底即可
-  -- 你的插件都是按需加载，800ms 足够覆盖 99% 的场景，大幅降低 CPU 负担
-  local timer = vim.uv.new_timer()
   timer:start(800, 0, vim.schedule_wrap(function()
     do_clear()
     pcall(function()

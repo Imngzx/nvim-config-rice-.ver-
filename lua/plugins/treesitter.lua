@@ -25,7 +25,6 @@ lazy.load({
       callback = function(args)
         if vim.bo[args.buf].buftype ~= '' then return end
 
-        -- 👇 使用底层 C API 获取文件大小
         if vim.b[args.buf].snacks_bigfile then
           return
         end

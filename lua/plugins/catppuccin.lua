@@ -65,9 +65,7 @@ require('catppuccin').setup({
       DropBarMenuNormalFloat = { bg = 'NONE' },
       DropBarMenuBorder = { bg = 'NONE', fg = colors.surface1 },
 
-      -- Code Runner 的悬浮窗也依赖 FloatBorder，设置后也会一并修复 (图2)
 
-      -- 如果用到 WhichKey 悬浮窗也清一下
       WhichKeyFloat = { bg = 'NONE' },
     }
   end

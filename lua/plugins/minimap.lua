@@ -24,11 +24,9 @@ vim.g.neominimap = {
 
 lazy.load({
   plugin = 'https://github.com/Isrothy/neominimap.nvim',
-  -- 使用 VeryLazy 让它在后台默默处理 Rust 引擎，不卡启动
   event = { 'User', pattern = 'VeryLazy' },
 
   -- event = { 'BufReadPre', 'BufNewFile' },
-  -- 修复快捷键：直接使用原生的 <cmd> 字符串，这样 libs.lazy 就能完美捕获并执行
   keys = {
     { 'n', '<leader>nm', '<cmd>Neominimap Toggle<cr>', { desc = 'Toggle minimap' } },
     { 'n', '<leader>ns', '<cmd>Neominimap ToggleFocus<cr>', { desc = 'Focus minimap' } },

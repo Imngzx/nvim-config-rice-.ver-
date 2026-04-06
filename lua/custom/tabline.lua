@@ -66,7 +66,6 @@ M.setup = function(opts)
     _G.SimpleTabline.close_buffer(buf_id)
   end
 
-  -- 👇 新增：鼠标点击左右箭头的滚动回调
   _G.SimpleTablineScrollLeft = function()
     M.viewport_start = math.max(1, M.viewport_start - 1)
     vim.cmd.redrawtabline()
@@ -193,7 +192,6 @@ M.render = function()
 
   if #tabs == 0 then return '' end
 
-  -- 👇 核心安全锁：防止越界报错
   if M.viewport_start > #tabs then M.viewport_start = #tabs end
   if M.viewport_start < 1 then M.viewport_start = 1 end
 
@@ -207,7 +205,6 @@ M.render = function()
 
   local max_width = vim.o.columns
 
-  -- 👇 修复瑕疵 2 + 添加点击滚动：颜色完全融入背景，带有鼠标点击属性
   local left_ind = '%0@v:lua.SimpleTablineScrollLeft@%#TablineFill#  %X'
   local right_ind = '%0@v:lua.SimpleTablineScrollRight@%#TablineFill#  %X'
   local ind_width = 3
