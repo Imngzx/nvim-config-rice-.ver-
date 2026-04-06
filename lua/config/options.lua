@@ -1,7 +1,3 @@
-local utils = require('libs.utils')
-
-vim.opt.undofile = true
-
 -- [Appearance]
 vim.opt.signcolumn = 'yes' -- always show sign column
 vim.opt.winborder = 'rounded'
@@ -29,6 +25,7 @@ vim.opt.breakindent = true -- maintain indent on wrap
 -- Others
 vim.opt.winminwidth = 5 -- prevent tiny splits
 vim.opt.foldtext = "v:lua.vim.fn.getline(v:foldstart) .. ' …'" -- Fold text
+vim.opt.undofile = true
 
 -- [Editor]
 vim.opt.cmdheight = 0
