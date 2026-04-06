@@ -1,11 +1,10 @@
 local lazy = require('libs.lazy')
 local H = {}
 
--- 🌟 1. 唤醒 LSP 调度中心
+-- calls the second init in this config
 local lsp_manager = require('lsp.init')
 lsp_manager.setup()
 
--- (Formatter) conform 保持原样
 H.conform = {
   python = function(bufnr)
     if require('conform').get_formatter_info('ruff_format', bufnr).available then
@@ -33,7 +32,7 @@ vim.g.markdown_fenced_languages = {
   'typescript', 'ts=typescript', 'html', 'css', 'json', 'lua', 'vim',
 }
 
--- [Dependencies] Mason 自动化安装
+-- [Dependencies] Mason auto install once you open the Mason panel
 lazy.load({
   plugin = 'https://github.com/mason-org/mason.nvim',
   event = { 'BufReadPost', 'BufNewFile' },
@@ -43,7 +42,6 @@ lazy.load({
       vim.cmd('Mason')
       local registry = require('mason-registry')
       registry.refresh(function()
-        -- 🌟 2. 直接遍历大脑里计算好的工具名单！
         for _, pkg_name in ipairs(lsp_manager.mason_tools) do
           local ok, pkg = pcall(registry.get_package, pkg_name)
           if ok and not pkg:is_installed() then
@@ -63,12 +61,11 @@ lazy.load({
   end
 })
 
--- [LSP] 极速启动！
 lazy.load({
   plugin = 'https://github.com/neovim/nvim-lspconfig',
   event = { 'User', pattern = 'VeryLazy' },
   setup = function()
-    -- 🌟 3. 把开启名单喂给引擎
+    -- using the lsp or tools that listed inside the init that located inside "lsp" directory
     vim.lsp.enable(lsp_manager.enabled_servers)
   end
 })
@@ -78,7 +75,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
     if client and client:supports_method('textDocument/inlayHint') then
-      -- 对当前 buffer 开启内联提示
       vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
     end
     -- LSP keymaps
@@ -111,7 +107,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 -- [Formatter] Multi-trigger: load on save or keymap
--- vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 lazy.load({
   plugin = 'https://github.com/stevearc/conform.nvim',
   event = { 'BufReadPost', 'BufNewFile' },
@@ -124,7 +119,7 @@ lazy.load({
     require('conform').setup({
       formatters_by_ft = H.conform,
       format_on_save = {
-        timeout_ms = 800, -- 给 800 毫秒的宽限时间
+        timeout_ms = 800,
         lsp_format = 'fallback',
       },
     })
@@ -169,9 +164,8 @@ lazy.load({
         },
       },
     })
-    -- 自定义诊断 UI：包含行号栏图标、下划线、排序等
     vim.diagnostic.config({
-      virtual_text = false, -- 因为你用了 tiny-inline-diagnostic，所以关闭原生虚拟文本
+      virtual_text = false, --leave this with false when you using this plugin
       underline = true,
       update_in_insert = false,
       severity_sort = true,
@@ -180,10 +174,10 @@ lazy.load({
       },
       signs = {
         text = {
-          [vim.diagnostic.severity.ERROR] = ' ', -- 换成你喜欢的图标，比如 "✘"
-          [vim.diagnostic.severity.WARN] = ' ', -- 比如 "▲"
-          [vim.diagnostic.severity.HINT] = ' ', -- 比如 "⚑"
-          [vim.diagnostic.severity.INFO] = ' ', -- 比如 "»"
+          [vim.diagnostic.severity.ERROR] = ' ',
+          [vim.diagnostic.severity.WARN] = ' ',
+          [vim.diagnostic.severity.HINT] = ' ',
+          [vim.diagnostic.severity.INFO] = ' ',
         },
       },
     })
@@ -216,7 +210,6 @@ lazy.load({
     { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') },
     'https://github.com/rafamadriz/friendly-snippets' -- 👇 新增：添加 friendly-snippets
   },
-  -- 👇 1. 触发事件增加 CmdlineEnter
   -- event = { 'InsertEnter', 'CmdlineEnter' },
   event = { 'User', pattern = 'VeryLazy' },
   setup = function()
@@ -244,7 +237,6 @@ lazy.load({
           }
         },
         menu = {
-
           --can comment this if you want cmp menu with darker color bg
           winhighlight =
           'Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,CursorLine:BlinkCmpDocCursorLine,Search:None',
@@ -284,12 +276,18 @@ lazy.load({
       },
 
       cmdline = {
-        -- enabled = true,
-        --
-        keymap = { preset = 'super-tab' }, -- 命令行使用vs code命令
+        enabled = true,
+        keymap = {
+          preset = 'enter',
+          ['<C-y>'] = { 'select_and_accept' },
+        },
         completion = {
+          list = { selection = { preselect = false } },
           menu = {
             auto_show = true,
+          },
+          ghost_text = {
+            enabled = true,
           },
         },
       },
@@ -297,7 +295,6 @@ lazy.load({
       sources = {
         -- 在注释行时不显示菜单补全。并且在全局不会弹出中文补全
         default = function()
-          -- 👇 将 unpack 改为直接获取并赋值，完美避开语法警告和兼容性问题
           local cursor = vim.api.nvim_win_get_cursor(0)
           local row, col = cursor[1], cursor[2]
 
