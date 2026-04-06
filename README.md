@@ -10,6 +10,7 @@
 
 > [!WARNING]
 > Please read the [disclaimer](/note/manifesto-%26-disclaimer.md) before copy or use this config  
+> This config is only for nvim version that starts from 0.12 to nightly
 
 ## About
 
@@ -30,7 +31,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 
 ### Summarization
 - **Fast.** Less than **50ms** to start 
-- **Simple.** Run out of the box with only 30 plugins.
+- **Simple.** Run out of the box with only 31 life saving plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code.
@@ -71,7 +72,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 
 ## Info
 
-- Supported nvim version: `nightly 0.13`
+- Supported nvim version: `0.12 and above`
 - Plugin manager: `vim.pack`
 - Language server protocol: `nvim-lspconfig`
 - Leader key: `Space`
@@ -113,7 +114,7 @@ Then please having fun!
 - `lua/libs`: shared libraries
 - `lua/lsp`: LSP configuration for separate languages
 - `lua/plugins`: plugin configurations
-- `snippets/`: code snippets
+- `lua/lsp/init.lua`: simple lsp configurations
 - `init.lua`: entry point
 
 ## Contributions
