@@ -8,7 +8,6 @@ function M.open()
 
   local tmpfile = vim.fn.tempname()
 
-  -- 🚀 仅调用 Snacks.win 作为 UI 容器，不干扰内部机制
   local win = require('snacks').win({
     position = 'float',
     width = 0.8,
@@ -27,7 +26,6 @@ function M.open()
       vim.schedule(function()
         win:close()
 
-        -- 完美复用文件读取与跳转逻辑
         if code == 0 and vim.fn.filereadable(tmpfile) == 1 then
           local filenames = vim.fn.readfile(tmpfile)
           if filenames and #filenames > 0 then
