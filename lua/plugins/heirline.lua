@@ -167,7 +167,7 @@ lazy.load({
         for _, server in ipairs(clients) do
           table.insert(names, server.name)
         end
-        return '   ' .. table.concat(names, ' | ') .. ' '
+        return '   ' .. table.concat(names, ' | ') .. ' '
       end,
       hl = { fg = 'fg', bold = true, bg = 'bg' },
     }
