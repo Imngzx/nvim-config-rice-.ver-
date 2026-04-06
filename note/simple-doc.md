@@ -263,6 +263,7 @@
 | `<leader>uD` | n | Toggle Dim (Focus mode for current scope) |
 | `<leader>um` | n | Toggle Markdown Rendering |
 | `<leader>bs` | n | Toggle Scratch Buffer |
+| `<leader>uu` | n | Toggle undo-tree plugin |
 
 ### Minimap
 
@@ -346,4 +347,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-04-05.*
+*Last updated based on commit pushed 2026-04-06.*
