@@ -1,4 +1,3 @@
----@diagnostic disable: annotation-usage-error
 ---@module 'snacks'
 
 local lazy = require('libs.lazy')
@@ -88,6 +87,7 @@ lazy.load({
 
     _G.dd = function(...) Snacks.debug.inspect(...) end
     if utils.is_compatible_version('0.11') then
+      ---@diagnostic disable-next-line: duplicate-set-field
       vim._print = function(_, ...) dd(...) end
     else
       vim.print = _G.dd
