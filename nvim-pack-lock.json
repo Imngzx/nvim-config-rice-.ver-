@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "atone.nvim": {
+      "rev": "44d2a447e1e6db0959d4be18f5a072788a799880",
+      "src": "https://github.com/XXiaoA/atone.nvim"
+    },
     "blink.cmp": {
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/Saghen/blink.cmp",
@@ -33,13 +37,13 @@
       "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
       "src": "https://github.com/rafamadriz/friendly-snippets"
     },
+    "heirline.nvim": {
+      "rev": "fae936abb5e0345b85c3a03ecf38525b0828b992",
+      "src": "https://github.com/rebelot/heirline.nvim"
+    },
     "lazydev.nvim": {
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
       "src": "https://github.com/folke/lazydev.nvim"
-    },
-    "lualine.nvim": {
-      "rev": "8811f3f3f4dc09d740c67e9ce399e7a541e2e5b2",
-      "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "luvit-meta": {
       "rev": "cc9b2d412d2fbd30b94a70cfc214c2a3be27a0a2",

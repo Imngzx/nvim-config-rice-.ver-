@@ -28,7 +28,7 @@ require('custom.tabline').setup({
   icons = { close = icons.basic.close, modify = icons.basic.modify }
 })
 
-require('plugins.lualine')
+require('plugins.heirline')
 -- require('custom.statusline').setup({
 --   git_cache_setup = { get_git_root = Snacks.git.get_root },
 --   hide_filename_by_ft = { snacks_picker_list = true },
@@ -78,6 +78,7 @@ vim.api.nvim_create_autocmd('User', {
     -- you can try it out if you want ฅ₍^•⩊ •マⳊ
     require('custom.word-jump')
 
+    require('plugins.atone')
     require('plugins.flash')
     require('plugins.minimap')
     require('plugins.mini-hipatterns')
