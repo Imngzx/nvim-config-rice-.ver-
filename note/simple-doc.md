@@ -3,7 +3,6 @@
 > **Leader key:** `Space`  
 > **Local leader:** `Space` (same)  
 > Config repo: [Imngzx/nvim-config-rice-.ver-](https://github.com/Imngzx/nvim-config-rice-.ver-)
-
 ---
 
 ## Table of Contents
