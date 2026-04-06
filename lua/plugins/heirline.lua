@@ -172,7 +172,7 @@ lazy.load({
       hl = { fg = 'fg', bold = true, bg = 'bg' },
     }
 
-    -- [ Python 虚拟环境 ]
+    -- python venv
     local Venv = {
       condition = function() return vim.bo.filetype == 'python' end,
       provider = function()
