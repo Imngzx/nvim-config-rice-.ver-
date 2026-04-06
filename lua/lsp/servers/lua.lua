@@ -8,6 +8,18 @@ return {
         completion = { callSnippet = 'Replace' },
         doc = { privateName = { '^_' } },
         hint = { enable = true },
+        diagnostics = {
+          globals = {
+            'vim',
+            'Snacks',
+            'MiniPairs',
+            'SimpleTabline',
+            'SimpleTablineSwitch',
+            'SimpleTablineClose',
+            'SimpleTablineScrollLeft',
+            'SimpleTablineScrollRight'
+          }
+        }
       }
     }
   },
