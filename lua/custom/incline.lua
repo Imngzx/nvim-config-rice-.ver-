@@ -56,7 +56,6 @@ local function update_incline()
     local modified = vim.bo[buf_id].modified
     local win_width = vim.api.nvim_win_get_width(win_id)
 
-    -- 🌟 修复：将 should_hide 状态加入指纹 Hash，确保能触发状态翻转
     local state_hash = string.format('%d_%s_%s_%d_%s', buf_id, tostring(modified), filename,
       win_width, tostring(should_hide))
     local state = win_cache[win_id] or {}
@@ -69,7 +68,6 @@ local function update_incline()
     -- === 4. 处理隐身动作（不摧毁 Buffer）===
     if should_hide then
       if state.win and vim.api.nvim_win_is_valid(state.win) then
-        -- 🌟 性能大杀器：使用 hide = true 仅仅让其隐身，阻止垃圾回收器的剧烈抖动
         pcall(vim.api.nvim_win_set_config, state.win, { hide = true })
       end
       state.hash = state_hash
@@ -111,7 +109,11 @@ local function update_incline()
 
     local byte_col = 0
     for _, chunk in ipairs(chunks) do
-      vim.api.nvim_buf_add_highlight(state.buf, ns, chunk[2], 0, byte_col, byte_col + #chunk[1])
+      vim.api.nvim_buf_set_extmark(state.buf, ns, 0, byte_col, {
+        end_col = byte_col + #chunk[1],
+        hl_group = chunk[2],
+      })
+
       byte_col = byte_col + #chunk[1]
     end
 
@@ -128,7 +130,7 @@ local function update_incline()
       focusable = false,
       zindex = 50,
       border = M.config.border,
-      hide = false, -- 🌟 确保从顶端离开时，解除隐身重新显示！
+      hide = false,
     }
 
     if not state.win or not vim.api.nvim_win_is_valid(state.win) then
@@ -164,7 +166,6 @@ function M.setup(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
   local group = vim.api.nvim_create_augroup('HandcraftedIncline', { clear = true })
 
-  -- 👇 核心修复：引入一个状态锁，防止高频按键把事件队列塞爆
   local update_queued = false
 
   vim.api.nvim_create_autocmd(
