@@ -4,9 +4,6 @@ vim.opt.undofile = true
 
 -- [Appearance]
 vim.opt.signcolumn = 'yes' -- always show sign column
-if utils.is_compatible_version('0.10') then
-  vim.opt.termguicolors = true -- enable 24-bit RGB colors
-end
 vim.opt.winborder = 'rounded'
 vim.opt.showmode = false -- Hide mode status
 -- Line edit
@@ -36,7 +33,6 @@ vim.opt.foldtext = "v:lua.vim.fn.getline(v:foldstart) .. ' …'" -- Fold text
 -- [Editor]
 vim.opt.cmdheight = 0
 vim.opt.fileformat = 'unix'
-vim.opt.mouse = 'a' -- enable mouse in all modes
 vim.opt.laststatus = 3 -- global satusline (once you add one)
 vim.opt.ruler = false
 -- vim.opt.colorcolumn = '80'   -- column ruler
