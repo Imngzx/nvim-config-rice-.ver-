@@ -208,7 +208,7 @@ lazy.load({
 lazy.load({
   plugin = {
     { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') },
-    'https://github.com/rafamadriz/friendly-snippets' -- 👇 新增：添加 friendly-snippets
+    'https://github.com/rafamadriz/friendly-snippets'
   },
   -- event = { 'InsertEnter', 'CmdlineEnter' },
   event = { 'User', pattern = 'VeryLazy' },
