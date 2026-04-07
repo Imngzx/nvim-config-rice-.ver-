@@ -3,6 +3,7 @@ local colors = require('plugins.heirline_config.colors')
 
 -- 1. Vi Mode
 local ViMode = {
+  update = true,
   init = function(self)
     self.mode = vim.fn.mode(1)
     self.mode_color = colors.mode_colors[self.mode] or 'normal'
@@ -127,7 +128,7 @@ local LocationAndTime = {
     self.mode_color = colors.mode_colors[self.mode] or 'normal'
   end,
   { provider = '', hl = { fg = 'section_bg', bg = 'bg' } },
-  { provider = '  %l:%c ', hl = { fg = 'normal', bg = 'section_bg' } },
+  { provider = '  %l:%c ', hl = function(self) return { fg = self.mode_color, bg = 'section_bg' } end },
   { provider = '', hl = function(self) return { fg = self.mode_color, bg = 'section_bg' } end },
   {
     provider = function() return cached_time end,
