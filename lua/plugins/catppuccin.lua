@@ -19,7 +19,7 @@ require('catppuccin').setup({
     additional_vim_regex_highlighting = false
   },
   integrations = {
-    blink_cmp = true,
+    blink_cmp = { enabled = true, style = 'bordered' },
     markdown = true,
     mason = true,
     render_markdown = true,
@@ -27,6 +27,9 @@ require('catppuccin').setup({
     which_key = true,
     mini = true,
     treesitter_context = true,
+    dropbar = { enabled = true, color_mode = false },
+    flash = true,
+    dap = true,
   },
   custom_highlights = function(colors)
     return {
