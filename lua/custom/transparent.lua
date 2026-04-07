@@ -128,13 +128,17 @@ function M.clear()
 
   do_clear()
 
-  timer:start(800, 0, vim.schedule_wrap(function()
-    do_clear()
-    pcall(function()
-      if not timer:is_closing() then timer:close() end
-    end)
-  end))
-  table.insert(M._timers, timer)
+  -- 👇 补上缺失的这行，实例化一个 timer！
+  local timer = vim.uv.new_timer()
+  if timer then
+    timer:start(800, 0, vim.schedule_wrap(function()
+      do_clear()
+      pcall(function()
+        if not timer:is_closing() then timer:close() end
+      end)
+    end))
+    table.insert(M._timers, timer)
+  end
 
   api.nvim_exec_autocmds('User', { pattern = 'TransparentClear', modeline = false })
   config.on_clear()
