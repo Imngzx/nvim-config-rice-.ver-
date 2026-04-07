@@ -102,6 +102,7 @@ lazy.load({
     -- diagnostic
     local Diagnostics = {
       condition = conditions.has_diagnostics,
+      update = { 'DiagnosticChanged', 'BufEnter' },
       init = function(self)
         local counts = vim.diagnostic.count(0)
         self.errors = counts[vim.diagnostic.severity.ERROR] or 0
@@ -176,6 +177,7 @@ lazy.load({
     -- python venv
     local Venv = {
       condition = function() return vim.bo.filetype == 'python' end,
+      update = { 'BufEnter', 'DirChanged' },
       provider = function()
         if not package.loaded['venv-selector'] then return '' end
         local venv = require('venv-selector').venv()
@@ -185,6 +187,20 @@ lazy.load({
     }
 
     -- time
+    local cached_time = os.date('  %I:%M %p ')
+    local function setup_time_updater()
+      cached_time = os.date('  %I:%M %p ')
+      -- 计算距离下一分钟的第 0 秒还有多少毫秒
+      local current_seconds = tonumber(os.date('%S'))
+      local ms_until_next_minute = (60 - current_seconds) * 1000
+
+      -- 精准等待到下一分钟的开头
+      vim.defer_fn(function()
+        vim.cmd('redrawstatus') -- 通知状态栏刷新
+        setup_time_updater() -- 循环下一个一分钟
+      end, ms_until_next_minute)
+    end
+    setup_time_updater()
     local LocationAndTime = {
       init = function(self)
         self.mode = vim.fn.mode(1)
@@ -194,7 +210,7 @@ lazy.load({
       { provider = '  %l:%c ', hl = { fg = 'normal', bg = 'section_bg' } },
       { provider = '', hl = function(self) return { fg = self.mode_color, bg = 'section_bg' } end },
       {
-        provider = function() return os.date('  %I:%M %p ') end,
+        provider = function() return cached_time end,
         hl = function(self) return { fg = 'bg', bg = self.mode_color, bold = true } end,
       }
     }
