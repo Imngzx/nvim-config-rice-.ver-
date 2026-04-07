@@ -20,7 +20,9 @@ lazy.load({
         insert = utils.get_highlight('String').fg or '#a6e3a1',
         visual = utils.get_highlight('Statement').fg or '#cba6f7',
         replace = utils.get_highlight('Error').fg or '#f38ba8',
-        command = '#fab387' or utils.get_highlight('WarningMsg'),
+        -- command = '#fab387' or utils.get_highlight('WarningMsg'),
+        command = utils.get_highlight('WarningMsg').fg or '#fab387',
+        terminal = '#fab387',
         diag_error = utils.get_highlight('DiagnosticError').fg,
         diag_warn = utils.get_highlight('DiagnosticWarn').fg,
         diag_info = utils.get_highlight('DiagnosticInfo').fg,
@@ -74,7 +76,7 @@ lazy.load({
       ['r?'] = 'replace',
       x = 'replace',
       ['!'] = 'command',
-      t = 'command',
+      t = 'terminal',
     }
 
     local ViMode = {
