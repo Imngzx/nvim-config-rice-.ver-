@@ -13,23 +13,19 @@ lazy.load({
         bg = utils.get_highlight('StatusLine').bg or '#1e1e2e',
         fg = utils.get_highlight('StatusLine').fg or '#cdd6f4',
 
-        bright_bg = utils.get_highlight('Folded').bg or '#45475a', -- 亮灰色（紧跟在 Normal 后面）
-        section_bg = utils.get_highlight('CursorLine').bg or '#313244', -- 暗灰色（诊断信息的背景，保持不变）
+        bright_bg = utils.get_highlight('Folded').bg or '#45475a',
+        section_bg = utils.get_highlight('CursorLine').bg or '#313244',
 
         normal = utils.get_highlight('Directory').fg or '#89b4fa',
         insert = utils.get_highlight('String').fg or '#a6e3a1',
         visual = utils.get_highlight('Statement').fg or '#cba6f7',
         replace = utils.get_highlight('Error').fg or '#f38ba8',
-        -- command = '#fab387' or utils.get_highlight('WarningMsg'),
         command = utils.get_highlight('WarningMsg').fg or '#fab387',
         terminal = '#fab387',
         diag_error = utils.get_highlight('DiagnosticError').fg,
         diag_warn = utils.get_highlight('DiagnosticWarn').fg,
         diag_info = utils.get_highlight('DiagnosticInfo').fg,
         diag_hint = utils.get_highlight('DiagnosticHint').fg,
-        -- git_add = utils.get_highlight('DiffAdd').fg,
-        -- git_change = utils.get_highlight('DiffChange').fg,
-        -- git_del = utils.get_highlight('DiffDelete').fg,
         git_add = utils.get_highlight('MiniDiffSignAdd').fg or '#a6e3a1',
         git_change = utils.get_highlight('MiniDiffSignChange').fg or '#f9e2af',
         git_del = utils.get_highlight('MiniDiffSignDelete').fg or '#f38ba8',
@@ -44,15 +40,36 @@ lazy.load({
 
     local mode_names = {
       n = 'NORMAL',
-      i = 'INSERT',
+      no = 'OP-PENDING',
+      nov = 'OP-PENDING',
+      noV = 'OP-PENDING',
+      ['no\22'] = 'OP-PENDING',
+      niI = 'NORMAL',
+      niR = 'NORMAL',
+      niV = 'NORMAL',
+      nt = 'NORMAL',
+      ntT = 'NORMAL',
       v = 'VISUAL',
+      vs = 'VISUAL',
       V = 'V-LINE',
+      Vs = 'V-LINE',
       ['\22'] = 'V-BLOCK',
-      c = 'COMMAND',
+      ['\22s'] = 'V-BLOCK',
       s = 'SELECT',
       S = 'S-LINE',
       ['\19'] = 'S-BLOCK',
+      i = 'INSERT',
+      ic = 'INSERT',
+      ix = 'INSERT',
       R = 'REPLACE',
+      Rc = 'REPLACE',
+      Rx = 'REPLACE',
+      Rv = 'V-REPLACE',
+      Rvc = 'V-REPLACE',
+      Rvx = 'V-REPLACE',
+      c = 'COMMAND',
+      cv = 'EX',
+      ce = 'EX',
       r = 'PROMPT',
       rm = 'MORE',
       ['r?'] = 'CONFIRM',
@@ -60,17 +77,39 @@ lazy.load({
       ['!'] = 'SHELL',
       t = 'TERMINAL',
     }
+
     local mode_colors = {
       n = 'normal',
-      i = 'insert',
+      no = 'replace',
+      nov = 'replace',
+      noV = 'replace',
+      ['no\22'] = 'replace',
+      niI = 'normal',
+      niR = 'normal',
+      niV = 'normal',
+      nt = 'normal',
+      ntT = 'normal',
       v = 'visual',
+      vs = 'visual',
       V = 'visual',
+      Vs = 'visual',
       ['\22'] = 'visual',
-      c = 'command',
+      ['\22s'] = 'visual',
       s = 'visual',
       S = 'visual',
       ['\19'] = 'visual',
+      i = 'insert',
+      ic = 'insert',
+      ix = 'insert',
       R = 'replace',
+      Rc = 'replace',
+      Rx = 'replace',
+      Rv = 'replace',
+      Rvc = 'replace',
+      Rvx = 'replace',
+      c = 'command',
+      cv = 'command',
+      ce = 'command',
       r = 'replace',
       rm = 'replace',
       ['r?'] = 'replace',
@@ -134,7 +173,6 @@ lazy.load({
 
       {
         provider = function(self)
-          -- return self.branch == '' and '' or ('  ' .. self.branch .. ' ')
           return self.branch == '' and '' or (' 󰘬 ' .. self.branch .. ' ')
         end,
         hl = { fg = 'fg', bold = false },
@@ -192,14 +230,12 @@ lazy.load({
     local cached_time = os.date('  %I:%M %p ')
     local function setup_time_updater()
       cached_time = os.date('  %I:%M %p ')
-      -- 计算距离下一分钟的第 0 秒还有多少毫秒
       local current_seconds = tonumber(os.date('%S'))
       local ms_until_next_minute = (60 - current_seconds) * 1000
 
-      -- 精准等待到下一分钟的开头
       vim.defer_fn(function()
-        vim.cmd('redrawstatus') -- 通知状态栏刷新
-        setup_time_updater() -- 循环下一个一分钟
+        vim.cmd('redrawstatus')
+        setup_time_updater()
       end, ms_until_next_minute)
     end
     setup_time_updater()
