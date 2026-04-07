@@ -31,10 +31,14 @@ lazy.load({
 
         local lang = vim.treesitter.language.get_lang(args.match)
         if lang then
-          local ok = pcall(vim.treesitter.start, args.buf, lang)
-          if ok then
-            vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-          end
+          vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(args.buf) then
+              local ok = pcall(vim.treesitter.start, args.buf, lang)
+              if ok then
+                vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+              end
+            end
+          end)
         end
       end,
     })
