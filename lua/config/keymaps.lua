@@ -145,6 +145,8 @@ end, { desc = 'Find via Yazi (File Manager)' })
 -- Package
 vim.keymap.set('n', '<leader>pu', function() vim.pack.update() end, { desc = 'Update plugins' })
 
+-- interesting feature...
+require('config.color_picker')
 
 -- [Others]
 -- -- location list
