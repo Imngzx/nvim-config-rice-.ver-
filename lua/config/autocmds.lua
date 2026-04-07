@@ -18,6 +18,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- no commenting on next line when o or O in normal mode
 vim.api.nvim_create_autocmd('BufEnter', {
   group = vim.api.nvim_create_augroup('DisableAutoComment', { clear = true }),
   callback = function()
@@ -33,11 +34,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight yanked text',
 })
 
+-- uses csvview plugin as soon as opening a csv file
 vim.api.nvim_create_autocmd('BufReadPost', {
   group = vim.api.nvim_create_augroup('CsvViewAutoEnable', { clear = true }),
   pattern = '*.csv',
   callback = function()
-    -- 👇 将 Toggle 改为 Enable
     vim.cmd([[CsvViewEnable delimiter=, display_mode=border header_lnum=1]])
   end,
 })
