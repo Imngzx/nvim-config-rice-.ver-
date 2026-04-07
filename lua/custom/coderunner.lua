@@ -123,7 +123,7 @@ local function execute_cmd(cmd)
     height = 0.8,
     border = 'rounded',
     backdrop = 60,
-    title = '  Code Runner ',
+    title = ' / Code Runner ',
     title_pos = 'center',
     zindex = 45,
   }
