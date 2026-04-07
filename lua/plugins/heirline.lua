@@ -190,7 +190,7 @@ lazy.load({
         self.mode_color = mode_colors[self.mode] or 'normal'
       end,
       { provider = '', hl = { fg = 'section_bg', bg = 'bg' } },
-      { provider = '  %l:%c ', hl = { fg = 'fg', bg = 'section_bg' } },
+      { provider = '  %l:%c ', hl = { fg = 'normal', bg = 'section_bg' } },
       { provider = '', hl = function(self) return { fg = self.mode_color, bg = 'section_bg' } end },
       {
         provider = function() return os.date('  %I:%M %p ') end,
