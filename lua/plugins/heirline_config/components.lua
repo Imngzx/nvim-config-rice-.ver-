@@ -93,7 +93,7 @@ local ActiveLSP = {
     end
     return '   ' .. table.concat(names, ' | ') .. ' '
   end,
-  hl = { fg = 'fg', bold = true, bg = 'bg' },
+  hl = { fg = 'lsp_name', bold = true, bg = 'bg' },
 }
 
 -- 5. Python Venv
@@ -105,7 +105,7 @@ local Venv = {
     local venv = require('venv-selector').venv()
     return venv and ('  ' .. (string.match(venv, '([^/]+)$') or venv)) or ''
   end,
-  hl = { fg = 'insert', bg = 'bg' },
+  hl = { fg = 'venv_name', bg = 'bg' },
 }
 
 -- 6. Location And Time

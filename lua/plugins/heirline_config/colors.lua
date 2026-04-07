@@ -1,4 +1,5 @@
 local utils = require('heirline.utils')
+local color_list = require('custom.color-list')
 local M = {}
 
 function M.setup_colors()
@@ -22,6 +23,9 @@ function M.setup_colors()
     git_add = utils.get_highlight('MiniDiffSignAdd').fg or '#a6e3a1',
     git_change = utils.get_highlight('MiniDiffSignChange').fg or '#f9e2af',
     git_del = utils.get_highlight('MiniDiffSignDelete').fg or '#f38ba8',
+
+    lsp_name = color_list.colors.silicon_valley.hex,
+    venv_name = color_list.colors.cyber_mustard.hex
   }
 end
 
