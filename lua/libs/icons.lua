@@ -20,14 +20,14 @@ M.basic = {
 M.git = {
   commit = '󰜘',
   branch = '󰘬',
-  staged = 'S',
-  added = '',
+  staged = '',
+  added = '',
   deleted = '',
   ignored = '',
   modified = '',
-  renamed = 'R',
+  renamed = '',
   unmerged = '',
-  untracked = 'U',
+  untracked = '?',
 }
 
 return M

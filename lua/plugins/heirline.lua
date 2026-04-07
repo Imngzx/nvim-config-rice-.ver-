@@ -131,24 +131,25 @@ lazy.load({
 
       {
         provider = function(self)
-          return self.branch == '' and '' or ('  ' .. self.branch .. ' ')
+          -- return self.branch == '' and '' or ('  ' .. self.branch .. ' ')
+          return self.branch == '' and '' or (' 󰘬 ' .. self.branch .. ' ')
         end,
         hl = { fg = 'fg', bold = false },
       },
 
       {
         condition = function(self) return (self.summary.add or 0) > 0 end,
-        provider = function(self) return ' ' .. self.summary.add .. ' ' end,
+        provider = function(self) return '  ' .. self.summary.add .. ' ' end,
         hl = { fg = 'git_add' },
       },
       {
         condition = function(self) return (self.summary.change or 0) > 0 end,
-        provider = function(self) return ' ' .. self.summary.change .. ' ' end,
+        provider = function(self) return '  ' .. self.summary.change .. ' ' end,
         hl = { fg = 'git_change' },
       },
       {
         condition = function(self) return (self.summary.delete or 0) > 0 end,
-        provider = function(self) return ' ' .. self.summary.delete .. ' ' end,
+        provider = function(self) return '  ' .. self.summary.delete .. ' ' end,
         hl = { fg = 'git_del' },
       },
       { provider = ' ' },

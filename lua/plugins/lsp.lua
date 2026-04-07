@@ -1,4 +1,5 @@
 local lazy = require('libs.lazy')
+local icons = require('libs.icons')
 local H = {}
 
 -- calls the second init in this config
@@ -174,10 +175,10 @@ lazy.load({
       },
       signs = {
         text = {
-          [vim.diagnostic.severity.ERROR] = ' ',
-          [vim.diagnostic.severity.WARN] = ' ',
-          [vim.diagnostic.severity.HINT] = ' ',
-          [vim.diagnostic.severity.INFO] = ' ',
+          [vim.diagnostic.severity.ERROR] = icons.lsp.error,
+          [vim.diagnostic.severity.WARN] = icons.lsp.warn,
+          [vim.diagnostic.severity.HINT] = icons.lsp.hint,
+          [vim.diagnostic.severity.INFO] = icons.lsp.info,
         },
       },
     })
