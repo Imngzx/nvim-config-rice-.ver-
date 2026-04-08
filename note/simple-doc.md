@@ -138,6 +138,7 @@
 |-----|------|--------|
 | `<leader>e` | n | Toggle File Explorer (Left sidebar) |
 | `<leader>H` | n | Open Dashboard (Home) |
+| `<leader>up` | n | Open color picker |
 
 *Explorer Hotkeys: `Enter` (Open), `a` (New file/dir), `r` (Rename), `d` (Delete), `y/x/p` (Copy/Cut/Paste).*
 
@@ -347,4 +348,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-04-06.*
+*Last updated based on commit pushed 2026-04-08.*
