@@ -14,7 +14,6 @@ lazy.load({
       callback = function() utils.on_colorscheme(colors.setup_colors) end,
     })
 
-    -- require('libs.git').setup()
     require('libs.git').setup({
       get_git_root = function(filepath)
         local ok, snacks = pcall(require, 'snacks')
