@@ -58,7 +58,7 @@ end
 function M.setup(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
   if not M.config.stage_action then
-    M.config.stage_action = require('snacks.picker').git_stage
+    M.config.stage_action = require('snacks.picker').actions.git_stage
   end
   if not M.config.get_git_root then
     M.config.get_git_root = require('snacks.git').get_root
