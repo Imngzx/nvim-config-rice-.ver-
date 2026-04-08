@@ -14,7 +14,7 @@ lazy.load({
       callback = function() utils.on_colorscheme(colors.setup_colors) end,
     })
 
-    require('plugins.heirline_config.git').setup()
+    require('libs.git').setup()
 
     local StatusLine = require('plugins.heirline_config.components')
     heirline.setup({ statusline = StatusLine })
