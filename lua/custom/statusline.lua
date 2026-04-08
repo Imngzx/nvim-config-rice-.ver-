@@ -54,7 +54,7 @@ end
 M.setup = function(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
 
-  require('libs.git').setup()
+  require('libs.git').setup(M.config.git_cache_setup or {})
 
   apply()
 end
