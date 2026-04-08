@@ -18,12 +18,12 @@ This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop enviro
 
 Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 
-![Preview image](https://github.com/user-attachments/assets/a2d65e96-0da7-4591-a646-f328792597ef)
+![Preview image](https://github.com/user-attachments/assets/7ccd5cec-e7a5-4ab7-8f54-f4597257d814)
 
-| ![Preview image](https://github.com/user-attachments/assets/e71a29b2-397a-41a1-95db-fa798e9ec470) | ![Preview image](https://github.com/user-attachments/assets/a86f36ec-b477-40f0-9793-8b5a3c0336f0) |
+| ![Preview image](https://github.com/user-attachments/assets/257edefa-7300-4343-8028-3ec1336d0272) | ![Preview image](https://github.com/user-attachments/assets/74629ff5-00e2-4728-a845-2e967d854359) |
 | --------------------------------------------------------- | --------------------------------------------------------- |
 
-| ![Preview image](https://github.com/user-attachments/assets/812c175f-fb38-4636-b9e3-14350fa0925e) | ![Preview image](https://github.com/user-attachments/assets/a0cda8a1-ca1f-434f-b7ea-7205f1088ec0) |
+| ![Preview image](https://github.com/user-attachments/assets/65f9696a-a535-454b-8623-3a93ab6e4c2f) | ![Preview image](https://github.com/user-attachments/assets/e5440088-cf1c-4455-9754-8768be3365c5) |
 | --------------------------------------------------------- | --------------------------------------------------------- |
 
 
