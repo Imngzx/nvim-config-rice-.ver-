@@ -24,7 +24,6 @@ vim.opt.linebreak = true -- wrap at word boundary if wrap
 vim.opt.breakindent = true -- maintain indent on wrap
 -- Others
 vim.opt.winminwidth = 5 -- prevent tiny splits
-vim.opt.foldtext = "v:lua.vim.fn.getline(v:foldstart) .. ' …'" -- Fold text
 vim.opt.undofile = true
 
 -- [Editor]
@@ -63,6 +62,9 @@ vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
 vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+require('config.fold')
+vim.opt.foldtext = 'v:lua.custom_foldtext()'
 
 -- [Functions]
 -- Clipboard
