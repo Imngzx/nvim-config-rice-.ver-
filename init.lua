@@ -48,7 +48,7 @@ require('plugins.AI')
 if not require('libs.utils').is_windows() then
   require('custom.language-switcher').setup()
 end
--- require('plugins.im-select') -- NOTE: comment this if you encounter any erro on windows os
+
 require('config.neovide')
 
 require('custom.sudo')
