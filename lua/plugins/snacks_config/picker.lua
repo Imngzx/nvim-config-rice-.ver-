@@ -16,7 +16,7 @@ return {
         width = 0.8,
         height = 0.8,
         border = 'none',
-        backdrop = false,
+        backdrop = 60,
         box = 'horizontal',
         {
           box = 'vertical',
