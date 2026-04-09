@@ -33,6 +33,9 @@ local custom_servers = {
   -- [zig]
   zls = require('lsp.servers.zig'), --NOTE: mason = false
 
+  -- [rust]
+  rust_analyzer = require('lsp.servers.rust'), --NOTE: mason = false
+
   -- [qml]
   qmlls6 = require('lsp.servers.qml'), --NOTE: mason = false
 
