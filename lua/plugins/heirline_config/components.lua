@@ -103,15 +103,22 @@ local Venv = {
   provider = function()
     if not package.loaded['venv-selector'] then return '' end
     local venv = require('venv-selector').venv()
-    return venv and ('  ' .. (string.match(venv, '([^/]+)$') or venv)) or ''
+    if not venv then return '' end
+    local venv_name = vim.fn.fnamemodify(venv, ':t')
+    return '  ' .. venv_name
   end,
   hl = { fg = 'venv_name', bg = 'bg' },
 }
 
 -- 6. Location And Time
-local cached_time = os.date('  %I:%M %p ')
+local function get_time_str()
+  return '  ' .. os.date('%I:%M %p') .. ' '
+end
+
+local cached_time = get_time_str()
+
 local function setup_time_updater()
-  cached_time = os.date('  %I:%M %p ')
+  cached_time = get_time_str()
   local current_seconds = tonumber(os.date('%S'))
   local ms_until_next_minute = (60 - current_seconds) * 1000
 
