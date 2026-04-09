@@ -2,7 +2,7 @@ local function set_fold_hl()
   local ok, color_lib = pcall(require, 'custom.color-list')
   if ok then
     vim.api.nvim_set_hl(0, 'VibeFoldText', {
-      fg = color_lib.colors.electric_cyan.hex,
+      fg = color_lib.colors.toxic_matcha.hex,
       italic = true,
       bold = true
     })
