@@ -31,7 +31,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 
 ### Summarization
 - **Fast.** Less than **50ms** to start 
-- **Simple.** Run out of the box with only 31 life saving plugins.
+- **Simple.** Run out of the box with only 30 life saving plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code.

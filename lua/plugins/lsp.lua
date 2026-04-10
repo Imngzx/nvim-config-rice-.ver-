@@ -141,11 +141,6 @@ lazy.load({
   end
 })
 
-lazy.load({
-  plugin = 'https://github.com/Bilal2453/luvit-meta',
-  ft = 'lua'
-})
-
 -- [Diagnostic] Load after LSP attaches
 -- https://github.com/rachartier/tiny-inline-diagnostic.nvim/issues/112#issuecomment-2784644922
 lazy.load({
