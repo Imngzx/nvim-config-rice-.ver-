@@ -58,7 +58,6 @@ function M.setup(opts)
     group = vim.api.nvim_create_augroup('TransparentThemeSync', { clear = true }),
     callback = function()
       if vim.g.bg_transparent then
-        -- 切换主题后，新主题的原始颜色变了，必须清空旧缓存并重新执行剥离
         ORIGINAL_HL_CACHE = {}
         M.clear()
       end
@@ -75,7 +74,6 @@ local function cache_read()
 end
 
 local function cache_write()
-  -- 🌟 修复点 3：确保缓存文件的父目录一定存在，防止由于环境差异导致写入崩溃
   local dir = fn.fnamemodify(cache_path, ':h')
   if fn.isdirectory(dir) == 0 then fn.mkdir(dir, 'p') end
   fn.writefile({ tostring(vim.g.bg_transparent) }, cache_path)
@@ -118,7 +116,6 @@ end
 function M.clear()
   if not vim.g.bg_transparent then return end
 
-  -- 👇 修复 1：使用 pcall 强力压制底层指针错误
   for _, t in ipairs(M._timers) do
     pcall(function()
       if t and not t:is_closing() then t:close() end
@@ -128,7 +125,6 @@ function M.clear()
 
   do_clear()
 
-  -- 👇 补上缺失的这行，实例化一个 timer！
   local timer = vim.uv.new_timer()
   if timer then
     timer:start(800, 0, vim.schedule_wrap(function()
@@ -155,10 +151,10 @@ function M.disable()
   vim.g.bg_transparent = false
   cache_write()
 
-  -- 🌟 修复点 6：极端防御！关闭透明时，必须拦截并粉碎还在排队的 do_clear 定时器
-  -- 否则会出现“刚关闭透明，过几秒系统又自动把背景变透明了”的闹鬼现象！
   for _, t in ipairs(M._timers) do
-    if t and not t:is_closing() then t:close() end
+    pcall(function()
+      if t and not t:is_closing() then t:close() end
+    end)
   end
   M._timers = {}
 
