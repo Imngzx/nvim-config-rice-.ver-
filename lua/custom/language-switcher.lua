@@ -9,13 +9,14 @@ function M.setup()
   vim.api.nvim_create_autocmd('InsertLeave', {
     group = aug,
     callback = function()
-      -- 1. 同步获取状态（1 为英文，2 为中文）
-      local obj = vim.system({ 'fcitx5-remote' }, { text = true }):wait()
-      if obj.code == 0 and obj.stdout then
-        vim.b.saved_im = vim.trim(obj.stdout)
-      end
-
-      vim.system({ 'fcitx5-remote', '-c' }):wait()
+      vim.system({ 'fcitx5-remote' }, { text = true }, function(obj)
+        if obj.code == 0 and obj.stdout then
+          vim.schedule(function()
+            vim.b.saved_im = vim.trim(obj.stdout)
+          end)
+        end
+      end)
+      vim.system({ 'fcitx5-remote', '-c' })
     end
   })
 
