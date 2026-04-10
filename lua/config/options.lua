@@ -76,3 +76,9 @@ vim.opt.spelllang = { 'en_us', 'ms', 'cjk' }
 vim.opt.spellsuggest = 'best,5' -- show only first best 5
 vim.opt.spelloptions = 'camel' --support CamelCase
 -- vim.opt.spelloptions = 'underscore'
+
+vim.filetype.add({
+  extension = {
+    mdx = 'markdown.mdx',
+  }
+})
