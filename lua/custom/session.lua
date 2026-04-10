@@ -14,7 +14,8 @@ local function get_session_name()
   local branch = ''
   local obj = vim.system({ 'git', '-C', root, 'branch', '--show-current' }):wait()
   if obj.code == 0 and obj.stdout and obj.stdout ~= '' then
-    branch = '@@' .. vim.trim(obj.stdout)
+    -- branch = '@@' .. vim.trim(obj.stdout)
+    branch = '@@' .. vim.trim(obj.stdout):gsub('[/:]', '%%')
   end
 
   -- 3. 组合文件名：路径名替换掉特殊字符 + Git 分支名
