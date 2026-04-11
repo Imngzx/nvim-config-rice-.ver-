@@ -2,7 +2,6 @@ local lazy = require('libs.lazy')
 
 lazy.load({
   plugin = 'https://github.com/folke/flash.nvim',
-  event = { 'BufReadPost', 'BufNewFile' },
   keys = {
     { { 'n', 'x', 'o' }, '<CR>', function() require('flash').jump() end, { desc = 'Flash' } },
     { { 'n', 'x', 'o' }, '<S-CR>', function() require('flash').treesitter() end, { desc = 'Flash treesitter' } },
