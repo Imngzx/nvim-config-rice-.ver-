@@ -36,7 +36,6 @@ vim.g.markdown_fenced_languages = {
 -- [Dependencies] Mason auto install once you open the Mason panel
 lazy.load({
   plugin = 'https://github.com/mason-org/mason.nvim',
-  event = { 'BufReadPost', 'BufNewFile' },
   cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonLog', 'MasonUpdate' },
   keys = {
     { 'n', '<leader>pm', function()
@@ -64,7 +63,7 @@ lazy.load({
 
 lazy.load({
   plugin = 'https://github.com/neovim/nvim-lspconfig',
-  event = { 'User', pattern = 'VeryLazy' },
+  event = { 'BufReadPre', 'BufNewFile' },
   setup = function()
     -- using the lsp or tools that listed inside the init that located inside "lsp" directory
     vim.lsp.enable(lsp_manager.enabled_servers)
@@ -206,8 +205,7 @@ lazy.load({
     { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') },
     'https://github.com/rafamadriz/friendly-snippets'
   },
-  -- event = { 'InsertEnter', 'CmdlineEnter' },
-  event = { 'User', pattern = 'VeryLazy' },
+  event = { 'InsertEnter', 'CmdlineEnter' },
   setup = function()
     require('blink.cmp').setup({
       keymap = { preset = 'enter' },

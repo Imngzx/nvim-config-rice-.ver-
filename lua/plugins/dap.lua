@@ -8,7 +8,6 @@ lazy.load({
     'https://github.com/theHamsta/nvim-dap-virtual-text',
     'https://github.com/mfussenegger/nvim-dap-python',
   },
-  event = { 'User', pattern = 'VeryLazy' },
   keys = {
     -- 📺 DAP View (UI)
     { 'n', '<leader>du', function() require('dap-view').toggle() end, { desc = 'Toggle Dap View' } },
