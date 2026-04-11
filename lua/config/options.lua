@@ -82,3 +82,20 @@ vim.filetype.add({
     mdx = 'markdown.mdx',
   }
 })
+
+-- [Mason Path Injection]
+
+-- The reason I did this is because...
+-- lspconfig can activate lsp without mason loaded
+-- can save up ~200 ms when open a file via nvim directly from terminal prompt
+local mason_bin = vim.fs.joinpath(vim.fn.stdpath('data'), 'mason', 'bin')
+local is_windows = require('libs.utils').is_windows()
+
+if is_windows then
+  mason_bin = mason_bin:gsub('/', '\\')
+end
+
+if not vim.env.PATH:find(mason_bin, 1, true) then
+  local sep = is_windows and ';' or ':'
+  vim.env.PATH = mason_bin .. sep .. vim.env.PATH
+end
