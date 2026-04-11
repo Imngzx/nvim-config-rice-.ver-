@@ -1,7 +1,7 @@
 {
   "plugins": {
     "atone.nvim": {
-      "rev": "44d2a447e1e6db0959d4be18f5a072788a799880",
+      "rev": "90a8456ea212b1d8afcbc331d52df6e65c765783",
       "src": "https://github.com/XXiaoA/atone.nvim"
     },
     "blink.cmp": {
@@ -10,7 +10,7 @@
       "version": "1.0.0 - 2.0.0"
     },
     "codecompanion.nvim": {
-      "rev": "522680a13d6359f16459de3882bd023d07348fe8",
+      "rev": "9f0779b90b09a96e09c24d93da314feb67b8269b",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -86,7 +86,7 @@
       "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-lspconfig": {
-      "rev": "c588db330592fa477a70d2fee6ba20a57194bdc3",
+      "rev": "cb5bc0b2b35a6d513e3298d285db81453e791f4f",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
@@ -99,7 +99,7 @@
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-context"
     },
     "plenary.nvim": {
-      "rev": "b9fd5226c2f76c951fc8ed5923d85e4de065e509",
+      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "render-markdown.nvim": {
