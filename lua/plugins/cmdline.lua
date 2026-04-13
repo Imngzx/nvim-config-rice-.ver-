@@ -2,9 +2,6 @@ local lazy = require('libs.lazy')
 
 local row = 0.25
 
--- check if it is launch under neovide
-local check_neovide = not vim.g.neovide
-
 lazy.load({
   plugin = 'https://github.com/aurora0x27/popup.nvim',
 
@@ -12,7 +9,7 @@ lazy.load({
 
   setup = function()
     require('popup').setup({
-      enable_ui2 = check_neovide,
+      enable_ui2 = true,
       views = {
         cmdline = {
           width = 0.45,

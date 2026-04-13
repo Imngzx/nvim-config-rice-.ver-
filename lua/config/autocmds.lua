@@ -2,6 +2,15 @@ local function augroup(name)
   return vim.api.nvim_create_augroup('lazyvim_' .. name, { clear = true })
 end
 
+-- temporary ui2 fix on neovide
+-- https://github.com/neovide/neovide/issues/3446#issuecomment-4233206735
+vim.api.nvim_create_autocmd('UIEnter', {
+  once = true,
+  callback = function()
+    require('custom.ui2').setup()
+  end
+})
+
 -- [Autocmd] 仅对文书类文件开启拼写检查
 vim.api.nvim_create_autocmd('FileType', {
   group = vim.api.nvim_create_augroup('TextSpellCheck', { clear = true }),
