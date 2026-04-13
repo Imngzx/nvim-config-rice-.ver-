@@ -103,7 +103,7 @@
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "popup.nvim": {
-      "rev": "80ad3e9c014b5b9878607e258037c189888f0d6b",
+      "rev": "f7406a6234bf15e7ddfc1d3157d7cf57c99b2394",
       "src": "https://github.com/aurora0x27/popup.nvim"
     },
     "render-markdown.nvim": {
