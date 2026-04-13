@@ -112,7 +112,9 @@ local Venv = {
 
 -- 6. Location And Time
 local function get_time_str()
-  return '  ' .. os.date('%I:%M %p') .. ' '
+  local hour = tonumber(os.date('%H'))
+  local ampm = hour < 12 and 'AM' or 'PM'
+  return '  ' .. os.date('%I:%M ') .. ampm .. ' '
 end
 
 local cached_time = get_time_str()
