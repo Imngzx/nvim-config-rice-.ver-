@@ -14,7 +14,7 @@
 
 ## About
 
-This repo hosts my [NeoVim](https://neovim.io/) configuration for Desktop environment.
+This repository hosts my [NeoVim](https://neovim.io/) configuration for Desktop environment.
 
 Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 
@@ -30,18 +30,17 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 ## Features
 
 ### Summarization
-- **Fast.** Less than **50ms** to start 
-- **Simple.** Run out of the box with only 30 life saving plugins.
+- **Fast.** Less than **50ms** to start, say no to heavy plugins for ui only 
+- **Simple.** Run out of the box with only 31 life saving plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code.
-- **Beautiful.** Uses catppuccin theme
+- **Beautiful.** Uses catppuccin theme & good ui
 - **Minimalist.** Plugins(DIY) with snacks integration
 
 ### Extras 
 
 - List of features that became **Pluginless** 
-    - [ ]  [flash.nvim](https://github.com/folke/flash.nvim) (Key: `f`)
     - [x] [incline.nvim](https://github.com/b0o/incline.nvim)
     - [x] [vim-suda](https://github.com/lambdalisue/vim-suda)
     - [x] [bufferline.nvim](github.com/akinsho/bufferline.nvim)
