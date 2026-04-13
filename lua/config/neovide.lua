@@ -22,6 +22,6 @@ if vim.g.neovide then
   vim.g.snacks_scroll = false
 else
   -- Running in terminal → enable snacks scroll & ui2
-
+  require('custom.ui2').setup()
   vim.g.snacks_scroll = true
 end

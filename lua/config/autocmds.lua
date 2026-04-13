@@ -3,12 +3,12 @@ local function augroup(name)
 end
 
 -- temporary ui2 fix on neovide
-vim.api.nvim_create_autocmd('UIEnter', {
-  once = true,
-  callback = function()
-    require('custom.ui2').setup()
-  end
-})
+-- vim.api.nvim_create_autocmd('UIEnter', {
+--   once = true,
+--   callback = function()
+--     require('custom.ui2').setup()
+--   end
+-- })
 
 -- [Autocmd] 仅对文书类文件开启拼写检查
 vim.api.nvim_create_autocmd('FileType', {
