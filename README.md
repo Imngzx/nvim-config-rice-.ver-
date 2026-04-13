@@ -5,12 +5,11 @@
 
 > [!NOTE]
 > nvim 0.12 & 0.13 have font issues with neovide, please use neovide-git instead.
-> I made some small workaround to fix issue between neovide and ui2 in autocmds
->[issue](https://github.com/neovide/neovide/issues/3446) 
+>[issues between neovide and ui2](/note/ui2-issue.md) 
 
 > [!WARNING]
-> Please read the [disclaimer](/note/manifesto-%26-disclaimer.md) before copy or use this config  
-> This config is only for nvim version that starts from 0.12 to nightly
+> Please read the [disclaimer](/note/manifesto-%26-disclaimer.md) before copy or use this configuration
+> This configuration is only for nvim version that starts from 0.12 to nightly
 
 ## About
 

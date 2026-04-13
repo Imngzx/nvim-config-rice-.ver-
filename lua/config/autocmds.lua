@@ -3,7 +3,6 @@ local function augroup(name)
 end
 
 -- temporary ui2 fix on neovide
--- https://github.com/neovide/neovide/issues/3446#issuecomment-4233206735
 vim.api.nvim_create_autocmd('UIEnter', {
   once = true,
   callback = function()
