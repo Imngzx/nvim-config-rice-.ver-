@@ -13,6 +13,7 @@ require('plugins.catppuccin')
 
 -- load core ui elements at the same time
 local Snacks = require('plugins.snacks')
+require('plugins.cmdline')
 require('plugins.ui')
 require('plugins.markdown')
 require('plugins.csvview')

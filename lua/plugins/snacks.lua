@@ -22,7 +22,7 @@ Snacks.setup({
   explorer = { enabled = true },
   image = { enabled = true },
   indent = { enabled = true },
-  input = { enabled = true },
+  input = { enabled = false },
   profiler = { enabled = true },
   quickfile = { enabled = true },
   scope = { enabled = true },
