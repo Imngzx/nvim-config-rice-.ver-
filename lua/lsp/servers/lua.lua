@@ -1,6 +1,10 @@
+---@module 'lspconfig'
+
 return {
   lua_ls = {
     mason_name = 'lua-language-server',
+
+    ---@type lspconfig.settings.lua_ls
     settings = {
       Lua = {
         workspace = { checkThirdParty = false },

@@ -1,7 +1,10 @@
+---@module 'lspconfig'
+
 return {
   mason = false,
   cmd = { 'rust-analyzer' },
 
+  ---@type lspconfig.settings.rust_analyzer
   settings = {
     ['rust-analyzer'] = {
       cargo = {

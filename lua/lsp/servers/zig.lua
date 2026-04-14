@@ -1,8 +1,11 @@
+---@module 'lspconfig'
+
 return {
   mason = false,
 
   cmd = { 'zls' },
 
+  ---@type lspconfig.settings.zls
   settings = {
     zls = {
       -- clean useless imports

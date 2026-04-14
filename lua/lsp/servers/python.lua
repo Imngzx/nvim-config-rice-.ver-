@@ -1,3 +1,5 @@
+---@module 'lspconfig'
+
 return {
   ruff = {
     capabilities = {
@@ -14,6 +16,8 @@ return {
   },
 
   basedpyright = {
+
+    ---@type lspconfig.settings.basedpyright
     settings = {
       basedpyright = {
         analysis = {

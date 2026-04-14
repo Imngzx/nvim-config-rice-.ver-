@@ -1,3 +1,5 @@
+---@module 'lspconfig'
+
 return {
   mason = false,
   cmd = { 'qmlls6' },
