@@ -9,51 +9,36 @@ return {
       { icon = ' ', key = 'c', desc = 'Config', action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
       -- { icon = ' ', key = 's', desc = 'Restore Session', action = ':RestoreSession' },
       { icon = ' ', key = 's', desc = 'Restore Session', action = ":lua require('custom.session').load(false)" },
+      { icon = '󰒲 ', key = 'l', desc = 'DIY Lazy', action = ":lua require('custom.lazy-ui').open()" },
       { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
     },
   },
   sections = {
     { section = 'header' },
     { section = 'keys', gap = 1, padding = 1 },
-
     (function()
       local cached_result = nil
 
       return function()
-        if cached_result then return cached_result end
-
-        local plugin_dir = vim.fn.stdpath('data') .. '/site/pack/core/opt'
-        local total_count = 0
-        local loaded_count = 0
-
-        if vim.fn.isdirectory(plugin_dir) == 1 then
-          local plugins = vim.fn.readdir(plugin_dir)
-          total_count = #plugins
-
-          local rtps = vim.api.nvim_list_runtime_paths()
-          for _, p in ipairs(plugins) do
-            local p_path = vim.fs.normalize(plugin_dir .. '/' .. p)
-            for _, rtp in ipairs(rtps) do
-              if vim.fs.normalize(rtp) == p_path then
-                loaded_count = loaded_count + 1
-                break
-              end
-            end
-          end
+        if cached_result and _G.end_time then
+          return cached_result
         end
+
+        local info = require('libs.plugin_info').get_info()
 
         local ms = 0
         if _G.start_time then
-          ms = math.floor((vim.uv.hrtime() - _G.start_time) / 1e6 * 100 + 0.5) / 100
+          local calc_end = _G.end_time or vim.uv.hrtime()
+          ms = (calc_end - _G.start_time) / 1e6
         end
 
         cached_result = {
           align = 'center',
           text = {
             { '󱐋 ', hl = 'Special' },
-            { tostring(loaded_count) .. ' / ' .. tostring(total_count), hl = 'Special' },
+            { string.format('%d / %d', info.loaded, info.total), hl = 'Special' },
             { ' plugins loaded in ', hl = 'Comment' },
-            { tostring(ms) .. ' ms', hl = 'Special' },
+            { string.format('%.2f ms', ms), hl = 'Special' },
           },
           padding = 1,
         }

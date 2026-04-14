@@ -1,13 +1,22 @@
 local utils = require('libs.utils')
 
 _G.start_time = vim.uv.hrtime()
+_G.end_time = nil
+
+vim.api.nvim_create_autocmd('UIEnter', {
+  once = true,
+  callback = function()
+    _G.end_time = vim.uv.hrtime()
+    vim.cmd('redrawstatus')
+  end
+})
 
 --[Startup Profiler]
 if vim.env.PROF then
   vim.cmd('packadd snacks.nvim')
   require('snacks.profiler').startup({
     startup = {
-      event = 'VimEnter', -- 当 Neovim 彻底启动完成时停止录制
+      event = 'VimEnter',
     },
   })
 end

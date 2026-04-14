@@ -83,6 +83,10 @@ lazy.load({
   end
 })
 
+vim.keymap.set('n', '<leader>pL', function()
+  require('custom.lazy-ui').open()
+end, { desc = '[Panel] DIY Lazy UI' })
+
 -- [Clipboard]
 -- vim.pack.add({ "https://github.com/gbprod/yanky.nvim" })
 -- -- Custom paste function
