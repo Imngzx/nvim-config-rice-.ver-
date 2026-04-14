@@ -11,7 +11,8 @@ lazy.load({
 
 lazy.load({
   plugin = 'https://github.com/bekaboo/dropbar.nvim',
-  event = { 'User', pattern = 'VeryLazy' },
+  -- event = { 'User', pattern = 'VeryLazy' },
+  event = { 'BufReadPre', 'BufNewFile' },
   setup = function()
     local dropbar_api = require('dropbar.api')
 

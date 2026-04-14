@@ -144,7 +144,7 @@ lazy.load({
 -- https://github.com/rachartier/tiny-inline-diagnostic.nvim/issues/112#issuecomment-2784644922
 lazy.load({
   plugin = 'https://github.com/rachartier/tiny-inline-diagnostic.nvim',
-  event = { 'User', pattern = 'VeryLazy' },
+  event = { 'BufReadPre', 'BufNewFile' },
   setup = function()
     require('tiny-inline-diagnostic').setup({
       preset = 'modern',
