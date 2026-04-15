@@ -10,7 +10,7 @@
       "version": "1.0.0 - 2.0.0"
     },
     "codecompanion.nvim": {
-      "rev": "680c445eb357c72129d175ea5d481aa9e92ae6a5",
+      "rev": "cea5b18c3446ff8d9d44547238bf35b2e5cd2565",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -58,7 +58,7 @@
       "src": "https://github.com/nvim-mini/mini.hipatterns"
     },
     "mini.icons": {
-      "rev": "7fdae2443a0e2910015ca39ad74b50524ee682d3",
+      "rev": "bac6317300e205335df425296570d84322730067",
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "neominimap.nvim": {
@@ -86,7 +86,7 @@
       "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-lspconfig": {
-      "rev": "8a9378a822719346a0288fa004dab302ca3c0a8f",
+      "rev": "d10ce09e42bb0ca8600fd610c3bb58676e61208d",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
@@ -103,7 +103,7 @@
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "popup.nvim": {
-      "rev": "f7406a6234bf15e7ddfc1d3157d7cf57c99b2394",
+      "rev": "db9b31bf6ec0aea21b49ac9b4e33395371f65cf4",
       "src": "https://github.com/aurora0x27/popup.nvim"
     },
     "render-markdown.nvim": {
