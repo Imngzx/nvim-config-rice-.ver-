@@ -1,4 +1,5 @@
 local utils = require('libs.utils')
+require('custom.ui2').setup()
 
 _G.start_time = vim.uv.hrtime()
 _G.end_time = nil
