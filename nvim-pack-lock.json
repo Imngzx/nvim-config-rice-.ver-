@@ -10,7 +10,7 @@
       "version": "1.0.0 - 2.0.0"
     },
     "codecompanion.nvim": {
-      "rev": "cea5b18c3446ff8d9d44547238bf35b2e5cd2565",
+      "rev": "ea5d14df2a0ad3eaa7abbd499d869e6a965cd478",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -86,7 +86,7 @@
       "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-lspconfig": {
-      "rev": "d10ce09e42bb0ca8600fd610c3bb58676e61208d",
+      "rev": "4b7fbaa239c5db6b36f424a4521ca9f1a401be33",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
@@ -103,7 +103,7 @@
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "popup.nvim": {
-      "rev": "db9b31bf6ec0aea21b49ac9b4e33395371f65cf4",
+      "rev": "6eba88671215a9d212871535dba0d7040837c1ef",
       "src": "https://github.com/aurora0x27/popup.nvim"
     },
     "render-markdown.nvim": {
