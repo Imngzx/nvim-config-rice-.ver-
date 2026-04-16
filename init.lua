@@ -9,6 +9,7 @@ require('config.autocmds')
 -- [Theme]
 -- load theme first to avoid flickering
 require('plugins.catppuccin')
+-- require('plugins.tokyonight')
 -- require('custom.theme')
 
 -- load core ui elements at the same time
