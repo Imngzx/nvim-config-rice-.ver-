@@ -1,6 +1,10 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- [go to normal mode]
+vim.keymap.set('i', 'jk', '<esc>', {})
+vim.opt.timeoutlen = 300
+
 -- [Basic]
 -- Quit
 vim.keymap.set('n', '<leader>qq', '<cmd>qa<cr>', { desc = 'Quit all' })
