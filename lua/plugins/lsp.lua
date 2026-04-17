@@ -79,7 +79,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
     -- LSP keymaps
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buf = ev.buf, desc = 'LSP hover' })
-    vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, { buf = ev.buf, desc = 'LSP hover' })
+    -- vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, { buf = ev.buf, desc = 'LSP hover' })
     -- Moved to Snacks
     -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = ev.buf, desc='Goto definition'})
     -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = ev.buf, desc='Goto declaration'})
