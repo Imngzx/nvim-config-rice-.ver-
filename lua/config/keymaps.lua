@@ -165,3 +165,21 @@ require('config.color_picker')
 -- end, { desc = "Quickfix List" })
 
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+
+-- [Jisho 查词] 快捷键绑定
+-- 1. Normal 模式：直接查光标下悬浮的日语单词
+vim.keymap.set('n', '<leader>tj', function()
+  require('custom.jisho').search()
+end, { desc = 'Jisho (Word under cursor)' })
+
+-- 2. Visual 模式：查被选中的句子或词
+vim.keymap.set('v', '<leader>tj', function()
+  vim.cmd('noau normal! "vy')
+  local text = vim.fn.getreg('v')
+  require('custom.jisho').search(text)
+end, { desc = 'Jisho (Selection)' })
+
+-- 3. 命令行模式：你可以随时敲 :Jisho taberu 来查罗马音/单词
+vim.api.nvim_create_user_command('Jisho', function(opts)
+  require('custom.jisho').search(opts.args)
+end, { nargs = '?' })
