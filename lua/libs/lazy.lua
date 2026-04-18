@@ -1,7 +1,54 @@
 -- Lightweight lazy loading implementation
 local M = {}
 
---- Create an autocmd that fires once and calls `loader`
+M.build_hooks = {}
+
+-- =====================================================================
+-- 🛠️ 1: 底层 PackChanged 监听器 (保留精华：完美解决自动 Build)
+-- =====================================================================
+vim.api.nvim_create_autocmd('PackChanged', {
+  group = vim.api.nvim_create_augroup('DIY_Lazy_Builder', { clear = true }),
+  callback = function(args)
+    local data = args.data
+    if not data or data.kind ~= 'install' then return end
+
+    local name = data.spec.name
+    local build_task = M.build_hooks[name]
+    if not build_task then return end
+
+    local dir = data.spec.dir
+    vim.notify('[Lazy] Building ' .. name .. '...', vim.log.levels.INFO)
+
+    if type(build_task) == 'string' then
+      local shell = require('libs.utils').is_windows() and 'cmd' or 'sh'
+      local flag = require('libs.utils').is_windows() and '/c' or '-c'
+
+      vim.system({ shell, flag, build_task }, { cwd = dir, text = true }, function(out)
+        vim.schedule(function()
+          if out.code == 0 then
+            vim.notify('[Lazy] Build success: ' .. name, vim.log.levels.INFO)
+          else
+            vim.notify('[Lazy] Build failed: ' .. name .. '\n' .. (out.stderr or ''),
+              vim.log.levels.ERROR)
+          end
+        end)
+      end)
+    elseif type(build_task) == 'function' then
+      vim.schedule(function()
+        local ok, err = pcall(build_task, dir)
+        if ok then
+          vim.notify('[Lazy] Build function executed: ' .. name, vim.log.levels.INFO)
+        else
+          vim.notify('[Lazy] Build failed: ' .. name .. '\n' .. tostring(err), vim.log.levels.ERROR)
+        end
+      end)
+    end
+  end,
+})
+
+-- =====================================================================
+-- 核心加载器触发器 (去除了引起 Bug 的 args.buf 参数传递)
+-- =====================================================================
 local function add_event_autocmd(events, loader)
   local event_name = events[1]
   local pattern = events[2] or events.pattern
@@ -10,7 +57,6 @@ local function add_event_autocmd(events, loader)
     once = true,
     callback = function() loader() end,
   }
-  -- Add pattern for User events
   if event_name == 'User' and pattern then
     opts.pattern = pattern
     vim.api.nvim_create_autocmd(event_name, opts)
@@ -19,7 +65,6 @@ local function add_event_autocmd(events, loader)
   end
 end
 
---- Register a user command that loads the plugin on first use
 local function add_cmd_triggers(cmds, loader)
   for _, cmd in ipairs(cmds) do
     vim.api.nvim_create_user_command(
@@ -28,25 +73,22 @@ local function add_cmd_triggers(cmds, loader)
         vim.api.nvim_del_user_command(cmd)
         loader()
 
-        -- Re‑execute the original command with its arguments and ranges
-        local cmd_string = cmd
-        -- 修复：保留 Visual 模式选中范围 (如 '<,'>)
-        if args.range > 0 then
-          cmd_string = args.line1 .. ',' .. args.line2 .. cmd_string
+        local cmd_opts = { cmd = cmd, args = args.fargs, bang = args.bang }
+        if args.range == 1 then
+          cmd_opts.range = { args.line1 }
+        elseif args.range == 2 then
+          cmd_opts.range = { args.line1, args.line2 }
+        elseif args.count and args.count >= 0 then
+          cmd_opts.count = args.count
         end
-        if args.args and args.args ~= '' then
-          cmd_string = cmd_string .. ' ' .. args.args
-        end
-        if args.bang then cmd_string = cmd_string .. '!' end
 
-        vim.cmd(cmd_string)
+        vim.cmd(cmd_opts)
       end,
       { nargs = '*', bang = true, range = true, complete = 'file' }
     )
   end
 end
 
---- Register a key‑map that loads the plugin on first press
 local function add_key_triggers(keys, loader, restore_keys)
   for _, key_cfg in ipairs(keys) do
     local mode = key_cfg[1] or key_cfg.mode or 'n'
@@ -78,7 +120,6 @@ local function add_key_triggers(keys, loader, restore_keys)
   end
 end
 
---- Autocmd for filetype triggers
 local function add_ft_autocmd(fts, loader)
   vim.api.nvim_create_autocmd('FileType', {
     pattern = fts,
@@ -90,19 +131,34 @@ end
 --- Public API
 function M.load(config)
   local plugins = config.plugin
-  if type(plugins) == 'string' then
-    plugins = { plugins }
-  elseif plugins == nil then
-    plugins = {}
+  if type(plugins) == 'string' then plugins = { plugins } end
+  plugins = plugins or {}
+
+  if config.build then
+    for _, plugin in ipairs(plugins) do
+      ---@diagnostic disable-next-line: undefined-field
+      local target_url = type(plugin) == 'string' and plugin or
+        (plugin.src or plugin.url or plugin[1])
+
+      ---@diagnostic disable-next-line: undefined-field
+      local name = (type(plugin) == 'table' and plugin.name)
+        or (target_url and vim.fn.fnamemodify(target_url, ':t'):gsub('%.git$', ''))
+
+      if name then
+        M.build_hooks[name] = config.build
+      end
+    end
   end
 
   local loaded = false
   local function load_now()
     if loaded then return end
     loaded = true
-    for _, plugin in ipairs(plugins) do
-      vim.pack.add({ plugin })
+
+    if #plugins > 0 then
+      vim.pack.add(plugins)
     end
+
     if config.setup then config.setup() end
   end
 
@@ -123,7 +179,6 @@ function M.load(config)
   end
 end
 
--- Trigger VeryLazy event after UI is ready
 M.trigger_verylazy = function()
   vim.api.nvim_create_autocmd('UIEnter', {
     once = true,
