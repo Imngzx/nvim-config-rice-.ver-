@@ -63,14 +63,18 @@ function M.search(word)
         vim.notify('Query successful', vim.log.levels.INFO,
           { title = 'Jisho.org', id = 'jisho_req', timeout = 10 })
 
-        require('snacks').win({
+        local win = require('snacks').win({
           text = lines,
           width = 0.6,
           height = 0.7,
           border = 'rounded',
           title = ' 辞書 Jisho.org: ' .. word .. ' ',
           title_pos = 'center',
-          bo = { filetype = 'markdown' },
+          bo = {
+            filetype = 'markdown',
+            buftype = 'nofile',
+            swapfile = false,
+          },
           wo = {
             wrap = true,
             conceallevel = 2,
@@ -83,6 +87,10 @@ function M.search(word)
             q = 'close', ['<Esc>'] = 'close',
           }
         })
+
+        if win and win.buf and vim.api.nvim_buf_is_valid(win.buf) then
+          vim.bo[win.buf].modifiable = false
+        end
       end)
     end)
 end
