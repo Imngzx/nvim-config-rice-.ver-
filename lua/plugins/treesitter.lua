@@ -2,7 +2,9 @@ local lazy = require('libs.lazy')
 
 lazy.load({
   plugin = { { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' } },
-
+  build = function()
+    vim.cmd('TSUpdate')
+  end,
   event = { 'BufReadPre', 'BufNewFile' },
 
   setup = function()
