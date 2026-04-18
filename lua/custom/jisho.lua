@@ -71,7 +71,14 @@ function M.search(word)
           title = ' 辞書 Jisho.org: ' .. word .. ' ',
           title_pos = 'center',
           bo = { filetype = 'markdown' },
-          wo = { wrap = true, conceallevel = 2 },
+          wo = {
+            wrap = true,
+            conceallevel = 2,
+            number = true,
+            numberwidth = 4,
+            cursorline = true,
+            relativenumber = true,
+          },
           keys = {
             q = 'close', ['<Esc>'] = 'close',
           }
