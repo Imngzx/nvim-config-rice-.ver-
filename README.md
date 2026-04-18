@@ -121,4 +121,4 @@ As the author is only a beginner in learning it, there are obvious mistakes in h
 
 ## License
 
-This project is licensed under the GPL 3.0 License.
+This project is licensed under the Apache 2.0 License.
