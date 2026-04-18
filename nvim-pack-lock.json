@@ -54,7 +54,7 @@
       "src": "https://github.com/nvim-mini/mini.diff"
     },
     "mini.hipatterns": {
-      "rev": "a3ffba45e4119917b254c372df82e79f7d8c4aad",
+      "rev": "9eff319bbe66adfaf781a0d0e174baa08ba94909",
       "src": "https://github.com/nvim-mini/mini.hipatterns"
     },
     "mini.icons": {
@@ -78,7 +78,7 @@
       "src": "https://github.com/mfussenegger/nvim-dap-python"
     },
     "nvim-dap-view": {
-      "rev": "57961b30d2d4054d2e1f549a2edad2e47731007f",
+      "rev": "03c22bb2bc0d6ed60ee6f7351f8a5e65dd2e80d3",
       "src": "https://github.com/igorlfs/nvim-dap-view"
     },
     "nvim-dap-virtual-text": {
@@ -115,7 +115,7 @@
       "src": "https://github.com/folke/snacks.nvim"
     },
     "tiny-inline-diagnostic.nvim": {
-      "rev": "57a0eb84b2008c76e77930639890d9874195b1e1",
+      "rev": "b3b91e086795c036ecfe70429b72b26bcb302c91",
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
     "venv-selector.nvim": {
