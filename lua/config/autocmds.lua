@@ -27,11 +27,11 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- no commenting on next line when o or O in normal mode
-vim.api.nvim_create_autocmd('BufEnter', {
+vim.api.nvim_create_autocmd('FileType', {
   group = vim.api.nvim_create_augroup('DisableAutoComment', { clear = true }),
+  pattern = '*',
   callback = function()
-    ---@diagnostic disable-next-line: undefined-field
-    vim.opt.formatoptions:remove({ 'c', 'r', 'o' })
+    vim.opt_local.formatoptions:remove({ 'c', 'r', 'o' })
   end,
 })
 
