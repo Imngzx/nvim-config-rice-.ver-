@@ -27,7 +27,11 @@ M.config = {
 function M.add_visual()
   -- Get user input
   vim.api.nvim_echo({ { 'Surround with: ', 'Question' } }, false, {})
-  local char = vim.fn.getcharstr()
+  local ok, char = pcall(vim.fn.getcharstr)
+  if not ok or char == '\27' or char == '' then
+    vim.api.nvim_echo({ { '' } }, false, {})
+    return
+  end
   vim.api.nvim_echo({ { '' } }, false, {})
 
   -- Handle <Esc> or <C-c>
@@ -97,7 +101,11 @@ function M.add_normal()
   _G._surround_add_operatorfunc = function()
     -- Get user input for surround character
     vim.api.nvim_echo({ { 'Surround with:  ', 'Question' } }, false, {})
-    local char = vim.fn.getcharstr()
+    local ok, char = pcall(vim.fn.getcharstr)
+    if not ok or char == '\27' or char == '' then
+      vim.api.nvim_echo({ { '' } }, false, {})
+      return
+    end
     vim.api.nvim_echo({ { '' } }, false, {})
 
     -- Handle <Esc> or <C-c>
@@ -235,7 +243,11 @@ end
 function M.delete()
   -- Get user input
   vim.api.nvim_echo({ { 'Delete surround: ', 'Question' } }, false, {})
-  local char = vim.fn.getcharstr()
+  local ok, char = pcall(vim.fn.getcharstr)
+  if not ok or char == '\27' or char == '' then
+    vim.api.nvim_echo({ { '' } }, false, {})
+    return
+  end
   vim.api.nvim_echo({ { '' } }, false, {})
 
   -- Handle <Esc> or <C-c>
