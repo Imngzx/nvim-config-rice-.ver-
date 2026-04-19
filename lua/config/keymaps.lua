@@ -165,24 +165,3 @@ require('config.color_picker')
 -- end, { desc = "Quickfix List" })
 
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
-
--- 1. Normal Mode: Search the word directly under the cursor
-vim.keymap.set('n', '<leader>tj', function()
-  require('custom.jisho').search()
-end, { desc = 'Jisho (Word under cursor)' })
-
--- 2. Visual Mode: Search the selected word
-vim.keymap.set('v', '<leader>tj', function()
-  local start_pos = vim.fn.getpos("'<")
-  local end_pos = vim.fn.getpos("'>")
-  local lines = vim.fn.getregion(start_pos, end_pos)
-
-  local text = table.concat(lines, ' ')
-  require('custom.jisho').search(text)
-end, { desc = 'Jisho (Selection)' })
-
--- 3. Command Mode : type :Jisho taberu anytime anywhere as long as you got internet connection
--- to find words
-vim.api.nvim_create_user_command('Jisho', function(opts)
-  require('custom.jisho').search(opts.args)
-end, { nargs = '?' })

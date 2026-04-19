@@ -46,6 +46,7 @@ require('plugins.colorful-lsp-menu')
 require('custom.coderunner').setup()
 require('plugins.venv-selector')
 require('plugins.dap')
+require('plugins.jisho')
 require('plugins.AI')
 if not require('libs.utils').is_windows() then
   require('custom.language-switcher').setup()

@@ -9,8 +9,12 @@
       "src": "https://github.com/Saghen/blink.cmp",
       "version": "1.0.0 - 2.0.0"
     },
+    "budoux.lua": {
+      "rev": "049f64f5594e1cb1c74f869a644359c2f570a9dd",
+      "src": "https://github.com/atusy/budoux.lua"
+    },
     "codecompanion.nvim": {
-      "rev": "0d618f9de6a807b2abe2f69cb4e02fd1623e6224",
+      "rev": "e003fac48f8af4fc2d4ece3ee2f6f1897f71b912",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -40,6 +44,10 @@
     "heirline.nvim": {
       "rev": "fae936abb5e0345b85c3a03ecf38525b0828b992",
       "src": "https://github.com/rebelot/heirline.nvim"
+    },
+    "jisho.nvim": {
+      "rev": "b7a7fdb4872551656e4909155baa0df3542a8104",
+      "src": "https://github.com/Imngzx/jisho.nvim"
     },
     "lazydev.nvim": {
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",

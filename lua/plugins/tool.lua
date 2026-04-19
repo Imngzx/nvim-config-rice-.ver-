@@ -88,6 +88,12 @@ vim.keymap.set('n', '<leader>pL', function()
   require('custom.lazy-ui').open()
 end, { desc = '[Panel] DIY Lazy UI' })
 
+
+lazy.load({
+  plugin = 'https://github.com/atusy/budoux.lua',
+  event = { 'User', pattern = 'VeryLazy' },
+})
+
 -- [Clipboard]
 -- vim.pack.add({ "https://github.com/gbprod/yanky.nvim" })
 -- -- Custom paste function
