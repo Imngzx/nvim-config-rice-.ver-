@@ -30,12 +30,12 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 
 ### Summarization
 - **Fast.** Less than **50ms** to start, say no to heavy plugins for ui only 
-- **Simple.** Run out of the box with only 31 life saving plugins.
+- **Simple.** Run out of the box with only 33 life saving plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
-- **Powerful.** Near full functionality to code.
-- **Beautiful.** Uses catppuccin theme & good ui
-- **Minimalist.** Plugins(DIY) with snacks integration
+- **Powerful.** Near full functionality to code, supports cjk.
+- **Beautiful.** Uses catppuccin theme & good ui.
+- **Minimalist.** Plugins(DIY) with snacks integration.
 
 ### Extras 
 
@@ -54,6 +54,8 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
     - [x] [persistence.nvim](https://github.com/folke/persistence.nvim) 
     - [x] [im-select.nvim](https://github.com/keaising/im-select.nvim) 
 
+- List of self made plugins:
+    - [x] [jisho.nvim](https://github.com/Imngzx/jisho.nvim) 
 
 > [!TIP]
 > Can test launch speed with:
