@@ -20,6 +20,7 @@ lazy.load({
   setup = function()
     require('jisho').setup({
       use_budoux = true,
+      layout = 'spacious',
     })
   end,
 })
