@@ -130,6 +130,12 @@ lazy.load({
   plugin = 'https://github.com/folke/lazydev.nvim',
   ft = 'lua',
   setup = function()
+    -- finds types.yazi
+    local utils = require('libs.utils')
+    local yazi_path = utils.is_windows()
+      and vim.fn.expand('~/AppData/Roaming/yazi/config/plugins/types.yazi')
+      or vim.fn.expand('~/.config/yazi/plugins/types.yazi')
+
     require('lazydev').setup({
       library = {
         'nvim-lspconfig',
@@ -137,6 +143,10 @@ lazy.load({
         vim.fn.stdpath('config') .. '/lua',
         { path = 'luvit-meta/library', words = { 'vim%.uv' } },
       },
+      {
+        path = yazi_path,
+        words = { 'ya', 'cx' }
+      }
     })
   end
 })
