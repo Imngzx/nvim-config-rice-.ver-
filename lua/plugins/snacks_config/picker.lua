@@ -128,11 +128,16 @@ return {
 
         rel:on('WinLeave', function()
           vim.schedule(function()
-            if not picker:is_focused() then picker.preview.win:close() end
+            if not picker:is_focused() then
+              if picker.preview and picker.preview.win then
+                picker.preview.win:close()
+              end
+            end
           end)
         end)
         rel:on('WinResized', function() update(preview_win) end)
 
+        picker.preview = picker.preview or {}
         picker.preview.win = preview_win
         picker.main = preview_win.win
 
@@ -160,10 +165,16 @@ return {
           picker._preview_timer = nil
         end
         vim.g.explorer_size = picker.layout.root:size()
-        picker.preview.win:close()
+        if picker.preview and picker.preview.win then
+          picker.preview.win:close()
+        end
       end,
       actions = {
-        toggle_preview = function(picker) picker.preview.win:toggle() end,
+        toggle_preview = function(picker)
+          if picker.preview and picker.preview.win then
+            picker.preview.win:toggle()
+          end
+        end,
         explorer_add = function(picker)
           local item = picker:current()
           local dir = vim.fn.getcwd()
