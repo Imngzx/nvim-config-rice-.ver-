@@ -7,6 +7,7 @@ vim.opt.fillchars = { eob = ' ' }
 vim.opt.cursorline = true -- highlight current line
 -- vim.opt.cursorlineopt = 'number'
 vim.opt.scrolloff = 4 -- keep 4 lines visible around cursor
+vim.opt.scrolloffpad = 1 -- cursor position stays at middle when you go to eob
 vim.opt.sidescrolloff = 8 -- keep 8 columns visible horizontally
 -- Line number
 vim.opt.number = true
