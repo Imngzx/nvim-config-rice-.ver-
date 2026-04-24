@@ -2,6 +2,7 @@
 local M = {}
 local win_cache = {}
 local ns = vim.api.nvim_create_namespace('HandcraftedIncline')
+local mini_icons_cache = nil
 
 M.config = {
   border = 'none',
@@ -77,8 +78,14 @@ local function update_incline()
 
     -- === 5. 渲染新内容并显示 ===
     local icon, hl = '', 'Normal'
-    local ok_icons, mini_icons = pcall(require, 'mini.icons')
-    if ok_icons then icon, hl = mini_icons.get('file', filename) end
+    if mini_icons_cache == nil then
+      local ok_icons, mini_icons = pcall(require, 'mini.icons')
+      mini_icons_cache = ok_icons and mini_icons or false
+    end
+
+    if mini_icons_cache then
+      icon, hl = mini_icons_cache.get('file', filename)
+    end
 
     local ft_color = get_hl_hex(hl, 'fg') or '#ABB2BF'
     local contrast_fg = get_contrast_color(ft_color)

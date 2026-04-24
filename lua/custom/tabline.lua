@@ -1,14 +1,19 @@
 -- Simple Tabline with icons, LSP diagnostics, and close button (Viewport Scroll Enabled)
 local icons = require('libs.icons')
 local M = {}
+local mini_icons_cache = nil
 
 M.config = {
   hide_single_tab = false,
   on_close = nil,
   file_icons = function(filename)
-    local ok, mini_icons = pcall(require, 'mini.icons')
-    if ok then
-      local icon, hl, _ = mini_icons.get('file', filename)
+    if mini_icons_cache == nil then
+      local ok, mini_icons = pcall(require, 'mini.icons')
+      mini_icons_cache = ok and mini_icons or false
+    end
+
+    if mini_icons_cache then
+      local icon, hl, _ = mini_icons_cache.get('file', filename)
       return icon or '', hl or 'Normal'
     end
     return '', 'Normal'
