@@ -3,7 +3,6 @@ local lazy = require('libs.lazy')
 lazy.load({
   plugin = 'https://github.com/Imngzx/jisho.nvim',
 
-  -- event = { 'User', pattern = 'VeryLazy' },
   cmd = { 'Jisho' },
 
   keys = {
