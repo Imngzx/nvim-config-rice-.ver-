@@ -1,7 +1,7 @@
 {
   "plugins": {
     "atone.nvim": {
-      "rev": "90a8456ea212b1d8afcbc331d52df6e65c765783",
+      "rev": "804e69c0be5d4e84e04d6c6c424353069eb14338",
       "src": "https://github.com/XXiaoA/atone.nvim"
     },
     "blink.cmp": {
@@ -14,7 +14,7 @@
       "src": "https://github.com/atusy/budoux.lua"
     },
     "codecompanion.nvim": {
-      "rev": "0bc486860666272c7ed73612aed56301b1b8e24d",
+      "rev": "bc82fbca915f28467a2e2e74e11845ce20d8017c",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -22,7 +22,7 @@
       "src": "https://github.com/xzbdmw/colorful-menu.nvim"
     },
     "conform.nvim": {
-      "rev": "086a40dc7ed8242c03be9f47fbcee68699cc2395",
+      "rev": "dca1a190aa85f9065979ef35802fb77131911106",
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "csvview.nvim": {
@@ -30,7 +30,7 @@
       "src": "https://github.com/hat0uma/csvview.nvim"
     },
     "dropbar.nvim": {
-      "rev": "ce202248134e3949aac375fd66c28e5207785b10",
+      "rev": "f0a42bd92aa647e44221397723453403f5e20f16",
       "src": "https://github.com/bekaboo/dropbar.nvim"
     },
     "flash.nvim": {
@@ -86,7 +86,7 @@
       "src": "https://github.com/mfussenegger/nvim-dap-python"
     },
     "nvim-dap-view": {
-      "rev": "134c018903abc2c9b6fd5fc34c64d906db468c9f",
+      "rev": "01ad4537bac9a0843e72c9615fa7fcaa69b119eb",
       "src": "https://github.com/igorlfs/nvim-dap-view"
     },
     "nvim-dap-virtual-text": {
@@ -94,7 +94,7 @@
       "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-lspconfig": {
-      "rev": "e146efacbafed3789ac568abcc5a981c5decaa58",
+      "rev": "21db1fd40cbcbf1524ae154ab8f394fdf085749a",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
