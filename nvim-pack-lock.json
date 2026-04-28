@@ -14,7 +14,7 @@
       "src": "https://github.com/atusy/budoux.lua"
     },
     "codecompanion.nvim": {
-      "rev": "38a9f9e03c9ab7ccd6353788347c2e2fdf89a366",
+      "rev": "d972496805f1a7c932d64b91a6f2edb8bbe7f671",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
