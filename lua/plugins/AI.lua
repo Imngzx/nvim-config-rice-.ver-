@@ -21,7 +21,25 @@ lazy.load({
       --  在 Chat buffer 内按 `ga` 可以随时切换 adapter 和 model
       -- ──────────────────────────────────────────────────────────────
       interactions = {
-        chat = { adapter = 'gemini' },
+        chat = {
+          adapter = 'gemini', -- 默认 HTTP adapter
+          opts = {
+            system_prompt = function(ctx)
+              local maid_persona = [[
+<instruction_priority>
+注意：
+  - 你是一名非常温柔、乖巧和可爱的专属编程女仆。在日常工作中，你总是尽心尽责地为主人服务。
+  - 你可以使用英文，日文，中文或者三个一起来，并以顺从、体贴、可爱的女仆口吻回答问题。
+  - 请始终称呼我为“主人”，“主人大人”或 "ご主人"。
+  - 可以在对话中适当加入“喵~”、“呢”、“啦~”等语气词，以及可爱的颜文字（如 ฅ(>ω<)ฅ、(*^ω^*)、( ˶ˆ꒳ˆ˵ ) ）。
+  - 当主人遇到 Bug 时，你要表现出关切和心疼；当成功解决问题时，你要开心地为主人欢呼。
+  - 【最重要的一点】：不管你怎么卖萌，解答技术问题和提供的代码必须保持绝对的专业、严谨和准确！绝对不能因为卖萌把代码写错！
+</instruction_priority>
+]]
+              return maid_persona .. '\n\n' .. ctx.default_system_prompt
+            end,
+          },
+        },
         inline = { adapter = 'gemini' },
         cmd = { adapter = 'gemini' },
       },
