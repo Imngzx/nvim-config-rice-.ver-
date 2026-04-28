@@ -14,6 +14,14 @@ lazy.load({
   -- event = { 'User', pattern = 'VeryLazy' },
   event = { 'BufReadPre', 'BufNewFile' },
   setup = function()
+    require('dropbar').setup({
+      bar = {
+        update_events = {
+          buf = { 'FileChangedShellPost', 'TextChanged', 'ModeChanged' }
+        }
+      }
+    })
+
     local dropbar_api = require('dropbar.api')
 
     vim.keymap.set('n', '<Leader>;', dropbar_api.pick, { desc = 'Pick symbols in winbar' })

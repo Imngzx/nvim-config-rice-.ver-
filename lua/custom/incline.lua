@@ -176,7 +176,8 @@ function M.setup(opts)
   local update_queued = false
 
   vim.api.nvim_create_autocmd(
-    { 'WinScrolled', 'BufEnter', 'WinEnter', 'BufModifiedSet', 'VimResized', 'CursorMoved' }, {
+    { 'WinScrolled', 'BufEnter', 'WinEnter', 'TextChanged', 'BufWritePost', 'VimResized',
+      'CursorMoved' }, {
       group = group,
       callback = function()
         -- 如果队列里已经有一个正在排队的更新任务，就忽略新的请求（极大减少内存垃圾）
