@@ -13,11 +13,7 @@ Snacks.setup({
     enabled = true,
     notify = true,
     size = 1.5 * 1024 * 1024, -- 1.5MB
-    setup = function(ctx)
-      vim.schedule(function()
-        vim.bo[ctx.buf].syntax = ctx.ft
-      end)
-    end,
+    line_length = 1500,
   },
   explorer = { enabled = true },
   image = { enabled = true },
