@@ -8,6 +8,7 @@ require('config.autocmds')
 
 -- [Theme]
 -- load theme first to avoid flickering
+
 require('plugins.catppuccin')
 -- require('plugins.vague')
 -- require('plugins.tokyonight')
