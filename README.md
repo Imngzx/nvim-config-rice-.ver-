@@ -5,10 +5,10 @@
 
 > [!NOTE]
 > nvim 0.12 & 0.13 have font issues with neovide, please use neovide-git instead.
->[issues between neovide and ui2](/note/ui2-issue.md) 
+>[issues between neovide and ui2](./note/ui2-issue.md) 
 
 > [!WARNING]
-> Please read the [disclaimer](/note/manifesto-%26-disclaimer.md) before copy or use this configuration
+> Please read the [disclaimer](./note/manifesto-%26-disclaimer.md) before copy or use this configuration
 > This configuration is only for nvim version that starts from 0.12 to nightly
 
 ## About
@@ -77,7 +77,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 - Language server protocol: `nvim-lspconfig`
 - Leader key: `Space`
 - Default LSP for Lua-language: `lua_ls`
-- Key doc: [Simple-keybinding-documentations](/note/simple-doc.md)
+- Key doc: [Simple-keybinding-documentations](./note/simple-doc.md)
 
 > [!NOTE]
 > If you want to see the file structure of my config, please use `tree` in terminal
