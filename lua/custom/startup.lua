@@ -22,7 +22,7 @@ if vim.env.PROF then
   })
 end
 
-if not utils.is_compatible_version('0.12') then
-  vim.notify('Need Neovim 0.12+', vim.log.levels.ERROR)
+if not utils.is_compatible_version('0.13') then
+  vim.notify('Need Neovim 0.13!', vim.log.levels.ERROR)
   return
 end
