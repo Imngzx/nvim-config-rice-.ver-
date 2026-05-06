@@ -14,7 +14,7 @@
       "src": "https://github.com/atusy/budoux.lua"
     },
     "codecompanion.nvim": {
-      "rev": "d0bc72bf570daf899120b7d084c29850ba378532",
+      "rev": "2e33fbdd1ace1e5019ffba8891c5a23711005707",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -86,7 +86,7 @@
       "src": "https://github.com/mfussenegger/nvim-dap-python"
     },
     "nvim-dap-view": {
-      "rev": "e541ff9ed4b209a9620413c9fc43ae23fccc257a",
+      "rev": "988c0cfa8740fcf6c0528ddf11e2651d2d0ae792",
       "src": "https://github.com/igorlfs/nvim-dap-view"
     },
     "nvim-dap-virtual-text": {
