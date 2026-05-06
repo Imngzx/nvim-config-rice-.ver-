@@ -219,16 +219,40 @@ lazy.load({
   event = { 'InsertEnter', 'CmdlineEnter' },
   setup = function()
     require('blink.cmp').setup({
+
+      enabled = function()
+        local bo = vim.bo
+        if bo.buftype == 'prompt' or bo.filetype == 'snacks_picker_input' then
+          return false
+        end
+
+        -- 2. only detect if you're in the "comment state" during insert mode
+        local mode = vim.api.nvim_get_mode().mode
+        if mode == 'i' then
+          local cursor = vim.api.nvim_win_get_cursor(0)
+          local row, col = cursor[1], cursor[2]
+
+          local ok, node = pcall(vim.treesitter.get_node, {
+            bufnr = 0,
+            pos = { row - 1, math.max(0, col - 1) },
+          })
+          if ok and node and node.type and node:type():find('comment') then
+            return false
+          end
+        end
+
+        return true
+      end,
+
       keymap = { preset = 'enter' },
       appearance = { nerd_font_variant = 'mono' },
 
       signature = {
         window = {
-          border = {
-            'rounded',
-          },
+          border = { 'rounded' },
         },
       },
+
       completion = {
         ghost_text = {
           enabled = true,
@@ -242,10 +266,8 @@ lazy.load({
           }
         },
         menu = {
-          --can comment this if you want cmp menu with darker color bg
           winhighlight =
           'Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,CursorLine:BlinkCmpDocCursorLine,Search:None',
-
           scrollbar = true,
           auto_show_delay_ms = 200,
           border = 'rounded',
@@ -261,7 +283,6 @@ lazy.load({
                   return require('colorful-menu').blink_components_highlight(ctx)
                 end,
               },
-              -- new menu component
               menu = {
                 text = function(ctx)
                   local menu_labels = {
@@ -273,7 +294,7 @@ lazy.load({
                   }
                   return menu_labels[ctx.source_name] or ('[' .. ctx.source_name .. ']')
                 end,
-                highlight = 'Comment', -- you can change to match your theme
+                highlight = 'Comment',
               },
             },
           },
@@ -298,18 +319,7 @@ lazy.load({
       },
 
       sources = {
-        -- 在注释行时不显示菜单补全。并且在全局不会弹出中文补全
         default = function()
-          local cursor = vim.api.nvim_win_get_cursor(0)
-          local row, col = cursor[1], cursor[2]
-
-          local ok, node = pcall(vim.treesitter.get_node, {
-            bufnr = 0,
-            pos = { row - 1, math.max(0, col - 1) },
-          })
-          if ok and node and node.type and node:type():find('comment') then
-            return {}
-          end
           if vim.bo.filetype == 'lua' then
             return { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' }
           end
@@ -324,10 +334,6 @@ lazy.load({
           snippets = {
             opts = {
               friendly_snippets = true,
-              -- markdown = { 'jekyll' },
-              -- sh = { 'shelldoc' },
-              -- php = { 'phpdoc' },
-              -- cpp = { 'unreal' }
             }
           }
         },
