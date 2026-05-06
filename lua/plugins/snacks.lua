@@ -82,6 +82,10 @@ lazy.load({
     set_keys(key)
 
     _G.dd = function(...) Snacks.debug.inspect(...) end
+
+    -- NOTE: can enable this if you want snacks notifier shows lsp progress
+    require('plugins.snacks_config.lsp_progress')
+
     if utils.is_compatible_version('0.11') then
       ---@diagnostic disable-next-line: duplicate-set-field
       vim._print = function(_, ...) dd(...) end
