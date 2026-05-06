@@ -3,7 +3,14 @@ local icons = require('libs.icons')
 local M = {}
 local mini_icons_cache = nil
 
+local fn_fnamemodify = vim.fn.fnamemodify
+local fn_strchars = vim.fn.strchars
+local fn_strcharpart = vim.fn.strcharpart
+
+M._name_cache = {}
+
 M.config = {
+  max_name_length = 20,
   hide_single_tab = false,
   on_close = nil,
   file_icons = function(filename)
@@ -21,7 +28,7 @@ M.config = {
   icons = { close = '󰅖', modify = '●' },
 }
 
-M.viewport_start = 1 -- 滑动窗口的起始索引
+M.viewport_start = 1
 
 M.close_buffer = function(buf_id)
   if type(M.config.on_close) == 'function' then
@@ -92,6 +99,13 @@ M.setup = function(opts)
       group = group, callback = function() M.update_showtabline() end,
     })
   end
+
+  vim.api.nvim_create_autocmd('BufWipeout', {
+    group = group,
+    callback = function(args)
+      M._name_cache[args.buf] = nil
+    end,
+  })
 end
 
 M.update_showtabline = function()
@@ -139,12 +153,37 @@ end
 
 M.format_tab = function(buf_id, is_current)
   local bufname = vim.api.nvim_buf_get_name(buf_id)
-  local filename = bufname ~= '' and vim.fn.fnamemodify(bufname, ':t') or '[No Name]'
+
+  local cached = M._name_cache[buf_id]
+  local filename
+  local icon_filename
+
+  if cached and cached.raw_path == bufname then
+    filename = cached.display_name
+    icon_filename = cached.icon_filename
+  else
+    icon_filename = bufname ~= '' and fn_fnamemodify(bufname, ':t') or '[No Name]'
+    filename = icon_filename
+    local max_len = M.config.max_name_length
+
+    if max_len and max_len > 0 and #filename > max_len then
+      if fn_strchars(filename) > max_len then
+        filename = fn_strcharpart(filename, 0, max_len - 1) .. '…'
+      end
+    end
+
+    M._name_cache[buf_id] = {
+      raw_path = bufname,
+      display_name = filename,
+      icon_filename =
+        icon_filename
+    }
+  end
 
   local bg_hl = is_current and 'TablineCurrent' or 'TablineHidden'
   local tab_hl = '%#' .. bg_hl .. '#'
 
-  local icon, icon_group = M.config.file_icons(filename)
+  local icon, icon_group = M.config.file_icons(icon_filename)
   local icon_hl = get_dynamic_hl(icon_group or 'Normal', bg_hl, false)
   local icon_str = '%#' .. icon_hl .. '# ' .. icon .. ' '
 
