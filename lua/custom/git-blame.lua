@@ -192,8 +192,19 @@ function M.setup(opts)
       if not is_insert_mode() then queue_fetch(args.buf) end
     end
   })
+  local last_state = { buf = -1, row = -1 }
   vim.api.nvim_create_autocmd('CursorMoved', {
-    group = aug, callback = function(args) show_blame(args.buf) end
+    group = aug,
+    callback = function(args)
+      local cur_row = vim.api.nvim_win_get_cursor(0)[1]
+      local cur_buf = args.buf
+
+      if cur_row == last_state.row and cur_buf == last_state.buf then return end
+
+      last_state.row = cur_row
+      last_state.buf = cur_buf
+      show_blame(args.buf)
+    end
   })
   vim.api.nvim_create_autocmd('InsertEnter', {
     group = aug, callback = function(args) clear_blame(args.buf) end

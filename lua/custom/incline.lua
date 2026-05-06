@@ -45,9 +45,10 @@ local function update_incline()
     -- === 2. 甄别是否需要暂时“隐身”防遮挡 ===
     local should_hide = false
     local cursor = vim.api.nvim_win_get_cursor(win_id)
-    local win_info = vim.fn.getwininfo(win_id)[1]
-    -- 当光标到达当前视口第一行时触发隐身
-    if win_info and cursor[1] == win_info.topline then
+    local topline = vim.api.nvim_win_call(win_id, function()
+      return vim.fn.line('w0')
+    end)
+    if cursor[1] == topline then
       should_hide = true
     end
 
@@ -174,13 +175,25 @@ function M.setup(opts)
   local group = vim.api.nvim_create_augroup('HandcraftedIncline', { clear = true })
 
   local update_queued = false
+  local last_state = { win = -1, row = -1 }
 
   vim.api.nvim_create_autocmd(
     { 'WinScrolled', 'BufEnter', 'WinEnter', 'TextChanged', 'BufWritePost', 'VimResized',
       'CursorMoved' }, {
       group = group,
-      callback = function()
-        -- 如果队列里已经有一个正在排队的更新任务，就忽略新的请求（极大减少内存垃圾）
+      callback = function(args)
+        if args.event == 'CursorMoved' then
+          local cur_win = vim.api.nvim_get_current_win()
+          local cur_row = vim.api.nvim_win_get_cursor(cur_win)[1]
+
+          if cur_row == last_state.row and cur_win == last_state.win then
+            return
+          end
+
+          last_state.row = cur_row
+          last_state.win = cur_win
+        end
+
         if update_queued then return end
         update_queued = true
 
