@@ -18,6 +18,7 @@
 - [Debugger (DAP)](#debugger-dap)
 - [AI (CodeCompanion)](#ai-codecompanion)
 - [UI Toggles & Widgets](#ui-toggles--widgets)
+- [Translation (Jisho)](#translation-jisho)
 - [Flash & Word Jump](#flash--word-jump)
 - [Surround](#surround)
 - [CSV / TSV Assistance](#csv--tsv-csvview) 
@@ -32,14 +33,13 @@
 | Key | Mode | Action |
 |-----|------|--------|
 | `<leader>w` | n | Save file (Sudo write automatically if needed) |
-| `<C-s>` | n,i,x,s| Save file and return to normal mode |
 | `<leader>wq` | n | Save and quit |
 | `<leader>qq` | n | Quit all |
 | `<leader>qr` | n | Restart Neovim |
 | `<leader>?` | n | Show buffer-local keymaps (Which-Key) |
 
 > **Session Management:** Sessions are automatically saved on exit per Git-branch/Directory. 
-> To manually restore, open Dashboard (`<leader>H`) and press `s`, or type `:RestoreSession`, `:RestoreLastSession`.
+> To manually restore, open Dashboard (`<leader>H`) and press `s`, or type `:RestoreSession`, `:RestoreLastSession`. Type `:StopSession` to disable saving for the current instance.
 
 ---
 
@@ -191,7 +191,11 @@
 | `<leader>gh` | n, x | Apply hunk(s) |
 | `<leader>gH` | n, x | Reset hunk(s) |
 | `]h` / `[h` | n | Next / Prev hunk |
-| `<leader>uB` | n | Toggle Git Blame inline text |
+| `[H` / `]H` | n | First / Last hunk (mini.diff) |
+| `<leader>ub` | n | Toggle Git Blame inline text |
+| `<leader>gB` | n | Git branches (Snacks picker) |
+| `<leader>gS` | n | Git stash (Snacks picker) |
+| `<leader>gD` | n | Git diff hunks (Snacks picker) |
 
 ---
 
@@ -265,6 +269,7 @@
 | `<leader>um` | n | Toggle Markdown Rendering |
 | `<leader>bs` | n | Toggle Scratch Buffer |
 | `<leader>uu` | n | Toggle undo-tree plugin |
+| `<leader>us` | n | Toggle Spelling |
 
 ### Minimap
 
@@ -284,6 +289,14 @@
 | `[;` / `];` | n | Jump to start / Select next context |
 
 ---
+
+## Translation (Jisho)
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<leader>tj` | n | Search word under cursor in Jisho |
+| `<leader>tj` | v | Search selected text in Jisho |
+----------
 
 ## Flash & Word Jump
 
@@ -326,6 +339,7 @@
 | `<leader>pm` | n | Open Mason (Install/Update LSP tools) |
 | `<leader>pu` | n | Update all Neovim Plugins |
 | `<leader>pN` | n | Open Neovim News (`:h news.txt`) |
+| `<leader>pL` | n | Open DIY Lazy UI (Panel) |
 
 ---
 
@@ -348,4 +362,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-04-08.*
+*Last updated based on commit pushed 2026-05-07.*
