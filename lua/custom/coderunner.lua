@@ -92,6 +92,98 @@ end
 
 local active_term = nil
 
+local function shellescape(value)
+  return vim.fn.shellescape(value)
+end
+
+local function normalize_path(path)
+  return vim.fs.normalize(path):gsub('\\', '/'):gsub('/$', '')
+end
+
+local function find_upward(name, start_dir)
+  local matches = vim.fs.find(name, { path = start_dir, upward = true })
+  return matches[1]
+end
+
+local function relative_path(root, path)
+  local normalized_root = normalize_path(root)
+  local normalized_path = normalize_path(path)
+  local prefix = normalized_root .. '/'
+
+  if normalized_path:sub(1, #prefix) == prefix then
+    return normalized_path:sub(#prefix + 1)
+  end
+end
+
+local function find_cargo_bin_name(cargo_toml, file_path)
+  local root = vim.fn.fnamemodify(cargo_toml, ':h')
+  local rel = relative_path(root, file_path)
+  if not rel then return nil end
+
+  local block_name, block_path = nil, nil
+  for _, line in ipairs(vim.fn.readfile(cargo_toml)) do
+    local inline_name, inline_path = line:match('name%s*=%s*"([^"]+)".-path%s*=%s*"([^"]+)"')
+    if not inline_name then
+      inline_path, inline_name = line:match('path%s*=%s*"([^"]+)".-name%s*=%s*"([^"]+)"')
+    end
+    if inline_name and inline_path == rel then return inline_name end
+
+    if line:match('^%s*%[%[') then
+      block_name, block_path = nil, nil
+    end
+
+    block_name = line:match('^%s*name%s*=%s*"([^"]+)"') or block_name
+    block_path = line:match('^%s*path%s*=%s*"([^"]+)"') or block_path
+    if block_name and block_path == rel then return block_name end
+  end
+end
+
+local function find_package_name(cargo_toml)
+  local in_package = false
+  for _, line in ipairs(vim.fn.readfile(cargo_toml)) do
+    if line:match('^%s*%[package%]%s*$') then
+      in_package = true
+    elseif line:match('^%s*%[') then
+      in_package = false
+    elseif in_package then
+      local name = line:match('^%s*name%s*=%s*"([^"]+)"')
+      if name then return name end
+    end
+  end
+end
+
+local function infer_cargo_bin_name(cargo_toml, file_path)
+  local root = vim.fn.fnamemodify(cargo_toml, ':h')
+  local rel = relative_path(root, file_path)
+  if not rel then return nil end
+
+  local bin_name = rel:match('^src/bin/([^/]+)%.rs$')
+    or rel:match('^src/bin/([^/]+)/main%.rs$')
+  if bin_name then return bin_name end
+
+  if rel == 'src/main.rs' then return find_package_name(cargo_toml) end
+end
+
+local function cargo_project_command()
+  local file_path = vim.fn.expand('%:p')
+  local start_dir = vim.fn.expand('%:p:h')
+  local cargo_toml = find_upward('Cargo.toml', start_dir)
+  if not cargo_toml then return nil end
+
+  local root = vim.fn.fnamemodify(cargo_toml, ':h')
+  if vim.bo.filetype ~= 'rust' then
+    return 'cd ' .. shellescape(root) .. ' && cargo run'
+  end
+
+  local bin_name = find_cargo_bin_name(cargo_toml, file_path)
+    or infer_cargo_bin_name(cargo_toml, file_path)
+  if bin_name then
+    return 'cd ' .. shellescape(root) .. ' && cargo run --bin ' .. shellescape(bin_name)
+  end
+
+  return 'cd ' .. shellescape(root) .. ' && cargo run'
+end
+
 function M.close()
   if active_term and active_term:valid() then
     active_term:close()
@@ -137,13 +229,18 @@ local function execute_cmd(cmd)
   vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { buf = active_term.buf, nowait = true })
 end
 
-function M.run()
+function M.build_run_command()
   local ft = vim.bo.filetype
   local cmd_template = filetype_cmds[ft]
 
   if not cmd_template then
     vim.notify('No runner config for filetype: ' .. ft, vim.log.levels.WARN)
-    return
+    return nil
+  end
+
+  if ft == 'rust' then
+    local cargo_cmd = cargo_project_command()
+    if cargo_cmd then return cargo_cmd end
   end
 
   local dir = vim.fn.expand('%:p:h')
@@ -155,23 +252,34 @@ function M.run()
   cmd = cmd:gsub('%$fileNameWithoutExt', function() return fileNameWithoutExt end)
   cmd = cmd:gsub('%$fileName', function() return fileName end)
 
+  return cmd
+end
+
+function M.run()
+  local cmd = M.build_run_command()
+  if not cmd then return end
+
   execute_cmd(cmd)
 end
 
-function M.run_project()
-  local cmd = ''
+function M.build_project_command()
   if vim.fn.filereadable('Makefile') == 1 then
-    cmd = 'make'
-  elseif vim.fn.filereadable('Cargo.toml') == 1 then
-    cmd = 'cargo run'
-  elseif vim.fn.filereadable('build.zig') == 1 then
-    cmd = 'zig build run'
-  elseif vim.fn.filereadable('package.json') == 1 then
-    cmd = 'npm start'
-  else
-    vim.notify('No project config found (Makefile/Cargo.toml/etc.)', vim.log.levels.WARN)
-    return
+    return 'make'
   end
+
+  local cargo_cmd = cargo_project_command()
+  if cargo_cmd then return cargo_cmd end
+
+  if vim.fn.filereadable('build.zig') == 1 then return 'zig build run' end
+  if vim.fn.filereadable('package.json') == 1 then return 'npm start' end
+
+  vim.notify('No project config found (Makefile/Cargo.toml/etc.)', vim.log.levels.WARN)
+end
+
+function M.run_project()
+  local cmd = M.build_project_command()
+  if not cmd then return end
+
   execute_cmd(cmd)
 end
 
