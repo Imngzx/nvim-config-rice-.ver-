@@ -18,7 +18,7 @@
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
-      "rev": "b51a659459df8d078201aefc995db8175ed55e84",
+      "rev": "13f9b7eaa9cd2901b4f8915cfb2483c3be4c8c20",
       "src": "https://github.com/xzbdmw/colorful-menu.nvim"
     },
     "conform.nvim": {
@@ -103,7 +103,7 @@
       "version": "'main'"
     },
     "nvim-treesitter-context": {
-      "rev": "b0c45cefe2c8f7b55fc46f34e563bc428ef99636",
+      "rev": "b311b30818951d01f7b4bf650521b868b3fece16",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-context"
     },
     "plenary.nvim": {
@@ -115,7 +115,7 @@
       "src": "https://github.com/aurora0x27/popup.nvim"
     },
     "render-markdown.nvim": {
-      "rev": "3f3eea97b80839f629c951ca660ffd125bfa5b34",
+      "rev": "629eb9533ec989d9d5c6cab8f3ad5372422c24e0",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "snacks.nvim": {
