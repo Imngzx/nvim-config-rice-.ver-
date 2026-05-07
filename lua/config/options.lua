@@ -62,10 +62,7 @@ vim.opt.virtualedit = 'block' -- allow cursor past EOL in block mode
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
-vim.opt.foldmethod = 'expr'
-vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-require('config.fold')
-vim.opt.foldtext = 'v:lua.custom_foldtext()'
+require('plugins.ufo')
 
 -- [Functions]
 -- Clipboard
