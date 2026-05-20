@@ -148,8 +148,9 @@ local function fetch_blame(bufnr)
   if stats and stats.size > 1.5 * 1024 * 1024 then return end
 
   local tick = vim.api.nvim_buf_get_changedtick(bufnr)
-  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-  if #lines == 0 then return end
+
+  local ok, lines = pcall(vim.api.nvim_buf_get_lines, bufnr, 0, -1, false)
+  if not ok or type(lines) ~= 'table' or #lines == 0 then return end
 
   local stdin = table.concat(lines, '\n') .. '\n'
   local cmd = { 'git', '--no-pager', '-C', root, 'blame', '-b', '-p', '-w', '--date', 'unix',
