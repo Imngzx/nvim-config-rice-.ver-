@@ -22,6 +22,9 @@ require('plugins.csvview')
 require('custom.incline').setup()
 require('custom.transparent').setup({ auto_enable = false })
 
+-- NOTE: if you think your finger suffering, you can disable this
+require('custom.dicipline').setup({ enabled = true })
+
 local icons = require('libs.icons')
 require('custom.tabline').setup({
   hide_single_tab = false,
