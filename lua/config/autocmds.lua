@@ -33,6 +33,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function() vim.hl.hl_op() end,
   desc = 'Highlight yanked text',
 })
+
+-- [Autocmd] Highlight on put (paste)
+vim.api.nvim_create_autocmd('TextPutPost', {
+  group = vim.api.nvim_create_augroup('HighlightOnPut', { clear = true }),
+  callback = function() vim.hl.hl_op() end,
+  desc = 'Highlight pasted text',
+})
 -- - use vim.hl.hl_op instead for newer 0.13
 
 -- uses csvview plugin as soon as opening a csv file
