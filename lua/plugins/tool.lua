@@ -94,6 +94,20 @@ lazy.load({
   event = { 'User', pattern = 'VeryLazy' },
 })
 
+lazy.load({
+  plugin = 'https://github.com/Imngzx/ascetic.nvim',
+  event = { 'BufReadPost', 'BufNewFile' },
+  -- event = { 'User', pattern = 'VeryLazy' },
+  setup = function()
+    require('ascetic').setup({
+      enabled = true,
+      smart_j_k = true,
+      threshold = 10,
+      timeout = 2000,
+    })
+  end
+})
+
 -- [Clipboard]
 -- vim.pack.add({ "https://github.com/gbprod/yanky.nvim" })
 -- -- Custom paste function
