@@ -4,8 +4,10 @@ lazy.load({
   plugin = 'https://github.com/nvim-mini/mini.icons',
   event = { 'User', pattern = 'VeryLazy' },
   setup = function()
-    require('mini.icons').setup()
-    require('mini.icons').mock_nvim_web_devicons()
+    local mini_icons = require('mini.icons')
+
+    mini_icons.setup()
+    mini_icons.mock_nvim_web_devicons()
   end
 })
 

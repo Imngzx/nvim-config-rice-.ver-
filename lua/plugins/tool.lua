@@ -55,7 +55,9 @@ lazy.load({
   plugin = 'https://github.com/nvim-mini/mini.diff',
   event = { 'BufReadPost', 'BufNewFile' },
   setup = function()
-    require('mini.diff').setup({
+    local mini_diff = require('mini.diff')
+
+    mini_diff.setup({
       view = {
         style = 'sign',
         signs = { add = '│', change = '│', delete = '│' },
@@ -79,7 +81,7 @@ lazy.load({
       },
     })
     vim.keymap.set('n', '<leader>go', function()
-      require('mini.diff').toggle_overlay()
+      mini_diff.toggle_overlay(0)
     end, { desc = 'Toggle diff' })
   end
 })
