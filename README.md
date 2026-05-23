@@ -1,4 +1,4 @@
-# Cameron's NeoVim Config *forked from CWorld 
+# Cameron's NeoVim Config *forked from CWorld
 
 > [!NOTE]
 > This is a fork of the original [author's](https://github.com/cworld1/nvim-config) config. His config is the bone of my config. So please have a look on his config too.
@@ -21,40 +21,42 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 | ![Preview image](https://github.com/user-attachments/assets/65f9696a-a535-454b-8623-3a93ab6e4c2f) | ![Preview image](https://github.com/user-attachments/assets/e5440088-cf1c-4455-9754-8768be3365c5) |
 | --------------------------------------------------------- | --------------------------------------------------------- |
 
-
 ## Features
 
 ### Summarization
-- **Fast.** Less than **50ms** to start, say no to heavy plugins for ui only 
-- **Simple.** Run out of the box with only 36 plugins.
+
+- **Fast.** Less than **50ms** to start, say no to heavy plugins for ui only
+- **Simple.** Run out of the box with only 37 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code, supports cjk.
 - **Beautiful.** Uses catppuccin theme & good ui.
 - **Minimalist.** Plugins(DIY) with snacks integration.
 
-### Extras 
+### Extras
 
-- List of features that became **Pluginless** 
-    - [x] [incline.nvim](https://github.com/b0o/incline.nvim)
-    - [x] [vim-suda](https://github.com/lambdalisue/vim-suda)
-    - [x] [bufferline.nvim](github.com/akinsho/bufferline.nvim)
-    - [x] [todo-comments](https://github.com/folke/todo-comments.nvim) (Key: `<Leader>st`)
-    - [x] [fidget.nvim](https://github.com/j-hui/fidget.nvim) 
-    - [x] [mini.surround](https://github.com/nvim-mini/mini.surround) 
-    - [x] [mini.pairs](https://github.com/nvim-mini/mini.pairs?tab=readme-ov-file) 
-    - [x] [aerial.nvim](https://github.com/stevearc/aerial.nvim) (Key: `<Leader>co`)
-    - [x] [trouble.nvim](https://github.com/folke/trouble.nvim) (Key: `<Leader>cD`)
-    - [x] [yazi.nvim](https://github.com/mikavilpas/yazi.nvim) (Key: `<Leader>fy`)
-    - [x] [git-blame.nvim](https://github.com/f-person/git-blame.nvim.git) (Key: `<Leader>uB`)
-    - [x] [persistence.nvim](https://github.com/folke/persistence.nvim) 
-    - [x] [im-select.nvim](https://github.com/keaising/im-select.nvim) 
+- List of features that became **Pluginless**
+  - [x] [incline.nvim](https://github.com/b0o/incline.nvim)
+  - [x] [vim-suda](https://github.com/lambdalisue/vim-suda)
+  - [x] [bufferline.nvim](github.com/akinsho/bufferline.nvim)
+  - [x] [todo-comments](https://github.com/folke/todo-comments.nvim) (Key: `<Leader>st`)
+  - [x] [fidget.nvim](https://github.com/j-hui/fidget.nvim)
+  - [x] [mini.surround](https://github.com/nvim-mini/mini.surround)
+  - [x] [mini.pairs](https://github.com/nvim-mini/mini.pairs?tab=readme-ov-file)
+  - [x] [aerial.nvim](https://github.com/stevearc/aerial.nvim) (Key: `<Leader>co`)
+  - [x] [trouble.nvim](https://github.com/folke/trouble.nvim) (Key: `<Leader>cD`)
+  - [x] [yazi.nvim](https://github.com/mikavilpas/yazi.nvim) (Key: `<Leader>fy`)
+  - [x] [git-blame.nvim](https://github.com/f-person/git-blame.nvim.git) (Key: `<Leader>uB`)
+  - [x] [persistence.nvim](https://github.com/folke/persistence.nvim)
+  - [x] [im-select.nvim](https://github.com/keaising/im-select.nvim)
 
 - List of self made plugins:
-    - [x] [jisho.nvim](https://github.com/Imngzx/jisho.nvim) 
+  - [x] [jisho.nvim](https://github.com/Imngzx/jisho.nvim)
+  - [x] [ascetic.nvim](https://github.com/Imngzx/ascetic.nvim)
 
 > [!TIP]
 > Can test launch speed with:
+
 ```sh
 ❯ nvim --startuptime nvim_speed.log +q && nvim nvim_speed.log
 # or
@@ -99,7 +101,7 @@ git clone https://github.com/Imngzx/nvim-config-rice-.ver-.git $XDG_CONFIG_HOME/
 nvim
 ```
 
-After those steps above, please `<Leader>pm` to open Mason panel, it'll handle auto install as soon as you open it. 
+After those steps above, please `<Leader>pm` to open Mason panel, it'll handle auto install as soon as you open it.
 
 Then please having fun!
 
