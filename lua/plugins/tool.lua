@@ -106,6 +106,13 @@ lazy.load({
       smart_j_k = true,
       threshold = 10,
       timeout = 2000,
+      message = function(key)
+        local insults = {
+          j = 'Down down down... use `C-d` bro!',
+          k = 'Up up up... use `C-u` instead!',
+        }
+        return insults[key] or ('Stop pressing `%s`!'):format(key)
+      end,
     })
   end
 })
