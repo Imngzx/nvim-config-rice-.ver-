@@ -141,7 +141,6 @@ lazy.load({
         'nvim-lspconfig',
         vim.fn.stdpath('data') .. '/site/pack/core/opt/*',
         vim.fn.stdpath('config') .. '/lua',
-        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
       },
       {
         path = yazi_path,
