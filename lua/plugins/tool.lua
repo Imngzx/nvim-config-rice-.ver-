@@ -101,7 +101,9 @@ lazy.load({
   event = { 'BufReadPost', 'BufNewFile' },
   -- event = { 'User', pattern = 'VeryLazy' },
   setup = function()
-    require('ascetic').setup({
+    local Ascetic = require('ascetic')
+
+    Ascetic.setup({
       enabled = true,
       smart_j_k = true,
       threshold = 10,
@@ -114,6 +116,7 @@ lazy.load({
         return insults[key] or ('Stop pressing `%s`!'):format(key)
       end,
     })
+    vim.keymap.set('n', '<leader>ua', Ascetic.toggle, { desc = 'Toggle Ascetic' })
   end
 })
 

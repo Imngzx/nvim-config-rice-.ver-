@@ -21,7 +21,7 @@
 - [Translation (Jisho)](#translation-jisho)
 - [Flash & Word Jump](#flash--word-jump)
 - [Surround](#surround)
-- [CSV / TSV Assistance](#csv--tsv-csvview) 
+- [CSV / TSV Assistance](#csv--tsv-csvview)
 - [Plugin Management](#plugin-management)
 - [Profiler](#profiler)
 - [Treesitter Context](#treesitter-context)
@@ -38,7 +38,7 @@
 | `<leader>qr` | n | Restart Neovim |
 | `<leader>?` | n | Show buffer-local keymaps (Which-Key) |
 
-> **Session Management:** Sessions are automatically saved on exit per Git-branch/Directory. 
+> **Session Management:** Sessions are automatically saved on exit per Git-branch/Directory.
 > To manually restore, open Dashboard (`<leader>H`) and press `s`, or type `:RestoreSession`, `:RestoreLastSession`. Type `:StopSession` to disable saving for the current instance.
 
 ---
@@ -253,6 +253,7 @@
 
 | Key | Mode | Action |
 |-----|------|--------|
+| `<leader>ua` | n | Toggle Ascetic |
 | `<leader>ut` | n | Toggle Transparency |
 | `<leader>ub` | n | Toggle Background (Dark / Light) |
 | `<leader>uz` | n | Toggle Zen Mode |
@@ -296,6 +297,7 @@
 |-----|------|--------|
 | `<leader>tj` | n | Search word under cursor in Jisho |
 | `<leader>tj` | v | Search selected text in Jisho |
+
 ----------
 
 ## Flash & Word Jump
@@ -362,4 +364,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-05-07.*
+*Last updated based on commit pushed 2026-05-23.*
