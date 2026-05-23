@@ -1,7 +1,7 @@
 {
   "plugins": {
     "ascetic.nvim": {
-      "rev": "a8afb0357d00226a9bb59bdca25f4c738a4642a1",
+      "rev": "7f1137f368e7807c751fc18834485931174d81d4",
       "src": "https://github.com/Imngzx/ascetic.nvim"
     },
     "atone.nvim": {
