@@ -26,6 +26,7 @@ H.conform = {
   cmake = { 'cmake_format' },
   json = { 'jq' },
   zig = { 'zigfmt' },
+  markdown = { 'markdownlint-cli2' }
 }
 
 vim.g.markdown_fenced_languages = {
@@ -122,6 +123,27 @@ lazy.load({
         timeout_ms = 800,
         lsp_format = 'fallback',
       },
+    })
+  end
+})
+
+lazy.load({
+  plugin = 'https://github.com/mfussenegger/nvim-lint',
+  event = { 'BufReadPre', 'BufNewFile' },
+  setup = function()
+    local lint = require('lint')
+
+    lint.linters_by_ft = {
+      markdown = { 'markdownlint-cli2' },
+      html = { 'htmlhint' },
+      cmake = { 'cmakelint' },
+    }
+
+    vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
+      group = vim.api.nvim_create_augroup('DIY_Linting', { clear = true }),
+      callback = function()
+        lint.try_lint()
+      end,
     })
   end
 })

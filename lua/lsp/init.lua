@@ -60,6 +60,9 @@ M.mason_tools = {
   'prettier',
   'prettierd',
   'cmakelang',
+  'markdownlint-cli2',
+  'htmlhint',
+  'shellcheck',
   -- 'vue-language-server',
 }
 
