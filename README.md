@@ -3,13 +3,9 @@
 > [!NOTE]
 > This is a fork of the original [author's](https://github.com/cworld1/nvim-config) config. His config is the bone of my config. So please have a look on his config too.
 
-> [!NOTE]
-> nvim 0.12 & 0.13 have font issues with neovide, please use neovide-git instead.
->[issues between neovide and ui2](./note/ui2-issue.md) 
-
 > [!WARNING]
 > Please read the [disclaimer](./note/manifesto-%26-disclaimer.md) before copy or use this configuration
-> This configuration is only for nvim version that starts from 0.12 to nightly
+> This configuration is only for nvim nightly 0.13
 
 ## About
 
@@ -72,7 +68,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 
 ## Info
 
-- Supported nvim version: `0.12 and above`
+- Supported nvim version: `0.13 nightly`
 - Plugin manager: `vim.pack`
 - Language server protocol: `nvim-lspconfig`
 - Leader key: `Space`
