@@ -10,14 +10,27 @@ vim.api.nvim_create_autocmd('PackChanged', {
   group = vim.api.nvim_create_augroup('DIY_Lazy_Builder', { clear = true }),
   callback = function(args)
     local data = args.data
-    if not data or data.kind ~= 'install' then return end
+    if not data or (data.kind ~= 'install' and data.kind ~= 'update') then return end
 
-    local name = data.spec.name
+    local name = (data.spec and data.spec.name) or data.name or args.match
     local build_task = M.build_hooks[name]
     if not build_task then return end
 
-    local dir = data.spec.dir
-    vim.notify('[Lazy] Building ' .. name .. '...', vim.log.levels.INFO)
+    local dir = (data.spec and data.spec.dir) or data.dir
+
+    if not dir or dir == '' then
+      local found = vim.api.nvim_get_runtime_file('pack/*/*/' .. name, false)
+      if #found > 0 then
+        dir = found[1]
+      end
+    end
+
+    if not dir or dir == '' then
+      vim.notify('[Lazy] Build failed: Cannot resolve directory for ' .. name, vim.log.levels.ERROR)
+      return
+    end
+
+    vim.notify('[Lazy] Building ' .. name .. ' in:\n' .. dir, vim.log.levels.INFO)
 
     if type(build_task) == 'string' then
       local shell = require('libs.utils').is_windows() and 'cmd' or 'sh'
