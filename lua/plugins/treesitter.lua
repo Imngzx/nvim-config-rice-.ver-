@@ -23,7 +23,7 @@ lazy.load({
       if ok and ts.update then
         ts.update()()
       else
-        pcall(vim.cmd, 'TSUpdate')
+        pcall(function() vim.cmd('TSUpdate') end)
       end
     end)
   end,
