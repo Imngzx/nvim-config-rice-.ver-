@@ -4,8 +4,6 @@ lazy.load({
   plugin = 'https://github.com/MeanderingProgrammer/render-markdown.nvim',
   ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
   setup = function()
-    vim.pack.add({ 'https://github.com/nvim-mini/mini.icons' })
-
     require('render-markdown').setup({
       file_types = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
 
