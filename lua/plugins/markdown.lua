@@ -4,7 +4,8 @@ lazy.load({
   plugin = 'https://github.com/MeanderingProgrammer/render-markdown.nvim',
   ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
   setup = function()
-    require('render-markdown').setup({
+    local render_markdown = require('render-markdown')
+    render_markdown.setup({
       file_types = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
 
       code = {
@@ -49,11 +50,10 @@ lazy.load({
           return require('render-markdown.state').enabled
         end,
         set = function(enabled)
-          local m = require('render-markdown')
           if enabled then
-            m.enable()
+            render_markdown.enable()
           else
-            m.disable()
+            render_markdown.disable()
           end
         end,
       }):map('<leader>um')
