@@ -79,7 +79,7 @@ function M.open()
     height = 0.75,
     border = 'rounded',
     backdrop = 60,
-    title = ' 󰒲 DIY Lazy ',
+    title = ' 󱑽 Resonance 󱑽 ',
     title_pos = 'center',
     zindex = 50,
     enter = true,
@@ -88,6 +88,7 @@ function M.open()
       buftype = 'nofile',
       filetype = 'diy_lazy',
       swapfile = false,
+      bufhidden = 'wipe',
     },
     wo = {
       cursorline = true,
