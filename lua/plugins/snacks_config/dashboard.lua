@@ -20,7 +20,8 @@ return {
       local cached_result = nil
 
       return function()
-        if cached_result and _G.end_time then
+        -- 缓存命中直接返回
+        if cached_result then
           return cached_result
         end
 
@@ -28,8 +29,12 @@ return {
 
         local ms = 0
         if _G.start_time then
-          local calc_end = _G.end_time or vim.uv.hrtime()
-          ms = (calc_end - _G.start_time) / 1e6
+          -- 💡 终极秘诀：Dashboard 画出来的这一瞬间，用户已经看到了界面。
+          -- 所以我们在这里直接充当“裁判”按下秒表！
+          -- 如果 _G.end_time 还没被设置，Dashboard 就在这毫秒把它永远锁死。
+          _G.end_time = _G.end_time or vim.uv.hrtime()
+
+          ms = (_G.end_time - _G.start_time) / 1e6
         end
 
         cached_result = {
