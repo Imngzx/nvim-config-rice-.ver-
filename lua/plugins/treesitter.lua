@@ -28,9 +28,7 @@ resonance.load({
     end)
   end,
 
-  -- cmd = { 'Tg', 'TgLogout', 'TgSend', 'TgPr' },
-  -- event = { 'BufReadPre', 'BufNewFile' },
-  event = { 'User', pattern = 'VeryLazy' },
+  event = { 'BufReadPre', 'BufNewFile' },
 
   setup = function()
     setup_compiler()
