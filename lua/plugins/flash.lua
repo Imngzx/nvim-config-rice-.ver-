@@ -1,6 +1,6 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/folke/flash.nvim',
   keys = {
     { { 'n', 'x', 'o' }, '<CR>', function() require('flash').jump() end, { desc = 'Flash' } },

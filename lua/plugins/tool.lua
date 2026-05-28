@@ -1,7 +1,7 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
 -- [Key note] Load on VeryLazy
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/folke/which-key.nvim',
   event = { 'User', pattern = 'VeryLazy' },
   setup = function()
@@ -51,7 +51,7 @@ lazy.load({
   end
 })
 
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/nvim-mini/mini.diff',
   event = { 'BufReadPost', 'BufNewFile' },
   setup = function()
@@ -86,17 +86,12 @@ lazy.load({
   end
 })
 
-vim.keymap.set('n', '<leader>pL', function()
-  require('custom.lazy-ui').open()
-end, { desc = '[Panel] DIY Lazy UI' })
-
-
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/atusy/budoux.lua',
   event = { 'User', pattern = 'VeryLazy' },
 })
 
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/Imngzx/ascetic.nvim',
   event = { 'BufReadPost', 'BufNewFile' },
   -- event = { 'User', pattern = 'VeryLazy' },

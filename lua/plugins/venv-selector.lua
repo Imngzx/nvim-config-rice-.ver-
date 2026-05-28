@@ -1,7 +1,7 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
 -- [Python Venv Selector]
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/linux-cultist/venv-selector.nvim',
   -- 只有在打开 Python 文件时，或者手动输入命令时才加载，极致优化启动速度
   ft = 'python',

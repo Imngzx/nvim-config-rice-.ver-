@@ -1,6 +1,6 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/XXiaoA/atone.nvim',
   -- 只有在使用命令或快捷键时才会加载这个插件
   cmd = { 'Atone' },

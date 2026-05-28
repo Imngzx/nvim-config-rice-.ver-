@@ -1,7 +1,7 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
 -- [Colorful Menu]
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/xzbdmw/colorful-menu.nvim',
   event = { 'InsertEnter', 'CmdlineEnter' },
   setup = function()

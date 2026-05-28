@@ -1,7 +1,7 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
 -- [CSV View]
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/hat0uma/csvview.nvim',
   ft = { 'csv', 'tsv' },
   cmd = { 'CsvViewEnable', 'CsvViewDisable', 'CsvViewToggle' },

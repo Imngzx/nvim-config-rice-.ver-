@@ -1,7 +1,7 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
 -- [Debugger] Nvim-DAP
-lazy.load({
+resonance.load({
   plugin = {
     'https://github.com/mfussenegger/nvim-dap',
     'https://github.com/igorlfs/nvim-dap-view',

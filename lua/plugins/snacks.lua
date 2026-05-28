@@ -1,6 +1,6 @@
 ---@module 'snacks'
 
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 local utils = require('libs.utils')
 
 -- 1. 加载核心插件
@@ -76,7 +76,7 @@ local set_keys = function(keys)
 end
 
 -- 4. 依托你精湛的按需加载引擎
-lazy.load({
+resonance.load({
   event = { 'User', pattern = 'VeryLazy' },
   setup = function()
     set_keys(key)

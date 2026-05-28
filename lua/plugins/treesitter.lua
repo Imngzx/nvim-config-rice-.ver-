@@ -1,4 +1,4 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
 local parsers = {
   'c', 'cpp', 'python', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
@@ -13,7 +13,7 @@ local function setup_compiler()
   end
 end
 
-lazy.load({
+resonance.load({
   plugin = { { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' } },
 
   build = function()
@@ -28,7 +28,9 @@ lazy.load({
     end)
   end,
 
-  event = { 'BufReadPre', 'BufNewFile' },
+  -- cmd = { 'Tg', 'TgLogout', 'TgSend', 'TgPr' },
+  -- event = { 'BufReadPre', 'BufNewFile' },
+  event = { 'User', pattern = 'VeryLazy' },
 
   setup = function()
     setup_compiler()

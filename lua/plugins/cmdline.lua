@@ -1,9 +1,9 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
 local row = 0.25
 -- local neovide_detect = not vim.g.neovide
 
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/aurora0x27/popup.nvim',
 
   event = { 'User', pattern = 'VeryLazy' },

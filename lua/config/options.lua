@@ -62,7 +62,6 @@ vim.opt.virtualedit = 'block' -- allow cursor past EOL in block mode
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
-require('plugins.ufo')
 
 -- [Functions]
 -- Clipboard

@@ -24,7 +24,7 @@ return {
           return cached_result
         end
 
-        local info = require('libs.plugin_info').get_info()
+        local info = require('resonance.scanner').get_info()
 
         local ms = 0
         if _G.start_time then

@@ -1,7 +1,7 @@
 -- lua/plugins/ufo.lua
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
-lazy.load({
+resonance.load({
   plugin = {
     'https://github.com/kevinhwang91/promise-async',
     'https://github.com/kevinhwang91/nvim-ufo',

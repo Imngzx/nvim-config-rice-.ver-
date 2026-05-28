@@ -1,4 +1,4 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 local icons = require('libs.icons')
 local H = {}
 
@@ -35,7 +35,7 @@ vim.g.markdown_fenced_languages = {
 }
 
 -- [Dependencies] Mason auto install once you open the Mason panel
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/mason-org/mason.nvim',
   cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonLog', 'MasonUpdate' },
   keys = {
@@ -62,7 +62,7 @@ lazy.load({
   end
 })
 
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/neovim/nvim-lspconfig',
   event = { 'BufReadPre', 'BufNewFile' },
   setup = function()
@@ -108,7 +108,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 -- [Formatter] Multi-trigger: load on save or keymap
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/stevearc/conform.nvim',
   event = { 'BufReadPost', 'BufNewFile' },
   keys = {
@@ -127,7 +127,7 @@ lazy.load({
   end
 })
 
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/mfussenegger/nvim-lint',
   event = { 'BufReadPre', 'BufNewFile' },
   setup = function()
@@ -148,7 +148,7 @@ lazy.load({
   end
 })
 
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/folke/lazydev.nvim',
   ft = 'lua',
   setup = function()
@@ -174,7 +174,7 @@ lazy.load({
 
 -- [Diagnostic] Load after LSP attaches
 -- https://github.com/rachartier/tiny-inline-diagnostic.nvim/issues/112#issuecomment-2784644922
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/rachartier/tiny-inline-diagnostic.nvim',
   event = { 'BufReadPre', 'BufNewFile' },
   setup = function()
@@ -232,7 +232,7 @@ lazy.load({
 })
 
 -- [Completion] Load on InsertEnter and CmdlineEnter
-lazy.load({
+resonance.load({
   plugin = {
     { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') },
     'https://github.com/rafamadriz/friendly-snippets'

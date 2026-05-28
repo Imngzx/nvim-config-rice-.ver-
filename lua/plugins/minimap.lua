@@ -1,5 +1,5 @@
 -- lua/plugins/neominimap.lua
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
 vim.g.neominimap = {
   auto_enable = true,
@@ -22,7 +22,7 @@ vim.g.neominimap = {
   notification_level = vim.log.levels.OFF,
 }
 
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/Isrothy/neominimap.nvim',
   event = { 'User', pattern = 'VeryLazy' },
 

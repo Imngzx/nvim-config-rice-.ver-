@@ -1,12 +1,13 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/MeanderingProgrammer/render-markdown.nvim',
-  ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
+  -- cmd = { 'Tg', 'TgLogout', 'TgSend', 'TgPr' },
+  ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion', 'telegram' },
   setup = function()
     local render_markdown = require('render-markdown')
     render_markdown.setup({
-      file_types = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
+      file_types = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion', 'telegram' },
 
       code = {
         sign = true,

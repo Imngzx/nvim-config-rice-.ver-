@@ -1,7 +1,7 @@
-local lazy = require('libs.lazy')
+local resonance = require('resonance')
 
 -- [Treesitter Context]
-lazy.load({
+resonance.load({
   plugin = 'https://github.com/nvim-treesitter/nvim-treesitter-context',
   -- 在打开文件时自动加载
   event = { 'BufReadPost', 'BufNewFile' },
