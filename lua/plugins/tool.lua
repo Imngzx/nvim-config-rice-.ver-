@@ -87,11 +87,6 @@ resonance.load({
 })
 
 resonance.load({
-  plugin = 'https://github.com/atusy/budoux.lua',
-  event = { 'User', pattern = 'VeryLazy' },
-})
-
-resonance.load({
   plugin = 'https://github.com/Imngzx/ascetic.nvim',
   event = { 'BufReadPost', 'BufNewFile' },
   -- event = { 'User', pattern = 'VeryLazy' },
