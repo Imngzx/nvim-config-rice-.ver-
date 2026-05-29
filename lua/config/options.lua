@@ -23,9 +23,11 @@ vim.opt.smartindent = true -- auto-indent new lines intelligently
 vim.opt.wrap = true -- default line wrap
 vim.opt.linebreak = true -- wrap at word boundary if wrap
 vim.opt.breakindent = true -- maintain indent on wrap
+
 -- Others
 vim.opt.winminwidth = 5 -- prevent tiny splits
 vim.opt.undofile = true
+vim.o.sessionoptions = 'buffers,curdir,tabpages,winsize,help,skiprtp,folds'
 
 -- [Editor]
 vim.opt.cmdheight = 0
