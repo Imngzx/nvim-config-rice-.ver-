@@ -13,7 +13,6 @@ resonance.load({
 
 resonance.load({
   plugin = 'https://github.com/bekaboo/dropbar.nvim',
-  -- event = { 'User', pattern = 'VeryLazy' },
   event = { 'BufReadPre', 'BufNewFile' },
   setup = function()
     require('dropbar').setup({
