@@ -49,10 +49,6 @@ require('plugins.catppuccin')
 local Snacks = require('plugins.snacks')
 require('plugins.cmdline')
 require('plugins.ui')
-require('plugins.markdown')
-require('plugins.csvview')
-require('custom.incline').setup()
-require('custom.transparent').setup({ auto_enable = false })
 
 local icons = require('libs.icons')
 require('custom.tabline').setup({
@@ -70,55 +66,68 @@ require('plugins.heirline')
 --   icons = { branch = icons.git.branch }
 -- })
 
-require('custom.session').setup()
 require('plugins.tool')
-require('plugins.treesitter')
-require('plugins.ufo')
-require('plugins.treesitter-context')
-require('plugins.lsp')
-require('plugins.colorful-lsp-menu')
-require('custom.coderunner').setup()
-require('plugins.venv-selector')
-require('plugins.dap')
-require('plugins.jisho')
-require('plugins.AI')
-if not require('libs.utils').is_windows() then
-  require('custom.language-switcher').setup()
-end
-
-require('config.neovide')
-
 require('custom.sudo')
-require('custom.todo').setup()
-
--- [git]
-require('custom.git').setup({
-  stage_action = Snacks.picker.actions.git_stage,
-  get_git_root = Snacks.git.get_root
-})
-require('custom.git-blame').setup({
-  enabled = true,
-  message_template = '  󰈔 <summary>,  <author> (<date>)',
-  date_format = '%r',
-  delay = 1000,
-  max_summary_length = 30,
-  get_git_root = Snacks.git.get_root
-})
 
 vim.api.nvim_create_autocmd('User', {
   pattern = 'VeryLazy',
   callback = function()
+    require('custom.session').setup()
     require('custom.lsp-loading').setup()
     require('custom.pairs').setup()
     require('custom.surround').setup()
-
-    -- you can try it out if you want ฅ₍^•⩊ •マⳊ
+    require('custom.incline').setup()
+    require('custom.transparent').setup({ auto_enable = false })
     require('custom.word-jump')
-
-    require('plugins.atone')
     require('plugins.flash')
     require('plugins.minimap')
     require('plugins.mini-hipatterns')
+    require('plugins.markdown')
+    require('plugins.csvview')
+    require('plugins.treesitter')
+    require('plugins.treesitter-context')
+    require('plugins.ufo')
+    require('plugins.lsp')
+    require('plugins.colorful-lsp-menu')
+    require('custom.coderunner').setup()
+    require('plugins.venv-selector')
+    require('plugins.dap')
+    require('plugins.jisho')
+    require('plugins.AI')
+    require('plugins.atone')
+    if not require('libs.utils').is_windows() then
+      require('custom.language-switcher').setup()
+    end
+    require('config.neovide')
+    require('custom.todo').setup()
+
+    -- [git]
+    require('custom.git').setup({
+      stage_action = Snacks.picker.actions.git_stage,
+      get_git_root = Snacks.git.get_root
+    })
+    require('custom.git-blame').setup({
+      enabled = true,
+      message_template = '  󰈔 <summary>,  <author> (<date>)',
+      date_format = '%r',
+      delay = 1000,
+      max_summary_length = 30,
+      get_git_root = Snacks.git.get_root
+    })
+    vim.schedule(function()
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        local name = vim.api.nvim_buf_get_name(buf)
+        if vim.api.nvim_buf_is_loaded(buf) and name ~= '' then
+          if vim.fn.filereadable(name) == 1 then
+            pcall(vim.api.nvim_exec_autocmds, 'BufReadPre', { buffer = buf, modeline = false })
+            pcall(vim.api.nvim_exec_autocmds, 'BufReadPost', { buffer = buf, modeline = false })
+          else
+            pcall(vim.api.nvim_exec_autocmds, 'BufNewFile', { buffer = buf, modeline = false })
+          end
+          pcall(vim.api.nvim_exec_autocmds, 'FileType', { buffer = buf, modeline = false })
+        end
+      end
+    end)
   end
 })
 
