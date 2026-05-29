@@ -72,23 +72,30 @@ require('custom.sudo')
 vim.api.nvim_create_autocmd('User', {
   pattern = 'VeryLazy',
   callback = function()
+    -- restore session
     require('custom.session').setup()
-    require('custom.lsp-loading').setup()
+
+    -- coding
+    require('plugins.treesitter')
+    require('plugins.treesitter-context')
+    require('plugins.lsp')
+    require('plugins.colorful-lsp-menu')
+    require('plugins.ufo')
     require('custom.pairs').setup()
     require('custom.surround').setup()
-    require('custom.incline').setup()
-    require('custom.transparent').setup({ auto_enable = false })
     require('custom.word-jump')
     require('plugins.flash')
+
+    -- UI
+    require('custom.incline').setup()
+    require('custom.lsp-loading').setup()
+    require('custom.transparent').setup({ auto_enable = false })
     require('plugins.minimap')
     require('plugins.mini-hipatterns')
     require('plugins.markdown')
     require('plugins.csvview')
-    require('plugins.treesitter')
-    require('plugins.treesitter-context')
-    require('plugins.ufo')
-    require('plugins.lsp')
-    require('plugins.colorful-lsp-menu')
+
+    -- Util
     require('custom.coderunner').setup()
     require('plugins.venv-selector')
     require('plugins.dap')
@@ -114,6 +121,7 @@ vim.api.nvim_create_autocmd('User', {
       max_summary_length = 30,
       get_git_root = Snacks.git.get_root
     })
+
     vim.schedule(function()
       for _, buf in ipairs(vim.api.nvim_list_bufs()) do
         local name = vim.api.nvim_buf_get_name(buf)
