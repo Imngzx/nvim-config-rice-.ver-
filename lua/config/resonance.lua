@@ -125,6 +125,8 @@ vim.api.nvim_create_autocmd('User', {
       get_git_root = Snacks.git.get_root
     })
 
+    require('plugins.telegram')
+
     vim.schedule(function()
       for _, buf in ipairs(vim.api.nvim_list_bufs()) do
         local name = vim.api.nvim_buf_get_name(buf)
