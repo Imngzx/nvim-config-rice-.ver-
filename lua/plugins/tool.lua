@@ -33,6 +33,7 @@ resonance.load({
       { '<leader>r', group = 'Run', icon = ' ' }, -- 为 coderunner.lua 补充
       { '<leader>s', group = 'Search', icon = '󰜎 ' }, -- 修正：Snacks 中 s 是 Search
       { '<leader>t', group = 'Translate', icon = ' ' },
+      { '<leader>T', group = 'Telegram', icon = ' ' },
       { '<leader>u', group = 'UI/Toggles', icon = '󰙵 ' },
 
       -- 顺手把内置/其他操作符的提示也加上
