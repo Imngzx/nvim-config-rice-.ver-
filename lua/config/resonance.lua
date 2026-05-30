@@ -69,6 +69,9 @@ require('plugins.heirline')
 require('plugins.tool')
 require('custom.sudo')
 
+-- misc
+require('plugins.discord')
+
 vim.api.nvim_create_autocmd('User', {
   pattern = 'VeryLazy',
   callback = function()
