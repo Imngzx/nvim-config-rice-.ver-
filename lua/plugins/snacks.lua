@@ -77,6 +77,7 @@ end
 
 -- 4. 依托你精湛的按需加载引擎
 resonance.load({
+  plugin = 'https://github.com/folke/snacks.nvim',
   event = { 'User', pattern = 'VeryLazy' },
   setup = function()
     set_keys(key)
