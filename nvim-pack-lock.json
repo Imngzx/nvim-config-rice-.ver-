@@ -18,7 +18,7 @@
       "src": "https://github.com/atusy/budoux.lua"
     },
     "codecompanion.nvim": {
-      "rev": "b1cbe52ecd71e7b0ed43ac1dc6eb3aab4099db00",
+      "rev": "57989aca2e92083b16a2500ad47f285d82d5c43b",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -28,6 +28,10 @@
     "conform.nvim": {
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "https://github.com/stevearc/conform.nvim"
+    },
+    "cord.nvim": {
+      "rev": "0be090969e978f7442870ef227e09eff7bf3480d",
+      "src": "https://github.com/vyfor/cord.nvim"
     },
     "csvview.nvim": {
       "rev": "5c22774c3ecc7f8883af5d143b366e45b1f0875d",
@@ -58,7 +62,7 @@
       "src": "https://github.com/folke/lazydev.nvim"
     },
     "mason.nvim": {
-      "rev": "bb639d4bf385a4d89f478b83af4d770be05ab7eb",
+      "rev": "16ba83bfc8a25f52bb545134f5bee082b195c460",
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.diff": {
@@ -77,8 +81,12 @@
       "rev": "0676085d898019f06044923934e38663f5efa290",
       "src": "https://github.com/Isrothy/neominimap.nvim"
     },
+    "nui.nvim": {
+      "rev": "de740991c12411b663994b2860f1a4fd0937c130",
+      "src": "https://github.com/MunifTanjim/nui.nvim"
+    },
     "nvim": {
-      "rev": "8edd468af4d63212b84d69b2ddb5ffc9023ef5eb",
+      "rev": "0303a7208dba448c459767486a38a6ec05c4216b",
       "src": "https://github.com/catppuccin/nvim"
     },
     "nvim-dap": {
@@ -135,15 +143,20 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "1fe7496d441969f098617f0ca295771678f5544e",
+      "rev": "b5de0dfd3038e908fae6625dc02e318c02805b92",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "snacks.nvim": {
       "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
       "src": "https://github.com/folke/snacks.nvim"
     },
+    "telegram.nvim": {
+      "rev": "a9981fd31e1d8efde6f2cdf3cdcb9c27a67abf01",
+      "src": "https://github.com/ChuYanLon/telegram.nvim",
+      "version": "'main'"
+    },
     "tiny-inline-diagnostic.nvim": {
-      "rev": "6bdbc9a2f5a846ff5fc55a998ff97c0e2968b7e5",
+      "rev": "680762989e8b05a72e90769959d0fb9a557e6917",
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
     "venv-selector.nvim": {
