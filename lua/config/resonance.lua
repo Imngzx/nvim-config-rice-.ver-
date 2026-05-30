@@ -107,6 +107,7 @@ vim.api.nvim_create_autocmd('User', {
     require('plugins.atone')
     if not require('libs.utils').is_windows() then
       require('custom.language-switcher').setup()
+      require('plugins.telegram')
     end
     require('config.neovide')
     require('custom.todo').setup()
@@ -124,8 +125,6 @@ vim.api.nvim_create_autocmd('User', {
       max_summary_length = 30,
       get_git_root = Snacks.git.get_root
     })
-
-    require('plugins.telegram')
 
     vim.schedule(function()
       for _, buf in ipairs(vim.api.nvim_list_bufs()) do
