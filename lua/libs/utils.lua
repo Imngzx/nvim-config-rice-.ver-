@@ -1,7 +1,7 @@
 local M = {}
 
 M.is_windows = function()
-  return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1
+  return jit.os == 'Windows'
 end
 
 --- Check if the current nvim version is compatible with the allowed version
