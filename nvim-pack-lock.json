@@ -30,7 +30,7 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "cord.nvim": {
-      "rev": "0be090969e978f7442870ef227e09eff7bf3480d",
+      "rev": "c7f82ba58da3fa6284467f408f5f5ce1d8641520",
       "src": "https://github.com/vyfor/cord.nvim"
     },
     "csvview.nvim": {
