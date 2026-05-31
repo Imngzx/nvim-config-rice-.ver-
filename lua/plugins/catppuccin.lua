@@ -8,16 +8,6 @@ resonance.load({
     {
       src = 'https://github.com/catppuccin/nvim',
       version = 'main',
-      build = function()
-        vim.schedule(function()
-          local ok, catppuccin = require('catppuccin')
-          if ok and catppuccin then
-            pcall(function()
-              vim.cmd('CatppuccinCompile')
-            end)
-          end
-        end)
-      end
     }
   },
 
