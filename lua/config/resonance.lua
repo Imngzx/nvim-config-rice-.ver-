@@ -59,13 +59,6 @@ require('custom.tabline').setup({
   icons = { close = icons.basic.close, modify = icons.basic.modify }
 })
 
-require('plugins.heirline')
--- require('custom.statusline').setup({
---   git_cache_setup = { get_git_root = Snacks.git.get_root },
---   hide_filename_by_ft = { snacks_picker_list = true },
---   icons = { branch = icons.git.branch }
--- })
-
 require('plugins.tool')
 require('custom.sudo')
 
@@ -91,6 +84,12 @@ vim.api.nvim_create_autocmd('User', {
     require('plugins.flash')
 
     -- UI
+    require('plugins.heirline')
+    -- require('custom.statusline').setup({
+    --   git_cache_setup = { get_git_root = Snacks.git.get_root },
+    --   hide_filename_by_ft = { snacks_picker_list = true },
+    --   icons = { branch = icons.git.branch }
+    -- })
     require('custom.incline').setup()
     require('custom.lsp-loading').setup()
     require('custom.transparent').setup({ auto_enable = false })
