@@ -131,12 +131,12 @@ vim.api.nvim_create_autocmd('User', {
         local name = vim.api.nvim_buf_get_name(buf)
         if vim.api.nvim_buf_is_loaded(buf) and name ~= '' then
           if vim.fn.filereadable(name) == 1 then
-            pcall(vim.api.nvim_exec_autocmds, 'BufReadPre', { buffer = buf, modeline = false })
-            pcall(vim.api.nvim_exec_autocmds, 'BufReadPost', { buffer = buf, modeline = false })
+            pcall(vim.api.nvim_exec_autocmds, 'BufReadPre', { buf = buf, modeline = false })
+            pcall(vim.api.nvim_exec_autocmds, 'BufReadPost', { buf = buf, modeline = false })
           else
-            pcall(vim.api.nvim_exec_autocmds, 'BufNewFile', { buffer = buf, modeline = false })
+            pcall(vim.api.nvim_exec_autocmds, 'BufNewFile', { buf = buf, modeline = false })
           end
-          pcall(vim.api.nvim_exec_autocmds, 'FileType', { buffer = buf, modeline = false })
+          pcall(vim.api.nvim_exec_autocmds, 'FileType', { buf = buf, modeline = false })
         end
       end
     end)

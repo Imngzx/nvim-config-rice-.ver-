@@ -76,7 +76,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufNewFile' }, {
       -- 为这个 Buffer 专门设置一个监听器：只在敲下 `:w` 时触发
       vim.api.nvim_create_autocmd('BufWriteCmd', {
         group = aug,
-        buffer = buf,
+        buf = buf,
         callback = function()
           do_sudo_save(buf, path)
         end
