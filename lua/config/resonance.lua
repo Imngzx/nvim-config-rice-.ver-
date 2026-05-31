@@ -18,7 +18,7 @@ end
 
 vim.opt.rtp:prepend(pack_path)
 
-vim.pack.add({ plugin_url })
+vim.cmd('packadd resonance.nvim')
 
 -- =====================================================================
 -- 🚀 Configuration
