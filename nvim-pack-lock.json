@@ -87,7 +87,8 @@
     },
     "nvim": {
       "rev": "0303a7208dba448c459767486a38a6ec05c4216b",
-      "src": "https://github.com/catppuccin/nvim"
+      "src": "https://github.com/catppuccin/nvim",
+      "version": "'main'"
     },
     "nvim-dap": {
       "rev": "531771530d4f82ad2d21e436e3cc052d68d7aebb",

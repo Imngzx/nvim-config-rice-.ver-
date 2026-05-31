@@ -4,8 +4,25 @@ local utils = require('libs.utils')
 local path_sep = utils.is_windows() and '\\' or '/'
 
 resonance.load({
-  plugin = 'https://github.com/catppuccin/nvim',
+  plugin = {
+    {
+      src = 'https://github.com/catppuccin/nvim',
+      version = 'main',
+      build = function()
+        vim.schedule(function()
+          local ok, catppuccin = require('catppuccin')
+          if ok and catppuccin then
+            pcall(function()
+              vim.cmd('CatppuccinCompile')
+            end)
+          end
+        end)
+      end
+    }
+  },
+
   event = { 'User', pattern = 'ForceLoadCatppuccin' },
+
   setup = function()
     require('catppuccin').setup({
       compile_path = vim.fn.stdpath('cache') .. path_sep .. 'catppuccin',
@@ -17,6 +34,7 @@ resonance.load({
         markdown = true,
         mason = true,
         render_markdown = true,
+        ufo = true,
         snacks = true,
         which_key = true,
         mini = true,
