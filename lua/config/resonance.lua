@@ -77,6 +77,7 @@ vim.api.nvim_create_autocmd('User', {
   callback = function()
     -- restore session
     require('custom.session').setup()
+    require('custom.workspace').setup()
 
     -- coding
     require('plugins.treesitter')
