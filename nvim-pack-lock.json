@@ -38,7 +38,7 @@
       "src": "https://github.com/hat0uma/csvview.nvim"
     },
     "dropbar.nvim": {
-      "rev": "f0a42bd92aa647e44221397723453403f5e20f16",
+      "rev": "808ba31cde89aec8833e9789f5e04557cd31c9e1",
       "src": "https://github.com/bekaboo/dropbar.nvim"
     },
     "flash.nvim": {
@@ -144,7 +144,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "b5de0dfd3038e908fae6625dc02e318c02805b92",
+      "rev": "34e30f9650a6dbc24db19687c2670885daf9da58",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "snacks.nvim": {
