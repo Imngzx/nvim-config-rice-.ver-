@@ -81,10 +81,6 @@
       "rev": "0676085d898019f06044923934e38663f5efa290",
       "src": "https://github.com/Isrothy/neominimap.nvim"
     },
-    "nui.nvim": {
-      "rev": "de740991c12411b663994b2860f1a4fd0937c130",
-      "src": "https://github.com/MunifTanjim/nui.nvim"
-    },
     "nvim": {
       "rev": "0303a7208dba448c459767486a38a6ec05c4216b",
       "src": "https://github.com/catppuccin/nvim",
