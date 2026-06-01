@@ -2,14 +2,12 @@ local resonance = require('resonance')
 
 resonance.load({
   plugin = {
-    'https://github.com/MunifTanjim/nui.nvim',
     {
       src = 'https://github.com/ChuYanLon/telegram.nvim',
       version = 'main',
       build = 'npm i'
     },
   },
-
 
   cmd = { 'Tg', 'TgLogout', 'TgSend', 'TgPr' },
   keys = {
