@@ -30,7 +30,7 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "cord.nvim": {
-      "rev": "c7f82ba58da3fa6284467f408f5f5ce1d8641520",
+      "rev": "92853b8a78f3502ff2132671e45bbcd718bfcd47",
       "src": "https://github.com/vyfor/cord.nvim"
     },
     "csvview.nvim": {
@@ -144,7 +144,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "34e30f9650a6dbc24db19687c2670885daf9da58",
+      "rev": "4cf7c325a1afcaaeac61a81275502c248d9279fa",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "snacks.nvim": {
@@ -152,7 +152,7 @@
       "src": "https://github.com/folke/snacks.nvim"
     },
     "telegram.nvim": {
-      "rev": "d8e8c9f5fa1f8f2df6260b41df49a21be09109c9",
+      "rev": "e243724fc2bd0b25b35edb517334743fae4d69db",
       "src": "https://github.com/ChuYanLon/telegram.nvim",
       "version": "'main'"
     },
