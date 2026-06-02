@@ -341,7 +341,7 @@
 | `<leader>pm` | n | Open Mason (Install/Update LSP tools) |
 | `<leader>pu` | n | Update all Neovim Plugins |
 | `<leader>pN` | n | Open Neovim News (`:h news.txt`) |
-| `<leader>pL` | n | Open DIY Lazy UI (Panel) |
+| `<leader>pL` | n | Open **Resonance** UI (Panel) |
 
 ---
 
@@ -364,4 +364,4 @@
 
 ---
 
-*Last updated based on commit pushed 2026-05-23.*
+*Last updated based on commit pushed 2026-06-03.*
