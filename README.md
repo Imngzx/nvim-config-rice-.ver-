@@ -26,7 +26,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 ### Summarization
 
 - **Fast.** Less than **30ms** to start, say no to heavy plugins for ui only
-- **Simple.** Run out of the box with only 41 plugins.
+- **Simple.** Run out of the box with only 40 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code, supports cjk.
@@ -53,7 +53,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 - List of self made plugins:
   - [x] [jisho.nvim](https://github.com/Imngzx/jisho.nvim)
   - [x] [ascetic.nvim](https://github.com/Imngzx/ascetic.nvim)
-  - [x] [Powered by 󱑽 **Resonance.nvim** 󱑽](https://github.com/Imngzx/resonance.nvim)
+  - [x] [Powered by **Resonance.nvim**](https://github.com/Imngzx/resonance.nvim)
 
 > [!TIP]
 > Can test launch speed with:
