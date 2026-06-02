@@ -154,20 +154,29 @@ resonance.load({
   setup = function()
     -- finds types.yazi
     local utils = require('libs.utils')
+
+    -- Yazi
     local yazi_path = utils.is_windows()
       and vim.fn.expand('~/AppData/Roaming/yazi/config/plugins/types.yazi')
       or vim.fn.expand('~/.config/yazi/plugins/types.yazi')
+
+    -- Hypr
+    local hyprland_stubs = '/usr/share/hypr/stubs'
 
     require('lazydev').setup({
       library = {
         'nvim-lspconfig',
         vim.fn.stdpath('data') .. '/site/pack/core/opt/*',
         vim.fn.stdpath('config') .. '/lua',
+        {
+          path = yazi_path,
+          words = { 'ya', 'cx' }
+        },
+        {
+          path = hyprland_stubs,
+          words = { 'hl', }
+        }
       },
-      {
-        path = yazi_path,
-        words = { 'ya', 'cx' }
-      }
     })
   end
 })

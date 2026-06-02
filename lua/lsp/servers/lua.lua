@@ -21,7 +21,8 @@ return {
             'SimpleTablineSwitch',
             'SimpleTablineClose',
             'SimpleTablineScrollLeft',
-            'SimpleTablineScrollRight'
+            'SimpleTablineScrollRight',
+            'hl',
           }
         }
       }
