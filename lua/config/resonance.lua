@@ -58,6 +58,12 @@ require('custom.sudo')
 -- misc
 require('plugins.discord')
 
+-- NOTE: the reson I wrap my plugins with this block is because the mechanics of luajit
+-- although resonance.nvim will blocks luajit to require the plugin until resonance sends it to rtp
+-- but luajit will still read the config file (not the plugin)
+-- this will cause some slow startup time
+-- It doesnt meant that resonance is not lazy-loading
+
 vim.api.nvim_create_autocmd('User', {
   pattern = 'VeryLazy',
   callback = function()
