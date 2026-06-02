@@ -9,8 +9,8 @@ resonance.load({
 
   cmd = { 'Tg', 'TgLogout', 'TgSend', 'TgPr' },
   keys = {
-    { 'n', '<leader>Tp', '<cmd>Tg<CR>', { desc = 'Open Telegram' } },
-    { 'n', '<leader>Tl', '<cmd>TgLogout<CR>', { desc = 'Logout Telegram' } },
+    { 'n', '<leader>Tg', '<cmd>Tg<CR>', { desc = 'Open Telegram' } },
+    { 'n', '<leader>TL', '<cmd>TgLogout<CR>', { desc = 'Logout Telegram' } },
   },
   setup = function()
     require('telegram').setup({})
