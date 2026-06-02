@@ -6,14 +6,7 @@ local pack_path = vim.fn.stdpath('data') .. '/site/pack/core/opt/resonance.nvim'
 
 if not vim.uv.fs_stat(pack_path) then
   vim.notify('󱑽 Resonating (Downloading resonance.nvim)...', vim.log.levels.INFO)
-  vim.fn.system({
-    'git',
-    'clone',
-    '--filter=blob:none',
-    plugin_url,
-    '--branch=main',
-    pack_path
-  })
+  vim.system({ 'git', 'clone', '--filter=blob:none', plugin_url, '--branch=main', pack_path }):wait()
 end
 
 vim.opt.rtp:prepend(pack_path)
