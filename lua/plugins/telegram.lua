@@ -2,11 +2,9 @@ local resonance = require('resonance')
 
 resonance.load({
   plugin = {
-    {
-      src = 'https://github.com/ChuYanLon/telegram.nvim',
-      version = 'main',
-      build = 'npm i'
-    },
+    src = 'https://github.com/ChuYanLon/telegram.nvim',
+    version = 'main',
+    build = 'npm i'
   },
 
   cmd = { 'Tg', 'TgLogout', 'TgSend', 'TgPr' },
