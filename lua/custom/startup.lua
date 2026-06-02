@@ -30,7 +30,7 @@ if vim.env.PROF then
   })
 end
 
-if not require('libs.utils').is_compatible_version('0x7fb5a004c438') then
+if not require('libs.utils').is_compatible_version('0x7fb2e35d2280') then
   vim.notify('Need Neovim 0.13!', vim.log.levels.ERROR)
   return
 end
