@@ -17,7 +17,7 @@ local get_opt = api.nvim_get_option_value
 local set_current_buf = api.nvim_set_current_buf
 local diag_count = vim.diagnostic.count
 local severity = vim.diagnostic.severity
--- local list_tabpages = api.nvim_list_tabpages -- NOTE: paired with line 232
+local list_tabpages = api.nvim_list_tabpages
 
 -- colors
 local MODIFIED_COLOR = color_list.colors.retro_apricot.hex
@@ -41,9 +41,8 @@ local function get_snacks()
   return _snacks
 end
 
-
 -- =========================================================
--- ⚙️ 2. BPM 缓冲池同步引擎 (SoA 数组优化)
+-- ⚙️ 2. BPM 缓冲池同步引擎 (实时获取，消灭任何延迟 Bug)
 -- =========================================================
 local function get_bufs()
   local bpm = get_bpm()
@@ -64,21 +63,14 @@ local function get_bufs()
   return res
 end
 
-local buflist_cache = {}
-local aug = api.nvim_create_augroup('Heirline_Tabline_Cache', { clear = true })
+local aug = api.nvim_create_augroup('Heirline_Tabline_Redraw', { clear = true })
 
 api.nvim_create_autocmd(
-  { 'VimEnter', 'UIEnter', 'BufAdd', 'BufDelete', 'BufEnter', 'TabEnter', 'TabClosed' }, {
+  { 'VimEnter', 'UIEnter', 'BufAdd', 'BufDelete', 'BufEnter', 'TabEnter', 'TabClosed',
+    'DiagnosticChanged' }, {
     group = aug,
     callback = function()
       schedule(function()
-        local buffers = get_bufs()
-        for i = 1, #buffers do
-          buflist_cache[i] = buffers[i]
-        end
-        for i = #buffers + 1, #buflist_cache do
-          buflist_cache[i] = nil
-        end
         vim.cmd('redrawtabline')
       end)
     end
@@ -161,7 +153,7 @@ local TablineFileNameBlock = {
     end,
   },
 
-  -- 🛑 诊断指标 (保持原生风格)
+  -- 🛑 诊断指标
   {
     condition = function(self) return self.errors > 0 end,
     provider = function(self) return '  ' .. self.errors end,
@@ -173,7 +165,7 @@ local TablineFileNameBlock = {
     hl = { fg = 'diag_warn' },
   },
 
-  -- ❌ 关闭/修改状态 按钮 (使用 incline.lua 的颜色)
+  -- ❌ 关闭/修改状态 按钮
   {
     provider = function(self)
       return self.is_modified and ' ● ' or ' 󰅖 '
@@ -256,7 +248,7 @@ local BufferLine = utils.make_buflist(
   TablineBufferBlock,
   { provider = '  ', hl = 'TabLine' },
   { provider = '  ', hl = 'TabLine' },
-  function() return buflist_cache end,
+  get_bufs,
   false
 )
 
