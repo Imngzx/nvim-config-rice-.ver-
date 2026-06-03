@@ -140,7 +140,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "3528e97be1f4f504ebdaaadd1f3076c93ccc0abc",
+      "rev": "11137db3843141248d18c192a54c2f0989be8ddd",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "snacks.nvim": {
@@ -148,7 +148,7 @@
       "src": "https://github.com/folke/snacks.nvim"
     },
     "telegram.nvim": {
-      "rev": "aa57f06749fbd868c4797fd92387dfabe57f7c60",
+      "rev": "9dc2e14787139a47b7ac800c30e5e0814d84fed0",
       "src": "https://github.com/ChuYanLon/telegram.nvim",
       "version": "'main'"
     },
