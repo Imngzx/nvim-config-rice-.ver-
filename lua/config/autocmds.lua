@@ -27,18 +27,11 @@ create_autocmd('FileType', {
   end,
 })
 
--- [Autocmd] Highlight on yank
-create_autocmd('TextYankPost', {
-  group = create_augroup('HighlightOnYank', { clear = true }),
+-- [Autocmd] Highlight on yank and paste
+create_autocmd({ 'TextYankPost', 'TextPutPost' }, {
+  group = create_augroup('HighlightOnYankAndPaste', { clear = true }),
   callback = function() vim.hl.hl_op() end,
-  desc = 'Highlight yanked text',
-})
-
--- [Autocmd] Highlight on put (paste)
-create_autocmd('TextPutPost', {
-  group = create_augroup('HighlightOnPut', { clear = true }),
-  callback = function() vim.hl.hl_op() end,
-  desc = 'Highlight pasted text',
+  desc = 'Highlight text when yank and paste',
 })
 
 -- uses csvview plugin as soon as opening a csv file
