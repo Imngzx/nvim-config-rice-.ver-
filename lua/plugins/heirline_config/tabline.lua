@@ -1,5 +1,6 @@
 local utils = require('heirline.utils')
 local color_list = require('custom.color-list')
+local colors = require('plugins.heirline_config.colors')
 
 -- =========================================================
 -- ⚡ 1. 赋值优化法 (Localize C-API for extreme performance)
@@ -18,6 +19,14 @@ local diag_count = vim.diagnostic.count
 local severity = vim.diagnostic.severity
 -- local list_tabpages = api.nvim_list_tabpages -- NOTE: paired with line 232
 
+-- colors
+local MODIFIED_COLOR = color_list.colors.retro_apricot.hex
+local BUFFER_CROSS_COLOR = color_list.colors.sakura_drop.hex
+local TAB_PAGE_NUM = color_list.colors.silicon_valley.hex
+local UNFOCUS_TAB_PAGE_NUM = color_list.colors.mech_armor.hex
+local TAB_PAGE_CROSS_BG = colors.mode_colors.no
+local TAB_PAGE_CROSS_COLOR = color_list.colors.carbon_fiber.hex
+
 local _bpm, _icons, _snacks
 local function get_bpm()
   if not _bpm then pcall(function() _bpm = require('bpm') end) end
@@ -32,9 +41,6 @@ local function get_snacks()
   return _snacks
 end
 
-local MODIFIED_COLOR = color_list.colors.retro_apricot.hex
-local CROSS_COLOR = color_list.colors.sakura_drop.hex
-local TAB_PAGE_NUM = color_list.colors.glacier_ice.hex
 
 -- =========================================================
 -- ⚙️ 2. BPM 缓冲池同步引擎 (SoA 数组优化)
@@ -174,7 +180,7 @@ local TablineFileNameBlock = {
     end,
     hl = function(self)
       if self.is_modified then return { fg = MODIFIED_COLOR } end
-      return { fg = CROSS_COLOR }
+      return { fg = BUFFER_CROSS_COLOR }
     end,
     on_click = {
       callback = function(_, minwid)
@@ -221,7 +227,7 @@ local Tabpage = {
       }
     else
       return {
-        fg = color_list.colors.mech_armor.hex,
+        fg = UNFOCUS_TAB_PAGE_NUM,
         bg = utils.get_highlight('TabLine').bg,
         italic = true
       }
@@ -236,10 +242,8 @@ local TabPages = {
     provider = '%999X 󰅖 %X',
     hl = function()
       return {
-        -- 🌸 换成你想要的樱花粉
-        fg = color_list.colors.ghost_shell.hex,
-        -- 自动提取未选中 Tab 的背景色，保证融合不突兀
-        bg = color_list.colors.mainframe_alert.hex,
+        fg = TAB_PAGE_CROSS_COLOR,
+        bg = TAB_PAGE_CROSS_BG,
       }
     end,
   }
