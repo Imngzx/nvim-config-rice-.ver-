@@ -16,7 +16,7 @@ local get_opt = api.nvim_get_option_value
 local set_current_buf = api.nvim_set_current_buf
 local diag_count = vim.diagnostic.count
 local severity = vim.diagnostic.severity
-local list_tabpages = api.nvim_list_tabpages
+-- local list_tabpages = api.nvim_list_tabpages -- NOTE: paired with line 232
 
 local _bpm, _icons, _snacks
 local function get_bpm()
@@ -34,6 +34,7 @@ end
 
 local MODIFIED_COLOR = color_list.colors.retro_apricot.hex
 local CROSS_COLOR = color_list.colors.sakura_drop.hex
+local TAB_PAGE_NUM = color_list.colors.glacier_ice.hex
 
 -- =========================================================
 -- ⚙️ 2. BPM 缓冲池同步引擎 (SoA 数组优化)
@@ -196,7 +197,8 @@ local TablineFileNameBlock = {
 local TablineBufferBlock = {
   TablineFileNameBlock,
   {
-    provider = '│',
+    -- provider = '│',
+    provider = '|',
     hl = 'TabLine',
   },
 }
@@ -208,19 +210,38 @@ local Tabpage = {
   provider = function(self)
     local bpm = get_bpm()
     local name = bpm and bpm.resolve_tabname(self.tabpage) or tostring(self.tabnr)
-    return '%' .. self.tabnr .. 'T ' .. name .. ' %T'
+    return '%' .. self.tabnr .. 'T  ' .. name .. '  %T'
   end,
   hl = function(self)
-    return self.is_active and 'TabLineSel' or 'TabLine'
+    if self.is_active then
+      return {
+        fg = TAB_PAGE_NUM,
+        bg = utils.get_highlight('TabLineSel').bg,
+        bold = true
+      }
+    else
+      return {
+        fg = color_list.colors.mech_armor.hex,
+        bg = utils.get_highlight('TabLine').bg,
+        italic = true
+      }
+    end
   end,
 }
 
 local TabPages = {
-  condition = function() return #list_tabpages() >= 2 end,
+  -- condition = function() return #list_tabpages() >= 2 end,
   utils.make_tablist(Tabpage),
   {
     provider = '%999X 󰅖 %X',
-    hl = 'TabLine',
+    hl = function()
+      return {
+        -- 🌸 换成你想要的樱花粉
+        fg = color_list.colors.ghost_shell.hex,
+        -- 自动提取未选中 Tab 的背景色，保证融合不突兀
+        bg = color_list.colors.mainframe_alert.hex,
+      }
+    end,
   }
 }
 
