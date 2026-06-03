@@ -33,6 +33,7 @@ local function get_snacks()
 end
 
 local MODIFIED_COLOR = color_list.colors.retro_apricot.hex
+local CROSS_COLOR = color_list.colors.sakura_drop.hex
 
 -- =========================================================
 -- ⚙️ 2. BPM 缓冲池同步引擎 (SoA 数组优化)
@@ -172,7 +173,7 @@ local TablineFileNameBlock = {
     end,
     hl = function(self)
       if self.is_modified then return { fg = MODIFIED_COLOR } end
-      return { fg = 'gray' }
+      return { fg = CROSS_COLOR }
     end,
     on_click = {
       callback = function(_, minwid)
