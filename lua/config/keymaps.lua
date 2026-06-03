@@ -104,6 +104,22 @@ map('n', 'N', "'nN'[v:searchforward].'zv'", { expr = true, desc = 'Prev search r
 map('x', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result' })
 map('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result' })
 
+-- ==========================================
+-- 🏢 [ Workspace / Tabs (Powered by BPM) ]
+-- ==========================================
+map('n', ']t', '<cmd>tabnext<cr>', { desc = 'Next Workspace (Tab)' })
+map('n', '[t', '<cmd>tabprevious<cr>', { desc = 'Prev Workspace (Tab)' })
+
+map('n', '<leader><tab>n', '<cmd>tabnew<cr>', { desc = 'New Workspace' })
+map('n', '<leader><tab>d', '<cmd>tabclose<cr>', { desc = 'Close Workspace' })
+map('n', '<leader><tab>r', function()
+  local name = vim.fn.input('Workspace Name: ')
+  if name ~= '' then
+    local ok, bpm = pcall(require, 'bpm')
+    if ok then bpm.rename_tab(vim.api.nvim_get_current_tabpage(), name) end
+  end
+end, { desc = 'Rename Workspace' })
+
 -- Clear search and stop snippet on escape
 map({ 'i', 'n', 's' }, '<esc>', function()
   cmd('noh')

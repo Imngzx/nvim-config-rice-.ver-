@@ -26,7 +26,6 @@ end
 function M.save()
   if vim.g.session_stopped then return end
 
-  -- 避免保存全是无效 Buffer 的空 Session
   local has_real_file = false
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted and vim.api.nvim_buf_get_name(buf) ~= '' and vim.bo[buf].buftype == '' then
@@ -40,11 +39,22 @@ function M.save()
   end
 
   vim.o.sessionoptions = 'buffers,curdir,tabpages,winsize,help,skiprtp,folds'
-  -- 确保保存前关闭所有的悬浮窗、通知等，防止下次打开时报错
   vim.cmd('silent! cclose')
   vim.cmd('silent! lclose')
 
+  local bpm_ok, bpm = pcall(require, 'bpm')
+  local bpm_data = bpm_ok and bpm.to_json() or nil
+
   vim.cmd('mksession! ' .. vim.fn.fnameescape(get_session_name()))
+
+  if bpm_data then
+    local json_path = get_session_name():gsub('%.vim$', '.json')
+    local fd = io.open(json_path, 'w')
+    if fd then
+      fd:write(bpm_data)
+      fd:close()
+    end
+  end
 end
 
 function M.load(last)
@@ -77,9 +87,25 @@ function M.load(last)
       end
     end
 
+    -- 1. 恢复 Vim 原生 Session
     vim.cmd('silent! source ' .. vim.fn.fnameescape(target_file))
+
+    -- 2. 【BPM 整合】：读取 JSON 恢复 Tab 状态
+    local bpm_ok, bpm = pcall(require, 'bpm')
+    if bpm_ok then
+      local json_path = target_file:gsub('%.vim$', '.json')
+      if vim.fn.filereadable(json_path) == 1 then
+        local fd = io.open(json_path, 'r')
+        if fd then
+          local data = fd:read('*a')
+          fd:close()
+          bpm.from_json(data)
+        end
+      end
+    end
+
     vim.g.session_loaded = true
-    vim.notify('Session & Cursor Restored', vim.log.levels.INFO)
+    vim.notify('Session & Workspace Restored', vim.log.levels.INFO)
   else
     vim.notify('No Session Found for current branch/dir', vim.log.levels.WARN)
   end

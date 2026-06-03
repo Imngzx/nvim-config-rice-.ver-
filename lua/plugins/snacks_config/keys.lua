@@ -65,8 +65,38 @@ return {
   -- ==========================================
   -- 🪟 [ Buffer & Window Management ]
   -- ==========================================
-  { '<leader>bd', function() Snacks.bufdelete(0, { wipe = true }) end, desc = 'Wipeout buffer' },
-  { '<leader>bo', function() Snacks.bufdelete.other({ wipe = true }) end, desc = 'Wipeout other buffers' },
+  {
+    '<leader>bd',
+    function()
+      local ok, bpm = pcall(require, 'bpm')
+      if ok then bpm.detach() else Snacks.bufdelete(0, { wipe = true }) end
+    end,
+    desc = 'Detach / Wipeout buffer'
+  },
+  {
+    '<leader>bo',
+    function()
+      local ok, bpm = pcall(require, 'bpm')
+      if ok then
+        local current_buf = vim.api.nvim_get_current_buf()
+        local tab_bufs = bpm.get_attached_buf(0)
+        for _, buf in ipairs(tab_bufs) do
+          if buf ~= current_buf then bpm.detach(buf) end
+        end
+      else
+        Snacks.bufdelete.other({ wipe = true })
+      end
+    end,
+    desc = 'Detach other buffers in Workspace'
+  },
+  {
+    '<leader>bD',
+    function()
+      local ok, bpm = pcall(require, 'bpm')
+      if ok then bpm.evict() else Snacks.bufdelete(0, { wipe = true }) end
+    end,
+    desc = 'Evict buffer from ALL Workspaces'
+  },
 
   { '<leader>br', function() Snacks.rename.rename_file() end, desc = 'Rename file' },
   { '<leader>bs', function() Snacks.scratch() end, desc = 'Toggle scratch buffer' },

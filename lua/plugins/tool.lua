@@ -42,6 +42,9 @@ resonance.load({
       { 'g', group = 'Goto', icon = '󰜎 ' },
       { 's', group = 'Surround', icon = '󰑄 ' },
       { 'z', group = 'Fold', icon = '󱃄 ' },
+
+      -- bpm tab
+      { '<leader><tab>', group = 'Workspace/Tabs', icon = '󰓩 ' },
     })
 
     -- 局部按键绑定依然保留
@@ -108,6 +111,14 @@ resonance.load({
       end,
     })
     vim.keymap.set('n', '<leader>ua', Ascetic.toggle, { desc = 'Toggle Ascetic' })
+  end
+})
+
+resonance.load({
+  plugin = 'https://github.com/aurora0x27/bpm.nvim',
+  event = { 'BufReadPost', 'BufNewFile' },
+  setup = function()
+    require('bpm').setup()
   end
 })
 

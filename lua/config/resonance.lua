@@ -43,14 +43,21 @@ local Snacks = require('plugins.snacks')
 require('plugins.cmdline')
 require('plugins.ui')
 
-local icons = require('libs.icons')
-require('custom.tabline').setup({
-  hide_single_tab = false,
-  -- use wipe for better ram usage
-  on_close = function(buf_id) Snacks.bufdelete(buf_id, { wipe = true }) end,
-  file_icons = function(name) return Snacks.util.icon(name, 'file') end,
-  icons = { close = icons.basic.close, modify = icons.basic.modify }
-})
+-- local icons = require('libs.icons')
+-- require('custom.tabline').setup({
+--   hide_single_tab = false,
+--   -- use wipe for better ram usage
+--   on_close = function(buf_id)
+--     local ok, bpm = pcall(require, 'bpm')
+--     if ok then
+--       bpm.detach(buf_id)
+--     else
+--       Snacks.bufdelete(buf_id, { wipe = true })
+--     end
+--   end,
+--   file_icons = function(name) return Snacks.util.icon(name, 'file') end,
+--   icons = { close = icons.basic.close, modify = icons.basic.modify }
+-- })
 
 require('plugins.tool')
 require('custom.sudo')

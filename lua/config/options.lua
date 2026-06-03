@@ -7,6 +7,7 @@ local env = vim.env
 opt.signcolumn = 'yes' -- always show sign column
 opt.winborder = 'rounded'
 opt.showmode = false -- Hide mode status
+o.showtabline = 2
 -- Line edit
 opt.fillchars = { eob = ' ' }
 opt.cursorline = true -- highlight current line

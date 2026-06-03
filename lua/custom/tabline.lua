@@ -163,12 +163,16 @@ M.format_tab = function(buf_id, is_current)
     icon_filename = cached.icon_filename
   else
     icon_filename = bufname ~= '' and fn_fnamemodify(bufname, ':t') or '[No Name]'
-    filename = icon_filename
-    local max_len = M.config.max_name_length
-
-    if max_len and max_len > 0 and #filename > max_len then
-      if fn_strchars(filename) > max_len then
-        filename = fn_strcharpart(filename, 0, max_len - 1) .. '…'
+    local bpm_ok, bpm = pcall(require, 'bpm')
+    if bpm_ok then
+      filename = bpm.resolve_bufname(buf_id)
+    else
+      filename = icon_filename
+      local max_len = M.config.max_name_length
+      if max_len and max_len > 0 and #filename > max_len then
+        if fn_strchars(filename) > max_len then
+          filename = fn_strcharpart(filename, 0, max_len - 1) .. '…'
+        end
       end
     end
 

@@ -54,7 +54,11 @@ local function update_incline()
 
     -- === 3. 核心科技：状态 Hash 缓存器 ===
     local buf_path = vim.api.nvim_buf_get_name(buf_id)
-    local filename = buf_path ~= '' and vim.fn.fnamemodify(buf_path, ':t') or '[No Name]'
+    local filename = '[No Name]'
+    if buf_path ~= '' then
+      local bpm_ok, bpm = pcall(require, 'bpm')
+      filename = bpm_ok and bpm.resolve_bufname(buf_id) or vim.fn.fnamemodify(buf_path, ':t')
+    end
     local modified = vim.bo[buf_id].modified
     local win_width = vim.api.nvim_win_get_width(win_id)
 

@@ -13,6 +13,10 @@
       "src": "https://github.com/Saghen/blink.cmp",
       "version": "1.0.0 - 2.0.0"
     },
+    "bpm.nvim": {
+      "rev": "a3eaeefe75eda4ccdd68c59c380687630796ca0d",
+      "src": "https://github.com/aurora0x27/bpm.nvim"
+    },
     "budoux.lua": {
       "rev": "049f64f5594e1cb1c74f869a644359c2f570a9dd",
       "src": "https://github.com/atusy/budoux.lua"
@@ -148,7 +152,7 @@
       "src": "https://github.com/folke/snacks.nvim"
     },
     "telegram.nvim": {
-      "rev": "9dc2e14787139a47b7ac800c30e5e0814d84fed0",
+      "rev": "05a138dcd7c8c982db55f7f1aea2357a37ebb904",
       "src": "https://github.com/ChuYanLon/telegram.nvim",
       "version": "'main'"
     },

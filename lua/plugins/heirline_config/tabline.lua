@@ -1,0 +1,243 @@
+local utils = require('heirline.utils')
+local color_list = require('custom.color-list')
+
+-- =========================================================
+-- ⚡ 1. 赋值优化法 (Localize C-API for extreme performance)
+-- =========================================================
+local api = vim.api
+local fn = vim.fn
+local bo = vim.bo
+local schedule = vim.schedule
+local strchars = fn.strchars
+local strcharpart = fn.strcharpart
+local fnamemodify = fn.fnamemodify
+local buf_get_name = api.nvim_buf_get_name
+local get_opt = api.nvim_get_option_value
+local set_current_buf = api.nvim_set_current_buf
+local diag_count = vim.diagnostic.count
+local severity = vim.diagnostic.severity
+local list_tabpages = api.nvim_list_tabpages
+
+local _bpm, _icons, _snacks
+local function get_bpm()
+  if not _bpm then pcall(function() _bpm = require('bpm') end) end
+  return _bpm
+end
+local function get_icons()
+  if not _icons then pcall(function() _icons = require('mini.icons') end) end
+  return _icons
+end
+local function get_snacks()
+  if not _snacks then pcall(function() _snacks = require('snacks') end) end
+  return _snacks
+end
+
+local MODIFIED_COLOR = color_list.colors.retro_apricot.hex
+
+-- =========================================================
+-- ⚙️ 2. BPM 缓冲池同步引擎 (SoA 数组优化)
+-- =========================================================
+local function get_bufs()
+  local bpm = get_bpm()
+  if bpm then
+    return bpm.get_attached_buf(0)
+  end
+
+  local all_bufs = api.nvim_list_bufs()
+  local res = {}
+  local idx = 1
+  for i = 1, #all_bufs do
+    local b = all_bufs[i]
+    if bo[b].buflisted then
+      res[idx] = b
+      idx = idx + 1
+    end
+  end
+  return res
+end
+
+local buflist_cache = {}
+local aug = api.nvim_create_augroup('Heirline_Tabline_Cache', { clear = true })
+
+api.nvim_create_autocmd(
+  { 'VimEnter', 'UIEnter', 'BufAdd', 'BufDelete', 'BufEnter', 'TabEnter', 'TabClosed' }, {
+    group = aug,
+    callback = function()
+      schedule(function()
+        local buffers = get_bufs()
+        for i = 1, #buffers do
+          buflist_cache[i] = buffers[i]
+        end
+        for i = #buffers + 1, #buflist_cache do
+          buflist_cache[i] = nil
+        end
+        vim.cmd('redrawtabline')
+      end)
+    end
+  })
+
+-- =========================================================
+-- 📁 3. 核心 Buffer 渲染块
+-- =========================================================
+local TablineFileNameBlock = {
+  init = function(self)
+    self.filename = buf_get_name(self.bufnr)
+    local bpm = get_bpm()
+
+    if bpm then
+      self.display_name = bpm.resolve_bufname(self.bufnr)
+    else
+      self.display_name = fnamemodify(self.filename, ':t')
+    end
+
+    self.is_modified = get_opt('modified', { buf = self.bufnr })
+
+    local diags = diag_count(self.bufnr)
+    self.errors = diags[severity.ERROR] or 0
+    self.warns = diags[severity.WARN] or 0
+
+    local icons = get_icons()
+    if icons then
+      local icon, hl = icons.get('file', self.filename)
+      self.icon = icon
+      self.icon_hl = hl
+    end
+  end,
+
+  hl = function(self)
+    return self.is_active and 'TabLineSel' or 'TabLine'
+  end,
+
+  on_click = {
+    callback = function(_, minwid, _, button)
+      if button == 'm' or button == 'r' then
+        local bpm = get_bpm()
+        if bpm then
+          bpm.detach(minwid)
+        else
+          get_snacks().bufdelete(minwid, { wipe = true })
+        end
+      else
+        set_current_buf(minwid)
+      end
+    end,
+    minwid = function(self) return self.bufnr end,
+    name = 'heirline_tabline_buffer_click',
+  },
+
+  { provider = '  ' },
+
+  -- 📄 动态文件图标
+  {
+    provider = function(self)
+      return self.icon and (self.icon .. ' ') or ' '
+    end,
+    hl = function(self)
+      return (self.is_active and self.icon_hl) and self.icon_hl or 'Comment'
+    end,
+  },
+
+  -- 📝 文件名（智能超长截断）
+  {
+    provider = function(self)
+      local name = self.display_name
+      if name == '' then name = '[No Name]' end
+      local max_len = 20
+      if strchars(name) > max_len then
+        name = strcharpart(name, 0, max_len - 1) .. '…'
+      end
+      return name
+    end,
+    hl = function(self)
+      return { bold = self.is_active, italic = false }
+    end,
+  },
+
+  -- 🛑 诊断指标 (保持原生风格)
+  {
+    condition = function(self) return self.errors > 0 end,
+    provider = function(self) return '  ' .. self.errors end,
+    hl = { fg = 'diag_error' },
+  },
+  {
+    condition = function(self) return self.warns > 0 end,
+    provider = function(self) return '  ' .. self.warns end,
+    hl = { fg = 'diag_warn' },
+  },
+
+  -- ❌ 关闭/修改状态 按钮 (使用 incline.lua 的颜色)
+  {
+    provider = function(self)
+      return self.is_modified and ' ● ' or ' 󰅖 '
+    end,
+    hl = function(self)
+      if self.is_modified then return { fg = MODIFIED_COLOR } end
+      return { fg = 'gray' }
+    end,
+    on_click = {
+      callback = function(_, minwid)
+        local bpm = get_bpm()
+        if bpm then
+          bpm.detach(minwid)
+        else
+          get_snacks().bufdelete(minwid, { wipe = true })
+        end
+      end,
+      minwid = function(self) return self.bufnr end,
+      name = 'heirline_tabline_close_btn',
+    },
+  },
+
+  { provider = ' ' },
+}
+
+-- 非活跃项加上垂直分隔线
+local TablineBufferBlock = {
+  TablineFileNameBlock,
+  {
+    provider = '│',
+    hl = 'TabLine',
+  },
+}
+
+-- =========================================================
+-- 🏢 4. 顶层 Workspace Tab 渲染 (右侧区域)
+-- =========================================================
+local Tabpage = {
+  provider = function(self)
+    local bpm = get_bpm()
+    local name = bpm and bpm.resolve_tabname(self.tabpage) or tostring(self.tabnr)
+    return '%' .. self.tabnr .. 'T ' .. name .. ' %T'
+  end,
+  hl = function(self)
+    return self.is_active and 'TabLineSel' or 'TabLine'
+  end,
+}
+
+local TabPages = {
+  condition = function() return #list_tabpages() >= 2 end,
+  utils.make_tablist(Tabpage),
+  {
+    provider = '%999X 󰅖 %X',
+    hl = 'TabLine',
+  }
+}
+
+-- =========================================================
+-- 🚀 5. 终极装配 (带 %= 弹性空间)
+-- =========================================================
+local BufferLine = utils.make_buflist(
+  TablineBufferBlock,
+  { provider = '  ', hl = 'TabLine' },
+  { provider = '  ', hl = 'TabLine' },
+  function() return buflist_cache end,
+  false
+)
+
+local TabLine = {
+  BufferLine,
+  { provider = '%=', hl = 'TabLineFill' },
+  TabPages,
+}
+
+return TabLine
