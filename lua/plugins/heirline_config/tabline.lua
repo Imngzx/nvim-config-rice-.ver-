@@ -17,7 +17,7 @@ local get_opt = api.nvim_get_option_value
 local set_current_buf = api.nvim_set_current_buf
 local diag_count = vim.diagnostic.count
 local severity = vim.diagnostic.severity
-local list_tabpages = api.nvim_list_tabpages
+local list_tabpages = api.nvim_list_tabpages -- NOTE: pair with line 231
 
 -- colors
 local MODIFIED_COLOR = color_list.colors.retro_apricot.hex
