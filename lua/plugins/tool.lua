@@ -114,14 +114,6 @@ resonance.load({
   end
 })
 
-resonance.load({
-  plugin = 'https://github.com/aurora0x27/bpm.nvim',
-  event = { 'BufReadPost', 'BufNewFile' },
-  setup = function()
-    require('bpm').setup()
-  end
-})
-
 -- [Clipboard]
 -- vim.pack.add({ "https://github.com/gbprod/yanky.nvim" })
 -- -- Custom paste function
