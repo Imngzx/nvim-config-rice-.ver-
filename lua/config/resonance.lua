@@ -34,9 +34,6 @@ vim.keymap.set('n', '<leader>pL', resonance.open_ui, { desc = 'Resonance UI' })
 -- [Theme]
 -- load theme first to avoid flickering
 require('plugins.catppuccin')
--- require('plugins.vague')
--- require('plugins.tokyonight')
--- require('custom.theme')
 
 -- load core ui elements at the same time
 local Snacks = require('plugins.snacks')
