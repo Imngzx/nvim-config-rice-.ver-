@@ -3,6 +3,7 @@ local create_autocmd = api.nvim_create_autocmd
 local create_augroup = api.nvim_create_augroup
 local schedule = vim.schedule
 local cmd = vim.cmd
+local ui_group = create_augroup('AutoUIVisibility', { clear = true })
 
 local function augroup(name)
   return create_augroup('lazyvim_' .. name, { clear = true })
@@ -75,5 +76,34 @@ create_autocmd('FileType', {
         pcall(api.nvim_buf_delete, buf, { force = true })
       end, { buf = buf, silent = true, desc = 'Quit buffer' })
     end)
+  end,
+})
+
+create_autocmd({ 'BufEnter', 'BufAdd', 'BufDelete' }, {
+  group = ui_group,
+  callback = function()
+    local has_real_file = false
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted then
+        local ft = vim.bo[buf].filetype
+        local bt = vim.bo[buf].buftype
+        local name = vim.api.nvim_buf_get_name(buf)
+
+        if ft ~= 'snacks_dashboard' and not ft:match('^snacks_picker') then
+          if name ~= '' or vim.bo[buf].modified or bt == 'terminal' then
+            has_real_file = true
+            break
+          end
+        end
+      end
+    end
+
+    if has_real_file then
+      if vim.o.showtabline ~= 2 then vim.opt.showtabline = 2 end
+      if vim.o.laststatus ~= 3 then vim.opt.laststatus = 3 end
+    else
+      if vim.o.showtabline ~= 0 then vim.opt.showtabline = 0 end
+      if vim.o.laststatus ~= 0 then vim.opt.laststatus = 0 end
+    end
   end,
 })

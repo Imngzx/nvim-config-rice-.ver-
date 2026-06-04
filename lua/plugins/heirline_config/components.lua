@@ -147,24 +147,39 @@ local LocationAndTime = {
 
 -- 7. Assembly StatusLine
 local StatusLine = {
-  condition = function()
-    local disabled_ft = {
-      snacks_picker_list = false,
-      snacks_picker_input = false,
-      snacks_dashboard = true,
-      snacks_terminal = false,
-      snacks_notif = false
-    }
-    return not disabled_ft[vim.bo.filetype]
-  end,
-  ViMode,
-  Diagnostics,
-  DiagSep,
-  Git,
-  Align,
-  Venv,
-  ActiveLSP,
-  LocationAndTime,
+  {
+    condition = function()
+      local disabled_ft = {
+        snacks_picker_list = false,
+        snacks_picker_input = false,
+        snacks_dashboard = true,
+        snacks_terminal = false,
+        snacks_notif = false
+      }
+      return disabled_ft[vim.bo.filetype]
+    end,
+    provider = '',
+  },
+  {
+    condition = function()
+      local disabled_ft = {
+        snacks_picker_list = false,
+        snacks_picker_input = false,
+        snacks_dashboard = true,
+        snacks_terminal = false,
+        snacks_notif = false
+      }
+      return not disabled_ft[vim.bo.filetype]
+    end,
+    ViMode,
+    Diagnostics,
+    DiagSep,
+    Git,
+    Align,
+    Venv,
+    ActiveLSP,
+    LocationAndTime,
+  }
 }
 
 return StatusLine
