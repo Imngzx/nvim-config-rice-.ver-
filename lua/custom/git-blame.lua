@@ -1,6 +1,25 @@
+-- lua/custom/git-blame.lua
+
 local M = {}
 
-local NS = vim.api.nvim_create_namespace('DIYGitBlame')
+local api = vim.api
+local uv = vim.uv
+local nvim_buf_is_valid = api.nvim_buf_is_valid
+local nvim_buf_del_extmark = api.nvim_buf_del_extmark
+local nvim_get_mode = api.nvim_get_mode
+local nvim_get_current_buf = api.nvim_get_current_buf
+local nvim_buf_get_changedtick = api.nvim_buf_get_changedtick
+local nvim_win_get_cursor = api.nvim_win_get_cursor
+local nvim_buf_set_extmark = api.nvim_buf_set_extmark
+local nvim_buf_get_name = api.nvim_buf_get_name
+local nvim_buf_get_lines = api.nvim_buf_get_lines
+local nvim_create_namespace = api.nvim_create_namespace
+local nvim_create_augroup = api.nvim_create_augroup
+local nvim_create_autocmd = api.nvim_create_autocmd
+local nvim_list_wins = api.nvim_list_wins
+local nvim_win_get_buf = api.nvim_win_get_buf
+
+local NS = nvim_create_namespace('DIYGitBlame')
 local EXT_ID = 1
 
 local b_state = {}
@@ -103,29 +122,29 @@ local function format_blame(commit)
 end
 
 local function clear_blame(bufnr)
-  if vim.api.nvim_buf_is_valid(bufnr) then
-    vim.api.nvim_buf_del_extmark(bufnr, NS, EXT_ID)
+  if nvim_buf_is_valid(bufnr) then
+    nvim_buf_del_extmark(bufnr, NS, EXT_ID)
   end
 end
 
 local function is_insert_mode()
-  return vim.api.nvim_get_mode().mode:sub(1, 1) == 'i'
+  return nvim_get_mode().mode:sub(1, 1) == 'i'
 end
 
 local function show_blame(bufnr)
-  if not config.enabled or vim.api.nvim_get_current_buf() ~= bufnr or is_insert_mode() then return end
+  if not config.enabled or nvim_get_current_buf() ~= bufnr or is_insert_mode() then return end
 
   local st = b_state[bufnr]
-  if not st or not st.blames or st.tick ~= vim.api.nvim_buf_get_changedtick(bufnr) then
+  if not st or not st.blames or st.tick ~= nvim_buf_get_changedtick(bufnr) then
     clear_blame(bufnr)
     return
   end
 
-  local line = vim.api.nvim_win_get_cursor(0)[1]
+  local line = nvim_win_get_cursor(0)[1]
   local text = format_blame(st.blames[line])
   if not text then return clear_blame(bufnr) end
 
-  vim.api.nvim_buf_set_extmark(bufnr, NS, line - 1, 0, {
+  nvim_buf_set_extmark(bufnr, NS, line - 1, 0, {
     id = EXT_ID,
     virt_text = { { text, config.highlight_group } },
     virt_text_pos = 'eol',
@@ -135,21 +154,21 @@ local function show_blame(bufnr)
 end
 
 local function fetch_blame(bufnr)
-  if not vim.api.nvim_buf_is_valid(bufnr) then return end
+  if not nvim_buf_is_valid(bufnr) then return end
 
-  local filepath = vim.api.nvim_buf_get_name(bufnr)
+  local filepath = nvim_buf_get_name(bufnr)
   if filepath == '' or filepath:match('^[%w%+%.%-]+://') then return end
   if vim.tbl_contains(config.ignored_filetypes, vim.bo[bufnr].filetype) then return end
 
   local root = config.get_git_root(filepath)
   if not root then return end
 
-  local stats = vim.uv.fs_stat(filepath)
+  local stats = uv.fs_stat(filepath)
   if stats and stats.size > 1.5 * 1024 * 1024 then return end
 
-  local tick = vim.api.nvim_buf_get_changedtick(bufnr)
+  local tick = nvim_buf_get_changedtick(bufnr)
 
-  local ok, lines = pcall(vim.api.nvim_buf_get_lines, bufnr, 0, -1, false)
+  local ok, lines = pcall(nvim_buf_get_lines, bufnr, 0, -1, false)
   if not ok or type(lines) ~= 'table' or #lines == 0 then return end
 
   local stdin = table.concat(lines, '\n') .. '\n'
@@ -162,31 +181,31 @@ local function fetch_blame(bufnr)
 
   st.job = vim.system(cmd, { stdin = stdin, text = true }, function(obj)
     vim.schedule(function()
-      if not vim.api.nvim_buf_is_valid(bufnr) then return end
+      if not nvim_buf_is_valid(bufnr) then return end
       st.job = nil
       if obj.code == 0 and obj.stdout then
         st.blames = parse_porcelain(obj.stdout)
         st.tick = tick
-        if vim.api.nvim_get_current_buf() == bufnr and not is_insert_mode() then show_blame(bufnr) end
+        if nvim_get_current_buf() == bufnr and not is_insert_mode() then show_blame(bufnr) end
       end
     end)
   end)
 end
 
 local function queue_fetch(bufnr)
-  if not config.enabled or not vim.api.nvim_buf_is_valid(bufnr) then return end
-  if fetch_timers[bufnr] then fetch_timers[bufnr]:stop() else fetch_timers[bufnr] = vim.uv.new_timer() end
+  if not config.enabled or not nvim_buf_is_valid(bufnr) then return end
+  if fetch_timers[bufnr] then fetch_timers[bufnr]:stop() else fetch_timers[bufnr] = uv.new_timer() end
   fetch_timers[bufnr]:start(config.delay, 0, vim.schedule_wrap(function() fetch_blame(bufnr) end))
 end
 
 function M.setup(opts)
   config = vim.tbl_deep_extend('force', config, opts or {})
-  local aug = vim.api.nvim_create_augroup('DIYGitBlame', { clear = true })
+  local aug = nvim_create_augroup('DIYGitBlame', { clear = true })
 
-  vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'BufWritePost', 'InsertLeave' }, {
+  nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'BufWritePost', 'InsertLeave' }, {
     group = aug, callback = function(args) if not is_insert_mode() then queue_fetch(args.buf) end end
   })
-  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
+  nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
     group = aug,
     callback = function(args)
       clear_blame(args.buf)
@@ -194,10 +213,10 @@ function M.setup(opts)
     end
   })
   local last_state = { buf = -1, row = -1 }
-  vim.api.nvim_create_autocmd('CursorMoved', {
+  nvim_create_autocmd('CursorMoved', {
     group = aug,
     callback = function(args)
-      local cur_row = vim.api.nvim_win_get_cursor(0)[1]
+      local cur_row = nvim_win_get_cursor(0)[1]
       local cur_buf = args.buf
 
       if cur_row == last_state.row and cur_buf == last_state.buf then return end
@@ -207,10 +226,10 @@ function M.setup(opts)
       show_blame(args.buf)
     end
   })
-  vim.api.nvim_create_autocmd('InsertEnter', {
+  nvim_create_autocmd('InsertEnter', {
     group = aug, callback = function(args) clear_blame(args.buf) end
   })
-  vim.api.nvim_create_autocmd('BufWipeout', {
+  nvim_create_autocmd('BufWipeout', {
     group = aug,
     callback = function(args)
       local b = args.buf
@@ -231,14 +250,14 @@ function M.setup(opts)
         if obj.code == 0 and obj.stdout then current_author = vim.trim(obj.stdout) end
       end)
     end
-    for _, win in ipairs(vim.api.nvim_list_wins()) do queue_fetch(vim.api.nvim_win_get_buf(win)) end
+    for _, win in ipairs(nvim_list_wins()) do queue_fetch(nvim_win_get_buf(win)) end
   end
 end
 
 function M.toggle()
   config.enabled = not config.enabled
   if config.enabled then
-    for _, win in ipairs(vim.api.nvim_list_wins()) do queue_fetch(vim.api.nvim_win_get_buf(win)) end
+    for _, win in ipairs(nvim_list_wins()) do queue_fetch(nvim_win_get_buf(win)) end
   else
     for buf, _ in pairs(b_state) do clear_blame(buf) end
   end

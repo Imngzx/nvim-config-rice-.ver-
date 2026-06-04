@@ -1,16 +1,48 @@
---NOTE: 可选 'none', 'rounded', 'single'
 local M = {}
 local win_cache = {}
-local ns = vim.api.nvim_create_namespace('HandcraftedIncline')
+
+local api = vim.api
+local fn = vim.fn
+local nvim_win_is_valid = api.nvim_win_is_valid
+local nvim_win_get_buf = api.nvim_win_get_buf
+local nvim_win_get_config = api.nvim_win_get_config
+local nvim_buf_is_valid = api.nvim_buf_is_valid
+local nvim_buf_get_name = api.nvim_buf_get_name
+local nvim_win_get_width = api.nvim_win_get_width
+local nvim_win_get_cursor = api.nvim_win_get_cursor
+local nvim_win_call = api.nvim_win_call
+local nvim_tabpage_list_wins = api.nvim_tabpage_list_wins
+local nvim_win_set_config = api.nvim_win_set_config
+local nvim_buf_set_lines = api.nvim_buf_set_lines
+local nvim_buf_clear_namespace = api.nvim_buf_clear_namespace
+local nvim_buf_set_extmark = api.nvim_buf_set_extmark
+local nvim_get_hl = api.nvim_get_hl
+local nvim_set_hl = api.nvim_set_hl
+local nvim_create_buf = api.nvim_create_buf
+local nvim_open_win = api.nvim_open_win
+local nvim_win_close = api.nvim_win_close
+local nvim_buf_delete = api.nvim_buf_delete
+local nvim_create_namespace = api.nvim_create_namespace
+local nvim_create_augroup = api.nvim_create_augroup
+local nvim_create_autocmd = api.nvim_create_autocmd
+local nvim_get_current_win = api.nvim_get_current_win
+
+local strdisplaywidth = fn.strdisplaywidth
+local fnamemodify = fn.fnamemodify
+local line = fn.line
+local pcall = pcall
+
+local ns = nvim_create_namespace('HandcraftedIncline')
 local mini_icons_cache = nil
 
+-- NOTE: 可选 'none', 'rounded', 'single'
 M.config = {
   border = 'none',
   panel_bg = '#44406e',
 }
 
 local function get_hl_hex(name, attr)
-  local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name, link = false })
+  local ok, hl = pcall(nvim_get_hl, 0, { name = name, link = false })
   if ok and hl[attr] then return string.format('#%06x', hl[attr]) end
   return nil
 end
@@ -23,65 +55,58 @@ local function get_contrast_color(hex_str)
 end
 
 local function update_incline()
-  local ok_wins, visible_wins = pcall(vim.api.nvim_tabpage_list_wins, 0)
+  local ok_wins, visible_wins = pcall(nvim_tabpage_list_wins, 0)
   if not ok_wins then return end
 
   for _, win_id in ipairs(visible_wins) do
-    if not vim.api.nvim_win_is_valid(win_id) then
+    if not nvim_win_is_valid(win_id) then
       M.close(win_id)
       goto continue
     end
 
-    local buf_id = vim.api.nvim_win_get_buf(win_id)
-    local ok_conf, config = pcall(vim.api.nvim_win_get_config, win_id)
+    local buf_id = nvim_win_get_buf(win_id)
+    local ok_conf, config = pcall(nvim_win_get_config, win_id)
 
-    -- === 1. 甄别是否需要彻底销毁 ===
-    -- 排除浮动窗口、无效 Buffer、终端/特殊页
-    if not ok_conf or config.zindex or config.relative ~= '' or not vim.api.nvim_buf_is_valid(buf_id) or vim.bo[buf_id].buftype ~= '' then
+    if not ok_conf or config.zindex or config.relative ~= '' or not nvim_buf_is_valid(buf_id) or vim.bo[buf_id].buftype ~= '' then
       M.close(win_id)
       goto continue
     end
 
-    -- === 2. 甄别是否需要暂时“隐身”防遮挡 ===
     local should_hide = false
-    local cursor = vim.api.nvim_win_get_cursor(win_id)
-    local topline = vim.api.nvim_win_call(win_id, function()
-      return vim.fn.line('w0')
+    local cursor = nvim_win_get_cursor(win_id)
+    local topline = nvim_win_call(win_id, function()
+      return line('w0')
     end)
     if cursor[1] == topline then
       should_hide = true
     end
 
-    -- === 3. 核心科技：状态 Hash 缓存器 ===
-    local buf_path = vim.api.nvim_buf_get_name(buf_id)
+    local buf_path = nvim_buf_get_name(buf_id)
     local filename = '[No Name]'
     if buf_path ~= '' then
       local bpm_ok, bpm = pcall(require, 'bpm')
-      filename = bpm_ok and bpm.resolve_bufname(buf_id) or vim.fn.fnamemodify(buf_path, ':t')
+      filename = bpm_ok and bpm.resolve_bufname(buf_id) or fnamemodify(buf_path, ':t')
     end
     local modified = vim.bo[buf_id].modified
-    local win_width = vim.api.nvim_win_get_width(win_id)
+    local win_width = nvim_win_get_width(win_id)
 
     local state_hash = string.format('%d_%s_%s_%d_%s', buf_id, tostring(modified), filename,
       win_width, tostring(should_hide))
     local state = win_cache[win_id] or {}
 
-    -- 如果一切没变（或者窗口没变且 Buffer 没丢），直接跳过（极致省 CPU 核心逻辑）
-    if state.hash == state_hash and state.win and vim.api.nvim_win_is_valid(state.win) and state.buf and vim.api.nvim_buf_is_valid(state.buf) then
+    if state.hash == state_hash and state.win and nvim_win_is_valid(state.win) and state.buf and nvim_buf_is_valid(state.buf) then
       goto continue
     end
 
-    -- === 4. 处理隐身动作（不摧毁 Buffer）===
     if should_hide then
-      if state.win and vim.api.nvim_win_is_valid(state.win) then
-        pcall(vim.api.nvim_win_set_config, state.win, { hide = true })
+      if state.win and nvim_win_is_valid(state.win) then
+        pcall(nvim_win_set_config, state.win, { hide = true })
       end
       state.hash = state_hash
       win_cache[win_id] = state
       goto continue
     end
 
-    -- === 5. 渲染新内容并显示 ===
     local icon, hl = '', 'Normal'
     if mini_icons_cache == nil then
       local ok_icons, mini_icons = pcall(require, 'mini.icons')
@@ -96,10 +121,10 @@ local function update_incline()
     local contrast_fg = get_contrast_color(ft_color)
 
     local safe_hl = hl:gsub('[^%w_]', '_')
-    vim.api.nvim_set_hl(0, 'CIncIcon_' .. safe_hl, { fg = contrast_fg, bg = ft_color })
-    vim.api.nvim_set_hl(0, 'CIncArrow_' .. safe_hl, { fg = ft_color, bg = M.config.panel_bg })
-    vim.api.nvim_set_hl(0, 'CIncText', { fg = '#cdd6f4', bg = M.config.panel_bg, bold = modified })
-    vim.api.nvim_set_hl(0, 'CIncMod', { fg = '#ff9e64', bg = M.config.panel_bg, bold = true })
+    nvim_set_hl(0, 'CIncIcon_' .. safe_hl, { fg = contrast_fg, bg = ft_color })
+    nvim_set_hl(0, 'CIncArrow_' .. safe_hl, { fg = ft_color, bg = M.config.panel_bg })
+    nvim_set_hl(0, 'CIncText', { fg = '#cdd6f4', bg = M.config.panel_bg, bold = modified })
+    nvim_set_hl(0, 'CIncMod', { fg = '#ff9e64', bg = M.config.panel_bg, bold = true })
 
     local chunks = {
       { ' ' .. icon .. ' ', 'CIncIcon_' .. safe_hl },
@@ -109,27 +134,30 @@ local function update_incline()
     if modified then table.insert(chunks, { ' [+]', 'CIncMod' }) end
     table.insert(chunks, { ' ', 'CIncText' })
 
-    if not state.buf or not vim.api.nvim_buf_is_valid(state.buf) then
-      state.buf = vim.api.nvim_create_buf(false, true)
+    if not state.buf or not nvim_buf_is_valid(state.buf) then
+      state.buf = nvim_create_buf(false, true)
       vim.bo[state.buf].bufhidden = 'wipe'
     end
 
-    local line_text = ''
-    for _, chunk in ipairs(chunks) do line_text = line_text .. chunk[1] end
-    vim.api.nvim_buf_set_lines(state.buf, 0, -1, false, { line_text })
-    vim.api.nvim_buf_clear_namespace(state.buf, ns, 0, -1)
+    local text_parts = {}
+    for j = 1, #chunks do
+      text_parts[j] = chunks[j][1]
+    end
+    local line_text = table.concat(text_parts)
+
+    nvim_buf_set_lines(state.buf, 0, -1, false, { line_text })
+    nvim_buf_clear_namespace(state.buf, ns, 0, -1)
 
     local byte_col = 0
     for _, chunk in ipairs(chunks) do
-      vim.api.nvim_buf_set_extmark(state.buf, ns, 0, byte_col, {
+      nvim_buf_set_extmark(state.buf, ns, 0, byte_col, {
         end_col = byte_col + #chunk[1],
         hl_group = chunk[2],
       })
-
       byte_col = byte_col + #chunk[1]
     end
 
-    local text_width = vim.fn.strdisplaywidth(line_text)
+    local text_width = strdisplaywidth(line_text)
     local win_opts = {
       relative = 'win',
       win = win_id,
@@ -145,16 +173,15 @@ local function update_incline()
       hide = false,
     }
 
-    if not state.win or not vim.api.nvim_win_is_valid(state.win) then
-      state.win = vim.api.nvim_open_win(state.buf, false, win_opts)
+    if not state.win or not nvim_win_is_valid(state.win) then
+      state.win = nvim_open_win(state.buf, false, win_opts)
       local winhl = M.config.border == 'none' and 'NormalFloat:Normal,FloatBorder:Normal' or
         'NormalFloat:Normal'
       vim.wo[state.win].winhighlight = winhl
     else
-      pcall(vim.api.nvim_win_set_config, state.win, win_opts)
+      pcall(nvim_win_set_config, state.win, win_opts)
     end
 
-    -- 记录新状态
     state.hash = state_hash
     win_cache[win_id] = state
     ::continue::
@@ -164,11 +191,11 @@ end
 function M.close(win_id)
   local state = win_cache[win_id]
   if state then
-    if state.win and vim.api.nvim_win_is_valid(state.win) then
-      pcall(vim.api.nvim_win_close, state.win, true)
+    if state.win and nvim_win_is_valid(state.win) then
+      pcall(nvim_win_close, state.win, true)
     end
-    if state.buf and vim.api.nvim_buf_is_valid(state.buf) then
-      pcall(vim.api.nvim_buf_delete, state.buf, { force = true })
+    if state.buf and nvim_buf_is_valid(state.buf) then
+      pcall(nvim_buf_delete, state.buf, { force = true })
     end
     win_cache[win_id] = nil
   end
@@ -176,19 +203,19 @@ end
 
 function M.setup(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
-  local group = vim.api.nvim_create_augroup('HandcraftedIncline', { clear = true })
+  local group = nvim_create_augroup('HandcraftedIncline', { clear = true })
 
   local update_queued = false
   local last_state = { win = -1, row = -1 }
 
-  vim.api.nvim_create_autocmd(
+  nvim_create_autocmd(
     { 'WinScrolled', 'BufEnter', 'WinEnter', 'TextChanged', 'BufWritePost', 'VimResized',
       'CursorMoved' }, {
       group = group,
       callback = function(args)
         if args.event == 'CursorMoved' then
-          local cur_win = vim.api.nvim_get_current_win()
-          local cur_row = vim.api.nvim_win_get_cursor(cur_win)[1]
+          local cur_win = nvim_get_current_win()
+          local cur_row = nvim_win_get_cursor(cur_win)[1]
 
           if cur_row == last_state.row and cur_win == last_state.win then
             return
@@ -208,7 +235,7 @@ function M.setup(opts)
       end
     })
 
-  vim.api.nvim_create_autocmd('WinClosed', {
+  nvim_create_autocmd('WinClosed', {
     group = group, callback = function(args) M.close(tonumber(args.match)) end
   })
 end

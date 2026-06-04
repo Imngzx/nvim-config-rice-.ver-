@@ -1,5 +1,32 @@
 local M = {}
 
+local api = vim.api
+local fn = vim.fn
+local uv = vim.uv
+local pcall = pcall
+local nvim_win_is_valid = api.nvim_win_is_valid
+local nvim_win_close = api.nvim_win_close
+local nvim_buf_is_valid = api.nvim_buf_is_valid
+local nvim_buf_delete = api.nvim_buf_delete
+local nvim_create_buf = api.nvim_create_buf
+local nvim_buf_set_lines = api.nvim_buf_set_lines
+local nvim_buf_clear_namespace = api.nvim_buf_clear_namespace
+local nvim_buf_set_extmark = api.nvim_buf_set_extmark
+local nvim_open_win = api.nvim_open_win
+local nvim_win_set_config = api.nvim_win_set_config
+local nvim_create_namespace = api.nvim_create_namespace
+local nvim_create_augroup = api.nvim_create_augroup
+local nvim_create_autocmd = api.nvim_create_autocmd
+local nvim_buf_line_count = api.nvim_buf_line_count
+local nvim_buf_get_lines = api.nvim_buf_get_lines
+
+local strchars = fn.strchars
+local strcharpart = fn.strcharpart
+local strdisplaywidth = fn.strdisplaywidth
+local math_max = math.max
+local string_rep = string.rep
+local string_format = string.format
+
 -- [config area]
 local config = {
   spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' },
@@ -15,12 +42,21 @@ local config = {
   keep_done_ms = 1000,
 }
 
-local active_tasks = {}
+-- ⚡ Struct of Arrays (SoA) for extreme performance
+local t_tokens = {}
+local t_clients = {}
+local t_titles = {}
+local t_messages = {}
+local t_percentages = {}
+local t_dones = {}
+local t_idx = {}
+local t_count = 0
+
 local frame = 1
 local timer = nil
 local win_id = nil
 local buf_id = nil
-local ns = vim.api.nvim_create_namespace('diy_lsp_loading')
+local ns = nvim_create_namespace('diy_lsp_loading')
 
 local function cleanup()
   if timer then
@@ -28,22 +64,44 @@ local function cleanup()
     if not timer:is_closing() then timer:close() end
     timer = nil
   end
-  if win_id and vim.api.nvim_win_is_valid(win_id) then
-    vim.api.nvim_win_close(win_id, true)
+  if win_id and nvim_win_is_valid(win_id) then
+    nvim_win_close(win_id, true)
     win_id = nil
   end
-  if buf_id and vim.api.nvim_buf_is_valid(buf_id) then
-    vim.api.nvim_buf_delete(buf_id, { force = true })
+  if buf_id and nvim_buf_is_valid(buf_id) then
+    nvim_buf_delete(buf_id, { force = true })
     buf_id = nil
   end
 end
 
 local function truncate(str, max_len)
   if not str then return '' end
-  if vim.fn.strchars(str) > max_len then
-    return vim.fn.strcharpart(str, 0, max_len - 3) .. '...'
+  if strchars(str) > max_len then
+    return strcharpart(str, 0, max_len - 3) .. '...'
   end
   return str
+end
+
+local function remove_task(token)
+  local idx = t_idx[token]
+  if not idx then return end
+  for i = idx, t_count - 1 do
+    t_tokens[i] = t_tokens[i + 1]
+    t_clients[i] = t_clients[i + 1]
+    t_titles[i] = t_titles[i + 1]
+    t_messages[i] = t_messages[i + 1]
+    t_percentages[i] = t_percentages[i + 1]
+    t_dones[i] = t_dones[i + 1]
+    t_idx[t_tokens[i]] = i
+  end
+  t_tokens[t_count] = nil
+  t_clients[t_count] = nil
+  t_titles[t_count] = nil
+  t_messages[t_count] = nil
+  t_percentages[t_count] = nil
+  t_dones[t_count] = nil
+  t_idx[token] = nil
+  t_count = t_count - 1
 end
 
 local function get_win_config(width, height)
@@ -63,33 +121,35 @@ local function get_win_config(width, height)
 end
 
 local function update_window()
-  if vim.tbl_isempty(active_tasks) then
+  if t_count == 0 then
     cleanup()
     return
   end
 
-  local lines_data = {}
+  local lines = {}
+  local extmarks = {}
+  local ext_count = 0
   local max_line_width = 1
 
-  local sorted_tokens = vim.tbl_keys(active_tasks)
-  table.sort(sorted_tokens,
-    function(a, b) return active_tasks[a].created_at < active_tasks[b].created_at end)
+  -- Pass 1: compute widths and chunks (天然有序，消灭了 table.sort)
+  local all_chunks = {}
+  local line_widths = {}
 
-  for _, token in ipairs(sorted_tokens) do
-    local task = active_tasks[token]
+  for i = 1, t_count do
+    local icon = t_dones[i] and config.icons.check or config.spinner[frame]
+    local icon_hl = t_dones[i] and config.highlights.check or config.highlights.spinner
 
-    local icon = task.done and config.icons.check or config.spinner[frame]
-    local icon_hl = task.done and config.highlights.check or config.highlights.spinner
+    local title = t_titles[i]
+    title = title ~= '' and (title .. ' ') or ''
 
-    local title = task.title and task.title ~= '' and (task.title .. ' ') or ''
-    local msg = truncate(task.message, 40)
-    local perc = task.percentage and string.format('%3d%%', task.percentage) or ''
+    local msg = truncate(t_messages[i], 40)
+    local perc = t_percentages[i] and string_format('%3d%%', t_percentages[i]) or ''
 
-    local left_part = string.format('%s %s', msg, perc)
-    left_part = left_part:gsub('^%s+', ''):gsub('%s+$', '')
+    local left_part = msg
+    if perc ~= '' then left_part = left_part .. (left_part ~= '' and ' ' or '') .. perc end
     if left_part ~= '' then left_part = ' ' .. left_part end
 
-    local client_name = '[' .. task.client_name .. '] '
+    local client_name = '[' .. t_clients[i] .. '] '
 
     local chunks = {
       { icon .. ' ', icon_hl },
@@ -97,41 +157,40 @@ local function update_window()
       { title, config.highlights.title },
       { left_part, config.highlights.text },
     }
+    all_chunks[i] = chunks
 
     local line_width = 0
-    for _, chunk in ipairs(chunks) do
-      line_width = line_width + vim.fn.strdisplaywidth(chunk[1])
+    for j = 1, 4 do
+      line_width = line_width + strdisplaywidth(chunks[j][1])
     end
-    max_line_width = math.max(max_line_width, line_width)
-
-    table.insert(lines_data, { chunks = chunks, width = line_width })
+    line_widths[i] = line_width
+    if line_width > max_line_width then max_line_width = line_width end
   end
 
-  local lines = {}
-  local extmarks = {}
-
-  for line_idx, data in ipairs(lines_data) do
-    local padding_len = max_line_width - data.width
-    local padding = string.rep(' ', padding_len)
+  -- Pass 2: format padding and extmarks
+  for i = 1, t_count do
+    local padding_len = max_line_width - line_widths[i]
+    local padding = string_rep(' ', padding_len)
 
     local line_text = padding
     local current_byte = #padding
 
-    for _, chunk in ipairs(data.chunks) do
-      local text, hl = chunk[1], chunk[2]
-      if text and text ~= '' then
+    for j = 1, 4 do
+      local text = all_chunks[i][j][1]
+      local hl = all_chunks[i][j][2]
+      if text ~= '' then
         line_text = line_text .. text
-        table.insert(extmarks, {
-          line = line_idx - 1,
+        ext_count = ext_count + 1
+        extmarks[ext_count] = {
+          line = i - 1,
           start_col = current_byte,
           end_col = current_byte + #text,
           hl_group = hl,
-        })
+        }
         current_byte = current_byte + #text
       end
     end
-
-    table.insert(lines, line_text)
+    lines[i] = line_text
   end
 
   if #lines == 0 then
@@ -139,15 +198,16 @@ local function update_window()
     return
   end
 
-  if not buf_id or not vim.api.nvim_buf_is_valid(buf_id) then
-    buf_id = vim.api.nvim_create_buf(false, true)
+  if not buf_id or not nvim_buf_is_valid(buf_id) then
+    buf_id = nvim_create_buf(false, true)
     vim.bo[buf_id].bufhidden = 'wipe'
   end
-  vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, lines)
+  nvim_buf_set_lines(buf_id, 0, -1, false, lines)
+  nvim_buf_clear_namespace(buf_id, ns, 0, -1)
 
-  vim.api.nvim_buf_clear_namespace(buf_id, ns, 0, -1)
-  for _, em in ipairs(extmarks) do
-    pcall(vim.api.nvim_buf_set_extmark, buf_id, ns, em.line, em.start_col, {
+  for i = 1, ext_count do
+    local em = extmarks[i]
+    pcall(nvim_buf_set_extmark, buf_id, ns, em.line, em.start_col, {
       end_row = em.line,
       end_col = em.end_col,
       hl_group = em.hl_group,
@@ -155,12 +215,12 @@ local function update_window()
     })
   end
 
-  if not win_id or not vim.api.nvim_win_is_valid(win_id) then
-    win_id = vim.api.nvim_open_win(buf_id, false, get_win_config(max_line_width, #lines))
+  if not win_id or not nvim_win_is_valid(win_id) then
+    win_id = nvim_open_win(buf_id, false, get_win_config(max_line_width, t_count))
     vim.wo[win_id].winblend = 0
     vim.wo[win_id].winhl = 'Normal:NONE'
   else
-    vim.api.nvim_win_set_config(win_id, get_win_config(max_line_width, #lines))
+    nvim_win_set_config(win_id, get_win_config(max_line_width, t_count))
   end
 end
 
@@ -168,7 +228,7 @@ local function start_animation()
   if timer and not timer:is_closing() then return end
   if timer and timer:is_closing() then timer = nil end
 
-  timer = vim.uv.new_timer()
+  timer = uv.new_timer()
   if timer then
     timer:start(0, 80, vim.schedule_wrap(function()
       frame = (frame % #config.spinner) + 1
@@ -178,9 +238,9 @@ local function start_animation()
 end
 
 function M.setup()
-  local group = vim.api.nvim_create_augroup('diy_lsp_loading', { clear = true })
+  local group = nvim_create_augroup('diy_lsp_loading', { clear = true })
 
-  vim.api.nvim_create_autocmd('LspProgress', {
+  nvim_create_autocmd('LspProgress', {
     group = group,
     callback = function(args)
       local client_id = args.data.client_id
@@ -191,30 +251,32 @@ function M.setup()
       if not client or not token then return end
 
       if value.kind == 'begin' then
-        active_tasks[token] = {
-          client_name = client.name,
-          title = value.title or '',
-          message = value.message or '',
-          percentage = value.percentage,
-          done = false,
-          created_at = vim.uv.hrtime(),
-        }
+        t_count = t_count + 1
+        t_idx[token] = t_count
+        t_tokens[t_count] = token
+        t_clients[t_count] = client.name
+        t_titles[t_count] = value.title or ''
+        t_messages[t_count] = value.message or ''
+        t_percentages[t_count] = value.percentage
+        t_dones[t_count] = false
         start_animation()
       elseif value.kind == 'report' then
-        if active_tasks[token] and not active_tasks[token].done then
-          active_tasks[token].message = value.message or active_tasks[token].message
-          active_tasks[token].percentage = value.percentage or active_tasks[token].percentage
+        local idx = t_idx[token]
+        if idx and not t_dones[idx] then
+          if value.message then t_messages[idx] = value.message end
+          if value.percentage then t_percentages[idx] = value.percentage end
         end
       elseif value.kind == 'end' then
-        if active_tasks[token] then
-          active_tasks[token].done = true
-          active_tasks[token].percentage = nil
-          active_tasks[token].message = value.message or 'Done'
+        local idx = t_idx[token]
+        if idx then
+          t_dones[idx] = true
+          t_percentages[idx] = nil
+          t_messages[idx] = value.message or 'Done'
 
           vim.schedule(update_window)
 
           vim.defer_fn(function()
-            active_tasks[token] = nil
+            remove_task(token)
             update_window()
           end, config.keep_done_ms)
         end
@@ -222,30 +284,34 @@ function M.setup()
     end,
   })
 
-  vim.api.nvim_create_autocmd('LspDetach', {
+  nvim_create_autocmd('LspDetach', {
     group = group,
     callback = function(args)
       local client = vim.lsp.get_client_by_id(args.data.client_id)
       if not client then return end
-      for token, task in pairs(active_tasks) do
-        if task.client_name == client.name then
-          active_tasks[token] = nil
+
+      local i = 1
+      while i <= t_count do
+        if t_clients[i] == client.name then
+          remove_task(t_tokens[i])
+        else
+          i = i + 1
         end
       end
       vim.schedule(update_window)
     end
   })
 
-  vim.api.nvim_create_autocmd('VimResized', {
+  nvim_create_autocmd('VimResized', {
     group = group,
     callback = function()
-      if win_id and buf_id and vim.api.nvim_win_is_valid(win_id) and vim.api.nvim_buf_is_valid(buf_id) then
+      if win_id and buf_id and nvim_win_is_valid(win_id) and nvim_buf_is_valid(buf_id) then
         local max_width = 10
-        for _, line in ipairs(vim.api.nvim_buf_get_lines(buf_id, 0, -1, false)) do
-          max_width = math.max(max_width, vim.fn.strdisplaywidth(line))
+        for _, line_text in ipairs(nvim_buf_get_lines(buf_id, 0, -1, false)) do
+          max_width = math_max(max_width, strdisplaywidth(line_text))
         end
-        vim.api.nvim_win_set_config(win_id,
-          get_win_config(max_width, vim.api.nvim_buf_line_count(buf_id)))
+        nvim_win_set_config(win_id,
+          get_win_config(max_width, nvim_buf_line_count(buf_id)))
       end
     end
   })
