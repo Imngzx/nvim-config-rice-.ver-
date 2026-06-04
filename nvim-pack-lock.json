@@ -22,7 +22,7 @@
       "src": "https://github.com/atusy/budoux.lua"
     },
     "codecompanion.nvim": {
-      "rev": "57989aca2e92083b16a2500ad47f285d82d5c43b",
+      "rev": "74046d6a44bc15508e7182e6da69f7953f9c6971",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -144,7 +144,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "11137db3843141248d18c192a54c2f0989be8ddd",
+      "rev": "6a45af15152517026c7fbe4df6eb2fc59884a3df",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "snacks.nvim": {
@@ -152,7 +152,7 @@
       "src": "https://github.com/folke/snacks.nvim"
     },
     "telegram.nvim": {
-      "rev": "67d9429aa6929bfeb1f17d4b1a9523d3f827df00",
+      "rev": "853df041ca44f631c3a2deb9efcecb908484e5f7",
       "src": "https://github.com/ChuYanLon/telegram.nvim",
       "version": "'main'"
     },
