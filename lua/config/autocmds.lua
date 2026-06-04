@@ -34,15 +34,6 @@ create_autocmd({ 'TextYankPost', 'TextPutPost' }, {
   desc = 'Highlight text when yank and paste',
 })
 
--- uses csvview plugin as soon as opening a csv file
-create_autocmd('BufReadPost', {
-  group = create_augroup('CsvViewAutoEnable', { clear = true }),
-  pattern = '*.csv',
-  callback = function()
-    cmd([[CsvViewEnable delimiter=, display_mode=border header_lnum=1]])
-  end,
-})
-
 -- [Autocmd] Change EOL format to unix on save
 create_autocmd('BufWritePre', {
   group = create_augroup('WriteWithLF', { clear = true }),
