@@ -102,7 +102,7 @@ create_autocmd({ 'BufEnter', 'BufAdd', 'BufDelete' }, {
       if vim.o.showtabline ~= 2 then vim.opt.showtabline = 2 end
       if vim.o.laststatus ~= 3 then vim.opt.laststatus = 3 end
     else
-      if vim.o.showtabline ~= 0 then vim.opt.showtabline = 0 end
+      if vim.o.showtabline ~= 0 then vim.opt.showtabline = 1 end
       if vim.o.laststatus ~= 0 then vim.opt.laststatus = 0 end
     end
   end,
