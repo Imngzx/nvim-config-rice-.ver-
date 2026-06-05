@@ -1,41 +1,44 @@
 --[Functions]
-if vim.fn.has('wsl') == 1 then
+local fn = vim.fn
+
+if fn.has('wsl') == 1 then
   local win32yank = '/mnt/c/Program Files/Neovim/bin/win32yank.exe'
 
-  if vim.fn.executable(win32yank) == 1 then
+  if fn.executable(win32yank) == 1 then
+    local system = vim.system
+    local t_concat = table.concat
+    local v_split = vim.split
+
+    local copy_cmd = { win32yank, '-i', '--crlf' }
+    local paste_cmd = { win32yank, '-o', '--lf' }
+    local paste_opts = { text = true }
+    local empty_res = {}
+    local noop = function() end
+
+    local function copy_handler(lines, _)
+      if fn.reg_executing() ~= '' then return end
+      system(copy_cmd, { stdin = t_concat(lines, '\n') }, noop)
+    end
+
+    local function paste_handler()
+      local obj = system(paste_cmd, paste_opts):wait(1000)
+      local text = obj.stdout
+
+      if obj.code ~= 0 or type(text) ~= 'string' then return empty_res, 'v' end
+
+      if text:byte(-1) == 10 then text = text:sub(1, -2) end
+      return v_split(text, '\n', { plain = true }), 'v'
+    end
+
     vim.g.clipboard = {
       name = 'AsyncWslClipboard',
       copy = {
-        ['+'] = function(lines, _)
-          if vim.fn.reg_executing() ~= '' then return end
-
-          local text = table.concat(lines, '\n')
-          vim.system({ win32yank, '-i', '--crlf' }, { stdin = text }, function() end)
-        end,
-        ['*'] = function(lines, _)
-          if vim.fn.reg_executing() ~= '' then return end
-
-          local text = table.concat(lines, '\n')
-          vim.system({ win32yank, '-i', '--crlf' }, { stdin = text }, function() end)
-        end,
+        ['+'] = copy_handler,
+        ['*'] = copy_handler,
       },
       paste = {
-        ['+'] = function()
-          local obj = vim.system({ win32yank, '-o', '--lf' }, { text = true }):wait(1000)
-          if obj.code ~= 0 or not obj.stdout then return {}, 'v' end
-
-          local text = obj.stdout
-          if text:sub(-1) == '\n' then text = text:sub(1, -2) end
-          return vim.split(text, '\n', { plain = true }), 'v'
-        end,
-        ['*'] = function()
-          local obj = vim.system({ win32yank, '-o', '--lf' }, { text = true }):wait(1000)
-          if obj.code ~= 0 or not obj.stdout then return {}, 'v' end
-
-          local text = obj.stdout
-          if text:sub(-1) == '\n' then text = text:sub(1, -2) end
-          return vim.split(text, '\n', { plain = true }), 'v'
-        end,
+        ['+'] = paste_handler,
+        ['*'] = paste_handler,
       },
       cache_enabled = 0,
     }
