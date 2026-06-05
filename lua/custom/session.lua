@@ -131,6 +131,12 @@ function M.load(last)
           local data = fd:read('*a')
           fd:close()
           bpm.from_json(data)
+          for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+            if vim.api.nvim_buf_is_valid(bufnr) then
+              vim.bo[bufnr].buflisted = false
+            end
+          end
+          pcall(vim.api.nvim_exec_autocmds, 'TabEnter', { group = 'BufferPoolManager' })
         end
       end
     end
