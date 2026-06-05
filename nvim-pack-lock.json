@@ -1,7 +1,7 @@
 {
   "plugins": {
     "ascetic.nvim": {
-      "rev": "3861b89046deaa78f52dcb4d3f8efe9dbfedbba2",
+      "rev": "0e39a31789c0ec8753aab6cffaf830e55a9858d7",
       "src": "https://github.com/Imngzx/ascetic.nvim"
     },
     "atone.nvim": {
@@ -14,7 +14,7 @@
       "version": "1.0.0 - 2.0.0"
     },
     "bpm.nvim": {
-      "rev": "a3eaeefe75eda4ccdd68c59c380687630796ca0d",
+      "rev": "6afa0a40a3d23b0f96688e959fa9f370ed2ca30a",
       "src": "https://github.com/aurora0x27/bpm.nvim"
     },
     "budoux.lua": {
@@ -22,7 +22,7 @@
       "src": "https://github.com/atusy/budoux.lua"
     },
     "codecompanion.nvim": {
-      "rev": "74046d6a44bc15508e7182e6da69f7953f9c6971",
+      "rev": "6cbbcb4503430644f04ea5f087c8e2ea4cdc6f6e",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -58,7 +58,7 @@
       "src": "https://github.com/rebelot/heirline.nvim"
     },
     "jisho.nvim": {
-      "rev": "779d387054efbe078e0907492964faf1fdbd57ed",
+      "rev": "81b33cda56094b808a37f0d936882a891466ebb4",
       "src": "https://github.com/Imngzx/jisho.nvim"
     },
     "lazydev.nvim": {
