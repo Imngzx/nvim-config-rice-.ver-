@@ -87,8 +87,7 @@
     },
     "nvim": {
       "rev": "0303a7208dba448c459767486a38a6ec05c4216b",
-      "src": "https://github.com/catppuccin/nvim",
-      "version": "'main'"
+      "src": "https://github.com/catppuccin/nvim"
     },
     "nvim-dap": {
       "rev": "531771530d4f82ad2d21e436e3cc052d68d7aebb",
@@ -116,8 +115,7 @@
     },
     "nvim-treesitter": {
       "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
-      "src": "https://github.com/nvim-treesitter/nvim-treesitter",
-      "version": "'main'"
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-context": {
       "rev": "b311b30818951d01f7b4bf650521b868b3fece16",
@@ -144,7 +142,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "6a45af15152517026c7fbe4df6eb2fc59884a3df",
+      "rev": "10507bf109a799673ea397f087e4153aefe54a57",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "snacks.nvim": {
@@ -153,8 +151,7 @@
     },
     "telegram.nvim": {
       "rev": "29a6d54379253459ae9dae019e21447224c22242",
-      "src": "https://github.com/ChuYanLon/telegram.nvim",
-      "version": "'main'"
+      "src": "https://github.com/ChuYanLon/telegram.nvim"
     },
     "tiny-inline-diagnostic.nvim": {
       "rev": "680762989e8b05a72e90769959d0fb9a557e6917",
