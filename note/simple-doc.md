@@ -55,6 +55,11 @@
 | `<leader>bd` | n | Wipeout current buffer (Clear memory) |
 | `<leader>bo` | n | Wipeout all other buffers |
 | `<leader>br` | n | Rename current file |
+| `<leader>tab n` | n | New workspace |
+| `<leader>tab r` | n | Rename workspace |
+| `<leader>tab d` | n | Close workspace |
+| `gt` or `]t` | n | Goto next workspace |
+| `gT` or `[t` | n | Goto previous workspace |
 | `q` | n | Close special buffers (Help, Quickfix, LSP Info, etc.) |
 
 ### Windows / Splits
