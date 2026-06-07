@@ -2,8 +2,8 @@ local resonance = require('resonance')
 
 resonance.load({
   plugin = {
-    'https://github.com/Imngzx/jisho.nvim',
     'https://github.com/atusy/budoux.lua',
+    'https://github.com/Imngzx/jisho.nvim',
   },
   cmd = { 'Jisho' },
 
