@@ -13,8 +13,8 @@ resonance.load({
     { 'n', '<leader>du', function() require('dap-view').toggle() end, { desc = 'Toggle Dap View' } },
 
     -- 🐍 DAP Python
-    { 'n', '<localleader>pdt', function() require('dap-python').test_method() end, { desc = 'Debug Method (Python)' } },
-    { 'n', '<localleader>pdc', function() require('dap-python').test_class() end, { desc = 'Debug Class (Python)' } },
+    { 'n', '<localleader>dT', function() require('dap-python').test_method() end, { desc = 'Debug Method (Python)' } },
+    { 'n', '<localleader>dC', function() require('dap-python').test_class() end, { desc = 'Debug Class (Python)' } },
 
     -- ⚙️ DAP Core
     { 'n', '<leader>dB', function()
