@@ -1,9 +1,9 @@
 local resonance = require('resonance')
 
 resonance.load({
-  plugin = 'https://github.com/nvim-mini/mini.icons',
+  'https://github.com/nvim-mini/mini.icons',
   event = { 'User', pattern = 'VeryLazy' },
-  setup = function()
+  config = function()
     local mini_icons = require('mini.icons')
 
     mini_icons.setup()
@@ -12,9 +12,9 @@ resonance.load({
 })
 
 resonance.load({
-  plugin = 'https://github.com/bekaboo/dropbar.nvim',
+  'https://github.com/bekaboo/dropbar.nvim',
   event = { 'BufReadPre', 'BufNewFile' },
-  setup = function()
+  config = function()
     require('dropbar').setup({
       bar = {
         update_events = {

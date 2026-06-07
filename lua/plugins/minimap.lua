@@ -23,7 +23,7 @@ vim.g.neominimap = {
 }
 
 resonance.load({
-  plugin = 'https://github.com/Isrothy/neominimap.nvim',
+  'https://github.com/Isrothy/neominimap.nvim',
   event = { 'User', pattern = 'VeryLazy' },
 
   -- event = { 'BufReadPre', 'BufNewFile' },
@@ -34,7 +34,7 @@ resonance.load({
     { 'n', '<leader>nc', '<cmd>Neominimap Disable<cr>', { desc = 'Close minimap' } },
     { 'n', '<leader>nr', '<cmd>Neominimap Refresh<cr>', { desc = 'Refresh minimap' } },
   },
-  setup = function()
+  config = function()
     vim.opt.wrap = false
     vim.opt.sidescrolloff = 36
 

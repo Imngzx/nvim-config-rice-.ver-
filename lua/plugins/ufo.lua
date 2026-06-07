@@ -2,10 +2,8 @@
 local resonance = require('resonance')
 
 resonance.load({
-  plugin = {
-    'https://github.com/kevinhwang91/promise-async',
-    'https://github.com/kevinhwang91/nvim-ufo',
-  },
+  'https://github.com/kevinhwang91/nvim-ufo',
+  dependencies = 'https://github.com/kevinhwang91/promise-async',
   event = { 'BufReadPost', 'BufNewFile' },
   keys = {
     { 'n', 'zR', function() require('ufo').openAllFolds() end, { desc = 'Open all folds' } },
@@ -14,7 +12,7 @@ resonance.load({
     { 'n', 'zm', function() require('ufo').closeFoldsWith() end, { desc = 'Fold more' } },
     { 'n', 'zp', function() require('ufo').peekFoldedLinesUnderCursor() end, { desc = 'Peek fold' } },
   },
-  setup = function()
+  config = function()
     local function set_fold_hl()
       local ok, color_lib = pcall(require, 'custom.color-list')
       if ok then

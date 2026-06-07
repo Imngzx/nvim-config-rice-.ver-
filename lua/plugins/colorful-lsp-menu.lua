@@ -2,9 +2,9 @@ local resonance = require('resonance')
 
 -- [Colorful Menu]
 resonance.load({
-  plugin = 'https://github.com/xzbdmw/colorful-menu.nvim',
+  'https://github.com/xzbdmw/colorful-menu.nvim',
   event = { 'InsertEnter', 'CmdlineEnter' },
-  setup = function()
+  config = function()
     require('colorful-menu').setup({
       ls = {
         lua_ls = { arguments_hl = '@comment' },

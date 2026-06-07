@@ -1,11 +1,13 @@
 local resonance = require('resonance')
 
 resonance.load({
-  plugin = {
-    'https://github.com/olimorris/codecompanion.nvim',
-    'https://github.com/nvim-lua/plenary.nvim',
-  },
+
+  'https://github.com/olimorris/codecompanion.nvim',
+
+  dependencies = 'https://github.com/nvim-lua/plenary.nvim',
+
   cmd = { 'CodeCompanion', 'CodeCompanionChat', 'CodeCompanionCmd', 'CodeCompanionActions' },
+
   keys = {
     { 'n', '<leader>ai', function() vim.cmd('CodeCompanionChat Toggle') end, { desc = 'Toggle AI Chat' } },
     { 'v', '<leader>ae', function() vim.cmd('CodeCompanion') end, { desc = 'AI Edit (Selection)' } },
@@ -13,7 +15,7 @@ resonance.load({
     { 'n', '<leader>ac', function() vim.cmd('CodeCompanionActions') end, { desc = 'AI Actions' } },
     { 'v', '<leader>ac', function() vim.cmd('CodeCompanionActions') end, { desc = 'AI Actions' } },
   },
-  setup = function()
+  config = function()
     require('codecompanion').setup({
 
       -- ──────────────────────────────────────────────────────────────

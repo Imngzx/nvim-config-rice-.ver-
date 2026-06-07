@@ -37,7 +37,7 @@ resonance.load({
     { 'n', '<leader>dt', function() require('dap').terminate() end, { desc = 'Terminate' } },
     { 'n', '<leader>dw', function() require('dap.ui.widgets').hover() end, { desc = 'Widgets' } },
   },
-  setup = function()
+  config = function()
     -- 🎨 custom dap icons
     vim.fn.sign_define('DapBreakpoint',
       { text = ' ', texthl = 'DapBreakpoint', linehl = '', numhl = '' })

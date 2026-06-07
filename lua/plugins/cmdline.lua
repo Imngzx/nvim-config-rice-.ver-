@@ -4,11 +4,11 @@ local row = 0.25
 -- local neovide_detect = not vim.g.neovide
 
 resonance.load({
-  plugin = 'https://github.com/aurora0x27/popup.nvim',
+  'https://github.com/aurora0x27/popup.nvim',
 
   event = { 'User', pattern = 'VeryLazy' },
 
-  setup = function()
+  config = function()
     require('popup').setup({
       cursor_hack = vim.g.neovide,
       enable_ui2 = true,

@@ -77,9 +77,9 @@ end
 
 -- 4. 依托你精湛的按需加载引擎
 resonance.load({
-  plugin = 'https://github.com/folke/snacks.nvim',
+  'https://github.com/folke/snacks.nvim',
   event = { 'User', pattern = 'VeryLazy' },
-  setup = function()
+  config = function()
     set_keys(key)
 
     _G.dd = function(...) Snacks.debug.inspect(...) end

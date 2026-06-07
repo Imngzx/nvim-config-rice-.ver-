@@ -6,10 +6,10 @@ local cmd = vim.cmd
 
 -- [CSV View]
 resonance.load({
-  plugin = 'https://github.com/hat0uma/csvview.nvim',
+  'https://github.com/hat0uma/csvview.nvim',
   cmd = { 'CsvViewEnable', 'CsvViewDisable', 'CsvViewToggle' },
   ft = { 'csv', 'tsv' },
-  setup = function()
+  config = function()
     require('csvview').setup({
       view = {
         display_mode = 'border',

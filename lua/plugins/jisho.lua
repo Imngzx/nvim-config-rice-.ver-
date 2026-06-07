@@ -1,10 +1,10 @@
 local resonance = require('resonance')
 
 resonance.load({
-  plugin = {
-    'https://github.com/atusy/budoux.lua',
-    'https://github.com/Imngzx/jisho.nvim',
-  },
+  'https://github.com/Imngzx/jisho.nvim',
+
+  dependencies = { 'https://github.com/atusy/budoux.lua', },
+
   cmd = { 'Jisho' },
 
   keys = {
@@ -18,7 +18,7 @@ resonance.load({
     end, { desc = 'Jisho (Selection)' } },
   },
 
-  setup = function()
+  config = function()
     require('jisho').setup({
       use_budoux = true,
       layout = 'spacious',

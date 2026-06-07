@@ -2,9 +2,9 @@ local resonance = require('resonance')
 
 -- [Key note] Load on VeryLazy
 resonance.load({
-  plugin = 'https://github.com/folke/which-key.nvim',
+  'https://github.com/folke/which-key.nvim',
   event = { 'User', pattern = 'VeryLazy' },
-  setup = function()
+  config = function()
     local wk = require('which-key')
 
     wk.setup({
@@ -56,9 +56,9 @@ resonance.load({
 })
 
 resonance.load({
-  plugin = 'https://github.com/nvim-mini/mini.diff',
+  'https://github.com/nvim-mini/mini.diff',
   event = { 'BufReadPost', 'BufNewFile' },
-  setup = function()
+  config = function()
     local mini_diff = require('mini.diff')
 
     mini_diff.setup({
@@ -91,10 +91,10 @@ resonance.load({
 })
 
 resonance.load({
-  plugin = 'https://github.com/Imngzx/ascetic.nvim',
+  'https://github.com/Imngzx/ascetic.nvim',
   event = { 'BufReadPost', 'BufNewFile' },
   -- event = { 'User', pattern = 'VeryLazy' },
-  setup = function()
+  config = function()
     local Ascetic = require('ascetic')
 
     Ascetic.setup({

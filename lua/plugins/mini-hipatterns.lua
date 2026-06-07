@@ -1,9 +1,9 @@
 local resonance = require('resonance')
 
 resonance.load({
-  plugin = 'https://github.com/nvim-mini/mini.hipatterns',
+  'https://github.com/nvim-mini/mini.hipatterns',
   event = { 'BufReadPost', 'BufNewFile' },
-  setup = function()
+  config = function()
     local hi = require('mini.hipatterns')
 
     -- 🛑 1. 定义黑名单：在这些文件类型中，不使用颜色渲染

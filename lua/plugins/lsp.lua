@@ -244,7 +244,9 @@ resonance.load({
 resonance.load({
   plugin = {
     { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('1') },
-    'https://github.com/rafamadriz/friendly-snippets'
+  },
+  dependencies = {
+    'https://github.com/rafamadriz/friendly-snippets',
   },
   event = { 'InsertEnter', 'CmdlineEnter' },
   setup = function()

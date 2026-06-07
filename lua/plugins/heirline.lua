@@ -1,9 +1,9 @@
 local resonance = require('resonance')
 
 resonance.load({
-  plugin = 'https://github.com/rebelot/heirline.nvim',
+  'https://github.com/rebelot/heirline.nvim',
   event = { 'BufReadPost', 'BufNewFile' },
-  setup = function()
+  config = function()
     local heirline = require('heirline')
     local utils = require('heirline.utils')
     local colors = require('plugins.heirline_config.colors')
@@ -32,9 +32,9 @@ resonance.load({
 })
 
 resonance.load({
-  plugin = 'https://github.com/aurora0x27/bpm.nvim',
+  'https://github.com/aurora0x27/bpm.nvim',
   event = { 'BufReadPost', 'BufNewFile' },
-  setup = function()
+  config = function()
     require('bpm').setup()
   end
 })

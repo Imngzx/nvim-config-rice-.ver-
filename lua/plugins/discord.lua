@@ -1,15 +1,11 @@
 local resonance = require('resonance')
 
 resonance.load({
-  plugin = {
-    {
-      src = 'https://github.com/vyfor/cord.nvim',
-    }
-  },
+  'https://github.com/vyfor/cord.nvim',
 
   event = { 'User', pattern = 'VeryLazy' },
 
-  setup = function()
+  config = function()
     require('cord').setup({})
   end
 })

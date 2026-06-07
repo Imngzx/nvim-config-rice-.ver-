@@ -1,10 +1,10 @@
 local resonance = require('resonance')
 
 resonance.load({
-  plugin = 'https://github.com/MeanderingProgrammer/render-markdown.nvim',
+  'https://github.com/MeanderingProgrammer/render-markdown.nvim',
   -- cmd = { 'Tg', 'TgLogout', 'TgSend', 'TgPr' },
   ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion', 'telegram' },
-  setup = function()
+  config = function()
     local render_markdown = require('render-markdown')
     render_markdown.setup({
       file_types = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion', 'telegram' },

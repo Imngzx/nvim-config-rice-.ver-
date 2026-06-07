@@ -4,12 +4,8 @@ local utils = require('libs.utils')
 local path_sep = utils.is_windows() and '\\' or '/'
 
 resonance.load({
-  plugin = {
-    {
-      src = 'https://github.com/catppuccin/nvim',
-      version = 'main',
-    }
-  },
+  'https://github.com/catppuccin/nvim',
+  version = 'main',
 
   event = { 'User', pattern = 'ForceLoadCatppuccin' },
 

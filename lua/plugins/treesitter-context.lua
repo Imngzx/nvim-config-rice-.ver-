@@ -2,10 +2,10 @@ local resonance = require('resonance')
 
 -- [Treesitter Context]
 resonance.load({
-  plugin = 'https://github.com/nvim-treesitter/nvim-treesitter-context',
+  'https://github.com/nvim-treesitter/nvim-treesitter-context',
   -- 在打开文件时自动加载
   event = { 'BufReadPost', 'BufNewFile' },
-  setup = function()
+  config = function()
     require('treesitter-context').setup({
       enable = true, -- 启用插件
       max_lines = 3, -- 吸顶框最多显示几行（设为 0 则没有限制）
