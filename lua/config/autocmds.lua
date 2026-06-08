@@ -1,9 +1,13 @@
 local api = vim.api
+local o = vim.o
+local opt = vim.opt
 local create_autocmd = api.nvim_create_autocmd
 local create_augroup = api.nvim_create_augroup
 local schedule = vim.schedule
 local cmd = vim.cmd
 local ui_group = create_augroup('AutoUIVisibility', { clear = true })
+local vim_local = vim.opt_local
+local map = vim.keymap.set
 
 local function augroup(name)
   return create_augroup('lazyvim_' .. name, { clear = true })
@@ -14,8 +18,8 @@ create_autocmd('FileType', {
   group = create_augroup('TextSpellCheck', { clear = true }),
   pattern = { 'markdown', 'text', 'gitcommit', 'plaintex', 'typst' },
   callback = function()
-    vim.opt_local.spell = true
-    vim.opt_local.spelllang = { 'en_us', 'ms', 'cjk' }
+    vim_local.spell = true
+    vim_local.spelllang = { 'en_us', 'ms', 'cjk' }
   end,
 })
 
@@ -24,7 +28,7 @@ create_autocmd('FileType', {
   group = create_augroup('DisableAutoComment', { clear = true }),
   pattern = '*',
   callback = function()
-    vim.opt_local.formatoptions:remove({ 'c', 'r', 'o' })
+    vim_local.formatoptions:remove({ 'c', 'r', 'o' })
   end,
 })
 
@@ -71,7 +75,7 @@ create_autocmd('FileType', {
     vim.bo[buf].buflisted = false
     schedule(function()
       if not api.nvim_buf_is_valid(buf) then return end
-      vim.keymap.set('n', 'q', function()
+      map('n', 'q', function()
         cmd('close')
         pcall(api.nvim_buf_delete, buf, { force = true })
       end, { buf = buf, silent = true, desc = 'Quit buffer' })
@@ -99,11 +103,11 @@ create_autocmd({ 'BufEnter', 'BufAdd', 'BufDelete' }, {
     end
 
     if has_real_file then
-      if vim.o.showtabline ~= 2 then vim.opt.showtabline = 2 end
-      if vim.o.laststatus ~= 3 then vim.opt.laststatus = 3 end
+      if o.showtabline ~= 2 then opt.showtabline = 2 end
+      if o.laststatus ~= 3 then opt.laststatus = 3 end
     else
-      if vim.o.showtabline ~= 0 then vim.opt.showtabline = 1 end
-      if vim.o.laststatus ~= 0 then vim.opt.laststatus = 0 end
+      if o.showtabline ~= 0 then opt.showtabline = 1 end
+      if o.laststatus ~= 0 then opt.laststatus = 0 end
     end
   end,
 })
