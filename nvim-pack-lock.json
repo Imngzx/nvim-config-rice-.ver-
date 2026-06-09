@@ -14,7 +14,7 @@
       "version": "1.0.0 - 2.0.0"
     },
     "bpm.nvim": {
-      "rev": "6afa0a40a3d23b0f96688e959fa9f370ed2ca30a",
+      "rev": "b4fa2eb4e26f1f33f76dd1f8277c287989586d9b",
       "src": "https://github.com/aurora0x27/bpm.nvim"
     },
     "budoux.lua": {
@@ -110,7 +110,7 @@
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "nvim-lspconfig": {
-      "rev": "229b79051b380377664edc4cbd534930154921a1",
+      "rev": "ed19590a3a9792901553c388d1aadafce012f80d",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
@@ -142,7 +142,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "963969a1425d4da56ad573aa51c1c94808a8ef68",
+      "rev": "d76d024f4aae42441a46c0de8144da629c7afc96",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "snacks.nvim": {
