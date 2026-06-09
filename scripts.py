@@ -33,15 +33,13 @@ def get_paths():
 
 
 def run_git_update(config_dir):
-    """Run git pull with rebase and autostash to preserve local user modifications."""
+    """Run git pull with rebase and autostash."""
     print("\n[*] Fetching latest updates from Git...")
     try:
-        # Check if it's a git repository
         if not os.path.exists(os.path.join(config_dir, ".git")):
             print("[-] Error: This directory is not a Git repository.")
-            return
+            return False
 
-        # Execute: git pull --rebase --autostash
         result = subprocess.run(
             ["git", "pull", "--rebase", "--autostash"],
             cwd=config_dir,
@@ -49,16 +47,32 @@ def run_git_update(config_dir):
             text=True,
             check=True,
         )
+
+        output = result.stdout.strip()
         print("[+] Git pull successful!")
-        if result.stdout:
-            print(f"    {result.stdout.strip()}")
+        if output:
+            print(f"    {output}")
+
+        if "Already up to date." not in output:
+            print("\n[!] IMPORTANT: The repository was updated.")
+            print(
+                "[!] If 'updater.py' was changed, the current running script is outdated."
+            )
+            print(
+                "[!] Exiting to ensure you use the latest updater logic on the next run."
+            )
+            return True
+
+        return False
 
     except subprocess.CalledProcessError as e:
         print("[-] Git update failed! Please resolve conflicts manually.")
         if e.stderr:
             print(f"    Error details: {e.stderr.strip()}")
+        return False
     except FileNotFoundError:
         print("[-] Git is not installed or not added to your system PATH.")
+        return False
 
 
 def clean_plugins(data_dir):
@@ -100,19 +114,26 @@ def main():
         choice = input("Select an action (1-4): ").strip()
 
         if choice == "1":
-            run_git_update(config_dir)
+            was_updated = run_git_update(config_dir)
+            if was_updated:
+                sys.exit(0)
+
         elif choice == "2":
             clean_plugins(data_dir)
+
         elif choice == "3":
-            run_git_update(config_dir)
+            was_updated = run_git_update(config_dir)
             clean_plugins(data_dir)
+            if was_updated:
+                print("\n[*] Update and clean complete. Exiting for safety...")
+                sys.exit(0)
+
         elif choice == "4":
             print("[*] Exiting...")
             sys.exit(0)
         else:
             print("[-] Invalid choice. Please enter a number between 1 and 4.")
 
-        # Pause before asking again
         input("\nPress Enter to continue...")
 
 
