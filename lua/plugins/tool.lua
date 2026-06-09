@@ -41,7 +41,7 @@ resonance.load({
         { ']', group = 'Next', icon = '󰒭 ' },
         { 'g', group = 'Goto', icon = '󰜎 ' },
         { 's', group = 'Surround', icon = '󰑄 ' },
-        { 'z', group = 'Fold', icon = '󱃄 ' },
+        { 'z', group = 'Fold', icon = '󱃅 ' },
 
         -- bpm tab
         { '<leader><tab>', group = 'Workspace/Tabs', icon = '󰓩 ' },
