@@ -22,7 +22,7 @@ resonance.load({
         end
       })
 
-      local StatusLine = require('plugins.heirline_config.components')
+      local StatusLine = require('plugins.heirline_config.statusline')
       local TabLine = require('plugins.heirline_config.tabline')
 
       heirline.setup({
