@@ -48,10 +48,12 @@ local function get_hl_hex(name, attr)
 end
 
 local function get_contrast_color(hex_str)
-  if not hex_str or #hex_str ~= 7 then return '#1e1e2e' end
+  local bg_hex = get_hl_hex('Normal', 'bg') or '#1e1e2e'
+  local fg_hex = get_hl_hex('Normal', 'fg') or '#cdd6f4'
+  if not hex_str or #hex_str ~= 7 then return bg_hex end
   local r, g, b = tonumber(hex_str:sub(2, 3), 16), tonumber(hex_str:sub(4, 5), 16),
     tonumber(hex_str:sub(6, 7), 16)
-  return (0.299 * r + 0.587 * g + 0.114 * b) > 128 and '#1e1e2e' or '#cdd6f4'
+  return (0.299 * r + 0.587 * g + 0.114 * b) > 128 and bg_hex or fg_hex
 end
 
 local function update_incline()

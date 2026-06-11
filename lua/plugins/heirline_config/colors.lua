@@ -7,8 +7,10 @@ function M.setup_colors()
     bg = utils.get_highlight('StatusLine').bg or '#1e1e2e',
     fg = utils.get_highlight('StatusLine').fg or '#cdd6f4',
 
-    bright_bg = utils.get_highlight('Folded').bg or '#45475a',
-    section_bg = utils.get_highlight('CursorLine').bg or '#313244',
+    -- bright_bg = utils.get_highlight('Folded').bg or '#45475a',
+    -- section_bg = utils.get_highlight('CursorLine').bg or '#313244',
+    bright_bg = '#45475a',
+    section_bg = '#313244',
 
     normal = utils.get_highlight('Directory').fg or '#89b4fa',
     insert = utils.get_highlight('String').fg or '#a6e3a1',
@@ -24,8 +26,14 @@ function M.setup_colors()
     git_change = utils.get_highlight('MiniDiffSignChange').fg or '#f9e2af',
     git_del = utils.get_highlight('MiniDiffSignDelete').fg or '#f38ba8',
 
-    lsp_name = color_list.colors.silicon_valley.hex,
-    venv_name = color_list.colors.cyber_mustard.hex
+    lsp_name = utils.get_highlight('DiagnosticInfo').fg,
+    venv_name = utils.get_highlight('Type').fg,
+
+    tab_mod = utils.get_highlight('MatchParen').fg,
+    tab_cross_bg = utils.get_highlight('Error').fg,
+    tab_num = utils.get_highlight('DiagnosticInfo').fg,
+    tab_num_unfocus = utils.get_highlight('Comment').fg,
+    tab_cross_fg = utils.get_highlight('CursorLine').bg,
   }
 end
 

@@ -19,12 +19,12 @@ resonance.load({
 
     -- 🎨 3. 准备 TODO 关键字、专属颜色 (Catppuccin Mocha) 以及 Nerd Font 图标！
     local todo_keywords = {
-      TODO = { color = '#a6e3a1', icon = ' ' }, -- Mocha Green (待办/新功能)
-      FIXME = { color = '#f38ba8', icon = ' ' }, -- Mocha Red (修 Bug)
-      NOTE = { color = '#89b4fa', icon = ' ' }, -- Mocha Blue (笔记/记录)
-      WARN = { color = '#fab387', icon = ' ' }, -- Mocha Peach (警告/注意)
-      HACK = { color = '#f9e2af', icon = ' ' }, -- Mocha Yellow (临时硬编码/魔法)
-      PERF = { color = '#cba6f7', icon = '󰅒 ' }, -- Mocha Mauve (性能优化)
+      TODO = { group = 'DiagnosticOk', icon = ' ' }, -- TODO:
+      FIXME = { group = 'DiagnosticError', icon = ' ' }, -- FIXME:
+      NOTE = { group = 'DiagnosticInfo', icon = ' ' }, -- NOTE:
+      WARN = { group = 'DiagnosticWarn', icon = ' ' }, -- WARN:
+      HACK = { group = 'MatchParen', icon = ' ' }, -- HACK:
+      PERF = { group = 'DiagnosticHint', icon = '󰅒 ' }, -- PERF:
     }
 
     local highlighters = {
@@ -50,15 +50,28 @@ resonance.load({
       local sign_hl_group = 'HandcraftedTodoSign_' .. kw
 
       local function set_hls()
-        vim.api.nvim_set_hl(0, hl_group, { fg = '#181825', bg = config.color, bold = true })
-        vim.api.nvim_set_hl(0, sign_hl_group, { fg = config.color, bg = 'NONE', bold = true })
+        -- 获取当前主题的背景色，用于反色
+        local ok_bg, hl_norm = pcall(vim.api.nvim_get_hl, 0, { name = 'Normal', link = false })
+        local base_bg = (ok_bg and hl_norm.bg) and string.format('#%06x', hl_norm.bg) or '#1e1e2e'
+
+        for kw, config in pairs(todo_keywords) do
+          local hl_group = 'HandcraftedTodo_' .. kw
+          local sign_hl_group = 'HandcraftedTodoSign_' .. kw
+
+          -- 动态获取组颜色
+          local ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = config.group, link = false })
+          local fg_color = (ok and hl_def.fg) and string.format('#%06x', hl_def.fg) or '#ffffff'
+
+          -- 设置：背景为组颜色，前景为普通背景色 (实现实心方块效果)
+          vim.api.nvim_set_hl(0, hl_group, { fg = base_bg, bg = fg_color, bold = true })
+          vim.api.nvim_set_hl(0, sign_hl_group, { fg = fg_color, bg = 'NONE', bold = true })
+        end
       end
 
+      -- 初始化与主题切换绑定
       set_hls()
-
-      -- 保证切换主题时颜色依然有效
       vim.api.nvim_create_autocmd('ColorScheme', {
-        group = vim.api.nvim_create_augroup('HandcraftedTodoHL_' .. kw, { clear = true }),
+        group = vim.api.nvim_create_augroup('HandcraftedTodoHL', { clear = true }),
         callback = set_hls,
       })
 

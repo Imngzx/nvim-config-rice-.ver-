@@ -19,14 +19,6 @@ local diag_count = vim.diagnostic.count
 local severity = vim.diagnostic.severity
 -- local list_tabpages = api.nvim_list_tabpages -- NOTE: pair with line 231
 
--- colors
-local MODIFIED_COLOR = color_list.colors.retro_apricot.hex
-local BUFFER_CROSS_COLOR = color_list.colors.sakura_drop.hex
-local TAB_PAGE_NUM = color_list.colors.silicon_valley.hex
-local UNFOCUS_TAB_PAGE_NUM = color_list.colors.mech_armor.hex
-local TAB_PAGE_CROSS_BG = colors.mode_colors.no
-local TAB_PAGE_CROSS_COLOR = color_list.colors.carbon_fiber.hex
-
 local _bpm, _icons, _snacks
 local function get_bpm()
   if not _bpm then pcall(function() _bpm = require('bpm') end) end
@@ -171,8 +163,8 @@ local TablineFileNameBlock = {
       return self.is_modified and ' ● ' or ' 󰅖 '
     end,
     hl = function(self)
-      if self.is_modified then return { fg = MODIFIED_COLOR } end
-      return { fg = BUFFER_CROSS_COLOR }
+      if self.is_modified then return { fg = 'command' } end
+      return { fg = 'tab_cross_bg' }
     end,
     on_click = {
       callback = function(_, minwid)
@@ -213,13 +205,13 @@ local Tabpage = {
   hl = function(self)
     if self.is_active then
       return {
-        fg = TAB_PAGE_NUM,
+        fg = 'tab_num',
         bg = utils.get_highlight('TabLineSel').bg,
         bold = true
       }
     else
       return {
-        fg = UNFOCUS_TAB_PAGE_NUM,
+        fg = 'tab_num_unfocus',
         bg = utils.get_highlight('TabLine').bg,
         italic = true
       }
@@ -234,8 +226,8 @@ local TabPages = {
     provider = '%999X 󰅖 %X',
     hl = function()
       return {
-        fg = TAB_PAGE_CROSS_COLOR,
-        bg = TAB_PAGE_CROSS_BG,
+        fg = 'tab_cross_fg',
+        bg = 'tab_cross_bg',
       }
     end,
   }
