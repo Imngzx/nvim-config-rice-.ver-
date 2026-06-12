@@ -1,349 +1,209 @@
--- Simple Surround - A minimal surround implementation
--- Supports basic add, delete, and replace operations
--- https://github.com/nvim-mini/mini.surround/blob/main/lua/mini/surround.lua
-
 local M = {}
 
--- Configuration
-M.config = {
-  -- Surround pairs mapping
-  surrounds = {
-    ['('] = { '(', ')' },
-    [')'] = { '(', ')' },
-    ['['] = { '[', ']' },
-    [']'] = { '[', ']' },
-    ['{'] = { '{', '}' },
-    ['}'] = { '{', '}' },
-    ['<'] = { '<', '>' },
-    ['>'] = { '<', '>' },
-    ['"'] = { '"', '"' },
-    ["'"] = { "'", "'" },
-    ['`'] = { '`', '`' },
-    ['b'] = { '(', ')' }, -- alias for any bracket
-  },
+local api = vim.api
+local fn = vim.fn
+local str_byte = string.byte
+local math_min = math.min
+
+local ESC_KEY = api.nvim_replace_termcodes('<Esc>', true, false, true)
+
+
+local surrounds = {
+  ['('] = { '(', ')' },
+  [')'] = { '(', ')' },
+  ['b'] = { '(', ')' },
+  ['['] = { '[', ']' },
+  [']'] = { '[', ']' },
+  ['{'] = { '{', '}' },
+  ['}'] = { '{', '}' },
+  ['<'] = { '<', '>' },
+  ['>'] = { '<', '>' },
+  ['"'] = { '"', '"' },
+  ["'"] = { "'", "'" },
+  ['`'] = { '`', '`' },
 }
 
--- Add surrounding characters in visual mode
-function M.add_visual()
-  -- Get user input
-  vim.api.nvim_echo({ { 'Surround with: ', 'Question' } }, false, {})
-  local ok, char = pcall(vim.fn.getcharstr)
-  if not ok or char == '\27' or char == '' then
-    vim.api.nvim_echo({ { '' } }, false, {})
-    return
-  end
-  vim.api.nvim_echo({ { '' } }, false, {})
-
-  -- Handle <Esc> or <C-c>
-  if char == '\27' or char == '' then return end
-
-  -- Get surround pair
-  local surround = M.config.surrounds[char]
-  if not surround then surround = { char, char } end
-
-  local left, right = surround[1], surround[2]
-
-  -- Get selection positions
-  local start_pos = vim.fn.getpos("'<")
-  local end_pos = vim.fn.getpos("'>")
-
-  local start_line = start_pos[2]
-  local start_col = start_pos[3]
-  local end_line = end_pos[2]
-  local end_col = end_pos[3]
-
-  -- Validate positions
-  if start_line == 0 or end_line == 0 then return end
-
-  -- Get lines
-  local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
-  if #lines == 0 then return end
-
-  if start_line == end_line then
-    -- Single line case
-    local line = lines[1]
-    local before = line:sub(1, start_col - 1)
-    local selection = line:sub(start_col, end_col)
-    local after = line:sub(end_col + 1)
-
-    local new_line = before .. left .. selection .. right .. after
-    vim.api.nvim_buf_set_lines(0, start_line - 1, start_line, false, { new_line })
-
-    -- Update cursor position
-    vim.api.nvim_win_set_cursor(0, { start_line, start_col + #left - 1 })
-  else
-    -- Multi-line case
-    local first_line = lines[1]
-    local last_line = lines[#lines]
-
-    -- Modify first line
-    local new_first = first_line:sub(1, start_col - 1) .. left .. first_line:sub(start_col)
-    lines[1] = new_first
-
-    -- Modify last line
-    local new_last = last_line:sub(1, end_col) .. right .. last_line:sub(end_col + 1)
-    lines[#lines] = new_last
-
-    -- Set all lines at once
-    vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, lines)
-
-    -- Update cursor position
-    vim.api.nvim_win_set_cursor(0, { start_line, start_col + #left - 1 })
-  end
+for _, pair in pairs(surrounds) do
+  pair.l_byte = str_byte(pair[1])
+  pair.r_byte = str_byte(pair[2])
+  pair.is_bracket = pair[1] ~= pair[2]
 end
 
--- Add surrounding with motion/textobject (for normal mode)
-function M.add_normal()
-  -- Store the operatorfunc
-  local old_operatorfunc = vim.o.operatorfunc
+--- Ask user safely
+local function get_char(prompt)
+  api.nvim_echo({ { prompt, 'Question' } }, false, {})
+  local ok, char = pcall(fn.getcharstr)
+  api.nvim_echo({ { '', 'Normal' } }, false, {})
+  if not ok or char == '\27' or char == '\r' or char == '' then return nil end
+  return char
+end
 
-  -- Set our custom operatorfunc
-  _G._surround_add_operatorfunc = function()
-    -- Get user input for surround character
-    vim.api.nvim_echo({ { 'Surround with:  ', 'Question' } }, false, {})
-    local ok, char = pcall(vim.fn.getcharstr)
-    if not ok or char == '\27' or char == '' then
-      vim.api.nvim_echo({ { '' } }, false, {})
-      return
+--- Get UTF-8 character byte length without ANY string allocations (Zero GC)
+local function get_utf8_len(line, col)
+  if col >= #line then return 0 end
+  local b = str_byte(line, col + 1)
+  if not b then return 0 end
+  if b >= 240 then return 4 end
+  if b >= 224 then return 3 end
+  if b >= 192 then return 2 end
+  return 1
+end
+
+local function find_surround(char)
+  local pair = surrounds[char] or {
+    char,
+    char,
+    l_byte = str_byte(char),
+    r_byte = str_byte(char),
+    is_bracket = false
+  }
+
+  local l_byte, r_byte = pair.l_byte, pair.r_byte
+  local is_bracket = pair.is_bracket
+
+  local line = api.nvim_get_current_line()
+  local cursor_col = api.nvim_win_get_cursor(0)[2] + 1
+  local l_pos, r_pos, depth = nil, nil, 0
+
+  for i = cursor_col, 1, -1 do
+    local b = str_byte(line, i)
+    if is_bracket and b == r_byte then
+      depth = depth + 1
+    elseif b == l_byte then
+      if depth > 0 then
+        depth = depth - 1
+      else
+        l_pos = i; break
+      end
     end
-    vim.api.nvim_echo({ { '' } }, false, {})
-
-    -- Handle <Esc> or <C-c>
-    if char == '\27' or char == '' then
-      vim.o.operatorfunc = old_operatorfunc
-      return
-    end
-
-    -- Get surround pair
-    local surround = M.config.surrounds[char]
-    if not surround then surround = { char, char } end
-
-    local left, right = surround[1], surround[2]
-
-    -- Get motion marks
-    local start_pos = vim.fn.getpos("'[")
-    local end_pos = vim.fn.getpos("']")
-
-    local start_line = start_pos[2]
-    local start_col = start_pos[3]
-    local end_line = end_pos[2]
-    local end_col = end_pos[3]
-
-    -- Get lines
-    local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
-    if #lines == 0 then
-      vim.o.operatorfunc = old_operatorfunc
-      return
-    end
-
-    if start_line == end_line then
-      -- Single line case
-      local line = lines[1]
-      local before = line:sub(1, start_col - 1)
-      local selection = line:sub(start_col, end_col)
-      local after = line:sub(end_col + 1)
-
-      local new_line = before .. left .. selection .. right .. after
-      vim.api.nvim_buf_set_lines(0, start_line - 1, start_line, false, { new_line })
-
-      -- Update cursor position
-      vim.api.nvim_win_set_cursor(0, { start_line, start_col + #left - 1 })
-    else
-      -- Multi-line case
-      local first_line = lines[1]
-      local last_line = lines[#lines]
-
-      local new_first = first_line:sub(1, start_col - 1) .. left .. first_line:sub(start_col)
-      lines[1] = new_first
-
-      local new_last = last_line:sub(1, end_col) .. right .. last_line:sub(end_col + 1)
-      lines[#lines] = new_last
-
-      vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, lines)
-
-      vim.api.nvim_win_set_cursor(0, { start_line, start_col + #left - 1 })
-    end
-
-    -- Restore operatorfunc
-    vim.o.operatorfunc = old_operatorfunc
   end
 
+  depth = 0
+  for i = cursor_col + 1, #line do
+    local b = str_byte(line, i)
+    if is_bracket and b == l_byte then
+      depth = depth + 1
+    elseif b == r_byte then
+      if depth > 0 then
+        depth = depth - 1
+      else
+        r_pos = i; break
+      end
+    end
+  end
+
+  return l_pos, r_pos
+end
+
+local function safe_set_text(s_row, s_col, e_row, e_col, l_char, r_char)
+  local line_s = api.nvim_buf_get_lines(0, s_row, s_row + 1, false)[1] or ''
+  local line_e = api.nvim_buf_get_lines(0, e_row, e_row + 1, false)[1] or ''
+
+  s_col = math_min(s_col, #line_s)
+  e_col = math_min(e_col, #line_e)
+  e_col = e_col + get_utf8_len(line_e, e_col)
+
+  api.nvim_buf_set_text(0, e_row, e_col, e_row, e_col, { r_char })
+  api.nvim_buf_set_text(0, s_row, s_col, s_row, s_col, { l_char })
+end
+
+local function apply_visual_surround(l_char, r_char)
+  local s_row, s_col = fn.line('v') - 1, fn.col('v') - 1
+  local e_row, e_col = fn.line('.') - 1, fn.col('.') - 1
+
+  if s_row > e_row or (s_row == e_row and s_col > e_col) then
+    s_row, e_row, s_col, e_col = e_row, s_row, e_col, s_col
+  end
+
+  api.nvim_feedkeys(ESC_KEY, 'n', false)
+
+  vim.schedule(function()
+    safe_set_text(s_row, s_col, e_row, e_col, l_char, r_char)
+  end)
+end
+
+_G._surround_add_operatorfunc = function()
+  local char = _G._surround_char
+  if not char then return end
+  local pair = surrounds[char] or { char, char }
+  local s_pos, e_pos = api.nvim_buf_get_mark(0, '['), api.nvim_buf_get_mark(0, ']')
+  safe_set_text(s_pos[1] - 1, s_pos[2], e_pos[1] - 1, e_pos[2], pair[1], pair[2])
+end
+
+function M.add_normal()
+  local char = get_char('Surround with: ')
+  if not char then return '<Esc>' end
+  _G._surround_char = char
   vim.o.operatorfunc = 'v:lua._surround_add_operatorfunc'
   return 'g@'
 end
 
--- Find surrounding characters around cursor
-local function find_surround(char)
-  -- Get all possible surround pairs for this char
-  local pairs_to_try = {}
-
-  if M.config.surrounds[char] then table.insert(pairs_to_try, M.config.surrounds[char]) end
-
-  -- For brackets, try both open and close variants
-  if char == '(' or char == ')' or char == 'b' then
-    table.insert(pairs_to_try, { '(', ')' })
-  elseif char == '[' or char == ']' then
-    table.insert(pairs_to_try, { '[', ']' })
-  elseif char == '{' or char == '}' then
-    table.insert(pairs_to_try, { '{', '}' })
-  elseif char == '<' or char == '>' then
-    table.insert(pairs_to_try, { '<', '>' })
-  else
-    -- Default:  same character on both sides
-    if #pairs_to_try == 0 then table.insert(pairs_to_try, { char, char }) end
-  end
-
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local line_num = cursor[1]
-  local col = cursor[2] + 1 -- Convert to 1-based
-
-  local line = vim.api.nvim_buf_get_lines(0, line_num - 1, line_num, false)[1]
-  if not line then return nil end
-
-  -- Try each possible pair
-  for _, pair in ipairs(pairs_to_try) do
-    local left, right = pair[1], pair[2]
-
-    -- Search left from cursor
-    local left_pos = nil
-    for i = col, 1, -1 do
-      if line:sub(i, i + #left - 1) == left then
-        left_pos = i
-        break
-      end
-    end
-
-    -- Search right from cursor
-    local right_pos = nil
-    if left_pos then
-      for i = col, #line do
-        if line:sub(i, i + #right - 1) == right then
-          right_pos = i
-          break
-        end
-      end
-    end
-
-    -- Check if cursor is between left and right
-    if left_pos and right_pos and left_pos < col and col <= right_pos then
-      return {
-        line = line_num,
-        left_start = left_pos,
-        left_end = left_pos + #left - 1,
-        right_start = right_pos,
-        right_end = right_pos + #right - 1,
-      }
-    end
-  end
-
-  return nil
+function M.add_visual_interactive()
+  local char = get_char('Surround with: ')
+  if not char then return end
+  local pair = surrounds[char] or { char, char }
+  apply_visual_surround(pair[1], pair[2])
 end
 
--- Delete surrounding characters
 function M.delete()
-  -- Get user input
-  vim.api.nvim_echo({ { 'Delete surround: ', 'Question' } }, false, {})
-  local ok, char = pcall(vim.fn.getcharstr)
-  if not ok or char == '\27' or char == '' then
-    vim.api.nvim_echo({ { '' } }, false, {})
-    return
-  end
-  vim.api.nvim_echo({ { '' } }, false, {})
+  local char = get_char('Delete surround: ')
+  if not char then return end
+  local l_pos, r_pos = find_surround(char)
+  if not l_pos or not r_pos then return vim.notify('Surround not found', vim.log.levels.WARN) end
 
-  -- Handle <Esc> or <C-c>
-  if char == '\27' or char == '' then return end
+  local row = api.nvim_win_get_cursor(0)[1] - 1
+  local pair = surrounds[char] or { char, char }
 
-  -- Find surround
-  local pos = find_surround(char)
-  if not pos then
-    vim.notify('Surround not found', vim.log.levels.WARN)
-    return
-  end
-
-  -- Delete surround
-  local line = vim.api.nvim_buf_get_lines(0, pos.line - 1, pos.line, false)[1]
-
-  -- Remove right part first
-  local new_line = line:sub(1, pos.right_start - 1) .. line:sub(pos.right_end + 1)
-  -- Then remove left part
-  new_line = new_line:sub(1, pos.left_start - 1) .. new_line:sub(pos.left_end + 1)
-
-  vim.api.nvim_buf_set_lines(0, pos.line - 1, pos.line, false, { new_line })
-
-  -- Update cursor position
-  vim.api.nvim_win_set_cursor(0, { pos.line, pos.left_start - 1 })
+  api.nvim_buf_set_text(0, row, r_pos - 1, row, r_pos - 1 + #pair[2], { '' })
+  api.nvim_buf_set_text(0, row, l_pos - 1, row, l_pos - 1 + #pair[1], { '' })
 end
 
--- Replace surrounding characters
 function M.replace()
-  -- Get old surround
-  vim.api.nvim_echo({ { 'Replace surround: ', 'Question' } }, false, {})
-  local old_char = vim.fn.getcharstr()
+  local old_char = get_char('Replace surround: ')
+  if not old_char then return end
+  local new_char = get_char('With: ')
+  if not new_char then return end
 
-  -- Handle <Esc> or <C-c>
-  if old_char == '\27' or old_char == '' then
-    vim.api.nvim_echo({ { '' } }, false, {})
-    return
-  end
+  local l_pos, r_pos = find_surround(old_char)
+  if not l_pos or not r_pos then return vim.notify('Surround not found', vim.log.levels.WARN) end
 
-  -- Get new surround
-  vim.api.nvim_echo({ { 'With:  ', 'Question' } }, false, {})
-  local new_char = vim.fn.getcharstr()
-  vim.api.nvim_echo({ { '' } }, false, {})
+  local row = api.nvim_win_get_cursor(0)[1] - 1
+  local old_pair = surrounds[old_char] or { old_char, old_char }
+  local new_pair = surrounds[new_char] or { new_char, new_char }
 
-  -- Handle <Esc> or <C-c>
-  if new_char == '\27' or new_char == '' then return end
-
-  -- Find old surround
-  local pos = find_surround(old_char)
-  if not pos then
-    vim.notify('Surround not found', vim.log.levels.WARN)
-    return
-  end
-
-  -- Get new surround pair
-  local new_surround = M.config.surrounds[new_char]
-  if not new_surround then new_surround = { new_char, new_char } end
-
-  local new_left, new_right = new_surround[1], new_surround[2]
-
-  -- Replace surround
-  local line = vim.api.nvim_buf_get_lines(0, pos.line - 1, pos.line, false)[1]
-
-  -- Replace right part first
-  local new_line = line:sub(1, pos.right_start - 1) .. new_right .. line:sub(pos.right_end + 1)
-
-  -- Then replace left part
-  new_line = new_line:sub(1, pos.left_start - 1) .. new_left .. new_line:sub(pos.left_end + 1)
-
-  vim.api.nvim_buf_set_lines(0, pos.line - 1, pos.line, false, { new_line })
-
-  -- Update cursor position
-  vim.api.nvim_win_set_cursor(0, { pos.line, pos.left_start + #new_left - 1 })
+  api.nvim_buf_set_text(0, row, r_pos - 1, row, r_pos - 1 + #old_pair[2], { new_pair[2] })
+  api.nvim_buf_set_text(0, row, l_pos - 1, row, l_pos - 1 + #old_pair[1], { new_pair[1] })
 end
 
--- Setup keymaps
-function M.setup(opts)
-  M.config = vim.tbl_deep_extend('force', M.config, opts or {})
+--------------------------------------------------------------------------------
+-- Closure Factory (VS Code Visual Auto-Wrap)
+--------------------------------------------------------------------------------
 
-  -- Visual mode: add surround
-  vim.keymap.set('x', 'sa', function() return M.add_visual() end, {
-    silent = true,
-    desc = 'Add surround',
-  })
+local function make_visual_handler(char)
+  local pair = surrounds[char]
+  local l_char, r_char = pair[1], pair[2]
+  return function()
+    apply_visual_surround(l_char, r_char)
+  end
+end
 
-  -- Normal mode: add surround with motion/textobject (supports saiw, sa2w, etc.)
-  vim.keymap.set('n', 'sa', function() return M.add_normal() end, {
-    expr = true,
-    silent = true,
-    desc = 'Add surround with motion',
-  })
+--------------------------------------------------------------------------------
+-- Setup
+--------------------------------------------------------------------------------
 
-  -- Normal mode: delete surround
-  vim.keymap.set('n', 'sd', function() M.delete() end, { desc = 'Delete surround' })
+function M.setup()
+  vim.keymap.set('n', 'sa', M.add_normal,
+    { expr = true, silent = true, desc = 'Add surround (Motion)' })
+  vim.keymap.set('x', 'sa', M.add_visual_interactive,
+    { silent = true, desc = 'Add surround (Visual)' })
+  vim.keymap.set('n', 'sd', M.delete, { silent = true, desc = 'Delete surround' })
+  vim.keymap.set('n', 'sr', M.replace, { silent = true, desc = 'Replace surround' })
 
-  -- Normal mode:  replace surround
-  vim.keymap.set('n', 'sr', function() M.replace() end, { desc = 'Replace surround' })
+  local visual_auto_pairs = { '(', '[', '{', '"', "'", '`' }
+  for _, char in ipairs(visual_auto_pairs) do
+    vim.keymap.set('x', char, make_visual_handler(char),
+      { silent = true, desc = 'VSCode Wrap ' .. char })
+  end
 end
 
 return M
