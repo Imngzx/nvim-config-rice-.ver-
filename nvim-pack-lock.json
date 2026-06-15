@@ -22,7 +22,7 @@
       "src": "https://github.com/atusy/budoux.lua"
     },
     "codecompanion.nvim": {
-      "rev": "d8a5d885ae477d80d9f4fdfad4f600cd0db75451",
+      "rev": "123d8b3428b321ade9a8c1b749a65e4021a14dd0",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -86,7 +86,7 @@
       "src": "https://github.com/Isrothy/neominimap.nvim"
     },
     "nvim": {
-      "rev": "0303a7208dba448c459767486a38a6ec05c4216b",
+      "rev": "49a926655a2f5579e9c276470fc300baaa49e524",
       "src": "https://github.com/catppuccin/nvim"
     },
     "nvim-dap": {
@@ -110,7 +110,7 @@
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "nvim-lspconfig": {
-      "rev": "ed19590a3a9792901553c388d1aadafce012f80d",
+      "rev": "a683e0ddf0cf64c6cd689e18ffb480ade3c162b7",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
@@ -144,6 +144,10 @@
     "resonance.nvim": {
       "rev": "d76d024f4aae42441a46c0de8144da629c7afc96",
       "src": "https://github.com/Imngzx/resonance.nvim"
+    },
+    "showkeys": {
+      "rev": "e79e80c4c2c984a2ac20625c787e6c472a0c864f",
+      "src": "https://github.com/Imngzx/showkeys"
     },
     "snacks.nvim": {
       "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",

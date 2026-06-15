@@ -32,4 +32,15 @@ resonance.load({
       vim.keymap.set('n', '];', dropbar_api.select_next_context, { desc = 'Select next context' })
     end,
   },
+
+  {
+    'https://github.com/Imngzx/showkeys',
+    cmd = { 'ShowkeysToggle' },
+    config = function()
+      require('showkeys').setup({
+        position = 'bottom-center',
+        maxkeys = 5
+      })
+    end
+  }
 })
