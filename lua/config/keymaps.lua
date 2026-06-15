@@ -107,8 +107,6 @@ map('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result
 -- ==========================================
 -- 🏢 [ Workspace / Tabs (Powered by BPM) ]
 -- ==========================================
-map('n', ']t', '<cmd>tabnext<cr>', { desc = 'Next Workspace (Tab)' })
-map('n', '[t', '<cmd>tabprevious<cr>', { desc = 'Prev Workspace (Tab)' })
 map('n', '<leader><tab>nn', '<cmd>tabnew<cr>', { desc = 'New Workspace' })
 map('n', '<leader><tab>nN', function()
   local name = vim.fn.input('Tab name: ')
