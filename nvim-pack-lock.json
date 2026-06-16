@@ -21,8 +21,13 @@
       "rev": "049f64f5594e1cb1c74f869a644359c2f570a9dd",
       "src": "https://github.com/atusy/budoux.lua"
     },
+    "catppuccin": {
+      "rev": "49a926655a2f5579e9c276470fc300baaa49e524",
+      "src": "https://github.com/catppuccin/nvim",
+      "version": "'main'"
+    },
     "codecompanion.nvim": {
-      "rev": "123d8b3428b321ade9a8c1b749a65e4021a14dd0",
+      "rev": "7cc35b7f7f08d093469fa9ae67d3af716bd729c3",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -34,7 +39,7 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "cord.nvim": {
-      "rev": "2e6b16e0363f5a12483734ba96e6326ce2d6741e",
+      "rev": "e6ee37deea7b240d456a59aa7706eec006e56e79",
       "src": "https://github.com/vyfor/cord.nvim"
     },
     "csvview.nvim": {
@@ -70,7 +75,7 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.diff": {
-      "rev": "5af2b6be4a4beb673f3196a414f6fd932bbedd48",
+      "rev": "05be51814a718e74244829754a2a900a430a8d8b",
       "src": "https://github.com/nvim-mini/mini.diff"
     },
     "mini.hipatterns": {
@@ -78,16 +83,12 @@
       "src": "https://github.com/nvim-mini/mini.hipatterns"
     },
     "mini.icons": {
-      "rev": "284509648db084c5e40a31afa9abb9887c49e04a",
+      "rev": "d48ad47359218d2b019034f95f601b3861180885",
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "neominimap.nvim": {
       "rev": "0676085d898019f06044923934e38663f5efa290",
       "src": "https://github.com/Isrothy/neominimap.nvim"
-    },
-    "nvim": {
-      "rev": "49a926655a2f5579e9c276470fc300baaa49e524",
-      "src": "https://github.com/catppuccin/nvim"
     },
     "nvim-dap": {
       "rev": "531771530d4f82ad2d21e436e3cc052d68d7aebb",
