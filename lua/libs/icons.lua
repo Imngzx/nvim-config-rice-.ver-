@@ -11,9 +11,9 @@ M.lsp = {
 M.basic = {
   dir = '󰉋',
   dir_open = '󰉖',
-  file = '󰈔',
-  modify = '●',
-  close = '󰅖',
+  file = ' ',
+  modify = ' ● ',
+  close = ' 󰅖 ',
   indent = '│'
 }
 

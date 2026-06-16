@@ -1,6 +1,5 @@
 local utils = require('heirline.utils')
-local color_list = require('custom.color-list')
-local colors = require('plugins.heirline_config.colors')
+local icon_lib = require('libs.icons')
 
 -- =========================================================
 -- ⚡ 1. 赋值优化法 (Localize C-API for extreme performance)
@@ -122,7 +121,7 @@ local TablineFileNameBlock = {
   -- 📄 动态文件图标
   {
     provider = function(self)
-      return self.icon and (self.icon .. ' ') or ' '
+      return self.icon and (self.icon .. ' ') or icon_lib.basic.file
     end,
     hl = function(self)
       return (self.is_active and self.icon_hl) and self.icon_hl or 'Comment'
@@ -160,7 +159,7 @@ local TablineFileNameBlock = {
   -- ❌ 关闭/修改状态 按钮
   {
     provider = function(self)
-      return self.is_modified and ' ● ' or ' 󰅖 '
+      return self.is_modified and icon_lib.basic.modify or icon_lib.basic.close
     end,
     hl = function(self)
       if self.is_modified then return { fg = 'command' } end

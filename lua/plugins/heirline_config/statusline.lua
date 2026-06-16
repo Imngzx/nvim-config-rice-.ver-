@@ -23,6 +23,12 @@ local ViMode = {
     provider = '',
     hl = { fg = 'bright_bg', bg = 'section_bg' }
   }
+  --  - default : "" "" Will only work for default Statusline Theme
+  --  - "round" : "" "" Will only work for default and minimal Statusline Theme
+  --  - "block" : "█" "█" Will only work for default and minimal Statusline Theme
+  --  - "arrow" : "" "" Will only work for default Statusline Theme
+  -- { left = '', right = '' },
+  -- { left = '', right = '' }
 }
 
 -- 2. Diagnostics
