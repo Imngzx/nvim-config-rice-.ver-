@@ -170,7 +170,7 @@ local function update_incline()
       height = 1,
       style = 'minimal',
       focusable = false,
-      zindex = 50,
+      zindex = 40,
       border = M.config.border,
       hide = false,
     }
