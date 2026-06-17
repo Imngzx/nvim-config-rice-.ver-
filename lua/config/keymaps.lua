@@ -66,15 +66,12 @@ map('n', '<c-up>', function() cmd('resize +' .. vim.v.count1) end,
 map('n', '<c-right>', function() cmd('vertical resize +' .. vim.v.count1) end,
   { desc = 'Increase window width' })
 
--- [Functions]
-local utils = require('libs.utils')
-
 -- Terminal
 map('n', '<leader>pt', function()
   local shell = ''
   local fn = vim.fn
 
-  if utils.is_windows() then
+  if require('libs.utils').is_windows() then
     if fn.executable('pwsh') == 1 then
       shell = 'pwsh'
     elseif fn.executable('powershell') == 1 then
