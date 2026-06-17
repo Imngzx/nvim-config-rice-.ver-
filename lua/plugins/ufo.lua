@@ -1,4 +1,3 @@
--- lua/plugins/ufo.lua
 local resonance = require('resonance')
 
 resonance.load({
@@ -64,7 +63,7 @@ resonance.load({
       open_fold_hl_timeout = 150,
       fold_virt_text_handler = handler,
 
-      provider_selector = function(bufnr, filetype, buftype)
+      provider_selector = function(bufnr, buftype)
         if buftype == 'nofile' or buftype == 'terminal' or buftype == 'prompt' then
           return ''
         end

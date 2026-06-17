@@ -69,6 +69,8 @@ opt.wildmode = 'longest:full,full' -- enhanced command completion
 opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldenable = true
+opt.foldmethod = 'expr'
+opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
 -- Clipboard
 require('config.clipboard')
