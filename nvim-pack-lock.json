@@ -63,7 +63,7 @@
       "src": "https://github.com/rebelot/heirline.nvim"
     },
     "jisho.nvim": {
-      "rev": "81b33cda56094b808a37f0d936882a891466ebb4",
+      "rev": "9c20c1cc0774d2839f2b5f3499d94d538e5203f2",
       "src": "https://github.com/Imngzx/jisho.nvim"
     },
     "lazydev.nvim": {
@@ -83,7 +83,7 @@
       "src": "https://github.com/nvim-mini/mini.hipatterns"
     },
     "mini.icons": {
-      "rev": "d48ad47359218d2b019034f95f601b3861180885",
+      "rev": "ac38c983aed0a2bd32a65ca3e2348e12e58ca292",
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "neominimap.nvim": {
@@ -143,7 +143,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "d76d024f4aae42441a46c0de8144da629c7afc96",
+      "rev": "f00b03527542cfce146c133be091f046ef2f1771",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "showkeys": {
