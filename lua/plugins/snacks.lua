@@ -63,7 +63,7 @@ local set_keys = function(keys)
     if k.nowait ~= nil then opts.nowait = k.nowait end
     if k.silent ~= nil then opts.silent = k.silent end
     if k.expr ~= nil then opts.expr = k.expr end
-    if k.buffer ~= nil then opts.buf = k.buffer end
+    if k.buffer ~= nil then opts.buffer = k.buffer end
 
     local mode = k.mode or 'n'
     if type(mode) == 'table' then
