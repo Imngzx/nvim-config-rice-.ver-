@@ -46,5 +46,20 @@ if fn.has('wsl') == 1 then
 end
 
 vim.schedule(function()
-  vim.opt.clipboard = vim.env.SSH_CONNECTION and '' or 'unnamedplus'
+  if vim.env.SSH_CONNECTION then
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+      },
+      paste = {
+        ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+      },
+    }
+    vim.opt.clipboard = 'unnamedplus'
+  else
+    vim.opt.clipboard = 'unnamedplus'
+  end
 end)
