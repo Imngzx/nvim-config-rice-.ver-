@@ -10,7 +10,7 @@ local vim_local = vim.opt_local
 local map = vim.keymap.set
 
 local function augroup(name)
-  return create_augroup('lazyvim_' .. name, { clear = true })
+  return create_augroup('cameron_' .. name, { clear = true })
 end
 
 -- no commenting on next line when o or O in normal mode
