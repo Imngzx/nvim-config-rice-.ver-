@@ -1,5 +1,8 @@
-if vim.b.text_loaded then return end
-vim.b.text_loaded = true
+local text_loaded = vim.b.text_loaded
+local vim_o_local = vim.opt_local
 
-vim.opt_local.spell = true
-vim.opt_local.spelllang = { 'en_us', 'ms', 'cjk' }
+if text_loaded then return end
+text_loaded = true
+
+vim_o_local.spell = true
+vim_o_local.spelllang = { 'en_us', 'ms', 'cjk' }
