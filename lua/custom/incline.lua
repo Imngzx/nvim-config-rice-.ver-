@@ -88,6 +88,10 @@ local function update_incline()
     if buf_path ~= '' then
       local bpm_ok, bpm = pcall(require, 'bpm')
       filename = bpm_ok and bpm.resolve_bufname(buf_id) or fnamemodify(buf_path, ':t')
+
+      if require('libs.utils').is_windows() then
+        filename = fnamemodify(buf_path, ':t')
+      end
     end
     local modified = vim.bo[buf_id].modified
     local win_width = nvim_win_get_width(win_id)
