@@ -13,16 +13,6 @@ local function augroup(name)
   return create_augroup('lazyvim_' .. name, { clear = true })
 end
 
--- [Autocmd] 仅对文书类文件开启拼写检查
-create_autocmd('FileType', {
-  group = create_augroup('TextSpellCheck', { clear = true }),
-  pattern = { 'markdown', 'text', 'gitcommit', 'plaintex', 'typst' },
-  callback = function()
-    vim_local.spell = true
-    vim_local.spelllang = { 'en_us', 'ms', 'cjk' }
-  end,
-})
-
 -- no commenting on next line when o or O in normal mode
 create_autocmd('FileType', {
   group = create_augroup('DisableAutoComment', { clear = true }),
