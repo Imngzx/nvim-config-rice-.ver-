@@ -8,22 +8,26 @@ opt.signcolumn = 'yes' -- always show sign column
 opt.winborder = 'rounded'
 opt.showmode = false -- Hide mode status
 o.showtabline = 2
+
 -- Line edit
 opt.fillchars = { eob = ' ' }
 opt.cursorline = true -- highlight current line
 opt.scrolloff = 4 -- keep 4 lines visible around cursor
 opt.scrolloffpad = 1 -- cursor position stays at middle when you go to eob
 opt.sidescrolloff = 8 -- keep 8 columns visible horizontally
+
 -- Line number
 opt.number = true
 opt.relativenumber = true
 opt.numberwidth = 4
+
 -- Indent
 opt.expandtab = true -- use spaces instead of tabs
 opt.shiftwidth = 2 -- indent size
 opt.tabstop = 2 -- tab character width
 opt.shiftround = true -- round indent to nearest multiple of shiftwidth
 opt.smartindent = true -- auto-indent new lines intelligently
+
 -- Wrap
 opt.wrap = true -- default line wrap
 opt.linebreak = true -- wrap at word boundary if wrap
@@ -33,6 +37,9 @@ opt.breakindent = true -- maintain indent on wrap
 opt.winminwidth = 5 -- prevent tiny splits
 opt.undofile = true
 o.sessionoptions = 'buffers,curdir,tabpages,winsize,help,skiprtp,folds'
+opt.jumpoptions = 'view' -- restore view after jump
+opt.virtualedit = 'block' -- allow cursor past EOL in block mode
+opt.updatetime = 250 -- reduce execution time takes from cursorhold
 
 -- [Editor]
 opt.cmdheight = 0
@@ -58,25 +65,20 @@ opt.formatoptions = 'jcroqlnt' -- keep comments, wrap text, autoformat when poss
 opt.inccommand = 'nosplit' -- live preview for :substitute
 opt.wildmode = 'longest:full,full' -- enhanced command completion
 
--- Others
-opt.jumpoptions = 'view' -- restore view after jump
-opt.virtualedit = 'block' -- allow cursor past EOL in block mode
-
 -- [Fold]
 opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldenable = true
 
--- [Functions]
 -- Clipboard
 require('config.clipboard')
 
 -- Check spelling
 opt.spell = false
-opt.spelllang = { 'en_us', 'ms', 'cjk', 'id' }
 opt.spellsuggest = 'best,5' -- show only first best 5
 opt.spelloptions = 'camel' -- support CamelCase
 
+-- lsp checkhealth warning removal
 vim.filetype.add({
   extension = {
     mdx = 'markdown.mdx',
