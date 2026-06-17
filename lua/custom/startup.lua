@@ -8,13 +8,15 @@ local disabled_built_ins = {
   'gzip',
   'matchit',
   'netrwPlugin',
+  'netrwSettings',
+  'netrwFileHandlers',
   'matchparen',
   'tarPlugin',
   'tutor',
   'zipPlugin',
-  'tohtml'
+  'tohtml',
 }
-for _, plugin in pairs(disabled_built_ins) do
+for _, plugin in ipairs(disabled_built_ins) do
   vim.g['loaded_' .. plugin] = 1
 end
 
