@@ -5,14 +5,11 @@ local buf_get_lines = api.nvim_buf_get_lines
 local buf_set_text = api.nvim_buf_set_text
 local win_get_cursor = api.nvim_win_get_cursor
 local markdown_loaded = vim.b.markdown_loaded
-local vim_o_local = vim.opt_local
 
 if markdown_loaded then return end
 markdown_loaded = true
 
-vim_o_local.spell = true
-vim_o_local.spelllang = { 'en_us', 'ms', 'cjk' }
-
+require('libs.spell')
 
 local PATTERN_UNORDERED = '^%s*>?[%s>]*[%*%-%+]%s+%[()[%sXx]()%]'
 local PATTERN_ORDERED = '^%s*>?[%s>]*%d+%.%s+%[()[%sXx]()%]'
