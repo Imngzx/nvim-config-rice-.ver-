@@ -155,7 +155,7 @@
       "src": "https://github.com/folke/snacks.nvim"
     },
     "telegram.nvim": {
-      "rev": "10d9b3c40af9a7e09fc015a2cd429a12fa16706a",
+      "rev": "e2c4c318990ed14f5c00d3d44d107fc4168ccf73",
       "src": "https://github.com/ChuYanLon/telegram.nvim"
     },
     "tiny-inline-diagnostic.nvim": {
