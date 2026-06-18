@@ -9,7 +9,7 @@ local markdown_loaded = vim.b.markdown_loaded
 if markdown_loaded then return end
 markdown_loaded = true
 
-require('libs.spell')
+require('libs.spell').setup()
 
 local PATTERN_UNORDERED = '^%s*>?[%s>]*[%*%-%+]%s+%[()[%sXx]()%]'
 local PATTERN_ORDERED = '^%s*>?[%s>]*%d+%.%s+%[()[%sXx]()%]'
