@@ -14,8 +14,6 @@ map('n', '<leader>wq', '<cmd>wq<cr>', { desc = 'Save and quit' })
 -- [View]
 map('n', '<leader>us', '<cmd>setlocal spell! spell?<cr>', { desc = 'Toggle spelling' })
 map('n', '<leader>uw', '<cmd>setlocal wrap! wrap?<cr>', { desc = 'Toggle wrap' })
-map('n', '<leader>ub', '<cmd>lua vim.o.bg = vim.o.bg == "dark" and "light" or "dark"<cr>',
-  { desc = 'Toggle background' })
 
 -- [Edit]
 -- Indent
