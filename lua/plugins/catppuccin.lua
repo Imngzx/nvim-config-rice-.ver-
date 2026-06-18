@@ -54,9 +54,8 @@ resonance.load({
           SnacksIndent3 = { fg = colors.yellow },
           SnacksIndent4 = { fg = colors.green },
           SnacksIndent5 = { fg = colors.sapphire },
-          SnacksIndent6 = { fg = colors.blue },
-          SnacksIndent7 = { fg = colors.mauve },
-          SnacksIndent8 = { fg = colors.lavender },
+          SnacksIndent6 = { fg = colors.mauve },
+          SnacksIndent7 = { fg = colors.lavender },
         }
       end
     })
