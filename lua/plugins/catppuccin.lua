@@ -47,6 +47,15 @@ resonance.load({
           DropBarMenuNormalFloat = { bg = 'NONE' },
           DropBarMenuBorder = { bg = 'NONE', fg = colors.surface1 },
           WhichKeyFloat = { bg = 'NONE' },
+
+          SnacksIndentInactive = { fg = colors.surface1 },
+          SnacksIndent1 = { fg = colors.red },
+          SnacksIndent2 = { fg = colors.peach },
+          SnacksIndent3 = { fg = colors.yellow },
+          SnacksIndent4 = { fg = colors.green },
+          SnacksIndent5 = { fg = colors.sapphire },
+          SnacksIndent6 = { fg = colors.blue },
+          SnacksIndent7 = { fg = colors.mauve },
         }
       end
     })

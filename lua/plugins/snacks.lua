@@ -17,7 +17,25 @@ Snacks.setup({
   },
   explorer = { enabled = true },
   image = { enabled = true },
-  indent = { enabled = true },
+  indent = {
+    enabled = true,
+    indent = {
+      hl = 'SnacksIndentInactive',
+    },
+    scope = {
+      enabled = true,
+      underline = false,
+      hl = {
+        'SnacksIndent1',
+        'SnacksIndent2',
+        'SnacksIndent3',
+        'SnacksIndent4',
+        'SnacksIndent5',
+        'SnacksIndent6',
+        'SnacksIndent7',
+      },
+    },
+  },
   input = { enabled = false },
   profiler = { enabled = true },
   quickfile = { enabled = true },
