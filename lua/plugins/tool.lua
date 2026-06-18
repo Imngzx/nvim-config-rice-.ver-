@@ -36,6 +36,7 @@ resonance.load({
         { '<leader>t', group = 'Translate', icon = ' ' },
         { '<leader>T', group = 'Telegram', icon = ' ' },
         { '<leader>u', group = 'UI/Toggles', icon = '󰙵 ' },
+        { '<leader>w', group = 'Write/Quit', icon = ' / 󰩈 ' },
 
         { '[', group = 'Prev', icon = '󰒮 ' },
         { ']', group = 'Next', icon = '󰒭 ' },
