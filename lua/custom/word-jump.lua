@@ -161,7 +161,7 @@ function M.jump()
 
         set_extmark(0, ns_id, r, c + 1, {
           virt_text = { { display_char, 'FlashDiyLabel' } },
-          virt_text_pos = 'inline',
+          virt_text_pos = 'overlay',
           priority = 6000,
         })
       end
