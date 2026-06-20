@@ -106,7 +106,9 @@ resonance.load({
       vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
         group = vim.api.nvim_create_augroup('DIY_Linting', { clear = true }),
         callback = function()
-          lint.try_lint()
+          vim.schedule(function()
+            lint.try_lint()
+          end)
         end,
       })
     end
