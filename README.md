@@ -26,11 +26,11 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 ### Summarization
 
 - **Fast.** Less than **30ms** to start, say no to heavy plugins for ui only
-- **Simple.** Run out of the box with only 40 plugins.
+- **Simple.** Run out of the box with only 42 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code, supports cjk.
-- **Beautiful.** Uses catppuccin theme & good ui.
+- **Beautiful.** Author really puts effort on TUI.
 - **Minimalist.** Plugins(DIY) with snacks integration.
 
 ### Extras
