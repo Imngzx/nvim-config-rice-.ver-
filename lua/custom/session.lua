@@ -9,13 +9,13 @@ local nvim_list_bufs = api.nvim_list_bufs
 local nvim_buf_is_loaded = api.nvim_buf_is_loaded
 local nvim_buf_get_name = api.nvim_buf_get_name
 local nvim_buf_delete = api.nvim_buf_delete
+local nvim_get_option_value = api.nvim_get_option_value
 local nvim_create_user_command = api.nvim_create_user_command
 local nvim_create_augroup = api.nvim_create_augroup
 local nvim_create_autocmd = api.nvim_create_autocmd
 
 local fnameescape = fn.fnameescape
 local filereadable = fn.filereadable
-local mkdir = fn.mkdir
 
 local fs_stat = uv.fs_stat
 local fs_scandir = uv.fs_scandir
@@ -23,18 +23,41 @@ local fs_scandir_next = uv.fs_scandir_next
 local cwd = uv.cwd
 
 local session_dir = fs.normalize(fn.stdpath('state') .. '/sessions/')
-mkdir(session_dir, 'p')
+if not fs_stat(session_dir) then
+  fn.mkdir(session_dir, 'p')
+end
 
--- 🚀 获取带 Git 分支和项目根目录的标识符
+local function get_git_branch(root)
+  local head_path = root .. '/.git/HEAD'
+  local fd = uv.fs_open(head_path, 'r', 438)
+  if not fd then return '' end
+
+  local stat = uv.fs_fstat(fd)
+  if not stat then
+    uv.fs_close(fd)
+    return ''
+  end
+
+  local data = uv.fs_read(fd, stat.size, 0)
+  uv.fs_close(fd)
+
+  if not data or data == '' then return '' end
+
+  local branch = data:match('ref: refs/heads/([^\n\r]+)')
+  if branch then return branch end
+
+  return data:sub(1, 7)
+end
+
 local function get_session_name()
   local ok, snacks_git = pcall(require, 'snacks.git')
   local current_cwd = fs.normalize(cwd() or '')
+
   local root = (ok and snacks_git.get_root()) or current_cwd
 
-  local branch = ''
-  local obj = vim.system({ 'git', '-C', root, 'branch', '--show-current' }):wait()
-  if obj.code == 0 and obj.stdout and obj.stdout ~= '' then
-    branch = '@@' .. vim.trim(obj.stdout):gsub('[/:]', '%%')
+  local branch = get_git_branch(root)
+  if branch ~= '' then
+    branch = '@@' .. branch:gsub('[/:]', '%%')
   end
 
   local name = root:gsub('[/:]', '%%') .. branch
@@ -49,9 +72,11 @@ function M.save()
 
   for i = 1, #bufs do
     local buf = bufs[i]
-    if nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted and nvim_buf_get_name(buf) ~= '' and vim.bo[buf].buftype == '' then
-      has_real_file = true
-      break
+    if nvim_buf_is_loaded(buf) and nvim_get_option_value('buflisted', { buf = buf }) then
+      if nvim_buf_get_name(buf) ~= '' and nvim_get_option_value('buftype', { buf = buf }) == '' then
+        has_real_file = true
+        break
+      end
     end
   end
 
@@ -92,7 +117,7 @@ function M.load(last)
         local name, type = fs_scandir_next(req)
         if not name then break end
 
-        if type == 'file' and name:match('%.vim$') then
+        if type == 'file' and name:sub(-4) == '.vim' then
           local path = session_dir .. name
           local stat = fs_stat(path)
           if stat and stat.mtime.sec > max_time then
@@ -107,21 +132,18 @@ function M.load(last)
   end
 
   if filereadable(target_file) == 1 then
-    -- 清理干扰 Buffer
     local bufs = nvim_list_bufs()
     for i = 1, #bufs do
       local buf = bufs[i]
-      local bt = vim.bo[buf].buftype
-      local ft = vim.bo[buf].filetype
+      local bt = nvim_get_option_value('buftype', { buf = buf })
+      local ft = nvim_get_option_value('filetype', { buf = buf })
       if ft == 'snacks_dashboard' or bt == 'nofile' or bt == 'terminal' then
         pcall(nvim_buf_delete, buf, { force = true })
       end
     end
 
-    -- 1. 恢复 Vim 原生 Session
     vim.cmd('silent! source ' .. fnameescape(target_file))
 
-    -- 2. 【BPM 整合】：读取 JSON 恢复 Tab 状态
     local bpm_ok, bpm = pcall(require, 'bpm')
     if bpm_ok then
       local json_path = target_file:gsub('%.vim$', '.json')
@@ -131,12 +153,15 @@ function M.load(last)
           local data = fd:read('*a')
           fd:close()
           bpm.from_json(data)
-          for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-            if vim.api.nvim_buf_is_valid(bufnr) then
-              vim.bo[bufnr].buflisted = false
+
+          local after_bufs = nvim_list_bufs()
+          for i = 1, #after_bufs do
+            local bufnr = after_bufs[i]
+            if api.nvim_buf_is_valid(bufnr) then
+              api.nvim_set_option_value('buflisted', false, { buf = bufnr })
             end
           end
-          pcall(vim.api.nvim_exec_autocmds, 'TabEnter', { group = 'BufferPoolManager' })
+          pcall(api.nvim_exec_autocmds, 'TabEnter', { group = 'BufferPoolManager' })
         end
       end
     end
@@ -149,9 +174,8 @@ function M.load(last)
 end
 
 function M.setup()
-  -- 只在退出时保存
   nvim_create_autocmd('VimLeavePre', {
-    group = nvim_create_augroup('DIY_Session', { clear = true }),
+    group = nvim_create_augroup('Session', { clear = true }),
     callback = M.save,
   })
 
