@@ -56,6 +56,10 @@ resonance.load({
           SnacksIndent5 = { fg = colors.sapphire },
           SnacksIndent6 = { fg = colors.mauve },
           SnacksIndent7 = { fg = colors.lavender },
+
+          WinSeparator = { fg = colors.surface1, bold = true },
+          IncSearch = { bg = colors.peach, fg = colors.base, bold = true },
+          Search = { bg = colors.surface2, fg = colors.text },
         }
       end
     })

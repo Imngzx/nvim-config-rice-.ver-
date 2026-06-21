@@ -10,7 +10,28 @@ opt.showmode = false -- Hide mode status
 o.showtabline = 2
 
 -- Line edit
-opt.fillchars = { eob = ' ' }
+opt.fillchars = {
+  eob = ' ',
+  vert = '│',
+  horiz = '─',
+  verthoriz = '┼',
+  vertleft = '┤',
+  vertright = '├',
+  horizup = '┴',
+  horizdown = '┬',
+  fold = ' ',
+  foldopen = '',
+  foldclose = '',
+  foldsep = ' ',
+}
+opt.list = true
+opt.listchars = {
+  tab = '  ',
+  trail = '·',
+  nbsp = '␣',
+  extends = '›',
+  precedes = '‹',
+}
 opt.cursorline = true -- highlight current line
 opt.scrolloff = 4 -- keep 4 lines visible around cursor
 opt.scrolloffpad = 1 -- cursor position stays at middle when you go to eob
