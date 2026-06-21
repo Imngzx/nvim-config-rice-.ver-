@@ -14,6 +14,7 @@ return {
   { '<leader>fC', function() Snacks.picker.grep({ cwd = vim.fn.stdpath('config') }) end, desc = 'Grep Neovim Config' },
   { '<leader>ff', function() Snacks.picker.git_files() end, desc = 'Find git files' },
   { '<leader>fp', function() Snacks.picker.projects() end, desc = 'Projects' },
+  { '<leader>fz', function() Snacks.picker.zoxide() end, desc = 'Zoxide (Recent Dirs)' },
   { '<leader>fl', function() Snacks.picker.lines() end, desc = 'Buffer lines' },
   { '<leader>fB', function() Snacks.picker.grep_buffers() end, desc = 'Grep open buffers' },
   { '<leader>fw', function() Snacks.picker.grep_word() end, desc = 'Visual selection or word', mode = { 'n', 'x' } },
