@@ -22,12 +22,12 @@
       "src": "https://github.com/atusy/budoux.lua"
     },
     "catppuccin": {
-      "rev": "49a926655a2f5579e9c276470fc300baaa49e524",
+      "rev": "e068ab5f8261f23f6f71ffd8791ae40315b77b9c",
       "src": "https://github.com/catppuccin/nvim",
       "version": "'main'"
     },
     "codecompanion.nvim": {
-      "rev": "3a9bbfee65d4cfa2b12e2c1ec9a1c70bd07b4b33",
+      "rev": "f6a7b8934fe9399755c1f9e1aa0cc6eb479ac12b",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
