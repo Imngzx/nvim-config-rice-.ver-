@@ -8,7 +8,6 @@ return {
       { icon = ' ', key = 'r', desc = 'Recent Files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
       { icon = ' ', key = 'z', desc = 'Zoxide Dirs', action = ':lua Snacks.picker.zoxide()' },
       { icon = ' ', key = 'c', desc = 'Config', action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
-      -- { icon = ' ', key = 's', desc = 'Restore Session', action = ':RestoreSession' },
       { icon = ' ', key = 's', desc = 'Restore Session', action = ":lua require('custom.session').load(false)" },
       { icon = '󱑽 ', key = 'l', desc = 'Resonance', action = ":lua require('resonance').open_ui()" },
       { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
