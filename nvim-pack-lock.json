@@ -27,7 +27,7 @@
       "version": "'main'"
     },
     "codecompanion.nvim": {
-      "rev": "f6a7b8934fe9399755c1f9e1aa0cc6eb479ac12b",
+      "rev": "5082d02876d79fcd92b0247e370f882bd9be970c",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
