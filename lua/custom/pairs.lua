@@ -109,14 +109,23 @@ end
 --------------------------------------------------------------------------------
 -- Setup
 --------------------------------------------------------------------------------
+--- @class CustomPairsOpts
+--- @field enable_cmdline? boolean
 
-function M.setup()
-  local opts = { expr = true, replace_keycodes = true }
+---@type CustomPairsOpts
+M.config = {
+  enable_cmdline = true,
+}
+
+---@param opts? CustomPairsOpts
+function M.setup(opts)
+  M.config = vim.tbl_deep_extend('force', M.config, opts or {})
+  local keymap_opts = { expr = true, replace_keycodes = true }
 
   local function bind(key, factory)
-    vim.keymap.set('i', key, factory(key, 'i'), opts)
-    if key ~= '<CR>' then
-      vim.keymap.set('c', key, factory(key, 'c'), opts)
+    vim.keymap.set('i', key, factory(key, 'i'), keymap_opts)
+    if M.config.enable_cmdline and key ~= '<CR>' then
+      vim.keymap.set('c', key, factory(key, 'c'), keymap_opts)
     end
   end
 
