@@ -166,7 +166,8 @@ local TablineFileNameBlock = {
     end,
     hl = function(self)
       if self.is_modified then return { fg = 'command' } end
-      return { fg = 'tab_cross_bg' }
+
+      return { fg = self.is_active and 'tab_cross_bg' or 'tab_num_unfocus' }
     end,
     on_click = {
       callback = function(_, minwid)
