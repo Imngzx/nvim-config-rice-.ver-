@@ -109,8 +109,8 @@ end
 --------------------------------------------------------------------------------
 -- Setup
 --------------------------------------------------------------------------------
---- @class CustomPairsOpts
---- @field enable_cmdline? boolean
+---@class CustomPairsOpts
+---@field enable_cmdline? boolean
 
 ---@type CustomPairsOpts
 M.config = {
