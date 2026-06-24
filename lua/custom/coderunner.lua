@@ -116,17 +116,25 @@ local function relative_path(root, path)
 end
 
 local function find_cargo_bin_name(cargo_toml, file_path)
-  local root = vim.fn.fnamemodify(cargo_toml, ':h')
+  local root = vim.fs.dirname(cargo_toml)
   local rel = relative_path(root, file_path)
   if not rel then return nil end
 
   local block_name, block_path = nil, nil
-  for _, line in ipairs(vim.fn.readfile(cargo_toml)) do
+
+  local fd = io.open(cargo_toml, 'r')
+  if not fd then return nil end
+
+  for line in fd:lines() do
     local inline_name, inline_path = line:match('name%s*=%s*"([^"]+)".-path%s*=%s*"([^"]+)"')
     if not inline_name then
       inline_path, inline_name = line:match('path%s*=%s*"([^"]+)".-name%s*=%s*"([^"]+)"')
     end
-    if inline_name and inline_path == rel then return inline_name end
+
+    if inline_name and inline_path == rel then
+      fd:close()
+      return inline_name
+    end
 
     if line:match('^%s*%[%[') then
       block_name, block_path = nil, nil
@@ -134,22 +142,37 @@ local function find_cargo_bin_name(cargo_toml, file_path)
 
     block_name = line:match('^%s*name%s*=%s*"([^"]+)"') or block_name
     block_path = line:match('^%s*path%s*=%s*"([^"]+)"') or block_path
-    if block_name and block_path == rel then return block_name end
+
+    if block_name and block_path == rel then
+      fd:close()
+      return block_name
+    end
   end
+
+  fd:close()
 end
 
 local function find_package_name(cargo_toml)
   local in_package = false
-  for _, line in ipairs(vim.fn.readfile(cargo_toml)) do
+
+  local fd = io.open(cargo_toml, 'r')
+  if not fd then return nil end
+
+  for line in fd:lines() do
     if line:match('^%s*%[package%]%s*$') then
       in_package = true
     elseif line:match('^%s*%[') then
       in_package = false
     elseif in_package then
       local name = line:match('^%s*name%s*=%s*"([^"]+)"')
-      if name then return name end
+      if name then
+        fd:close()
+        return name
+      end
     end
   end
+
+  fd:close()
 end
 
 local function infer_cargo_bin_name(cargo_toml, file_path)
@@ -165,8 +188,8 @@ local function infer_cargo_bin_name(cargo_toml, file_path)
 end
 
 local function cargo_project_command()
-  local file_path = vim.fn.expand('%:p')
-  local start_dir = vim.fn.expand('%:p:h')
+  local file_path = vim.api.nvim_buf_get_name(0)
+  local start_dir = vim.fs.dirname(file_path)
   local cargo_toml = find_upward('Cargo.toml', start_dir)
   if not cargo_toml then return nil end
 
@@ -243,9 +266,10 @@ function M.build_run_command()
     if cargo_cmd then return cargo_cmd end
   end
 
-  local dir = vim.fn.expand('%:p:h')
-  local fileName = vim.fn.expand('%:t')
-  local fileNameWithoutExt = vim.fn.expand('%:t:r')
+  local path = vim.api.nvim_buf_get_name(0)
+  local dir = vim.fs.dirname(path)
+  local fileName = vim.fs.basename(path)
+  local fileNameWithoutExt = fileName:match('(.+)%..+') or fileName
 
   local cmd = type(cmd_template) == 'table' and table.concat(cmd_template, ' ') or cmd_template
   cmd = cmd:gsub('%$dir', function() return dir end)
@@ -263,15 +287,12 @@ function M.run()
 end
 
 function M.build_project_command()
-  if vim.fn.filereadable('Makefile') == 1 then
-    return 'make'
-  end
-
   local cargo_cmd = cargo_project_command()
   if cargo_cmd then return cargo_cmd end
 
-  if vim.fn.filereadable('build.zig') == 1 then return 'zig build run' end
-  if vim.fn.filereadable('package.json') == 1 then return 'npm start' end
+  if vim.uv.fs_stat('Makefile') then return 'make' end
+  if vim.uv.fs_stat('build.zig') then return 'zig build run' end
+  if vim.uv.fs_stat('package.json') then return 'npm start' end
 
   vim.notify('No project config found (Makefile/Cargo.toml/etc.)', vim.log.levels.WARN)
 end
