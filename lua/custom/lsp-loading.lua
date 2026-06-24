@@ -116,7 +116,7 @@ local function get_win_config(width, height)
     border = config.border,
     focusable = false,
     noautocmd = true,
-    zindex = 50,
+    zindex = 40,
   }
 end
 
