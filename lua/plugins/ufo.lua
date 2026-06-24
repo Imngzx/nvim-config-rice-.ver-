@@ -15,7 +15,7 @@ resonance.load({
     local function set_fold_hl()
       local ok, color_lib = pcall(require, 'custom.color-list')
       if ok then
-        vim.api.nvim_set_hl(0, 'VibeFoldText', {
+        vim.api.nvim_set_hl(0, 'FoldText', {
           fg = color_lib.colors.toxic_matcha.hex,
           italic = true,
           bold = true
@@ -29,24 +29,33 @@ resonance.load({
     })
     set_fold_hl()
 
+    local strwidth = vim.fn.strdisplaywidth
+
     local handler = function(virtText, lnum, endLnum, width, truncate)
       local newVirtText = {}
+      local new_idx = 1
+
       local foldedLines = endLnum - lnum
       local suffix = ('  ⋯  ↙ [%d lines folded]'):format(foldedLines)
-      local sufWidth = vim.fn.strdisplaywidth(suffix)
+      local sufWidth = strwidth(suffix)
       local targetWidth = width - sufWidth
       local curWidth = 0
 
-      for _, chunk in ipairs(virtText) do
+      for i = 1, #virtText do
+        local chunk = virtText[i]
         local chunkText = chunk[1]
-        local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+        local chunkWidth = strwidth(chunkText)
+
         if targetWidth > curWidth + chunkWidth then
-          table.insert(newVirtText, chunk)
+          newVirtText[new_idx] = chunk
+          new_idx = new_idx + 1
         else
           chunkText = truncate(chunkText, targetWidth - curWidth)
           local hlGroup = chunk[2]
-          table.insert(newVirtText, { chunkText, hlGroup })
-          chunkWidth = vim.fn.strdisplaywidth(chunkText)
+          newVirtText[new_idx] = { chunkText, hlGroup }
+          new_idx = new_idx + 1
+
+          chunkWidth = strwidth(chunkText)
           if curWidth + chunkWidth < targetWidth then
             suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
           end
@@ -55,7 +64,7 @@ resonance.load({
         curWidth = curWidth + chunkWidth
       end
 
-      table.insert(newVirtText, { suffix, 'VibeFoldText' })
+      newVirtText[new_idx] = { suffix, 'FoldText' }
       return newVirtText
     end
 

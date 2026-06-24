@@ -81,8 +81,11 @@ return {
       if ok then
         local current_buf = vim.api.nvim_get_current_buf()
         local tab_bufs = bpm.get_attached_buf(0)
-        for _, buf in ipairs(tab_bufs) do
-          if buf ~= current_buf then bpm.detach(buf) end
+        for i = 1, #tab_bufs do
+          local buf = tab_bufs[i]
+          if buf ~= current_buf then
+            bpm.detach(buf)
+          end
         end
       else
         Snacks.bufdelete.other({ wipe = true })
@@ -99,6 +102,52 @@ return {
     desc = 'Evict buffer from ALL Workspaces'
   },
 
+  -- ==========================================
+  -- 🏢 [ Workspace Picker ]
+  -- ==========================================
+  {
+    '<leader><tab>f',
+    function()
+      local api = vim.api
+      local ok, bpm = pcall(require, 'bpm')
+
+      local cur_tab = api.nvim_get_current_tabpage()
+      local tabs = api.nvim_list_tabpages()
+      local items = {}
+
+      for i = 1, #tabs do
+        local tab = tabs[i]
+        local name = ok and bpm.resolve_tabname(tab) or ('Tab ' .. tab)
+
+        items[i] = {
+          text = name,
+          tabpage = tab,
+          is_current = (tab == cur_tab),
+        }
+      end
+
+      Snacks.picker({
+        title = ' 🏢 Find Workspace ',
+        items = items,
+        layout = { preset = 'select' },
+        format = function(item, _)
+          local hl = item.is_current and 'DiagnosticOk' or 'Normal'
+          local suffix = item.is_current and ' (Current)' or ''
+          return {
+            { ' 󰓩  ', 'DiagnosticHint' },
+            { item.text .. suffix, hl },
+          }
+        end,
+        confirm = function(picker, item)
+          picker:close()
+          if item and api.nvim_tabpage_is_valid(item.tabpage) then
+            api.nvim_set_current_tabpage(item.tabpage)
+          end
+        end,
+      })
+    end,
+    desc = 'Find Workspace (Tab)'
+  },
   { '<leader>br', function() Snacks.rename.rename_file() end, desc = 'Rename file' },
   { '<leader>bs', function() Snacks.scratch() end, desc = 'Toggle scratch buffer' },
 

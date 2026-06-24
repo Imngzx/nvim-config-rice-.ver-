@@ -60,7 +60,8 @@ local function update_incline()
   local ok_wins, visible_wins = pcall(nvim_tabpage_list_wins, 0)
   if not ok_wins then return end
 
-  for _, win_id in ipairs(visible_wins) do
+  for i = 1, #visible_wins do
+    local win_id = visible_wins[i]
     if not nvim_win_is_valid(win_id) then
       M.close(win_id)
       goto continue
@@ -155,7 +156,8 @@ local function update_incline()
     nvim_buf_clear_namespace(state.buf, ns, 0, -1)
 
     local byte_col = 0
-    for _, chunk in ipairs(chunks) do
+    for c = 1, #chunks do
+      local chunk = chunks[c]
       nvim_buf_set_extmark(state.buf, ns, 0, byte_col, {
         end_col = byte_col + #chunk[1],
         hl_group = chunk[2],

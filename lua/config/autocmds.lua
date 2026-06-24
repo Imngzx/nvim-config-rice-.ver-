@@ -77,11 +77,20 @@ create_autocmd({ 'BufEnter', 'BufAdd', 'BufDelete' }, {
   group = ui_group,
   callback = function()
     local has_real_file = false
-    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-      if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted then
+
+    local list_bufs = api.nvim_list_bufs
+    local buf_is_valid = api.nvim_buf_is_valid
+    local buf_is_loaded = api.nvim_buf_is_loaded
+    local buf_get_name = api.nvim_buf_get_name
+
+    local bufs = list_bufs()
+
+    for i = 1, #bufs do
+      local buf = bufs[i]
+      if buf_is_valid(buf) and buf_is_loaded(buf) and vim.bo[buf].buflisted then
         local ft = vim.bo[buf].filetype
         local bt = vim.bo[buf].buftype
-        local name = vim.api.nvim_buf_get_name(buf)
+        local name = buf_get_name(buf)
 
         if ft ~= 'snacks_dashboard' and not ft:match('^snacks_picker') then
           if name ~= '' or vim.bo[buf].modified or bt == 'terminal' then
