@@ -15,10 +15,10 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 
 ![Preview image](https://github.com/user-attachments/assets/5a1dc925-9d32-4066-9495-278933ecf936)
 
-| ![Preview image](https://github.com/user-attachments/assets/d320b9b2-b3d1-479d-a092-96c5b6d3fa59) | ![Preview image](https://github.com/user-attachments/assets/66b2d161-60ec-4faf-add9-42a6c4ae2950) |
+| ![Preview image](https://github.com/user-attachments/assets/d320b9b2-b3d1-479d-a092-96c5b6d3fa59) | ![Preview image](https://github.com/user-attachments/assets/dcd7d37b-3443-4fd0-9a0e-8512d927f1e5) |
 | --------------------------------------------------------- | --------------------------------------------------------- |
 
-| ![Preview image](https://github.com/user-attachments/assets/75fd8e84-747e-4c48-93d1-0154aa0b94a7) | ![Preview image](https://github.com/user-attachments/assets/730e3192-7686-48c7-bcac-2f185d7ad167) |
+| ![Preview image](https://github.com/user-attachments/assets/75fd8e84-747e-4c48-93d1-0154aa0b94a7) | ![Preview image](https://github.com/user-attachments/assets/6c84841c-fb4f-4a1d-a34d-85528bec0cb5) |
 | --------------------------------------------------------- | --------------------------------------------------------- |
 
 ## Features
