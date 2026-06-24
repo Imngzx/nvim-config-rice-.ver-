@@ -216,7 +216,7 @@ local Tabpage = {
       return {
         fg = 'tab_num_unfocus',
         bg = utils.get_highlight('TabLine').bg,
-        italic = true
+        italic = false
       }
     end
   end,
