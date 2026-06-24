@@ -92,12 +92,25 @@ local ActiveLSP = {
   update = { 'LspAttach', 'LspDetach', 'BufEnter' },
   provider = function()
     local clients = vim.lsp.get_clients({ bufnr = 0 })
-    if #clients == 0 then return '' end
+    local count = #clients
+    if count == 0 then return '' end
+
     local names = {}
-    for _, server in ipairs(clients) do
-      table.insert(names, server.name)
+    local max_show = 2
+
+    local limit = count > max_show and max_show or count
+
+    for i = 1, limit do
+      names[i] = clients[i].name
     end
-    return '   ' .. table.concat(names, ' | ') .. ' '
+
+    local text = table.concat(names, ' | ')
+
+    if count > max_show then
+      text = text .. ' (+' .. (count - max_show) .. ')'
+    end
+
+    return '   ' .. text .. ' '
   end,
   hl = { fg = 'lsp_name', bold = true, bg = 'bg' },
 }
