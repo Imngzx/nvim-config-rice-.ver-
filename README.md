@@ -13,12 +13,12 @@ This repository hosts my [NeoVim](https://neovim.io/) configuration for Desktop 
 
 Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 
-![Preview image](https://github.com/user-attachments/assets/7ccd5cec-e7a5-4ab7-8f54-f4597257d814)
+![Preview image](https://github.com/user-attachments/assets/5a1dc925-9d32-4066-9495-278933ecf936)
 
-| ![Preview image](https://github.com/user-attachments/assets/257edefa-7300-4343-8028-3ec1336d0272) | ![Preview image](https://github.com/user-attachments/assets/74629ff5-00e2-4728-a845-2e967d854359) |
+| ![Preview image](https://github.com/user-attachments/assets/d320b9b2-b3d1-479d-a092-96c5b6d3fa59) | ![Preview image](https://github.com/user-attachments/assets/66b2d161-60ec-4faf-add9-42a6c4ae2950) |
 | --------------------------------------------------------- | --------------------------------------------------------- |
 
-| ![Preview image](https://github.com/user-attachments/assets/65f9696a-a535-454b-8623-3a93ab6e4c2f) | ![Preview image](https://github.com/user-attachments/assets/e5440088-cf1c-4455-9754-8768be3365c5) |
+| ![Preview image](https://github.com/user-attachments/assets/75fd8e84-747e-4c48-93d1-0154aa0b94a7) | ![Preview image](https://github.com/user-attachments/assets/730e3192-7686-48c7-bcac-2f185d7ad167) |
 | --------------------------------------------------------- | --------------------------------------------------------- |
 
 ## Features
