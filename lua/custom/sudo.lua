@@ -16,7 +16,7 @@ local function is_writable(path)
     return vim.fn.filewritable(path) == 1
   else
     -- 如果文件不存在（新建场景），检查所在文件夹是否有写权限
-    local dir = vim.fn.fnamemodify(path, ':h')
+    local dir = vim.fs.dirname(path)
     return vim.fn.filewritable(dir) == 2
   end
 end

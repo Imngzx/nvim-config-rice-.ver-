@@ -85,7 +85,7 @@ resonance.load({
         request = 'launch',
         name = 'Launch Zig',
         program = function()
-          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/zig-out/bin/', 'file')
+          return vim.fn.input('Path to executable: ', vim.uv.cwd() .. '/zig-out/bin/', 'file')
         end,
         cwd = '${workspaceFolder}',
         stopOnEntry = true,
@@ -100,7 +100,7 @@ resonance.load({
         request = 'launch',
         program = function()
           -- 按下继续后，会要求你输入编译好的可执行文件路径 (例如: ./out/main)
-          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          return vim.fn.input('Path to executable: ', vim.uv.cwd() .. '/', 'file')
         end,
         cwd = '${workspaceFolder}',
         stopOnEntry = false,

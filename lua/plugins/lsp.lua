@@ -44,7 +44,9 @@ resonance.load({
         vim.cmd('Mason')
         local registry = require('mason-registry')
         registry.refresh(function()
-          for _, pkg_name in ipairs(lsp_manager.mason_tools) do
+          local tools = lsp_manager.mason_tools
+          for i = 1, #tools do
+            local pkg_name = tools[i]
             local ok, pkg = pcall(registry.get_package, pkg_name)
             if ok and not pkg:is_installed() then
               vim.schedule(function()

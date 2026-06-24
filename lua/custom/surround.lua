@@ -200,7 +200,8 @@ function M.setup()
   vim.keymap.set('n', 'sr', M.replace, { silent = true, desc = 'Replace surround' })
 
   local visual_auto_pairs = { '(', '[', '{', '"', "'", '`' }
-  for _, char in ipairs(visual_auto_pairs) do
+  for i = 1, #visual_auto_pairs do
+    local char = visual_auto_pairs[i]
     vim.keymap.set('x', char, make_visual_handler(char),
       { silent = true, desc = 'VSCode Wrap ' .. char })
   end

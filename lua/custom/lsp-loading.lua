@@ -22,7 +22,7 @@ local nvim_buf_get_lines = api.nvim_buf_get_lines
 
 local strchars = fn.strchars
 local strcharpart = fn.strcharpart
-local strdisplaywidth = fn.strdisplaywidth
+local strdisplaywidth = api.nvim_strwidth
 local math_max = math.max
 local string_rep = string.rep
 local string_format = string.format
@@ -307,8 +307,9 @@ function M.setup()
     callback = function()
       if win_id and buf_id and nvim_win_is_valid(win_id) and nvim_buf_is_valid(buf_id) then
         local max_width = 10
-        for _, line_text in ipairs(nvim_buf_get_lines(buf_id, 0, -1, false)) do
-          max_width = math_max(max_width, strdisplaywidth(line_text))
+        local lines = nvim_buf_get_lines(buf_id, 0, -1, false)
+        for i = 1, #lines do
+          max_width = math_max(max_width, strdisplaywidth(lines[i]))
         end
         nvim_win_set_config(win_id,
           get_win_config(max_width, nvim_buf_line_count(buf_id)))

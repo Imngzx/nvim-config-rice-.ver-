@@ -78,10 +78,10 @@ local TablineFileNameBlock = {
     if bpm then
       self.display_name = bpm.resolve_bufname(self.bufnr)
       if require('libs.utils').is_windows() then
-        self.display_name = fnamemodify(self.filename, ':t')
+        self.display_name = vim.fs.basename(self.filename)
       end
     else
-      self.display_name = fnamemodify(self.filename, ':t')
+      self.display_name = vim.fs.basename(self.filename)
     end
 
     self.is_modified = get_opt('modified', { buf = self.bufnr })

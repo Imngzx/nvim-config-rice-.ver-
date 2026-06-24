@@ -69,14 +69,24 @@ end
 local cache_path = fn.stdpath('data') .. package.config:sub(1, 1) .. 'transparent_state'
 
 local function cache_read()
-  local ok, data = pcall(fn.readfile, cache_path)
-  vim.g.bg_transparent = ok and #data > 0 and vim.trim(data[1]) == 'true'
+  local fd = io.open(cache_path, 'r')
+  if fd then
+    local data = fd:read('*l')
+    vim.g.bg_transparent = (data == 'true')
+    fd:close()
+  else
+    vim.g.bg_transparent = false
+  end
 end
 
 local function cache_write()
-  local dir = fn.fnamemodify(cache_path, ':h')
+  local dir = vim.fs.dirname(cache_path)
   if fn.isdirectory(dir) == 0 then fn.mkdir(dir, 'p') end
-  fn.writefile({ tostring(vim.g.bg_transparent) }, cache_path)
+  local fd = io.open(cache_path, 'w')
+  if fd then
+    fd:write(tostring(vim.g.bg_transparent))
+    fd:close()
+  end
 end
 
 cache_read() -- load state on startup
@@ -85,7 +95,8 @@ cache_read() -- load state on startup
 local function clear_group(group)
   local list = type(group) == 'string' and { group } or group
 
-  for _, g in ipairs(list) do
+  for i = 1, #list do
+    local g = list[i]
     if not vim.tbl_contains(config.exclude_groups, g) then
       local ok, prev = pcall(api.nvim_get_hl, 0, { name = g, link = false })
       if ok and prev then
@@ -116,7 +127,8 @@ end
 function M.clear()
   if not vim.g.bg_transparent then return end
 
-  for _, t in ipairs(M._timers) do
+  for i = 1, #M._timers do
+    local t = M._timers[i]
     pcall(function()
       if t and not t:is_closing() then t:close() end
     end)
@@ -151,7 +163,8 @@ function M.disable()
   vim.g.bg_transparent = false
   cache_write()
 
-  for _, t in ipairs(M._timers) do
+  for i = 1, #M._timers do
+    local t = M._timers[i]
     pcall(function()
       if t and not t:is_closing() then t:close() end
     end)

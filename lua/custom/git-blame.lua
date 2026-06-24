@@ -250,14 +250,20 @@ function M.setup(opts)
         if obj.code == 0 and obj.stdout then current_author = vim.trim(obj.stdout) end
       end)
     end
-    for _, win in ipairs(nvim_list_wins()) do queue_fetch(nvim_win_get_buf(win)) end
+    local wins = nvim_list_wins()
+    for i = 1, #wins do
+      queue_fetch(nvim_win_get_buf(wins[i]))
+    end
   end
 end
 
 function M.toggle()
   config.enabled = not config.enabled
   if config.enabled then
-    for _, win in ipairs(nvim_list_wins()) do queue_fetch(nvim_win_get_buf(win)) end
+    local wins = nvim_list_wins()
+    for i = 1, #wins do
+      queue_fetch(nvim_win_get_buf(wins[i]))
+    end
   else
     for buf, _ in pairs(b_state) do clear_blame(buf) end
   end

@@ -27,8 +27,7 @@ local nvim_create_augroup = api.nvim_create_augroup
 local nvim_create_autocmd = api.nvim_create_autocmd
 local nvim_get_current_win = api.nvim_get_current_win
 
-local strdisplaywidth = fn.strdisplaywidth
-local fnamemodify = fn.fnamemodify
+local strdisplaywidth = api.nvim_strwidth
 local line = fn.line
 local pcall = pcall
 
@@ -88,10 +87,9 @@ local function update_incline()
     local filename = '[No Name]'
     if buf_path ~= '' then
       local bpm_ok, bpm = pcall(require, 'bpm')
-      filename = bpm_ok and bpm.resolve_bufname(buf_id) or fnamemodify(buf_path, ':t')
-
+      filename = bpm_ok and bpm.resolve_bufname(buf_id) or vim.fs.basename(buf_path)
       if require('libs.utils').is_windows() then
-        filename = fnamemodify(buf_path, ':t')
+        filename = vim.fs.basename(buf_path)
       end
     end
     local modified = vim.bo[buf_id].modified

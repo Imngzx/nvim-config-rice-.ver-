@@ -25,20 +25,23 @@ function M.open()
     on_exit = function(_, code, _)
       vim.schedule(function()
         win:close()
-
-        if code == 0 and vim.fn.filereadable(tmpfile) == 1 then
-          local filenames = vim.fn.readfile(tmpfile)
-          if filenames and #filenames > 0 then
-            for i, target_file in ipairs(filenames) do
-              local escaped_file = vim.fn.fnameescape(target_file)
-              if i == 1 then
-                vim.cmd('edit ' .. escaped_file)
-              else
-                vim.cmd('badd ' .. escaped_file)
+        if code == 0 then
+          local fd = io.open(tmpfile, 'r')
+          if fd then
+            local is_first = true
+            for target_file in fd:lines() do
+              if target_file and target_file ~= '' then
+                if is_first then
+                  vim.cmd.edit(target_file)
+                  is_first = false
+                else
+                  vim.cmd.badd(target_file)
+                end
               end
             end
+            fd:close()
+            os.remove(tmpfile)
           end
-          vim.fn.delete(tmpfile)
         end
       end)
     end

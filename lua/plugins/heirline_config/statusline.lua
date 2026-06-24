@@ -5,7 +5,7 @@ local colors = require('plugins.heirline_config.colors')
 local ViMode = {
   update = true,
   init = function(self)
-    self.mode = vim.fn.mode(1)
+    self.mode = vim.api.nvim_get_mode().mode
     self.mode_color = colors.mode_colors[self.mode] or 'normal'
   end,
   static = { mode_names = colors.mode_names },
@@ -123,7 +123,7 @@ local Venv = {
     if not package.loaded['venv-selector'] then return '' end
     local venv = require('venv-selector').venv()
     if not venv then return '' end
-    local venv_name = vim.fn.fnamemodify(venv, ':t')
+    local venv_name = vim.fs.basename(venv)
     return '  ' .. venv_name
   end,
   hl = { fg = 'venv_name', bg = 'bg' },

@@ -177,18 +177,20 @@ return {
         end,
         explorer_add = function(picker)
           local item = picker:current()
-          local dir = vim.fn.getcwd()
+          local dir = vim.uv.cwd()
           if item and item.file then
-            dir = vim.fn.isdirectory(item.file) == 1 and item.file or
-              vim.fn.fnamemodify(item.file, ':h')
+            local stat = vim.uv.fs_stat(item.file)
+            local is_dir = stat and stat.type == 'directory'
+            dir = is_dir and item.file or vim.fs.dirname(item.file)
           end
           vim.ui.input({ prompt = 'Add a new file or directory (directories end with a "/"): ' },
             function(input)
               if not input or input == '' then return end
               local path = vim.fs.normalize(dir .. '/' .. input)
               local is_dir = input:sub(-1) == '/'
-              local target_dir = is_dir and path or vim.fn.fnamemodify(path, ':h')
-              if vim.fn.isdirectory(target_dir) == 0 then pcall(vim.fn.mkdir, target_dir, 'p') end
+              local target_dir = is_dir and path or vim.fs.dirname(path)
+              local stat = vim.uv.fs_stat(target_dir)
+              if not stat or stat.type ~= 'directory' then pcall(vim.fn.mkdir, target_dir, 'p') end
               if is_dir then
                 picker:update()
               else

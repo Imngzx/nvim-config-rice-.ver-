@@ -130,16 +130,20 @@ vim.api.nvim_create_autocmd('User', {
     })
 
     vim.schedule(function()
-      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-        local name = vim.api.nvim_buf_get_name(buf)
-        if vim.api.nvim_buf_is_loaded(buf) and name ~= '' then
-          if vim.fn.filereadable(name) == 1 then
-            pcall(vim.api.nvim_exec_autocmds, 'BufReadPre', { buf = buf, modeline = false })
-            pcall(vim.api.nvim_exec_autocmds, 'BufReadPost', { buf = buf, modeline = false })
+      local api = vim.api
+      local fn = vim.fn
+      local bufs = api.nvim_list_bufs()
+      for i = 1, #bufs do
+        local buf = bufs[i]
+        local name = api.nvim_buf_get_name(buf)
+        if api.nvim_buf_is_loaded(buf) and name ~= '' then
+          if fn.filereadable(name) == 1 then
+            pcall(api.nvim_exec_autocmds, 'BufReadPre', { buf = buf, modeline = false })
+            pcall(api.nvim_exec_autocmds, 'BufReadPost', { buf = buf, modeline = false })
           else
-            pcall(vim.api.nvim_exec_autocmds, 'BufNewFile', { buf = buf, modeline = false })
+            pcall(api.nvim_exec_autocmds, 'BufNewFile', { buf = buf, modeline = false })
           end
-          pcall(vim.api.nvim_exec_autocmds, 'FileType', { buf = buf, modeline = false })
+          pcall(api.nvim_exec_autocmds, 'FileType', { buf = buf, modeline = false })
         end
       end
     end)
