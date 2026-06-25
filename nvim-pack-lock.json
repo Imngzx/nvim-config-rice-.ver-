@@ -39,7 +39,7 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "cord.nvim": {
-      "rev": "e6ee37deea7b240d456a59aa7706eec006e56e79",
+      "rev": "b08b9245d2973eda91437d2de5c8746b9f510d31",
       "src": "https://github.com/vyfor/cord.nvim"
     },
     "csvview.nvim": {
@@ -99,7 +99,7 @@
       "src": "https://github.com/mfussenegger/nvim-dap-python"
     },
     "nvim-dap-view": {
-      "rev": "91a2b0eab74cc889499587166cc6e3d53a7e1e45",
+      "rev": "440ec66c2b26470ec97cd4d6667cdd4b51cbc7cb",
       "src": "https://github.com/igorlfs/nvim-dap-view"
     },
     "nvim-dap-virtual-text": {
@@ -143,7 +143,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "f00b03527542cfce146c133be091f046ef2f1771",
+      "rev": "809be8ae01ffb38c8c905ef957e85b73ee775dba",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "showkeys": {
