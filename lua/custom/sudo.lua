@@ -1,5 +1,3 @@
--- nvim/lua/custom/sudo.lua
-
 -- Windows 系统直接退出，不加载此功能
 if require('libs.utils').is_windows() then
   return
@@ -11,13 +9,12 @@ local aug = vim.api.nvim_create_augroup('sudo_save_simple', { clear = true })
 local function is_writable(path)
   if path == '' then return true end
 
-  -- 如果文件存在，检查文件本身的写权限
-  if vim.fn.filereadable(path) == 1 then
-    return vim.fn.filewritable(path) == 1
+  local stat = vim.uv.fs_stat(path)
+  if stat then
+    return vim.uv.fs_access(path, 'W')
   else
-    -- 如果文件不存在（新建场景），检查所在文件夹是否有写权限
     local dir = vim.fs.dirname(path)
-    return vim.fn.filewritable(dir) == 2
+    return vim.uv.fs_access(dir, 'W')
   end
 end
 

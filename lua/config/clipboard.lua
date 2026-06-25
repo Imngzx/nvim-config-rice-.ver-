@@ -1,7 +1,7 @@
 --[Functions]
 local fn = vim.fn
 
-if fn.has('wsl') == 1 then
+if vim.uv.os_uname().release:lower():find('microsoft') then
   local win32yank = '/mnt/c/Program Files/Neovim/bin/win32yank.exe'
 
   if fn.executable(win32yank) == 1 then

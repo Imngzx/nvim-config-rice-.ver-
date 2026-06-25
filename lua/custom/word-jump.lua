@@ -97,8 +97,8 @@ function M.jump()
     return
   end
 
-  local win_info = vim.fn.getwininfo(api.nvim_get_current_win())[1]
-  local top, bot = win_info.topline, win_info.botline
+  local top = vim.fn.line('w0')
+  local bot = vim.fn.line('w$')
 
   -- SoA (Struct of Arrays) design for cache-friendly access
   local match_rows, match_cols = {}, {}

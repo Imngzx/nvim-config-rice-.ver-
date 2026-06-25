@@ -10,7 +10,6 @@ local bo = vim.bo
 local schedule = vim.schedule
 local strchars = fn.strchars
 local strcharpart = fn.strcharpart
-local fnamemodify = fn.fnamemodify
 local buf_get_name = api.nvim_buf_get_name
 local get_opt = api.nvim_get_option_value
 local set_current_buf = api.nvim_set_current_buf

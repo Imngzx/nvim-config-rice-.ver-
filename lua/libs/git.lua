@@ -27,7 +27,7 @@ function M.update_git_branch(bufnr)
       return
     end
   else
-    dir = vim.fn.fnamemodify(filepath, ':h')
+    dir = vim.fs.dirname(filepath)
   end
 
   vim.b[bufnr].my_git_fetching = true
@@ -48,7 +48,7 @@ function M.update_git_branch(bufnr)
 
           if vim.b[bufnr].my_git_branch ~= new_branch then
             vim.b[bufnr].my_git_branch = new_branch
-            vim.cmd('redrawstatus')
+            vim.api.nvim_command('redrawstatus')
           end
         end
       end)

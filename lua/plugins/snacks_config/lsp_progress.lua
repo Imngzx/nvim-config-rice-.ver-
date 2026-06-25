@@ -8,7 +8,8 @@ vim.api.nvim_create_autocmd('LspProgress', {
 
     local p = progress[client.id]
 
-    for i, v in ipairs(p) do
+    for i = 1, #p do
+      local v = p[i]
       if v.token == ev.data.params.token then
         p[i] = {
           token = ev.data.params.token,

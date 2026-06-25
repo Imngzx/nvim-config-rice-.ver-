@@ -13,7 +13,8 @@ vim.api.nvim_create_user_command('PickColor', function()
   end
 
   local items = {}
-  for i, color in ipairs(palette) do
+  for i = 1, #palette do
+    local color = palette[i]
     local hl_fg = 'VibeColorFg_' .. color.name
     local hl_bg = 'VibeColorBg_' .. color.name
 

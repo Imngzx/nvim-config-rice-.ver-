@@ -29,7 +29,7 @@ resonance.load({
     })
     set_fold_hl()
 
-    local strwidth = vim.fn.strdisplaywidth
+    local strwidth = vim.api.nvim_strwidth
 
     local handler = function(virtText, lnum, endLnum, width, truncate)
       local newVirtText = {}

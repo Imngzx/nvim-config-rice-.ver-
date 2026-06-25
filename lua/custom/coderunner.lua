@@ -176,7 +176,7 @@ local function find_package_name(cargo_toml)
 end
 
 local function infer_cargo_bin_name(cargo_toml, file_path)
-  local root = vim.fn.fnamemodify(cargo_toml, ':h')
+  local root = vim.fs.dirname(cargo_toml)
   local rel = relative_path(root, file_path)
   if not rel then return nil end
 
@@ -193,7 +193,7 @@ local function cargo_project_command()
   local cargo_toml = find_upward('Cargo.toml', start_dir)
   if not cargo_toml then return nil end
 
-  local root = vim.fn.fnamemodify(cargo_toml, ':h')
+  local root = vim.fs.dirname(cargo_toml)
   if vim.bo.filetype ~= 'rust' then
     return 'cd ' .. shellescape(root) .. ' && cargo run'
   end

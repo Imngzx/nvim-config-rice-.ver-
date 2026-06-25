@@ -144,7 +144,7 @@ local function setup_time_updater()
   local ms_until_next_minute = (60 - current_seconds) * 1000
 
   vim.defer_fn(function()
-    vim.cmd('redrawstatus')
+    vim.api.nvim_command('redrawstatus')
     setup_time_updater()
   end, ms_until_next_minute)
 end

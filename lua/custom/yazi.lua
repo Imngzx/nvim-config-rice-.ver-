@@ -6,7 +6,7 @@ function M.open()
     return
   end
 
-  local tmpfile = vim.fn.tempname()
+  local tmpfile = os.tmpname()
 
   local win = require('snacks').win({
     position = 'float',

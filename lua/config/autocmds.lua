@@ -31,12 +31,15 @@ create_autocmd({ 'TextYankPost', 'TextPutPost' }, {
 
 -- [Autocmd] Change EOL format to unix on save
 create_autocmd('BufWritePre', {
-  group = create_augroup('WriteWithLF', { clear = true }),
-  pattern = '*',
   callback = function(args)
-    local bo = vim.bo[args.buf]
-    if bo.readonly or bo.buftype ~= '' or bo.binary then return end
-    bo.fileformat = 'unix'
+    local buf = args.buf
+    local get_opt = vim.api.nvim_get_option_value
+    if get_opt('readonly', { buf = buf })
+      or get_opt('buftype', { buf = buf }) ~= ''
+      or get_opt('binary', { buf = buf }) then
+      return
+    end
+    vim.api.nvim_set_option_value('fileformat', 'unix', { buf = buf })
   end,
 })
 
@@ -66,7 +69,7 @@ create_autocmd('FileType', {
     schedule(function()
       if not api.nvim_buf_is_valid(buf) then return end
       map('n', 'q', function()
-        cmd('close')
+        pcall(vim.api.nvim_win_close, 0, false)
         pcall(api.nvim_buf_delete, buf, { force = true })
       end, { buf = buf, silent = true, desc = 'Quit buffer' })
     end)
@@ -87,13 +90,14 @@ create_autocmd({ 'BufEnter', 'BufAdd', 'BufDelete' }, {
 
     for i = 1, #bufs do
       local buf = bufs[i]
-      if buf_is_valid(buf) and buf_is_loaded(buf) and vim.bo[buf].buflisted then
-        local ft = vim.bo[buf].filetype
-        local bt = vim.bo[buf].buftype
+      if buf_is_valid(buf) and buf_is_loaded(buf) and api.nvim_get_option_value('buflisted', { buf = buf }) then
+        local ft = api.nvim_get_option_value('filetype', { buf = buf })
+        local bt = api.nvim_get_option_value('buftype', { buf = buf })
+        local modified = api.nvim_get_option_value('modified', { buf = buf })
         local name = buf_get_name(buf)
 
         if ft ~= 'snacks_dashboard' and not ft:match('^snacks_picker') then
-          if name ~= '' or vim.bo[buf].modified or bt == 'terminal' then
+          if name ~= '' or modified or bt == 'terminal' then
             has_real_file = true
             break
           end
