@@ -60,6 +60,7 @@ local ts_icons = {
   ['field'] = { icon = '󰜢', hl = 'Identifier' },
   ['tag'] = { icon = '󰀓', hl = 'Tag' },
   ['heading'] = { icon = '', hl = 'Title' },
+  ['statement'] = { icon = '󱞩', hl = 'Conditional' }, -- 新增：用于 if/for/while 语句
   ['default'] = { icon = '󰘧', hl = 'String' },
 }
 
@@ -117,6 +118,8 @@ local function identify_scope(type_str)
     res = 'object'
   elseif type_str:find('array', 1, true) or type_str:find('list', 1, true) then
     res = 'array'
+  elseif type_str:find('if', 1, true) or type_str:find('for', 1, true) or type_str:find('while', 1, true) or type_str:find('match', 1, true) then
+    res = 'statement'
   elseif type_str:find('pair', 1, true) or type_str:find('property', 1, true) or type_str:find('field', 1, true) then
     res = 'field'
   elseif type_str == 'section' or type_str:find('heading', 1, true) then
@@ -203,6 +206,15 @@ local function get_node_name(node, bufnr)
       local text = safe_get_text(first_child, bufnr)
       if text then return (text:gsub('^["\']', ''):gsub('["\']$', ''):gsub('%s+', ' ')) end
     end
+  end
+
+  local start_row, start_col = node:range()
+  local ok, lines = pcall(api.nvim_buf_get_lines, bufnr, start_row, start_row + 1, false)
+  if ok and lines and lines[1] then
+    local text = lines[1]:sub(start_col + 1)
+    text = text:gsub('^%s+', ''):gsub('%s*[{]*%s*$', '')
+    if #text > 35 then text = text:sub(1, 35) .. '…' end
+    if text ~= '' then return text end
   end
 
   return nil
