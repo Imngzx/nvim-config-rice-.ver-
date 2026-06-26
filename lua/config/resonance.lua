@@ -103,6 +103,7 @@ vim.api.nvim_create_autocmd('User', {
 
     -- Util
     require('custom.coderunner').setup()
+    require('custom.repl').setup()
     require('plugins.venv-selector')
     require('plugins.dap')
     require('plugins.jisho')
