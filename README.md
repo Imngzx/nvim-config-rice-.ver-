@@ -26,7 +26,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 ### Summarization
 
 - **Fast.** Less than **30ms** to start, say no to heavy plugins for ui only
-- **Simple.** Run out of the box with only 42 plugins.
+- **Simple.** Run out of the box with only 41 plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code, supports cjk.
@@ -49,6 +49,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
   - [x] [git-blame.nvim](https://github.com/f-person/git-blame.nvim.git) (Key: `<Leader>uB`)
   - [x] [persistence.nvim](https://github.com/folke/persistence.nvim)
   - [x] [im-select.nvim](https://github.com/keaising/im-select.nvim)
+  - [x] [dropbar.nvim](https://github.com/Bekaboo/dropbar.nvim)
 
 - List of self made plugins:
   - [x] [jisho.nvim](https://github.com/Imngzx/jisho.nvim)
