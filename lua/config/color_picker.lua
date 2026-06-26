@@ -66,5 +66,3 @@ vim.api.nvim_create_user_command('PickColor', function()
     end,
   })
 end, {})
-
-vim.keymap.set('n', '<leader>up', '<cmd>PickColor<cr>', { desc = 'Pick Vibe Color' })

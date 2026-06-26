@@ -114,26 +114,30 @@ map('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result
 -- ==========================================
 map('n', '<leader><tab>n', '<cmd>tabnew<cr>', { desc = 'New Workspace' })
 map('n', '<leader><tab>N', function()
-  local name = vim.fn.input('Workspace name: ')
-  vim.cmd 'tabnew'
-  if name ~= '' then
-    require('bpm').rename_tab(vim.api.nvim_get_current_tabpage(), name)
-  else
-    vim.notify('Warn: Workspace name not assigned, opening an anonymous buffer', vim.log.levels.WARN)
-  end
-end, { noremap = true, silent = true, desc = 'New Workspace with name' })
+  vim.ui.input({ prompt = 'Workspace Name: ' }, function(name)
+    if not name then return end
+    vim.api.nvim_command('tabnew')
+    if name ~= '' then
+      local ok, bpm = pcall(require, 'bpm')
+      if ok then bpm.rename_tab(vim.api.nvim_get_current_tabpage(), name) end
+    else
+      vim.notify('Warn: Workspace name not assigned, opening an anonymous buffer',
+        vim.log.levels.WARN)
+    end
+  end)
+end, { silent = true, desc = 'New Workspace with name' })
 map('n', '<leader><tab>d', '<cmd>tabclose<cr>', { desc = 'Close Workspace' })
 map('n', '<leader><tab>r', function()
-  local name = vim.fn.input('Workspace Name: ')
-  if name ~= '' then
+  vim.ui.input({ prompt = 'Workspace Name: ' }, function(name)
+    if not name or name == '' then return end
     local ok, bpm = pcall(require, 'bpm')
     if ok then bpm.rename_tab(vim.api.nvim_get_current_tabpage(), name) end
-  end
+  end)
 end, { desc = 'Rename Workspace' })
 
 -- Clear search and stop snippet on escape
 map({ 'i', 'n', 's' }, '<esc>', function()
-  cmd('noh')
+  vim.v.hlsearch = 0
   return '<esc>'
 end, { expr = true, desc = 'Escape and clear hlsearch' })
 
@@ -146,6 +150,9 @@ map('n', '<leader>sK', '<cmd>ShowkeysToggle<cr>', { desc = 'Toggle Showkeys' })
 -- Package update
 map('n', '<leader>pu', function() vim.pack.update() end, { desc = 'Update plugins' })
 
-require('config.color_picker')
+map('n', '<leader>up', function()
+  require('config.color_picker')
+  vim.api.nvim_command('PickColor')
+end, { desc = 'Pick Vibe Color' })
 
 map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })

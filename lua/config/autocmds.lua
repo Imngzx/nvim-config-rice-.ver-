@@ -4,7 +4,6 @@ local opt = vim.opt
 local create_autocmd = api.nvim_create_autocmd
 local create_augroup = api.nvim_create_augroup
 local schedule = vim.schedule
-local cmd = vim.cmd
 local ui_group = create_augroup('AutoUIVisibility', { clear = true })
 local vim_local = vim.opt_local
 local map = vim.keymap.set
