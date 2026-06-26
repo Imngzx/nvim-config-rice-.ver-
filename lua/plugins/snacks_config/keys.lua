@@ -8,7 +8,7 @@ return {
   -- ==========================================
   -- 🔍 [ Pickers: Find & Grep ]
   -- ==========================================
-  { '<leader><space>', function() Snacks.picker.smart() end, desc = 'Smart find' },
+  { '<leader><leader>', function() Snacks.picker.smart() end, desc = 'Smart find' },
   { '<leader>/', function() Snacks.picker.grep() end, desc = 'Grep' },
   { '<leader>fc', function() Snacks.picker.files({ cwd = vim.fn.stdpath('config') }) end, desc = 'Find Neovim Config' },
   { '<leader>fC', function() Snacks.picker.grep({ cwd = vim.fn.stdpath('config') }) end, desc = 'Grep Neovim Config' },
