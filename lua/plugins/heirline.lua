@@ -8,6 +8,7 @@ resonance.load({
       local heirline = require('heirline')
       local utils = require('heirline.utils')
       local colors = require('plugins.heirline_config.colors')
+      local WinBar = require('plugins.heirline_config.winbar')
 
       heirline.load_colors(colors.setup_colors())
 
@@ -28,6 +29,15 @@ resonance.load({
       heirline.setup({
         statusline = StatusLine,
         tabline = TabLine,
+        winbar = WinBar,
+        opts = {
+          disable_winbar_cb = function(args)
+            local bt = vim.api.nvim_get_option_value('buftype', { buf = args.buf })
+            local ft = vim.api.nvim_get_option_value('filetype', { buf = args.buf })
+            return bt == 'nofile' or bt == 'prompt' or bt == 'terminal' or bt == 'help' or
+              ft == 'snacks_dashboard' or ft:match('^snacks_picker')
+          end,
+        }
       })
     end
   },

@@ -46,10 +46,6 @@
       "rev": "5c22774c3ecc7f8883af5d143b366e45b1f0875d",
       "src": "https://github.com/hat0uma/csvview.nvim"
     },
-    "dropbar.nvim": {
-      "rev": "808ba31cde89aec8833e9789f5e04557cd31c9e1",
-      "src": "https://github.com/bekaboo/dropbar.nvim"
-    },
     "flash.nvim": {
       "rev": "fcea7ff883235d9024dc41e638f164a450c14ca2",
       "src": "https://github.com/folke/flash.nvim"
