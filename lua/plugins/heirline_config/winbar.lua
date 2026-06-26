@@ -11,11 +11,30 @@ local nvim_buf_get_name = api.nvim_buf_get_name
 local nvim_get_current_win = api.nvim_get_current_win
 local nvim_buf_get_changedtick = api.nvim_buf_get_changedtick
 local nvim_get_option_value = api.nvim_get_option_value
-local fn_fnamemodify = vim.fn.fnamemodify
+
+local fs_basename = vim.fs.basename
+local fs_dirname = vim.fs.dirname
+local fs_normalize = vim.fs.normalize
+local env_home = vim.env.HOME or vim.env.USERPROFILE
+local pesc_home = env_home and '^' .. vim.pesc(fs_normalize(env_home)) or nil
+
+local str_byteindex = vim.str_byteindex
+local function truncate_utf8(str, max_chars)
+  if #str <= max_chars then return str end -- 字节数小于最大字符数，绝对安全
+  local ok, byte_idx = pcall(str_byteindex, str, max_chars)
+  if ok and byte_idx and byte_idx < #str then
+    return str:sub(1, byte_idx) .. '…'
+  end
+  return str
+end
+
+-- [状态栏安全转义器] 防止代码中的 % 破坏 Statusline 解析
+local function escape_stl(str)
+  return str:gsub('%%', '%%%%')
+end
 
 -- =========================================================
 -- [极致懒加载] Treesitter 与 Icons 的 Lazy Getter
--- 避免在 Neovim 启动时强制加载庞大的 vim.treesitter 模块
 -- =========================================================
 local ts_get_node_cache = nil
 local ts_get_node_text_cache = nil
@@ -60,13 +79,12 @@ local ts_icons = {
   ['field'] = { icon = '󰜢', hl = 'Identifier' },
   ['tag'] = { icon = '󰀓', hl = 'Tag' },
   ['heading'] = { icon = '', hl = 'Title' },
-  ['statement'] = { icon = '󱞩', hl = 'Conditional' }, -- 新增：用于 if/for/while 语句
+  ['statement'] = { icon = '󱞩', hl = 'Conditional' },
   ['default'] = { icon = '󰘧', hl = 'String' },
 }
 
 -- =========================================================
 -- [缓存层] 极致 GC 友好
--- 修复漏洞: 加入 BufWipeout 确保在使用 snacks.bufdelete wipe 时无内存泄漏
 -- =========================================================
 local win_cache = {}
 local file_cache = {}
@@ -90,11 +108,9 @@ api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
 local scope_memo = {}
 
 local function identify_scope(type_str)
-  -- 1. O(1) 极速查找
   local cached = scope_memo[type_str]
   if cached ~= nil then return cached or nil end
 
-  -- 2. 如果没见过，执行匹配逻辑
   local res = nil
   if type_str:find('func', 1, true) then
     res = 'function'
@@ -126,13 +142,12 @@ local function identify_scope(type_str)
     res = 'heading'
   end
 
-  -- 3. 记录到表里 (如果是 nil，存为 false 防止重复计算)
   scope_memo[type_str] = res or false
   return res
 end
 
 -- =========================================================
--- [核心提取] 安全提取节点文本，防止异步 Tree-sitter 同步错位崩溃
+-- [核心提取] 安全提取节点文本
 -- =========================================================
 local function safe_get_text(node, bufnr)
   local ok, text = pcall(get_ts_text, node, bufnr)
@@ -194,7 +209,7 @@ local function get_node_name(node, bufnr)
       local text = safe_get_text(field_nodes[1], bufnr)
       if text then
         text = text:gsub('%s+', ' ')
-        if #text > 25 then text = text:sub(1, 25) .. '…' end
+        text = truncate_utf8(text, 25)
         return (text:gsub('^["\']', ''):gsub('["\']$', ''))
       end
     end
@@ -213,7 +228,7 @@ local function get_node_name(node, bufnr)
   if ok and lines and lines[1] then
     local text = lines[1]:sub(start_col + 1)
     text = text:gsub('^%s+', ''):gsub('%s*[{]*%s*$', '')
-    if #text > 35 then text = text:sub(1, 35) .. '…' end
+    text = truncate_utf8(text, 35)
     if text ~= '' then return text end
   end
 
@@ -221,7 +236,7 @@ local function get_node_name(node, bufnr)
 end
 
 -- =========================================================
--- 组件 1: 路径与文件面包屑 (Directory & File) - Flexible 缩写
+-- 组件 1: 路径与文件面包屑 (Directory & File)
 -- =========================================================
 local FilePath = {
   init = function(self)
@@ -241,9 +256,12 @@ local FilePath = {
       return
     end
 
-    local rel_path = fn_fnamemodify(filename, ':~:.')
-    local dir = fn_fnamemodify(rel_path, ':h')
-    local tail = fn_fnamemodify(rel_path, ':t')
+    -- 纯 Lua 路径处理 (替代 vim.fn.fnamemodify)
+    local rel_path = fs_normalize(filename)
+    if pesc_home then rel_path = rel_path:gsub(pesc_home, '~') end
+
+    local dir = fs_dirname(rel_path) or ''
+    local tail = fs_basename(rel_path) or ''
 
     local mini_icons = get_mini_icons()
     local dir_icon, dir_hl = '󰉋', 'Directory'
@@ -255,6 +273,8 @@ local FilePath = {
       dir = dir:gsub('\\', '/')
       for segment in string_gmatch(dir, '[^/]+') do
         local short_segment = segment:sub(1, 1)
+        segment = escape_stl(segment)
+        short_segment = escape_stl(short_segment)
         full_rendered = full_rendered ..
           string_format('%%#%s#%s %%#WinBar#%s%%#Comment# ', dir_hl, dir_icon, segment)
         short_rendered = short_rendered ..
@@ -264,6 +284,8 @@ local FilePath = {
 
     local file_icon, file_hl = '󰈔', 'Comment'
     if mini_icons then file_icon, file_hl = mini_icons.get('file', filename) end
+
+    tail = escape_stl(tail)
     local tail_part = string_format('%%#%s#%s %%#WinBar#%s', file_hl, file_icon, tail)
 
     self.path_full = full_rendered .. tail_part
@@ -294,7 +316,6 @@ local Breadcrumbs = {
     local row, col = cursor[1] - 1, cursor[2]
     local tick = nvim_buf_get_changedtick(bufnr)
 
-    -- 1. 懒加载调用 TS 获取当前精确节点
     local ok, node = pcall(get_ts_node,
       { bufnr = bufnr, pos = { row, col }, ignore_injections = false })
     if not ok or not node then
@@ -302,7 +323,6 @@ local Breadcrumbs = {
       return
     end
 
-    -- 2. 向上寻找第一个有效的作用域节点 (这是真正的上下文起点)
     ---@type TSNode?
     local scope_node = node
     local start_scope = nil
@@ -312,37 +332,33 @@ local Breadcrumbs = {
       scope_node = scope_node:parent()
     end
 
-    -- 提取唯一标识符：如果有作用域节点，就取它的内存 ID；否则用 -1 代替
     local scope_id = scope_node and scope_node:id() or -1
 
-    -- 3. 极限缓存命中逻辑：Tick 没变 且 所在的 Context 节点没变！
-    -- 光标哪怕在函数里疯狂跳舞，也会直接瞬间命中这里，开销为 0！
     local cache = win_cache[win_id]
     if cache and cache.bufnr == bufnr and cache.tick == tick and cache.scope_id == scope_id then
       self.rendered_string = cache.rendered_string
       return
     end
 
-    -- 4. 未命中缓存，开始真正的向上遍历拼接
     local parts = {}
-    local max_depth = 5 -- 防止某些极端的 JSON/Lua 嵌套把屏幕撑爆
+    local max_depth = 5
     local curr_depth = 0
 
     while scope_node and curr_depth < max_depth do
-      -- start_scope 必定有效，因为前面过滤过了
       local name, icon_override = get_node_name(scope_node, bufnr)
       if name then
         local icon_data = ts_icons[start_scope] or ts_icons['default']
         local final_icon = icon_override or icon_data.icon
 
-        if #name > 40 then name = name:sub(1, 40) .. '…' end
+        name = truncate_utf8(name, 40)
+        name = escape_stl(name)
+
         local part = string_format('%%#Comment# %%#%s#%s %%#WinBar#%s', icon_data.hl, final_icon,
           name)
         table_insert(parts, 1, part)
         curr_depth = curr_depth + 1
       end
 
-      -- 继续找下一个作用域
       scope_node = scope_node:parent()
       while scope_node do
         start_scope = identify_scope(scope_node:type())
@@ -358,7 +374,6 @@ local Breadcrumbs = {
     local rendered = table_concat(parts)
     self.rendered_string = rendered
 
-    -- 5. 写入缓存 (存储唯一的 scope_id)
     win_cache[win_id] = {
       bufnr = bufnr,
       tick = tick,
