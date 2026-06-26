@@ -305,16 +305,11 @@ function M.run_project()
 end
 
 function M.setup()
-  vim.keymap.set('n', '<F5>', M.run, { desc = 'Save and Run Code' })
-  vim.keymap.set('n', '<leader>rc', M.run, { desc = 'Save and Run Code' })
-
-  vim.keymap.set('n', '<C-F5>', M.run, { desc = 'Save and Run File' })
-  vim.keymap.set('n', '<leader>rf', M.run, { desc = 'Save and Run File' })
-
-  vim.keymap.set('n', '<leader>rp', M.run_project, { desc = 'Run Project' })
-
-  vim.keymap.set('n', '<S-F5>', M.close, { desc = 'Stop Running' })
-  vim.keymap.set('n', '<leader>rx', M.close, { desc = 'Close Runner' })
+  local map = vim.keymap.set
+  map('n', { '<F5>', '<leader>rc' }, M.run, { desc = 'Save and Run Code' })
+  map('n', { '<C-F5>', '<leader>rf' }, M.run, { desc = 'Save and Run File' })
+  map('n', { '<S-F5>', '<leader>rx' }, M.close, { desc = 'Stop / Close Runner' })
+  map('n', '<leader>rp', M.run_project, { desc = 'Run Project' })
 end
 
 return M
