@@ -46,20 +46,20 @@ if vim.uv.os_uname().release:lower():find('microsoft') then
 end
 
 vim.schedule(function()
-  if vim.env.SSH_CONNECTION then
+  local is_ssh = vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT or vim.env.SSH_TTY
+  local clipboard = require('vim.ui.clipboard.osc52')
+  if is_ssh then
     vim.g.clipboard = {
       name = 'OSC 52',
       copy = {
-        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+        ['+'] = clipboard.copy('+'),
+        ['*'] = clipboard.copy('*'),
       },
       paste = {
-        ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-        ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+        ['+'] = clipboard.paste('+'),
+        ['*'] = clipboard.paste('*'),
       },
     }
-    vim.opt.clipboard = 'unnamedplus'
-  else
-    vim.opt.clipboard = 'unnamedplus'
   end
+  vim.opt.clipboard = 'unnamedplus'
 end)
