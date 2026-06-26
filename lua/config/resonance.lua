@@ -40,22 +40,6 @@ local Snacks = require('plugins.snacks')
 require('plugins.cmdline')
 require('plugins.ui')
 
--- local icons = require('libs.icons')
--- require('custom.tabline').setup({
---   hide_single_tab = false,
---   -- use wipe for better ram usage
---   on_close = function(buf_id)
---     local ok, bpm = pcall(require, 'bpm')
---     if ok then
---       bpm.detach(buf_id)
---     else
---       Snacks.bufdelete(buf_id, { wipe = true })
---     end
---   end,
---   file_icons = function(name) return Snacks.util.icon(name, 'file') end,
---   icons = { close = icons.basic.close, modify = icons.basic.modify }
--- })
-
 require('plugins.tool')
 require('custom.sudo')
 
@@ -88,11 +72,6 @@ vim.api.nvim_create_autocmd('User', {
 
     -- UI
     require('plugins.heirline')
-    -- require('custom.statusline').setup({
-    --   git_cache_setup = { get_git_root = Snacks.git.get_root },
-    --   hide_filename_by_ft = { snacks_picker_list = true },
-    --   icons = { branch = icons.git.branch }
-    -- })
     require('custom.incline').setup()
     require('custom.lsp-loading').setup()
     require('custom.transparent').setup({ auto_enable = false })
