@@ -214,6 +214,14 @@ function M.setup(opts)
   local update_queued = false
   local last_state = { win = -1, row = -1 }
 
+  nvim_create_autocmd('ColorScheme', {
+    group = group,
+    callback = function()
+      win_cache = {}
+      vim.schedule(update_incline)
+    end
+  })
+
   nvim_create_autocmd(
     { 'WinScrolled', 'BufEnter', 'WinEnter', 'TextChanged', 'BufWritePost', 'VimResized',
       'CursorMoved' }, {

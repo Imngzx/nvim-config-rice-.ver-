@@ -1,6 +1,3 @@
--- Transparent background
--- Highly optimized for Neovim 0.12+ (Safe Libuv Timer Management & Cache Sync)
-
 local M = {}
 local api, fn = vim.api, vim.fn
 local ORIGINAL_HL_CACHE = {}
@@ -18,21 +15,14 @@ local config = {
   },
 
   extra_groups = {
-    -- Snacks
     'SnacksPickerInput', 'SnacksPickerInputBorder',
     'SnacksPickerList', 'SnacksPickerListBorder',
-    'SnacksBackdrop',
-    'SnacksNormal',
-    -- Neovim 浮窗三剑客
+    'SnacksBackdrop', 'SnacksNormal',
     'NormalFloat', 'FloatBorder', 'FloatTitle', 'FloatFooter',
-    -- Blink.cmp
     'BlinkCmpMenu', 'BlinkCmpMenuBorder',
     'BlinkCmpDoc', 'BlinkCmpDocBorder',
     'BlinkCmpSignatureHelp', 'BlinkCmpSignatureHelpBorder',
-    -- LSP & WhichKey
-    'LspInfoBorder',
-    'WhichKeyFloat',
-    -- WinBar & DropBar
+    'LspInfoBorder', 'WhichKeyFloat',
     'WinBar', 'WinBarNC',
     'DropBarMenuNormalFloat', 'DropBarMenuBorder',
   },
@@ -41,74 +31,51 @@ local config = {
   on_clear = function() end,
 }
 
-function M.setup(opts)
-  opts = opts or {}
-  config = vim.tbl_extend('force', config, opts)
-
-  if opts.auto_enable then
-    vim.api.nvim_create_autocmd('VimEnter', {
-      once = true,
-      callback = function()
-        vim.schedule(function() M.toggle(true) end)
-      end,
-    })
-  end
-
-  vim.api.nvim_create_autocmd('ColorScheme', {
-    group = vim.api.nvim_create_augroup('TransparentThemeSync', { clear = true }),
-    callback = function()
-      if vim.g.bg_transparent then
-        ORIGINAL_HL_CACHE = {}
-        M.clear()
-      end
-    end,
-  })
-end
-
--- [Cache Module] persist state
 local cache_path = fn.stdpath('data') .. package.config:sub(1, 1) .. 'transparent_state'
 
 local function cache_read()
-  local fd = io.open(cache_path, 'r')
-  if fd then
-    local data = fd:read('*l')
-    vim.g.bg_transparent = (data == 'true')
-    fd:close()
-  else
-    vim.g.bg_transparent = false
+  local stat = vim.uv.fs_stat(cache_path)
+  if stat then
+    local fd = vim.uv.fs_open(cache_path, 'r', 438)
+    if fd then
+      local data = vim.uv.fs_read(fd, stat.size, 0)
+      vim.uv.fs_close(fd)
+      if data then
+        vim.g.bg_transparent = (data:match('true') ~= nil)
+        return
+      end
+    end
   end
+  vim.g.bg_transparent = false
 end
 
 local function cache_write()
   local dir = vim.fs.dirname(cache_path)
-  if fn.isdirectory(dir) == 0 then fn.mkdir(dir, 'p') end
-  local fd = io.open(cache_path, 'w')
+  if not vim.uv.fs_stat(dir) then fn.mkdir(dir, 'p') end
+  local fd = vim.uv.fs_open(cache_path, 'w', 438)
   if fd then
-    fd:write(tostring(vim.g.bg_transparent))
-    fd:close()
+    vim.uv.fs_write(fd, tostring(vim.g.bg_transparent), -1)
+    vim.uv.fs_close(fd)
   end
 end
 
-cache_read() -- load state on startup
-
--- [Core] Clear highlight groups
 local function clear_group(group)
   local list = type(group) == 'string' and { group } or group
 
   for i = 1, #list do
     local g = list[i]
     if not vim.tbl_contains(config.exclude_groups, g) then
-      local ok, prev = pcall(api.nvim_get_hl, 0, { name = g, link = false })
-      if ok and prev then
-        -- Preserve original highlight (only save on first transparency)
+      local def = api.nvim_get_hl(0, { name = g, link = true })
+
+      if def and not def.link then
         if ORIGINAL_HL_CACHE[g] == nil then
-          ORIGINAL_HL_CACHE[g] = vim.deepcopy(prev)
+          ORIGINAL_HL_CACHE[g] = vim.deepcopy(def)
         end
 
-        -- Set transparent (Neovim API standard)
-        if prev.bg or prev.ctermbg then
-          prev.bg, prev.ctermbg = 'NONE', 'NONE'
-          api.nvim_set_hl(0, g, prev)
+        if def.bg or def.ctermbg then
+          def.bg = nil
+          def.ctermbg = nil
+          api.nvim_set_hl(0, g, def)
         end
       end
     end
@@ -117,10 +84,8 @@ end
 
 local function do_clear()
   if not vim.g.bg_transparent then return end
-
   clear_group(config.groups)
   clear_group(config.extra_groups)
-
   if type(vim.g.transparent_groups) == 'table' then clear_group(vim.g.transparent_groups) end
 end
 
@@ -129,9 +94,7 @@ function M.clear()
 
   for i = 1, #M._timers do
     local t = M._timers[i]
-    pcall(function()
-      if t and not t:is_closing() then t:close() end
-    end)
+    pcall(function() if t and not t:is_closing() then t:close() end end)
   end
   M._timers = {}
 
@@ -141,9 +104,7 @@ function M.clear()
   if timer then
     timer:start(800, 0, vim.schedule_wrap(function()
       do_clear()
-      pcall(function()
-        if not timer:is_closing() then timer:close() end
-      end)
+      pcall(function() if not timer:is_closing() then timer:close() end end)
     end))
     table.insert(M._timers, timer)
   end
@@ -152,7 +113,6 @@ function M.clear()
   config.on_clear()
 end
 
--- [Public API]
 function M.enable()
   vim.g.bg_transparent = true
   cache_write()
@@ -165,22 +125,17 @@ function M.disable()
 
   for i = 1, #M._timers do
     local t = M._timers[i]
-    pcall(function()
-      if t and not t:is_closing() then t:close() end
-    end)
+    pcall(function() if t and not t:is_closing() then t:close() end end)
   end
   M._timers = {}
 
-  -- Restore original highlights
   for group, attrs in pairs(ORIGINAL_HL_CACHE) do
     api.nvim_set_hl(0, group, attrs)
   end
 
-  -- Clear cache for next save
   ORIGINAL_HL_CACHE = {}
 
-  -- If the theme plugin reloads the highlight, reset the theme
-  if vim.g.colors_name then pcall(vim.cmd.colorscheme, vim.g.colors_name) end
+  vim.cmd('redraw!')
 end
 
 function M.toggle(opt)
@@ -197,7 +152,42 @@ function M.toggle(opt)
   end
 end
 
--- [Commands & Keymaps]
+function M.setup(opts)
+  opts = opts or {}
+  config = vim.tbl_extend('force', config, opts)
+
+  cache_read()
+
+  if opts.auto_enable ~= nil then
+    if opts.auto_enable then
+      vim.g.bg_transparent = true
+    else
+      vim.g.bg_transparent = false
+    end
+    cache_write()
+  end
+
+  vim.schedule(function()
+    if vim.g.bg_transparent then
+      M.clear()
+    else
+      M.disable()
+    end
+  end)
+
+  vim.api.nvim_create_autocmd('ColorScheme', {
+    group = vim.api.nvim_create_augroup('TransparentThemeSync', { clear = true }),
+    callback = function()
+      if vim.g.bg_transparent then
+        ORIGINAL_HL_CACHE = {}
+        M.clear()
+      else
+        ORIGINAL_HL_CACHE = {}
+      end
+    end,
+  })
+end
+
 vim.api.nvim_create_user_command('TransparentEnable', M.enable,
   { desc = 'Enable background transparency' })
 vim.api.nvim_create_user_command('TransparentDisable', M.disable,
