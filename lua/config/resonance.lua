@@ -111,13 +111,14 @@ vim.api.nvim_create_autocmd('User', {
 
     vim.schedule(function()
       local api = vim.api
-      local fn = vim.fn
+      local uv_fs_stat = vim.uv.fs_stat
       local bufs = api.nvim_list_bufs()
       for i = 1, #bufs do
         local buf = bufs[i]
         local name = api.nvim_buf_get_name(buf)
         if api.nvim_buf_is_loaded(buf) and name ~= '' then
-          if fn.filereadable(name) == 1 then
+          local stat = uv_fs_stat(name)
+          if stat and stat.type == 'file' then
             pcall(api.nvim_exec_autocmds, 'BufReadPre', { buf = buf, modeline = false })
             pcall(api.nvim_exec_autocmds, 'BufReadPost', { buf = buf, modeline = false })
           else

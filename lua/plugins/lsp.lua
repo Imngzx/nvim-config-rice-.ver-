@@ -124,9 +124,10 @@ resonance.load({
       local utils = require('libs.utils')
 
       -- Yazi
+      local homedir = vim.uv.os_homedir()
       local yazi_path = utils.is_windows()
-        and vim.fn.expand('~/AppData/Roaming/yazi/config/plugins/types.yazi')
-        or vim.fn.expand('~/.config/yazi/plugins/types.yazi')
+        and (homedir .. '/AppData/Roaming/yazi/config/plugins/types.yazi')
+        or (homedir .. '/.config/yazi/plugins/types.yazi')
 
       -- Hypr
       local hyprland_stubs = '/usr/share/hypr/stubs'

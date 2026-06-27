@@ -1,7 +1,6 @@
 local M = {}
 
 local api = vim.api
-local fn = vim.fn
 local uv = vim.uv
 local pcall = pcall
 local nvim_win_is_valid = api.nvim_win_is_valid
@@ -20,8 +19,9 @@ local nvim_create_autocmd = api.nvim_create_autocmd
 local nvim_buf_line_count = api.nvim_buf_line_count
 local nvim_buf_get_lines = api.nvim_buf_get_lines
 
-local strchars = fn.strchars
-local strcharpart = fn.strcharpart
+local str_byteindex = vim.str_byteindex
+local str_utfindex = vim.str_utfindex
+local str_sub = string.sub
 local strdisplaywidth = api.nvim_strwidth
 local math_max = math.max
 local string_rep = string.rep
@@ -75,9 +75,12 @@ local function cleanup()
 end
 
 local function truncate(str, max_len)
-  if not str then return '' end
-  if strchars(str) > max_len then
-    return strcharpart(str, 0, max_len - 3) .. '...'
+  if not str or str == '' then return '' end
+  if #str <= max_len then return str end
+  local _, char_len = str_utfindex(str, #str)
+  if char_len > max_len then
+    local byte_idx = str_byteindex(str, max_len - 3)
+    return str_sub(str, 1, byte_idx) .. '...'
   end
   return str
 end

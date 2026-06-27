@@ -5,11 +5,11 @@ local icon_lib = require('libs.icons')
 -- ⚡ 1. 赋值优化法 (Localize C-API for extreme performance)
 -- =========================================================
 local api = vim.api
-local fn = vim.fn
 local bo = vim.bo
 local schedule = vim.schedule
-local strchars = fn.strchars
-local strcharpart = fn.strcharpart
+local str_byteindex = vim.str_byteindex
+local str_utfindex = vim.str_utfindex
+local str_sub = string.sub
 local buf_get_name = api.nvim_buf_get_name
 local get_opt = api.nvim_get_option_value
 local set_current_buf = api.nvim_set_current_buf
@@ -136,8 +136,12 @@ local TablineFileNameBlock = {
       local name = self.display_name
       if name == '' then name = '[No Name]' end
       local max_len = 20
-      if strchars(name) > max_len then
-        name = strcharpart(name, 0, max_len - 1) .. '…'
+      if #name > max_len then
+        local _, char_len = str_utfindex(name, #name)
+        if char_len > max_len then
+          local byte_idx = str_byteindex(name, max_len - 1)
+          name = str_sub(name, 1, byte_idx) .. '…'
+        end
       end
       return name
     end,
