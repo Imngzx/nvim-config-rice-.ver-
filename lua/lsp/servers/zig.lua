@@ -1,7 +1,7 @@
 ---@module 'lspconfig'
 
 return {
-  mason = false,
+  mason = true,
 
   cmd = { 'zls' },
 
