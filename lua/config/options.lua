@@ -105,6 +105,8 @@ opt.spelloptions = 'camel' -- support CamelCase
 vim.filetype.add({
   extension = {
     mdx = 'markdown.mdx',
+    dox = 'c.doxygen',
+    doxy = 'cpp.doxygen',
   }
 })
 
