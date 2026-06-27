@@ -14,12 +14,14 @@ local nvim_create_user_command = api.nvim_create_user_command
 local nvim_create_augroup = api.nvim_create_augroup
 local nvim_create_autocmd = api.nvim_create_autocmd
 
-local fnameescape = fn.fnameescape
-local filereadable = fn.filereadable
-
 local fs_stat = uv.fs_stat
 local fs_scandir = uv.fs_scandir
 local fs_scandir_next = uv.fs_scandir_next
+local fs_open = uv.fs_open
+local fs_read = uv.fs_read
+local fs_write = uv.fs_write
+local fs_close = uv.fs_close
+local fs_fstat = uv.fs_fstat
 local cwd = uv.cwd
 
 local session_dir = fs.normalize(fn.stdpath('state') .. '/sessions/')
@@ -29,17 +31,17 @@ end
 
 local function get_git_branch(root)
   local head_path = root .. '/.git/HEAD'
-  local fd = uv.fs_open(head_path, 'r', 438)
+  local fd = fs_open(head_path, 'r', 438)
   if not fd then return '' end
 
-  local stat = uv.fs_fstat(fd)
+  local stat = fs_fstat(fd)
   if not stat then
-    uv.fs_close(fd)
+    fs_close(fd)
     return ''
   end
 
-  local data = uv.fs_read(fd, stat.size, 0)
-  uv.fs_close(fd)
+  local data = fs_read(fd, stat.size, 0)
+  fs_close(fd)
 
   if not data or data == '' then return '' end
 
@@ -85,6 +87,7 @@ function M.save()
   end
 
   vim.o.sessionoptions = 'buffers,curdir,tabpages,winsize,help,skiprtp,folds'
+
   vim.cmd('silent! cclose')
   vim.cmd('silent! lclose')
 
@@ -92,14 +95,15 @@ function M.save()
   local bpm_data = bpm_ok and bpm.to_json() or nil
 
   local session_name = get_session_name()
-  vim.cmd('mksession! ' .. fnameescape(session_name))
+
+  vim.cmd('silent! mksession! ' .. fn.fnameescape(session_name))
 
   if bpm_data then
     local json_path = session_name:gsub('%.vim$', '.json')
-    local fd = io.open(json_path, 'w')
+    local fd = fs_open(json_path, 'w', 438)
     if fd then
-      fd:write(bpm_data)
-      fd:close()
+      fs_write(fd, bpm_data, -1)
+      fs_close(fd)
     end
   end
 end
@@ -131,7 +135,7 @@ function M.load(last)
     if latest_file then target_file = latest_file end
   end
 
-  if filereadable(target_file) == 1 then
+  if fs_stat(target_file) then
     local bufs = nvim_list_bufs()
     for i = 1, #bufs do
       local buf = bufs[i]
@@ -142,26 +146,31 @@ function M.load(last)
       end
     end
 
-    vim.cmd('silent! source ' .. fnameescape(target_file))
+    vim.cmd('silent! source ' .. fn.fnameescape(target_file))
 
     local bpm_ok, bpm = pcall(require, 'bpm')
     if bpm_ok then
       local json_path = target_file:gsub('%.vim$', '.json')
-      if filereadable(json_path) == 1 then
-        local fd = io.open(json_path, 'r')
-        if fd then
-          local data = fd:read('*a')
-          fd:close()
-          bpm.from_json(data)
+      local stat = fs_stat(json_path)
 
-          local after_bufs = nvim_list_bufs()
-          for i = 1, #after_bufs do
-            local bufnr = after_bufs[i]
-            if api.nvim_buf_is_valid(bufnr) then
-              api.nvim_set_option_value('buflisted', false, { buf = bufnr })
+      if stat then
+        local fd = fs_open(json_path, 'r', 438)
+        if fd then
+          local data = fs_read(fd, stat.size, 0)
+          fs_close(fd)
+
+          if data and data ~= '' then
+            bpm.from_json(data)
+
+            local after_bufs = nvim_list_bufs()
+            for i = 1, #after_bufs do
+              local bufnr = after_bufs[i]
+              if api.nvim_buf_is_valid(bufnr) then
+                api.nvim_set_option_value('buflisted', false, { buf = bufnr })
+              end
             end
+            pcall(api.nvim_exec_autocmds, 'TabEnter', { group = 'BufferPoolManager' })
           end
-          pcall(api.nvim_exec_autocmds, 'TabEnter', { group = 'BufferPoolManager' })
         end
       end
     end

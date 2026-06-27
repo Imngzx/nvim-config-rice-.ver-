@@ -29,7 +29,7 @@ local function do_sudo_save(buf, path)
 
   if check.code ~= 0 then
     -- 2. 需要密码时才弹出输入框
-    local pwd = vim.fn.inputsecret('Sudo Password for ' .. vim.fn.fnamemodify(path, ':t') .. ': ')
+    local pwd = vim.fn.inputsecret('Sudo Password for ' .. vim.fs.basename(path) .. ': ')
 
     -- 取消或未输入
     if not pwd or pwd == '' then
