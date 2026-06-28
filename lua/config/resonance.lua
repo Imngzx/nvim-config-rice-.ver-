@@ -60,6 +60,14 @@ vim.api.nvim_create_autocmd('User', {
     require('custom.workspace').setup()
 
     -- coding
+    local fn, env = vim.fn, vim.env
+    local mason_bin = vim.fs.joinpath(fn.stdpath('data'), 'mason', 'bin')
+    local is_windows = require('libs.utils').is_windows()
+    if is_windows then mason_bin = mason_bin:gsub('/', '\\') end
+    if not env.PATH:find(mason_bin, 1, true) then
+      local sep = is_windows and ';' or ':'
+      env.PATH = mason_bin .. sep .. env.PATH
+    end
     require('plugins.treesitter')
     require('plugins.treesitter-context')
     require('plugins.lsp')

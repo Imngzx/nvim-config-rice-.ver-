@@ -1,7 +1,5 @@
 local opt = vim.opt
 local o = vim.o
-local fn = vim.fn
-local env = vim.env
 
 -- [Appearance]
 opt.signcolumn = 'yes' -- always show sign column
@@ -109,16 +107,3 @@ vim.filetype.add({
     doxy = 'cpp.doxygen',
   }
 })
-
--- [Mason Path Injection]
-local mason_bin = vim.fs.joinpath(fn.stdpath('data'), 'mason', 'bin')
-local is_windows = require('libs.utils').is_windows()
-
-if is_windows then
-  mason_bin = mason_bin:gsub('/', '\\')
-end
-
-if not env.PATH:find(mason_bin, 1, true) then
-  local sep = is_windows and ';' or ':'
-  env.PATH = mason_bin .. sep .. env.PATH
-end
