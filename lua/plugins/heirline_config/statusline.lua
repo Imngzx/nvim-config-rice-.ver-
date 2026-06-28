@@ -1,5 +1,6 @@
 local conditions = require('heirline.conditions')
 local colors = require('plugins.heirline_config.colors')
+local _lsp_args = { bufnr = 0 }
 
 -- 1. Vi Mode
 local ViMode = {
@@ -91,7 +92,8 @@ local Align = { provider = '%=' }
 local ActiveLSP = {
   update = { 'LspAttach', 'LspDetach', 'BufEnter' },
   provider = function()
-    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    _lsp_args.bufnr = 0
+    local clients = vim.lsp.get_clients(_lsp_args)
     local count = #clients
     if count == 0 then return '' end
 
