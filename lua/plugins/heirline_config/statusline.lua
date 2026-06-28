@@ -6,7 +6,7 @@ local _lsp_args = { bufnr = 0 }
 local ViMode = {
   update = true,
   init = function(self)
-    self.mode = vim.api.nvim_get_mode().mode
+    self.mode = vim.fn.mode(1)
     self.mode_color = colors.mode_colors[self.mode] or 'normal'
   end,
   static = { mode_names = colors.mode_names },
