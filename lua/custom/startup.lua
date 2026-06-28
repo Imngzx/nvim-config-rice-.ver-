@@ -3,6 +3,8 @@ if vim.loader then
   vim.loader.enable()
 end
 
+_G.I = require('libs.icons')
+
 local disabled_built_ins = {
   'fzf',
   'gzip',

@@ -1,4 +1,3 @@
-local icons = require('libs.icons')
 local common_exclude = { '.git', '~', '.idea', '.DS_Store' }
 
 return {
@@ -47,32 +46,32 @@ return {
   icons = {
     files = {
       enabled = true,
-      dir = icons.basic.dir .. ' ',
-      dir_open = icons.basic.dir_open .. ' ',
-      file = icons.basic.file .. ' '
+      dir = I.basic.dir .. ' ',
+      dir_open = I.basic.dir_open .. ' ',
+      file = I.basic.file .. ' '
     },
     tree = {
-      vertical = icons.basic.indent,
-      middle = icons.basic.indent,
-      last = icons.basic.indent,
+      vertical = I.basic.indent,
+      middle = I.basic.indent,
+      last = I.basic.indent,
     },
     git = {
       enabled = true,
-      commit = icons.git.commit .. ' ',
-      staged = icons.git.staged,
-      added = icons.git.added,
-      deleted = icons.git.deleted,
-      ignored = icons.git.ignored,
-      modified = icons.git.modified,
-      renamed = icons.git.renamed,
-      unmerged = icons.git.branch,
-      untracked = icons.git.untracked,
+      commit = I.git.commit .. ' ',
+      staged = I.git.staged,
+      added = I.git.added,
+      deleted = I.git.deleted,
+      ignored = I.git.ignored,
+      modified = I.git.modified,
+      renamed = I.git.renamed,
+      unmerged = I.git.branch,
+      untracked = I.git.untracked,
     },
     diagnostics = {
-      Error = icons.lsp.error .. ' ',
-      Warn = icons.lsp.warn .. ' ',
-      Hint = icons.lsp.hint .. ' ',
-      Info = icons.lsp.info .. ' ',
+      Error = I.lsp.error .. ' ',
+      Warn = I.lsp.warn .. ' ',
+      Hint = I.lsp.hint .. ' ',
+      Info = I.lsp.info .. ' ',
     },
   },
   sources = {

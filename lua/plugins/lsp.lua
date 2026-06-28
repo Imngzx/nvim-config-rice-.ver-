@@ -1,5 +1,4 @@
 local resonance = require('resonance')
-local icons = require('libs.icons')
 local H = {}
 
 -- calls the second init in this config
@@ -314,10 +313,10 @@ resonance.load({
         },
         signs = {
           text = {
-            [vim.diagnostic.severity.ERROR] = icons.lsp.error,
-            [vim.diagnostic.severity.WARN] = icons.lsp.warn,
-            [vim.diagnostic.severity.HINT] = icons.lsp.hint,
-            [vim.diagnostic.severity.INFO] = icons.lsp.info,
+            [vim.diagnostic.severity.ERROR] = I.lsp.error,
+            [vim.diagnostic.severity.WARN] = I.lsp.warn,
+            [vim.diagnostic.severity.HINT] = I.lsp.hint,
+            [vim.diagnostic.severity.INFO] = I.lsp.info,
           },
         },
       })
