@@ -167,8 +167,8 @@ resonance.load({
           end
 
           -- 2. only detect if you're in the "comment state" during insert mode
-          local mode = vim.api.nvim_get_mode().mode
-          if mode == 'i' then
+          local mode = vim.fn.mode
+          if mode():sub(1, 1) == 'i' then
             local cursor = vim.api.nvim_win_get_cursor(0)
             local row, col = cursor[1], cursor[2]
 
