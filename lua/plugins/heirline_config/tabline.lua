@@ -1,21 +1,34 @@
 local utils = require('heirline.utils')
-local icon_lib = require('libs.icons')
 
 -- =========================================================
 -- ⚡ 1. 赋值优化法 (Localize C-API for extreme performance)
 -- =========================================================
 local api = vim.api
-local bo = vim.bo
+local fn = vim.fn
 local schedule = vim.schedule
-local str_byteindex = vim.str_byteindex
-local str_utfindex = vim.str_utfindex
+local math_min = math.min
+local table_concat = table.concat
 local str_sub = string.sub
+
 local buf_get_name = api.nvim_buf_get_name
 local get_opt = api.nvim_get_option_value
 local set_current_buf = api.nvim_set_current_buf
+local get_current_buf = api.nvim_get_current_buf
+local list_bufs = api.nvim_list_bufs
+local nvim_strwidth = api.nvim_strwidth
+local fs_basename = vim.fs.basename
+local strcharpart = fn.strcharpart
+local strchars = fn.strchars
+
 local diag_count = vim.diagnostic.count
 local severity = vim.diagnostic.severity
--- local list_tabpages = api.nvim_list_tabpages -- NOTE: pair with line 231
+local list_tabpages = api.nvim_list_tabpages
+
+local _opt_args = { buf = 0 }
+local function get_opt_fast(name, bufnr)
+  _opt_args.buf = bufnr
+  return api.nvim_get_option_value(name, _opt_args)
+end
 
 local _bpm, _icons, _snacks
 local function get_bpm()
@@ -32,84 +45,123 @@ local function get_snacks()
 end
 
 -- =========================================================
--- ⚙️ 2. BPM 缓冲池同步引擎 (实时获取，消灭任何延迟 Bug)
+-- 🎮 2. 游戏级优化 (GC Reduction & Table Pooling)
+-- =========================================================
+local function clear_table(t)
+  for i = 1, #t do t[i] = nil end
+end
+
+local function num_len(n)
+  if n < 10 then return 1 end
+  if n < 100 then return 2 end
+  if n < 1000 then return 3 end
+  return 4
+end
+
+local _buf_pool = {}
+local _state_pool = {}
+
+-- =========================================================
+-- ⚙️ 3. 数据驱动层 (SoA 架构思想)
 -- =========================================================
 local function get_bufs()
   local bpm = get_bpm()
-  if bpm then
-    return bpm.get_attached_buf(0)
-  end
+  if bpm then return bpm.get_attached_buf(0) end
 
-  local all_bufs = api.nvim_list_bufs()
-  local res = {}
+  clear_table(_buf_pool)
+  local all_bufs = list_bufs()
   local idx = 1
   for i = 1, #all_bufs do
     local b = all_bufs[i]
-    if bo[b].buflisted then
-      res[idx] = b
+    if get_opt('buflisted', { buf = b }) then
+      _buf_pool[idx] = b
       idx = idx + 1
     end
   end
-  return res
+  return _buf_pool
 end
 
-local aug = api.nvim_create_augroup('Heirline_Tabline_Redraw', { clear = true })
+local function get_buf_state(bufnr)
+  local state = _state_pool[bufnr]
+  if not state then
+    state = {}
+    _state_pool[bufnr] = state
+  end
 
+  local name
+  local bpm = get_bpm()
+  if bpm then
+    name = bpm.resolve_bufname(bufnr)
+    if require('libs.utils').is_windows() then name = fs_basename(buf_get_name(bufnr)) end
+  else
+    name = fs_basename(buf_get_name(bufnr))
+  end
+  if name == '' then name = '[No Name]' end
+
+  local name_bytes = #name
+  if name_bytes > 20 then
+    local name_chars = strchars(name)
+    if name_bytes == name_chars then
+      name = str_sub(name, 1, 19) .. '…'
+    elseif name_chars > 20 then
+      name = strcharpart(name, 0, 19) .. '…'
+    end
+  end
+  state.safe_name = name
+
+  local diags = diag_count(bufnr)
+  state.errors = diags[severity.ERROR] or 0
+  state.warns = diags[severity.WARN] or 0
+
+  state.is_modified = get_opt_fast('modified', bufnr)
+  local icons = get_icons()
+  if icons then
+    local icon, hl = icons.get('file', buf_get_name(bufnr))
+    state.icon = icon
+    state.icon_hl = hl
+  else
+    state.icon = nil
+    state.icon_hl = nil
+  end
+
+  local w = 6
+  w = w + (state.icon and nvim_strwidth(state.icon .. ' ') or 2)
+  w = w + nvim_strwidth(state.safe_name)
+  if state.errors > 0 then w = w + 3 + num_len(state.errors) end
+  if state.warns > 0 then w = w + 3 + num_len(state.warns) end
+
+  state.width = w
+  return state
+end
+
+-- =========================================================
+-- 🔄 4. 自动刷新钩子
+-- =========================================================
+local aug = api.nvim_create_augroup('Heirline_Tabline_Redraw', { clear = true })
 api.nvim_create_autocmd(
-  { 'VimEnter', 'UIEnter', 'BufAdd', 'BufDelete', 'BufEnter', 'TabEnter', 'TabClosed',
+  { 'VimEnter', 'UIEnter', 'BufAdd', 'BufDelete', 'BufWipeout', 'BufEnter', 'TabEnter', 'TabClosed',
     'DiagnosticChanged' }, {
     group = aug,
-    callback = function()
-      schedule(function()
-        vim.cmd('redrawtabline')
-      end)
+    callback = function(args)
+      if args.event == 'BufDelete' or args.event == 'BufWipeout' then
+        _state_pool[args.buf] = nil
+      end
+
+      schedule(function() vim.cmd('redrawtabline') end)
     end
   })
 
 -- =========================================================
--- 📁 3. 核心 Buffer 渲染块
+-- 📁 5. 核心 Buffer 渲染块 (数据消费端)
 -- =========================================================
 local TablineFileNameBlock = {
-  init = function(self)
-    self.filename = buf_get_name(self.bufnr)
-    local bpm = get_bpm()
-
-    if bpm then
-      self.display_name = bpm.resolve_bufname(self.bufnr)
-      if require('libs.utils').is_windows() then
-        self.display_name = vim.fs.basename(self.filename)
-      end
-    else
-      self.display_name = vim.fs.basename(self.filename)
-    end
-
-    self.is_modified = get_opt('modified', { buf = self.bufnr })
-
-    local diags = diag_count(self.bufnr)
-    self.errors = diags[severity.ERROR] or 0
-    self.warns = diags[severity.WARN] or 0
-
-    local icons = get_icons()
-    if icons then
-      local icon, hl = icons.get('file', self.filename)
-      self.icon = icon
-      self.icon_hl = hl
-    end
-  end,
-
-  hl = function(self)
-    return self.is_active and 'TabLineSel' or 'TabLine'
-  end,
+  hl = function(self) return self.is_active and 'TabLineSel' or 'TabLine' end,
 
   on_click = {
     callback = function(_, minwid, _, button)
       if button == 'm' or button == 'r' then
         local bpm = get_bpm()
-        if bpm then
-          bpm.detach(minwid)
-        else
-          get_snacks().bufdelete(minwid, { wipe = true })
-        end
+        if bpm then bpm.detach(minwid) else get_snacks().bufdelete(minwid, { wipe = true }) end
       else
         set_current_buf(minwid)
       end
@@ -120,87 +172,61 @@ local TablineFileNameBlock = {
 
   { provider = '  ' },
 
-  -- 📄 动态文件图标
   {
     provider = function(self)
-      return self.icon and (self.icon .. ' ') or icon_lib.basic.file
+      return self.state.icon and (self.state.icon .. ' ') or
+        I.basic.file
     end,
     hl = function(self)
-      return (self.is_active and self.icon_hl) and self.icon_hl or 'Comment'
+      return (self.is_active and self.state.icon_hl) and self.state.icon_hl or
+        'Comment'
     end,
   },
 
-  -- 📝 文件名（智能超长截断）
   {
-    provider = function(self)
-      local name = self.display_name
-      if name == '' then name = '[No Name]' end
-      local max_len = 20
-      if #name > max_len then
-        local _, char_len = str_utfindex(name, #name)
-        if char_len > max_len then
-          local byte_idx = str_byteindex(name, max_len - 1)
-          name = str_sub(name, 1, byte_idx) .. '…'
-        end
-      end
-      return name
-    end,
-    hl = function(self)
-      return { bold = self.is_active, italic = false }
-    end,
+    provider = function(self) return self.state.safe_name end,
+    hl = function(self) return { bold = self.is_active, italic = false } end,
   },
 
-  -- 🛑 诊断指标
   {
-    condition = function(self) return self.errors > 0 end,
-    provider = function(self) return '  ' .. self.errors end,
+    condition = function(self) return self.state.errors > 0 end,
+    provider = function(self) return '  ' .. self.state.errors end,
     hl = { fg = 'diag_error' },
   },
   {
-    condition = function(self) return self.warns > 0 end,
-    provider = function(self) return '  ' .. self.warns end,
+    condition = function(self) return self.state.warns > 0 end,
+    provider = function(self) return '  ' .. self.state.warns end,
     hl = { fg = 'diag_warn' },
   },
 
-  -- ❌ 关闭/修改状态 按钮
   {
     provider = function(self)
-      return self.is_modified and icon_lib.basic.modify or icon_lib.basic.close
+      return self.state.is_modified and I.basic.modify or
+        I.basic.close
     end,
     hl = function(self)
-      if self.is_modified then return { fg = 'command' } end
-
+      if self.state.is_modified then return { fg = 'command' } end
       return { fg = self.is_active and 'tab_cross_bg' or 'tab_num_unfocus' }
     end,
     on_click = {
       callback = function(_, minwid)
         local bpm = get_bpm()
-        if bpm then
-          bpm.detach(minwid)
-        else
-          get_snacks().bufdelete(minwid, { wipe = true })
-        end
+        if bpm then bpm.detach(minwid) else get_snacks().bufdelete(minwid, { wipe = true }) end
       end,
       minwid = function(self) return self.bufnr end,
       name = 'heirline_tabline_close_btn',
     },
   },
-
   { provider = ' ' },
 }
 
--- 非活跃项加上垂直分隔线
 local TablineBufferBlock = {
   TablineFileNameBlock,
-  {
-    -- provider = '│',
-    provider = '|',
-    hl = 'TabLine',
-  },
+  { provider = '|', hl = 'TabLine' },
 }
 
 -- =========================================================
--- 🏢 4. 顶层 Workspace Tab 渲染 (右侧区域)
+-- 🏢 6. 顶层 Workspace Tab 渲染 (右侧区域)
 -- =========================================================
 local Tabpage = {
   provider = function(self)
@@ -210,44 +236,148 @@ local Tabpage = {
   end,
   hl = function(self)
     if self.is_active then
-      return {
-        fg = 'tab_num',
-        bg = utils.get_highlight('TabLineSel').bg,
-        bold = true
-      }
+      return { fg = 'tab_num', bg = utils.get_highlight('TabLineSel').bg, bold = true }
     else
-      return {
-        fg = 'tab_num_unfocus',
-        bg = utils.get_highlight('TabLine').bg,
-        italic = false
-      }
+      return { fg = 'tab_num_unfocus', bg = utils.get_highlight('TabLine').bg, italic = false }
     end
   end,
 }
 
 local TabPages = {
-  -- condition = function() return #list_tabpages() >= 2 end,
   utils.make_tablist(Tabpage),
   {
     provider = '%999X 󰅖 %X',
-    hl = function()
-      return {
-        fg = 'tab_cross_fg',
-        bg = 'tab_cross_bg',
-      }
-    end,
+    hl = function() return { fg = 'tab_cross_fg', bg = 'tab_cross_bg' } end,
   }
 }
 
 -- =========================================================
--- 🚀 5. 终极装配 (带 %= 弹性空间)
+-- 🚀 7. 终极装配 (带 %= 弹性空间 & Pull Back)
 -- =========================================================
-local BufferLine = utils.make_buflist(
+local function get_right_padding()
+  local tabs = list_tabpages()
+  local bpm = get_bpm()
+  local w = 0
+  for i = 1, #tabs do
+    local tab = tabs[i]
+    local name = bpm and bpm.resolve_tabname(tab) or tostring(i)
+    w = w + nvim_strwidth(name) + 4
+  end
+  return w + 5 -- 关闭按钮(3) + 防边缘换行安全区(2)
+end
+
+local function make_perfect_buflist(child_template, left_trunc, right_trunc, get_bufs_fn)
+  return {
+    init = function(self)
+      local bufs = get_bufs_fn()
+      local current_buf = get_current_buf()
+
+      self._offset = self._offset or 1
+      local total_width = 0
+      local active_idx = 1
+      local bufs_len = #bufs
+
+      for i = 1, bufs_len do
+        local bufnr = bufs[i]
+        if bufnr == current_buf then active_idx = i end
+        local state = get_buf_state(bufnr)
+        total_width = total_width + state.width
+      end
+
+      local available_width = vim.o.columns - get_right_padding()
+
+      if total_width <= available_width then
+        self._offset = 1
+      else
+        local pre_active_width = 0
+        for i = 1, active_idx - 1 do
+          pre_active_width = pre_active_width + _state_pool[bufs[i]]
+            .width
+        end
+
+        local active_width = _state_pool[bufs[active_idx]].width
+        local current_scroll = 0
+        for i = 1, self._offset - 1 do current_scroll = current_scroll + _state_pool[bufs[i]].width end
+
+        if pre_active_width < current_scroll then
+          self._offset = active_idx
+        elseif pre_active_width + active_width > current_scroll + available_width then
+          local temp_w = 0
+          self._offset = 1
+          for i = active_idx, 1, -1 do
+            temp_w = temp_w + _state_pool[bufs[i]].width
+            local req_w = temp_w + (i > 1 and 3 or 0)
+            if req_w > available_width then
+              self._offset = math_min(i + 1, active_idx)
+              break
+            end
+          end
+        end
+
+        local width_from_offset = 0
+        for i = self._offset, bufs_len do
+          width_from_offset = width_from_offset +
+            _state_pool[bufs[i]].width
+        end
+
+        if width_from_offset + (self._offset > 1 and 3 or 0) < available_width and self._offset > 1 then
+          local temp_w = 0
+          self._offset = 1
+          for i = bufs_len, 1, -1 do
+            temp_w = temp_w + _state_pool[bufs[i]].width
+            local req_w = temp_w + (i > 1 and 3 or 0)
+            if req_w > available_width then
+              self._offset = i + 1
+              break
+            end
+          end
+        end
+      end
+
+      self._children = self._children or {}
+      clear_table(self._children)
+
+      local current_w = 0
+      local child_idx = 1
+
+      if self._offset > 1 then
+        self._children[child_idx] = self:new(left_trunc, 1)
+        current_w = current_w + 3
+        child_idx = child_idx + 1
+      end
+
+      for i = self._offset, bufs_len do
+        local bufnr = bufs[i]
+        local w = _state_pool[bufnr].width
+        if current_w + w > available_width then
+          self._children[child_idx] = self:new(right_trunc, 1)
+          break
+        end
+
+        local child = self:new(child_template, i)
+        child.bufnr = bufnr
+        child.is_active = (bufnr == current_buf)
+        child.state = _state_pool[bufnr] -- 直接投喂预计算好的状态，Zero Double Work！
+
+        self._children[child_idx] = child
+        current_w = current_w + w
+        child_idx = child_idx + 1
+      end
+    end,
+
+    provider = function(self)
+      local out = {}
+      for i = 1, #self._children do out[i] = self._children[i]:eval() end
+      return table_concat(out, '')
+    end
+  }
+end
+
+local BufferLine = make_perfect_buflist(
   TablineBufferBlock,
   { provider = '  ', hl = 'TabLine' },
   { provider = '  ', hl = 'TabLine' },
-  get_bufs,
-  false
+  get_bufs
 )
 
 local TabLine = {
