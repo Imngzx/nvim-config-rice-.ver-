@@ -6,7 +6,7 @@ local api = vim.api
 local uv = vim.uv
 local nvim_buf_is_valid = api.nvim_buf_is_valid
 local nvim_buf_del_extmark = api.nvim_buf_del_extmark
-local nvim_get_mode = api.nvim_get_mode
+local fn_mode = vim.fn.mode
 local nvim_get_current_buf = api.nvim_get_current_buf
 local nvim_buf_get_changedtick = api.nvim_buf_get_changedtick
 local nvim_win_get_cursor = api.nvim_win_get_cursor
@@ -128,7 +128,7 @@ local function clear_blame(bufnr)
 end
 
 local function is_insert_mode()
-  return nvim_get_mode().mode:sub(1, 1) == 'i'
+  return fn_mode():sub(1, 1) == 'i'
 end
 
 local function show_blame(bufnr)
