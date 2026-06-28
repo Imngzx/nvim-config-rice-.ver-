@@ -1,5 +1,4 @@
 local utils = require('heirline.utils')
-local color_list = require('custom.color-list')
 local M = {}
 
 function M.setup_colors()
