@@ -17,6 +17,8 @@ local fs_dirname = vim.fs.dirname
 local fs_normalize = vim.fs.normalize
 local env_home = vim.env.HOME or vim.env.USERPROFILE
 local pesc_home = env_home and '^' .. vim.pesc(fs_normalize(env_home)) or nil
+local _ts_pos = { 0, 0 }
+local _ts_args = { bufnr = 0, pos = _ts_pos, ignore_injections = false }
 
 local str_byteindex = vim.str_byteindex
 local function truncate_utf8(str, max_chars)
@@ -315,9 +317,11 @@ local Breadcrumbs = {
     local cursor = nvim_win_get_cursor(win_id)
     local row, col = cursor[1] - 1, cursor[2]
     local tick = nvim_buf_get_changedtick(bufnr)
+    _ts_pos[1] = row
+    _ts_pos[2] = col
+    _ts_args.bufnr = bufnr
 
-    local ok, node = pcall(get_ts_node,
-      { bufnr = bufnr, pos = { row, col }, ignore_injections = false })
+    local ok, node = pcall(get_ts_node, _ts_args)
     if not ok or not node then
       self.rendered_string = ''
       return
