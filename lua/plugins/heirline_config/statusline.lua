@@ -66,7 +66,9 @@ local Git = {
     provider = function(self)
       return self.branch == '' and '' or (' 󰘬 ' .. self.branch .. ' ')
     end,
-    hl = { fg = require('custom.color-list').colors.aluminium.hex, bold = false },
+    hl = function()
+      return { fg = require('custom.color-list').colors.aluminium.hex, bold = false }
+    end,
   },
   {
     condition = function(self) return (self.summary.add or 0) > 0 end,
