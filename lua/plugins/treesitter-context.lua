@@ -8,7 +8,7 @@ resonance.load({
   config = function()
     require('treesitter-context').setup({
       enable = true, -- 启用插件
-      max_lines = 3, -- 吸顶框最多显示几行（设为 0 则没有限制）
+      max_lines = 5, -- 吸顶框最多显示几行（设为 0 则没有限制）
       min_window_height = 0,
       line_numbers = true,
       multiline_threshold = 20, -- 单个上下文块最大行数
