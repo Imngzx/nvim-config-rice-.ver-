@@ -24,9 +24,7 @@ vim.g.neominimap = {
 
 resonance.load({
   'https://github.com/Isrothy/neominimap.nvim',
-  event = { 'User', pattern = 'VeryLazy' },
 
-  -- event = { 'BufReadPre', 'BufNewFile' },
   keys = {
     { 'n', '<leader>nm', '<cmd>Neominimap Toggle<cr>', { desc = 'Toggle minimap' } },
     { 'n', '<leader>ns', '<cmd>Neominimap ToggleFocus<cr>', { desc = 'Focus minimap' } },
