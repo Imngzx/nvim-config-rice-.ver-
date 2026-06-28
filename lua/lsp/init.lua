@@ -25,31 +25,24 @@ local default_servers = {
 
 -- 【2】this section can handle installation + configurations
 -- tools that noted with mason=false wont be installed via Mason automatically
-local custom_servers = {
+local custom_servers = setmetatable({}, {
+  __index = function(t, k)
+    if k == 'clangd' then return require('lsp.servers.c-language') end
+    if k == 'zls' then return require('lsp.servers.zig') end
+    if k == 'rust_analyzer' then return require('lsp.servers.rust') end
+    if k == 'qmlls6' then return require('lsp.servers.qml') end
 
-  -- [c/c++ and etc]
-  clangd = require('lsp.servers.c-language'), --NOTE: mason = false
+    -- single file with multiple lsp's config
+    if k == 'lua_ls' then return require('lsp.servers.lua').lua_ls end
+    if k == 'basedpyright' then return require('lsp.servers.python').basedpyright end
+    if k == 'ruff' then return require('lsp.servers.python').ruff end
+    -- if k == 'vtsls' then return require('lsp.servers.vue') end
+  end
+})
 
-  -- [zig]
-  zls = require('lsp.servers.zig'), --NOTE: mason = false
-
-  -- [rust]
-  rust_analyzer = require('lsp.servers.rust'), --NOTE: mason = false
-
-  -- [qml]
-  qmlls6 = require('lsp.servers.qml'), --NOTE: mason = false
-
-  -- [lua]
-  lua_ls = require('lsp.servers.lua').lua_ls,
-  -- emmylua_ls = require('lsp.servers.lua').emmylua_ls,
-
-  -- [python]
-  basedpyright = require('lsp.servers.python').basedpyright,
-  ruff = require('lsp.servers.python').ruff,
-  -- ty = require('lsp.servers.python').ty, --NOTE: mason = false
-
-
-  -- vtsls = require('lsp.servers.vue'),
+-- pls type in which one do you want to use (custom lsp)
+local custom_server_keys = {
+  'clangd', 'zls', 'rust_analyzer', 'qmlls6', 'lua_ls', 'basedpyright', 'ruff'
 }
 
 -- 【3】this handles tool installation from mason other than lsp
@@ -75,9 +68,11 @@ function M.setup()
     vim.lsp.config(name, {})
   end
 
-  for name, config in pairs(custom_servers) do
-    table.insert(M.enabled_servers, name)
+  for i = 1, #custom_server_keys do
+    local name = custom_server_keys[i]
+    local config = custom_servers[name]
 
+    table.insert(M.enabled_servers, name)
     if config.mason ~= false then
       table.insert(M.mason_tools, config.mason_name or name)
     end
