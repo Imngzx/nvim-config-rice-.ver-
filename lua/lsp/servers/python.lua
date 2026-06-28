@@ -9,6 +9,7 @@ return {
     },
     cmd_env = { RUFF_TRACE = 'messages' },
     init_options = {
+      ---@type lspconfig.settings.ruff
       settings = {
         logLevel = 'error',
       },
