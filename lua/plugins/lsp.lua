@@ -284,6 +284,65 @@ resonance.load({
       })
     end
   },
+
+  -- [Diagnostic] Load after LSP attaches
+  -- https://github.com/rachartier/tiny-inline-diagnostic.nvim/issues/112#issuecomment-2784644922
+  {
+    'https://github.com/rachartier/tiny-inline-diagnostic.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    setup = function()
+      require('tiny-inline-diagnostic').setup({
+        preset = 'modern',
+        signs = { diag = '  ' },
+        transparent_cursorline = true,
+        options = {
+          virt_texts = {
+            priority = 2048,
+          },
+          show_source = {
+            enabled = true,
+          },
+        },
+      })
+      vim.diagnostic.config({
+        virtual_text = false, --leave this with false when you using this plugin
+        underline = true,
+        update_in_insert = false,
+        severity_sort = true,
+        float = {
+          border = 'rounded',
+        },
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = icons.lsp.error,
+            [vim.diagnostic.severity.WARN] = icons.lsp.warn,
+            [vim.diagnostic.severity.HINT] = icons.lsp.hint,
+            [vim.diagnostic.severity.INFO] = icons.lsp.info,
+          },
+        },
+      })
+
+      -- Keymap
+      local diagnostic_goto = function(next, severity)
+        return function()
+          vim.diagnostic.jump({
+            count = (next and 1 or -1) * vim.v.count1,
+            severity = severity and vim.diagnostic.severity[severity] or nil,
+            on_jump = function()
+              vim.diagnostic.open_float()
+            end,
+          })
+        end
+      end
+      vim.keymap.set('n', '<leader>cl', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
+      vim.keymap.set('n', ']d', diagnostic_goto(true), { desc = 'Next Diagnostic' })
+      vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'Prev Diagnostic' })
+      vim.keymap.set('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next Error' })
+      vim.keymap.set('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'Prev Error' })
+      vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning' })
+      vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning' })
+    end
+  }
 })
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -320,64 +379,4 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- vim.keymap.set('n', '<leader>cf', vim.lsp.buf.format,
     --   { buffer = ev.buf, desc = 'Format code' })
   end,
-})
-
-
--- [Diagnostic] Load after LSP attaches
--- https://github.com/rachartier/tiny-inline-diagnostic.nvim/issues/112#issuecomment-2784644922
-resonance.load({
-  'https://github.com/rachartier/tiny-inline-diagnostic.nvim',
-  event = { 'BufReadPre', 'BufNewFile' },
-  setup = function()
-    require('tiny-inline-diagnostic').setup({
-      preset = 'modern',
-      signs = { diag = '  ' },
-      transparent_cursorline = true,
-      options = {
-        virt_texts = {
-          priority = 2048,
-        },
-        show_source = {
-          enabled = true,
-        },
-      },
-    })
-    vim.diagnostic.config({
-      virtual_text = false, --leave this with false when you using this plugin
-      underline = true,
-      update_in_insert = false,
-      severity_sort = true,
-      float = {
-        border = 'rounded',
-      },
-      signs = {
-        text = {
-          [vim.diagnostic.severity.ERROR] = icons.lsp.error,
-          [vim.diagnostic.severity.WARN] = icons.lsp.warn,
-          [vim.diagnostic.severity.HINT] = icons.lsp.hint,
-          [vim.diagnostic.severity.INFO] = icons.lsp.info,
-        },
-      },
-    })
-
-    -- Keymap
-    local diagnostic_goto = function(next, severity)
-      return function()
-        vim.diagnostic.jump({
-          count = (next and 1 or -1) * vim.v.count1,
-          severity = severity and vim.diagnostic.severity[severity] or nil,
-          on_jump = function()
-            vim.diagnostic.open_float()
-          end,
-        })
-      end
-    end
-    vim.keymap.set('n', '<leader>cl', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
-    vim.keymap.set('n', ']d', diagnostic_goto(true), { desc = 'Next Diagnostic' })
-    vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'Prev Diagnostic' })
-    vim.keymap.set('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next Error' })
-    vim.keymap.set('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'Prev Error' })
-    vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning' })
-    vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning' })
-  end
 })
