@@ -5,7 +5,6 @@ local o = vim.o
 opt.signcolumn = 'yes' -- always show sign column
 opt.winborder = 'rounded'
 opt.showmode = false -- Hide mode status
-o.showtabline = 2
 
 -- Line edit
 opt.fillchars = {
@@ -63,7 +62,6 @@ opt.updatetime = 250 -- reduce execution time takes from cursorhold
 -- [Editor]
 opt.cmdheight = 0
 opt.fileformat = 'unix'
-opt.laststatus = 3 -- global satusline
 opt.ruler = false
 opt.confirm = true -- confirm before quitting unsaved changes
 
