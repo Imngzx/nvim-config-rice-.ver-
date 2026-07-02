@@ -33,39 +33,26 @@ end
 
 local function repl_impl(lines)
   local out = {}
-  local o_idx = 0
-
-  local function append_out(str)
-    o_idx = o_idx + 1
-    out[o_idx] = str
-  end
-
-  local function fast_append_multiline(str)
-    if not str then return end
-    for s in (str .. '\n'):gmatch('(.-)\n') do
-      o_idx = o_idx + 1
-      out[o_idx] = s
-    end
-    if str:sub(-1) ~= '\n' then
-      out[o_idx] = nil
-      o_idx = o_idx - 1
-    end
-  end
 
   local function on_error(err)
-    append_out('[ERROR]')
-    if err then fast_append_multiline(err) end
-    fast_append_multiline(debug_traceback())
+    table.insert(out, '[ERROR]')
+    if err then
+      table.insert(out, err)
+    end
+    local trace_back = debug_traceback()
+    vim.list_extend(out, vim.split(trace_back, '\n', { plain = true }))
   end
 
   local function on_print(...)
-    local n = select('#', ...)
+    local args = { ... }
     local parts = {}
-    for i = 1, n do
-      local v = select(i, ...)
+    for i = 1, select('#', ...) do
+      local v = args[i]
       parts[i] = type(v) == 'string' and v or inspect(v)
     end
-    fast_append_multiline(table_concat(parts, ' '))
+    local str = table_concat(parts, ' ')
+    local output_lines = vim.split(str, '\n', { plain = true })
+    vim.list_extend(out, output_lines)
   end
 
   local source_code = table_concat(lines, '\n')
@@ -81,17 +68,19 @@ local function repl_impl(lines)
   env.print = on_print
 
   local results = { xpcall(chunk, on_error) }
-  local ok = results[1]
+  local ok = table.remove(results, 1)
 
   if ok then
-    local res_count = #results
-    if res_count > 1 then
-      local ret_str = '=> ' .. inspect(results[2])
-      fast_append_multiline(ret_str)
+    local vals = vim.tbl_map(inspect, results)
 
-      for i = 3, res_count do
-        append_out(',')
-        fast_append_multiline(inspect(results[i]))
+    if #vals > 0 then
+      local ret = '=> ' .. vals[1]
+      local ret_lines = vim.split(ret, '\n', { plain = true })
+      vim.list_extend(out, ret_lines)
+
+      for i = 2, #vals do
+        table.insert(out, ',')
+        vim.list_extend(out, vim.split(vals[i], '\n', { plain = true }))
       end
     end
   end
@@ -135,7 +124,8 @@ function M.eval(bufnr, from, to)
 end
 
 local function change_mode(mode_key)
-  nvim_feedkeys(nvim_replace_termcodes(mode_key, true, false, true), 'n', false)
+  -- 修复点：将 'n' 换成 'x'，同步执行按键事件，确保在获取标记（mark）前彻底退出 Visual 模式
+  nvim_feedkeys(nvim_replace_termcodes(mode_key, true, false, true), 'x', false)
 end
 
 local function exec_wrapper(fn)
