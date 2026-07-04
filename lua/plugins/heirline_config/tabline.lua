@@ -124,7 +124,7 @@ local function get_buf_state(bufnr)
     state.icon_hl = nil
   end
 
-  local w = 6
+  local w = 7
   w = w + (state.icon and nvim_strwidth(state.icon .. ' ') or 2)
   w = w + nvim_strwidth(state.safe_name)
   if state.errors > 0 then w = w + 3 + num_len(state.errors) end

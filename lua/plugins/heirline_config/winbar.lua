@@ -404,6 +404,7 @@ local WinBar = {
 
     { provider = ' ' },
     FilePath,
+    { provider = '%<' },
     Breadcrumbs,
   }
 }
