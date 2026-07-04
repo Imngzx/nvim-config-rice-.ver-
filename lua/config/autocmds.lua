@@ -7,6 +7,7 @@ local schedule = vim.schedule
 local ui_group = create_augroup('AutoUIVisibility', { clear = true })
 local vim_local = vim.opt_local
 local map = vim.keymap.set
+local user_command = vim.api.nvim_create_user_command
 
 local function augroup(name)
   return create_augroup('cameron_' .. name, { clear = true })
@@ -113,3 +114,7 @@ create_autocmd({ 'BufEnter', 'BufAdd', 'BufDelete' }, {
     end
   end,
 })
+
+user_command('ZettelInit', function()
+  require('custom.zettel').init_workspace()
+end, { desc = 'Initialize Zettelkasten Workspace' })

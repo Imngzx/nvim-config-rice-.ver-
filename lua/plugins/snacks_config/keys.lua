@@ -225,4 +225,5 @@ return {
     end,
   },
   { '<leader>zn', function() require('custom.zettel').new_card() end, desc = 'Zettel: New Card' },
+  { '<leader>zi', function() require('custom.zettel').init_workspace() end, desc = 'Zettel: Initialize Workspace' },
 }
