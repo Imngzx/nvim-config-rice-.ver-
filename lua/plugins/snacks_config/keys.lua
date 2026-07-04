@@ -223,5 +223,6 @@ return {
         wo = { spell = false, wrap = false, signcolumn = 'yes', statuscolumn = ' ', conceallevel = 3 },
       })
     end,
-  }
+  },
+  { '<leader>zn', function() require('custom.zettel').new_card() end, desc = 'Zettel: New Card' },
 }
