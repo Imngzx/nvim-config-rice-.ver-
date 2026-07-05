@@ -22,7 +22,7 @@ local _ts_args = { bufnr = 0, pos = _ts_pos, ignore_injections = false }
 
 local str_byteindex = vim.str_byteindex
 local function truncate_utf8(str, max_chars)
-  if #str <= max_chars then return str end -- 字节数小于最大字符数，绝对安全
+  if #str <= max_chars then return str end
   local ok, byte_idx = pcall(str_byteindex, str, max_chars)
   if ok and byte_idx and byte_idx < #str then
     return str:sub(1, byte_idx) .. '…'
@@ -30,14 +30,10 @@ local function truncate_utf8(str, max_chars)
   return str
 end
 
--- [状态栏安全转义器] 防止代码中的 % 破坏 Statusline 解析
 local function escape_stl(str)
   return str:gsub('%%', '%%%%')
 end
 
--- =========================================================
--- [极致懒加载] Treesitter 与 Icons 的 Lazy Getter
--- =========================================================
 local ts_get_node_cache = nil
 local ts_get_node_text_cache = nil
 
@@ -60,9 +56,6 @@ local function get_mini_icons()
   return mini_icons_cache
 end
 
--- =========================================================
--- [游戏级优化常量] 避免热循环中的任何 Table/String 分配
--- =========================================================
 local BUF_ZERO = { buf = 0 }
 local FIELDS_TO_TRY = { 'name', 'key', 'property', 'declarator', 'item' }
 local HEADING_ICONS = { 'H1', 'H2', 'H3', 'H4', 'H5', 'H6' }
@@ -85,9 +78,6 @@ local ts_icons = {
   ['default'] = { icon = '󰘧', hl = 'String' },
 }
 
--- =========================================================
--- [缓存层] 极致 GC 友好
--- =========================================================
 local win_cache = {}
 local file_cache = {}
 
@@ -104,9 +94,6 @@ api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
   callback = function(args) file_cache[args.buf] = nil end
 })
 
--- =========================================================
--- [核心解析] 泛化识别作用域类型 (带 O(1) 记忆化缓存)
--- =========================================================
 local scope_memo = {}
 
 local function identify_scope(type_str)
@@ -148,9 +135,6 @@ local function identify_scope(type_str)
   return res
 end
 
--- =========================================================
--- [核心提取] 安全提取节点文本
--- =========================================================
 local function safe_get_text(node, bufnr)
   local ok, text = pcall(get_ts_text, node, bufnr)
   return ok and text or nil
@@ -237,9 +221,6 @@ local function get_node_name(node, bufnr)
   return nil
 end
 
--- =========================================================
--- 组件 1: 路径与文件面包屑 (Directory & File)
--- =========================================================
 local FilePath = {
   init = function(self)
     local win_id = nvim_get_current_win()
@@ -258,7 +239,6 @@ local FilePath = {
       return
     end
 
-    -- 纯 Lua 路径处理 (替代 vim.fn.fnamemodify)
     local rel_path = fs_normalize(filename)
     if pesc_home then rel_path = rel_path:gsub(pesc_home, '~') end
 
@@ -307,9 +287,6 @@ local FilePath = {
   { provider = function(self) return self.path_tail end },
 }
 
--- =========================================================
--- 组件 2: Treesitter 面包屑 (基于 Node ID 的极限零开销渲染)
--- =========================================================
 local Breadcrumbs = {
   init = function(self)
     local win_id = nvim_get_current_win()
@@ -378,35 +355,53 @@ local Breadcrumbs = {
     local rendered = table_concat(parts)
     self.rendered_string = rendered
 
-    win_cache[win_id] = {
-      bufnr = bufnr,
-      tick = tick,
-      scope_id = scope_id,
-      rendered_string = rendered
-    }
+    win_cache[win_id] = { bufnr = bufnr, tick = tick, scope_id = scope_id, rendered_string = rendered }
   end,
   provider = function(self) return self.rendered_string end,
 }
 
--- =========================================================
--- 拼装与导出
--- =========================================================
-local WinBar = {
-  fallthrough = false,
+local TerminalWinBar = {
+  condition = function()
+    if vim.api.nvim_win_get_config(0).zindex then return false end
+    return nvim_get_option_value('buftype', BUF_ZERO) == 'terminal'
+  end,
+  init = function(self)
+    local name = nvim_buf_get_name(0)
+    local norm_name = fs_normalize(name)
+    if env_home then
+      local term_prefix = 'term://' .. fs_normalize(env_home)
+      norm_name = norm_name:gsub('^' .. vim.pesc(term_prefix), 'term://~')
+    end
+    self.term_name = escape_stl(norm_name)
+  end,
+  { provider = ' ' },
   {
-    condition = function()
-      local bt = nvim_get_option_value('buftype', BUF_ZERO)
-      if bt == 'nofile' or bt == 'prompt' or bt == 'terminal' or bt == 'help' then return false end
-      local ft = nvim_get_option_value('filetype', BUF_ZERO)
-      if ft == 'snacks_dashboard' or ft == 'snacks_picker_list' or ft == 'snacks_picker_input' then return false end
-      return true
-    end,
-
-    { provider = ' ' },
-    FilePath,
-    { provider = '%<' },
-    Breadcrumbs,
+    provider = function(self)
+      return string.format('%%#Macro#  %%#WinBar#%s', self.term_name)
+    end
   }
+}
+
+local NormalWinBar = {
+  condition = function()
+    if vim.api.nvim_win_get_config(0).zindex then return false end
+    local bt = nvim_get_option_value('buftype', BUF_ZERO)
+    if bt == 'nofile' or bt == 'prompt' or bt == 'help' then return false end
+    local ft = nvim_get_option_value('filetype', BUF_ZERO)
+    if ft == 'snacks_dashboard' or ft:match('^snacks_picker') then return false end
+    return true
+  end,
+
+  { provider = ' ' },
+  FilePath,
+  { provider = '%<' },
+  Breadcrumbs,
+}
+
+local WinBar = {
+  fallthrough = false, -- 只匹配第一个条件为 true 的子块
+  TerminalWinBar,
+  NormalWinBar,
 }
 
 return WinBar

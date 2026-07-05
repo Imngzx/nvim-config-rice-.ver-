@@ -32,9 +32,17 @@ resonance.load({
         winbar = WinBar,
         opts = {
           disable_winbar_cb = function(args)
-            local bt = vim.api.nvim_get_option_value('buftype', { buf = args.buf })
-            local ft = vim.api.nvim_get_option_value('filetype', { buf = args.buf })
-            return bt == 'nofile' or bt == 'prompt' or bt == 'terminal' or bt == 'help' or
+            if vim.api.nvim_win_get_config(0).zindex then
+              return true
+            end
+            local buf = args.buf
+            local bt = vim.api.nvim_get_option_value('buftype', { buf = buf })
+            local ft = vim.api.nvim_get_option_value('filetype', { buf = buf })
+            local name = vim.api.nvim_buf_get_name(buf)
+            if bt == '' and name == '' and not vim.api.nvim_get_option_value('modified', { buf = buf }) then
+              return true
+            end
+            return bt == 'nofile' or bt == 'prompt' or bt == 'help' or
               ft == 'snacks_dashboard' or ft:match('^snacks_picker')
           end,
         }
