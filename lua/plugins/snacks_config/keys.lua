@@ -8,8 +8,10 @@ return {
   -- ==========================================
   -- 🔍 [ Pickers: Find & Grep ]
   -- ==========================================
+  --TODO: comment this if you want to use fzf-lua
   { '<leader><leader>', function() Snacks.picker.smart() end, desc = 'Smart find' },
   { '<leader>/', function() Snacks.picker.grep() end, desc = 'Grep' },
+
   { '<leader>fc', function() Snacks.picker.files({ cwd = vim.fn.stdpath('config') }) end, desc = 'Find Neovim Config' },
   { '<leader>fC', function() Snacks.picker.grep({ cwd = vim.fn.stdpath('config') }) end, desc = 'Grep Neovim Config' },
   { '<leader>ff', function() Snacks.picker.git_files() end, desc = 'Find git files' },
@@ -22,7 +24,9 @@ return {
   -- ==========================================
   -- 📜 [ Pickers: History, System & Registers ]
   -- ==========================================
+  --TODO: comment this if you want to use fzf-lua
   { '<leader>fb', function() Snacks.picker.buffers() end, desc = 'Buffers' },
+
   { '<leader>fr', function() Snacks.picker.registers() end, desc = 'Registers' },
   { '<leader>sc', function() Snacks.picker.command_history() end, desc = 'Command history' },
   { '<leader>s/', function() Snacks.picker.search_history() end, desc = 'Search history' },
@@ -225,7 +229,9 @@ return {
     end,
   },
 
-  -- Zettelkasten note system
+  -- ==========================================
+  -- 📔 [ Zettelkasten ]
+  -- ==========================================
   { '<leader>zn', function() require('custom.zettel').new_card() end, desc = 'Zettel: New Card' },
   { '<leader>zI', function() require('custom.zettel').init_workspace() end, desc = 'Zettel: Initialize Zettelkasten Workspace' },
   { '<leader>zi', function() require('custom.zettel').new_inbox_note() end, desc = 'Zettel: New Inbox Note' },
