@@ -48,7 +48,7 @@ This is an example card. All atomic notes should be under `Cards/`
 
 ## Example Tags
 
-这是一个关于tags的教程: [[🏷️-卡片盒标签使用指南]]
+这是一个关于tags的教程: [[example-tag]]
 
 Links: [[index]]
 ]=]
@@ -89,16 +89,35 @@ local EXAMPLE_TAG_CONTENT = [=[
 *写法示范：* `tags: [work, to-read]`
 ]=]
 
+local USER_META_CONTENT = [=[
+# 👤 User Profile (For AI Context)
+
+- **Role**: Hacker / Developer
+- **Preferences**:
+  - 极客级性能追求者，喜欢 Neovim 且对代码性能有极致洁癖。
+  - 给我写代码时，请使用最硬核的底层 API，绝对不允许冗余对象和 GC（垃圾回收）浪费。
+  - 喜欢 Struct of Arrays (SoA) 和 Zero-Allocation 逻辑。
+]=]
+
+local AGENT_META_CONTENT = [=[
+# 🤖 AI Agent Rules
+
+- **Zettelkasten Context**: 回答问题时，请务必优先基于本 Workspace 内的卡片内容。
+- **Formatting**: 熟练运用 Markdown 格式，输出清晰。
+- **Style**: 专业、精准，不要为了寒暄浪费 Token。
+]=]
+
 local function get_workspace_root()
   local buf = api.nvim_get_current_buf()
   local root = fs.root(buf, { '.marksman.toml', '.git', 'Makefile', '.jj' }) or uv.cwd() or '.'
   return fs_normalize(root)
 end
 
-local function get_target_filepath(title, sub_dir)
-  local timestamp = tostring(os.date('%Y%m%d%H%M'))
-  local safe_title = title:gsub('%s+', '-'):gsub('[^%w%-一-龥]', ''):lower()
-  local filename = timestamp .. '-' .. safe_title .. '.md'
+local function get_target_filepath(title, sub_dir, exact_name)
+  local safe_title = title:gsub('%s+', '-'):gsub('[^%w%-%_%.一-龥]', ''):lower()
+  local filename = exact_name and (safe_title .. '.md') or
+    (tostring(os.date('%Y%m%d%H%M')) .. '-' .. safe_title .. '.md')
+
   local root = get_workspace_root()
   local target_dir = fs_normalize(root .. '/' .. sub_dir)
   if not fs_stat(target_dir) then
@@ -130,6 +149,7 @@ function M.init_workspace()
       path = fs_normalize(path)
       local dirs = {
         path,
+        path .. '/.meta',
         path .. '/Inbox',
         path .. '/Inbox/Daily',
         path .. '/Inbox/Meetings',
@@ -160,6 +180,8 @@ function M.init_workspace()
       write_file(path .. '/index.md', INDEX_CONTENT)
       write_file(path .. '/Cards/Examples/example-card.md', EXAMPLE_CARD_CONTENT)
       write_file(path .. '/Cards/Examples/example-tag.md', EXAMPLE_TAG_CONTENT)
+      write_file(path .. '/.meta/user.md', USER_META_CONTENT)
+      write_file(path .. '/.meta/agent_rules.md', AGENT_META_CONTENT)
       vim.notify('\n[Zettel] Workspace initialized successfully at:\n' .. path, vim.log.levels.INFO)
       vim.cmd('edit ' .. fn.fnameescape(path .. '/index.md'))
     end)
@@ -170,7 +192,7 @@ function M.new_card()
   vim.ui.input({ prompt = ' 󰎚 Card Title: ' }, function(title)
     if not title or title == '' then return end
     vim.schedule(function()
-      local filepath = get_target_filepath(title, 'Cards')
+      local filepath = get_target_filepath(title, 'Cards', false)
       local lines = {
         '---',
         'title: ' .. title,
@@ -181,7 +203,7 @@ function M.new_card()
         '# ' .. title,
         '',
         'Links: [[index]]',
-        'Tags Guide: [[🏷️-卡片盒标签使用指南]]',
+        'Tags Guide: [[example-tag]]',
       }
       createbuf_and_curpos(filepath, lines, { 7, 2 })
     end)
@@ -203,16 +225,20 @@ function M.new_inbox_note()
     format_item = function(item) return item.name end,
   }, function(choice)
     if not choice then return end
-    local default_title = ''
-    if choice.folder == 'Daily' then
-      default_title = tostring(os.date('%Y-%m-%d'))
-    end
+    local is_daily = (choice.folder == 'Daily')
+    local default_title = is_daily and tostring(os.date('%Y-%m-%d')) or ''
+
     vim.schedule(function()
       vim.ui.input({ prompt = ' 󰎚 Note Title: ', default = default_title }, function(title)
         if not title or title == '' then return end
         vim.schedule(function()
           local subfolder = choice.folder == '' and 'Inbox' or ('Inbox/' .. choice.folder)
-          local filepath = get_target_filepath(title, subfolder)
+          local filepath = get_target_filepath(title, subfolder, is_daily)
+          if is_daily and uv.fs_stat(filepath) then
+            vim.cmd('edit ' .. fn.fnameescape(filepath))
+            vim.notify('󰎚 Daily note already exists. Opened.', vim.log.levels.INFO)
+            return
+          end
           local lines = {
             '---',
             'title: ' .. title,
@@ -228,6 +254,23 @@ function M.new_inbox_note()
       end)
     end)
   end)
+end
+
+function M.backlinks()
+  local ok, snacks = pcall(require, 'snacks')
+  if not ok then return end
+  local current_file = fn.expand('%:t:r')
+  if current_file == '' then
+    vim.notify('No file to find backlinks for!', vim.log.levels.WARN)
+    return
+  end
+  local search_pattern = '\\[\\[' .. current_file .. '\\]\\]'
+  snacks.picker.grep({
+    title = ' 🔗 Backlinks (' .. current_file .. ') ',
+    prompt = ' 󰌹  ',
+    search = search_pattern,
+    regex = true,
+  })
 end
 
 return M

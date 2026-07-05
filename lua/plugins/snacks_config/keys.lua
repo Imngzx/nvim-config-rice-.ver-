@@ -229,4 +229,5 @@ return {
   { '<leader>zn', function() require('custom.zettel').new_card() end, desc = 'Zettel: New Card' },
   { '<leader>zI', function() require('custom.zettel').init_workspace() end, desc = 'Zettel: Initialize Zettelkasten Workspace' },
   { '<leader>zi', function() require('custom.zettel').new_inbox_note() end, desc = 'Zettel: New Inbox Note' },
+  { '<leader>zb', function() require('custom.zettel').backlinks() end, desc = 'Zettel: Find Backlinks' },
 }
