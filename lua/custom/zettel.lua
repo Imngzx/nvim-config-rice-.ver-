@@ -18,6 +18,189 @@ local TOML_CONTENT = [=[
 markdown.extension = ".md"
 ]=]
 
+local GITIGNORE = [=[
+]=]
+
+local JSON_CONTENT = [=[
+{
+  "MD013": false,
+  "MD060": false
+}
+]=]
+
+local EDITORCONFIG = [=[
+# see https://github.com/CppCXY/EmmyLuaCodeStyle
+[*.lua]
+# [basic]
+
+# optional space/tab
+indent_style = space
+# if indent_style is space, this is valid
+indent_size = 2
+# if indent_style is tab, this is valid
+tab_width = 2
+# none/single/double
+quote_style = single
+
+continuation_indent = 2
+## extend option
+# continuation_indent.before_block = 4
+# continuation_indent.in_expr = 4
+# continuation_indent.in_table = 4
+
+# this mean utf8 length , if this is 'unset' then the line width is no longer checked
+# this option decides when to chopdown the code
+max_line_length = 100
+
+# optional crlf/lf/cr/auto, if it is 'auto', in windows it is crlf other platforms are lf
+# in neovim the value 'auto' is not a valid option, please use 'unset'
+end_of_line = lf
+
+#  none/ comma / semicolon / only_kv_colon
+table_separator_style = none
+
+#optional keep/never/always/smart
+trailing_table_separator = keep
+
+# keep/remove/remove_table_only/remove_string_only
+call_arg_parentheses = keep
+
+detect_end_of_line = false
+
+# this will check text end with new line
+insert_final_newline = true
+
+# [space]
+space_around_table_field_list = true
+
+space_before_attribute = true
+
+space_before_function_open_parenthesis = false
+
+space_before_function_call_open_parenthesis = false
+
+space_before_closure_open_parenthesis = false
+
+# optional always/only_string/only_table/none
+# or true/false
+space_before_function_call_single_arg = always
+## extend option
+## always/keep/none
+# space_before_function_call_single_arg.table = always
+## always/keep/none
+# space_before_function_call_single_arg.string = always
+
+space_before_open_square_bracket = false
+
+space_inside_function_call_parentheses = false
+
+space_inside_function_param_list_parentheses = false
+
+space_inside_square_brackets = false
+
+# like t[#t+1] = 1
+space_around_table_append_operator = false
+
+ignore_spaces_inside_function_call = false
+
+# detail number or 'keep'
+space_before_inline_comment = 1
+
+# convert '---' to '--- ' or '--' to '-- '
+space_after_comment_dash = false
+
+# [operator space]
+space_around_math_operator = true
+# space_around_math_operator.exponent = false
+
+space_after_comma = true
+
+space_after_comma_in_for_statement = true
+
+# true/false or none/always/no_space_asym
+space_around_concat_operator = true
+
+space_around_logical_operator = true
+
+# true/false or none/always/no_space_asym
+space_around_assign_operator = true
+
+# [align]
+
+align_call_args = false
+
+align_function_params = false
+
+# true/false or always
+align_continuous_assign_statement = false
+
+align_continuous_rect_table_field = false
+
+align_continuous_line_space = 2
+
+align_if_branch = false
+
+# option none / always / contain_curly/
+align_array_table = none
+
+align_continuous_similar_call_args = false
+
+align_continuous_inline_comment = false
+# option none / always / only_call_stmt
+align_chain_expr = none
+
+# [indent]
+
+never_indent_before_if_condition = false
+
+never_indent_comment_on_if_branch = false
+
+keep_indents_on_empty_lines = false
+
+allow_non_indented_comments = false
+# [line space]
+
+# The following configuration supports four expressions
+# keep
+# fixed(n)
+# min(n)
+# max(n)
+# for eg. min(2)
+
+line_space_after_if_statement = keep
+
+line_space_after_do_statement = keep
+
+line_space_after_while_statement = keep
+
+line_space_after_repeat_statement = keep
+
+line_space_after_for_statement = keep
+
+line_space_after_local_or_assign_statement = keep
+
+line_space_after_function_statement = fixed(2)
+
+line_space_after_expression_statement = keep
+
+line_space_after_comment = keep
+
+line_space_around_block = fixed(1)
+# [line break]
+break_all_list_when_line_exceed = false
+
+auto_collapse_lines = false
+
+break_before_braces = false
+
+# [preference]
+ignore_space_after_colon = false
+
+remove_call_expression_list_finish_comma = false
+# keep / always / same_line / replace_with_newline / never
+end_statement_with_semicolon = keep
+]=]
+
 local INDEX_CONTENT = [=[
 # 🗂️ My Knowledge Base (MOC)
 
@@ -29,6 +212,7 @@ Welcome to your Zettelkasten!
 
 ## 📚 Categories (索引)
 
+- [[example-usage]] (👈 先看这里：使用说明书)
 - [[example-card]]
 ]=]
 
@@ -48,45 +232,93 @@ This is an example card. All atomic notes should be under `Cards/`
 
 ## Example Tags
 
-这是一个关于tags的教程: [[example-tag]]
+- 标签使用指南: [[example-tag]]
+- 系统使用指南: [[example-usage]]
 
 Links: [[index]]
 ]=]
 
 local EXAMPLE_TAG_CONTENT = [=[
-# 🏷️ 卡片盒标签使用指南
+# 🏷️ 卡片盒标签使用指南 (Tag Usage Guide)
 
-**卡片盒黄金法则**：
-- **双向链接 (`[[xxx]]`)**：连接**逻辑与内容**（将相关笔记织成知识图谱）。
-- **标签 (`tags: []`)**：管理笔记的**状态、类型或维度**（方便进行全局搜索和过滤）。
+**卡片盒黄金法则 (Zettelkasten Golden Rules)**：
 
-## 1. 状态管理标签（最推荐🌟）
+- **双向链接 (`[[xxx]]`)**：连接**逻辑与内容**，将相关笔记织成知识图谱。 (Connects logic and content to weave a knowledge graph).
+- **标签 (`tags: []`)**：管理笔记的**状态、类型或维度**，方便进行全局搜索和过滤。 (Manages the state, type, or context of notes for easy filtering).
+
+## 1. 状态管理标签 (State Tags - Recommended🌟)
+
 卡片盒里的笔记是有“生命周期”的。你可以用标签来标记这篇笔记有多“成熟”：
-- `seed`（种子）：刚写下一点想法，还没整理好，句子可能不通顺。（需后续加工）
-- `incubator`（孵化中）：正在丰富完善中的笔记。
-- `evergreen`（常青树）：已经写得非常完美、经得起时间考验的最终版原子笔记。
-- `draft`（草稿）：还没写完的。
-- `review`（待复习）：里面有个概念还没完全吃透，需要后续再看。
+(Notes have a lifecycle. Use tags to mark their maturity):
 
-*写法示范：* `tags: [seed, review]`
+- `seed`: 种子。刚写下一点想法，需后续加工。 (Raw thoughts, needs processing).
+- `incubator`: 孵化中。正在丰富完善中的笔记。 (Work in progress).
+- `evergreen`: 常青树。已经写得非常完美、经得起时间考验的最终版原子笔记。 (Polished, timeless atomic note).
+- `draft`: 草稿。 (Draft).
+- `review`: 待复习。里面有个概念还没完全吃透，需要后续再看。 (Needs review).
 
-## 2. 笔记类型标签（Type）
+*写法示范 (Example):* `tags: [seed, review]`
+
+## 2. 笔记类型标签 (Type Tags)
+
 这篇笔记到底是什么？方便以后“只搜索我记过的所有Bug”：
-- `concept`（概念解释）：比如讲什么是“闭包”、“所有权”。
-- `bug-fix`（踩坑记录）：记录遇到什么报错，怎么解决的。
-- `tutorial`（操作流程）：比如“如何配置 Nginx”。
-- `quote`（金句摘录）：看书或看视频时摘抄的原话。
-- `book-review`（读书笔记）。
+(What is this note about? Useful for scoped searches):
 
-*写法示范：* `tags: [bug-fix, backend]`
+- `concept`: 概念解释。 (Concept explanation, e.g., "Closure", "Ownership").
+- `bug-fix`: 踩坑记录。遇到什么报错，怎么解决的。 (Bug fixing logs).
+- `tutorial`: 操作流程。 (Step-by-step tutorials, e.g., "Nginx Config").
+- `quote`: 金句摘录。 (Quotes from books/videos).
+- `book-review`: 读书笔记。 (Book reviews).
 
-## 3. 行动上下文标签（Context）
-结合 GTD (搞定系统)，标记信息在**什么场景下**使用：
-- `work`（上班工作时需要查阅的）
-- `life`（生活琐事、菜谱等）
-- `to-read`（记录了一本书，但还没读）
+*写法示范 (Example):* `tags: [bug-fix, backend]`
 
-*写法示范：* `tags: [work, to-read]`
+## 3. 行动上下文标签 (Context Tags)
+
+结合 GTD (搞定系统)，标记信息在什么场景下使用：
+(Based on GTD, mark when/where to use this info):
+
+- `work`: 上班工作时需要查阅的。 (Work-related).
+- `life`: 生活琐事、菜谱等。 (Life/Personal).
+- `to-read`: 记录了一本书，但还没读。 (Reading list).
+
+*写法示范 (Example):* `tags: [work, to-read]`
+]=]
+
+local EXAMPLE_USAGE_CONTENT = [=[
+# 📖 Zettelkasten 使用说明书 (User Guide)
+
+欢迎来到你的极速卡片盒笔记系统！
+(Welcome to your lightning-fast Zettelkasten system!)
+
+## 📂 目录结构与系统流 (Folder Structure & Workflow)
+
+了解每个文件夹的作用，是维持知识库整洁的关键：
+(Understanding the purpose of each folder is key to a tidy knowledge base):
+
+- **`Inbox/` (收集箱)**: 任何未整理的想法、日记、会议记录、代码片段等，第一时间扔在这里，不要有心理负担。(Raw thoughts, daily logs, meeting notes, snippets go here first. Zero friction).
+- **`Cards/` (卡片盒)**: 系统的核心。存放经过思考、提炼后的**原子笔记**。(The core. Stores atomic, evergreen notes).
+  - *Workflow (工作流)*: 定期清理 Inbox，将有价值的内容提炼、重写后放入 Cards 目录。(Regularly process Inbox notes into Cards).
+- **`Assets/` (资源)**: 存放所有图片和附件。(Store all images and attachments here).
+- **`.meta/` (AI 脑)**: AI 助手的上下文配置。(AI assistant context files).
+
+## 🚀 核心快捷键 (Hotkeys)
+
+- `<leader>zI` : **初始化工作区 (Init Workspace)**。一键生成标准目录结构和 AI 元数据。(Generate standard directories and AI meta files).
+- `<leader>zn` : **新建卡片 (New Card)**。
+  - *闪电速记 (Quick Note)*: 弹出输入框时直接按 `Enter`，自动用时间戳命名并打开。(Press Enter to auto-generate timestamp filename).
+  - *严谨记录 (Named Note)*: 输入标题（如 `Neovim API`），自动生成干净的 `neovim-api.md`。(Enter title for a clean filename).
+- `<leader>zi` : **新建收集箱笔记 (New Inbox Note)**。分类记录 `Daily`, `Meetings` 等。日记会自动防重复！(Categorized quick captures. Daily notes are deduplicated).
+- `<leader>zb` : **查找反向链接 (Find Backlinks)**。瞬间找出所有引用了当前笔记的卡片。(Instantly find all cards referencing the current note).
+
+## 🔗 链接与标签 (Links & Tags)
+
+- **双向链接 (Bi-directional Links)**: 输入 `[[` 触发补全（依赖 Marksman LSP）。(Type `[[` to trigger completion).
+- **标签 (Tags)**: 在文件头部的 `tags: []` 处添加标签。详情请看 (See details in): [[example-tag]].
+
+## 🤖 AI 联动 (AI Integration)
+
+系统已自动生成了 `.meta/user.md` 和 `.meta/agent_rules.md`。在 CodeCompanion 聊天面板中可以 `@` 这些文件来提供上下文，让 AI 按照你的喜好和卡片盒里的内容回答问题！
+(Mention these files in CodeCompanion chat to give AI context of your Zettelkasten!)
 ]=]
 
 local USER_META_CONTENT = [=[
@@ -177,30 +409,38 @@ function M.init_workspace()
         end
       end
       write_file(path .. '/.marksman.toml', TOML_CONTENT)
+      write_file(path .. '/.markdownlint.json', JSON_CONTENT)
+      write_file(path .. '/.editorconfig', EDITORCONFIG)
+      write_file(path .. '/.gitignore', GITIGNORE)
       write_file(path .. '/index.md', INDEX_CONTENT)
       write_file(path .. '/Cards/Examples/example-card.md', EXAMPLE_CARD_CONTENT)
       write_file(path .. '/Cards/Examples/example-tag.md', EXAMPLE_TAG_CONTENT)
+      write_file(path .. '/Cards/Examples/example-usage.md', EXAMPLE_USAGE_CONTENT)
       write_file(path .. '/.meta/user.md', USER_META_CONTENT)
       write_file(path .. '/.meta/agent_rules.md', AGENT_META_CONTENT)
-      vim.notify('\n[Zettel] Workspace initialized successfully at:\n' .. path, vim.log.levels.INFO)
+      vim.notify('[Zettel] Workspace initialized successfully at:\n' .. path, vim.log.levels.INFO)
       vim.cmd('edit ' .. fn.fnameescape(path .. '/index.md'))
     end)
   end)
 end
 
 function M.new_card()
-  vim.ui.input({ prompt = ' 󰎚 Card Title: ' }, function(title)
-    if not title or title == '' then return end
+  vim.ui.input({ prompt = ' 󰎚 Card Title (Enter for Quick Note): ' }, function(title)
+    if title == nil then return end
     vim.schedule(function()
-      local filepath = get_target_filepath(title, 'Cards', false)
+      local is_empty = (title == '')
+      local timestamp = tostring(os.date('%Y%m%d%H%M'))
+      local filename_seed = is_empty and timestamp or title
+      local final_title = is_empty and 'Untitled' or title
+      local filepath = get_target_filepath(filename_seed, 'Cards', true)
       local lines = {
         '---',
-        'title: ' .. title,
+        'title: ' .. final_title,
         'date: ' .. tostring(os.date('%Y-%m-%d %H:%M:%S')),
         'tags: []',
         '---',
         '',
-        '# ' .. title,
+        '# ' .. final_title,
         '',
         'Links: [[index]]',
         'Tags Guide: [[example-tag]]',
