@@ -136,7 +136,7 @@ function M.new_card()
 
       api.nvim_set_current_buf(bufnr)
 
-      api.nvim_win_set_cursor(0, { 7, 0 })
+      api.nvim_win_set_cursor(0, { 7, 2 })
     end)
   end)
 end
