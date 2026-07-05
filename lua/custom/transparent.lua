@@ -31,6 +31,11 @@ local config = {
   on_clear = function() end,
 }
 
+local exclude_set = {}
+for _, v in ipairs(config.exclude_groups) do
+  exclude_set[v] = true
+end
+
 local cache_path = fn.stdpath('data') .. package.config:sub(1, 1) .. 'transparent_state'
 
 local function cache_read()
@@ -64,7 +69,7 @@ local function clear_group(group)
 
   for i = 1, #list do
     local g = list[i]
-    if not vim.tbl_contains(config.exclude_groups, g) then
+    if not exclude_set[g] then
       local def = api.nvim_get_hl(0, { name = g, link = true })
 
       if def and not def.link then
