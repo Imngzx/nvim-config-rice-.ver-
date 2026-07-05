@@ -194,9 +194,9 @@ function M.new_inbox_note()
     { name = '🤝 Meetings (会议记录)', folder = 'Meetings' },
     { name = '💡 Idea (灵感/随便写写)', folder = 'Idea' },
     { name = '✂️ Snippet (代码片段)', folder = 'Snippet' },
-    { name = '📥 Root (直接扔进 Inbox)', folder = '' },
-    { name = '📔 Projects (直接扔进 Inbox)', folder = 'Projects' },
-    { name = '👀 People (直接扔进 Inbox)', folder = 'People' },
+    { name = '📥 Root (直接扔进 Inbox 根目录)', folder = '' },
+    { name = '📔 Projects (项目)', folder = 'Projects' },
+    { name = '👀 People (关于人的)', folder = 'People' },
   }
   vim.ui.select(scenarios, {
     prompt = ' 📂 Select Scenario: ',
