@@ -24,26 +24,69 @@ local INDEX_CONTENT = [=[
 Welcome to your Zettelkasten!
 
 ## 📥 Inbox (待处理)
+
 -
 
 ## 📚 Categories (索引)
+
 - [[example-card]]
 ]=]
 
 local EXAMPLE_CARD_CONTENT = [=[
 ---
 title: Example Card
-date: ]=] .. tostring(os.date('%Y-%m-%d %H:%M:%S')) .. [=[
-
-tags: [example]
+date: 2026-07-05 14:11:26
+tags: [[xxx]]
 ---
 
-# Example Card
+# Example
+
+## Example Card
 
 这是一张示例卡片。所有的原子笔记都应该像这样存放在 `Cards/` 目录下。
 This is an example card. All atomic notes should be under `Cards/`
 
+## Example Tags
+
+这是一个关于tags的教程: [[🏷️-卡片盒标签使用指南]]
+
 Links: [[index]]
+]=]
+
+local EXAMPLE_TAG_CONTENT = [=[
+# 🏷️ 卡片盒标签使用指南
+
+**卡片盒黄金法则**：
+- **双向链接 (`[[xxx]]`)**：连接**逻辑与内容**（将相关笔记织成知识图谱）。
+- **标签 (`tags: []`)**：管理笔记的**状态、类型或维度**（方便进行全局搜索和过滤）。
+
+## 1. 状态管理标签（最推荐🌟）
+卡片盒里的笔记是有“生命周期”的。你可以用标签来标记这篇笔记有多“成熟”：
+- `seed`（种子）：刚写下一点想法，还没整理好，句子可能不通顺。（需后续加工）
+- `incubator`（孵化中）：正在丰富完善中的笔记。
+- `evergreen`（常青树）：已经写得非常完美、经得起时间考验的最终版原子笔记。
+- `draft`（草稿）：还没写完的。
+- `review`（待复习）：里面有个概念还没完全吃透，需要后续再看。
+
+*写法示范：* `tags: [seed, review]`
+
+## 2. 笔记类型标签（Type）
+这篇笔记到底是什么？方便以后“只搜索我记过的所有Bug”：
+- `concept`（概念解释）：比如讲什么是“闭包”、“所有权”。
+- `bug-fix`（踩坑记录）：记录遇到什么报错，怎么解决的。
+- `tutorial`（操作流程）：比如“如何配置 Nginx”。
+- `quote`（金句摘录）：看书或看视频时摘抄的原话。
+- `book-review`（读书笔记）。
+
+*写法示范：* `tags: [bug-fix, backend]`
+
+## 3. 行动上下文标签（Context）
+结合 GTD (搞定系统)，标记信息在**什么场景下**使用：
+- `work`（上班工作时需要查阅的）
+- `life`（生活琐事、菜谱等）
+- `to-read`（记录了一本书，但还没读）
+
+*写法示范：* `tags: [work, to-read]`
 ]=]
 
 local function get_workspace_root()
@@ -71,6 +114,8 @@ local function createbuf_and_curpos(filepath, lines, cursor_pos)
   api.nvim_set_option_value('filetype', 'markdown', { buf = bufnr })
   api.nvim_set_current_buf(bufnr)
   api.nvim_win_set_cursor(0, cursor_pos)
+  -- uncomment this if you want insert mode after zettel init
+  -- vim.cmd('startinsert')
 end
 
 function M.init_workspace()
@@ -93,6 +138,7 @@ function M.init_workspace()
         path .. '/Inbox/Projects',
         path .. '/Inbox/People',
         path .. '/Cards',
+        path .. '/Cards/Examples',
         path .. '/Assets'
       }
       for i = 1, #dirs do
@@ -112,7 +158,8 @@ function M.init_workspace()
       end
       write_file(path .. '/.marksman.toml', TOML_CONTENT)
       write_file(path .. '/index.md', INDEX_CONTENT)
-      write_file(path .. '/Cards/example-card.md', EXAMPLE_CARD_CONTENT)
+      write_file(path .. '/Cards/Examples/example-card.md', EXAMPLE_CARD_CONTENT)
+      write_file(path .. '/Cards/Examples/example-tag.md', EXAMPLE_TAG_CONTENT)
       vim.notify('\n[Zettel] Workspace initialized successfully at:\n' .. path, vim.log.levels.INFO)
       vim.cmd('edit ' .. fn.fnameescape(path .. '/index.md'))
     end)
@@ -134,6 +181,7 @@ function M.new_card()
         '# ' .. title,
         '',
         'Links: [[index]]',
+        'Tags Guide: [[🏷️-卡片盒标签使用指南]]',
       }
       createbuf_and_curpos(filepath, lines, { 7, 2 })
     end)
