@@ -41,6 +41,7 @@ tags: [example]
 # Example Card
 
 这是一张示例卡片。所有的原子笔记都应该像这样存放在 `Cards/` 目录下。
+This is an example card. All atomic notes should be under `Cards/`
 
 Links: [[index]]
 ]=]
@@ -67,6 +68,12 @@ function M.init_workspace()
       local dirs = {
         path,
         path .. '/Inbox',
+        path .. '/Inbox/Daily',
+        path .. '/Inbox/Meetings',
+        path .. '/Inbox/Idea',
+        path .. '/Inbox/Snippet',
+        path .. '/Inbox/Projects',
+        path .. '/Inbox/People',
         path .. '/Cards',
         path .. '/Assets'
       }
@@ -135,8 +142,72 @@ function M.new_card()
       api.nvim_set_option_value('filetype', 'markdown', { buf = bufnr })
 
       api.nvim_set_current_buf(bufnr)
-
       api.nvim_win_set_cursor(0, { 7, 2 })
+    end)
+  end)
+end
+
+function M.new_inbox_note()
+  local scenarios = {
+    { name = '📝 Daily (日记/工作日志)', folder = 'Daily' },
+    { name = '🤝 Meetings (会议记录)', folder = 'Meetings' },
+    { name = '💡 Idea (灵感/随便写写)', folder = 'Idea' },
+    { name = '✂️ Snippet (代码片段)', folder = 'Snippet' },
+    { name = '📥 Root (直接扔进 Inbox)', folder = '' },
+    { name = '📔 Projects (直接扔进 Inbox)', folder = 'Projects' },
+    { name = '👀 People (直接扔进 Inbox)', folder = 'People' },
+  }
+
+  vim.ui.select(scenarios, {
+    prompt = ' 📂 Select Scenario: ',
+    format_item = function(item) return item.name end,
+  }, function(choice)
+    if not choice then return end
+
+    local default_title = ''
+    if choice.folder == 'Daily' then
+      default_title = tostring(os.date('%Y-%m-%d'))
+    end
+
+    vim.schedule(function()
+      vim.ui.input({ prompt = ' 󰎚 Note Title: ', default = default_title }, function(title)
+        if not title or title == '' then return end
+
+        vim.schedule(function()
+          local timestamp = os.date('%Y%m%d%H%M')
+          local safe_title = title:gsub('%s+', '-'):gsub('[^%w%-一-龥]', ''):lower()
+          local filename = timestamp .. '-' .. safe_title .. '.md'
+
+          local root = get_workspace_root()
+          local target_dir = fs_normalize(root .. '/Inbox/' .. choice.folder)
+
+          if not fs_stat(target_dir) then
+            fn.mkdir(target_dir, 'p')
+          end
+
+          local filepath = target_dir .. '/' .. filename
+
+          local lines = {
+            '---',
+            'title: ' .. title,
+            'date: ' .. os.date('%Y-%m-%d %H:%M:%S'),
+            'scenario: ' .. (choice.folder == '' and 'Inbox' or choice.folder),
+            '---',
+            '',
+            '# ' .. title,
+            '',
+          }
+
+          local bufnr = api.nvim_create_buf(true, false)
+
+          api.nvim_buf_set_name(bufnr, filepath)
+          api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+          api.nvim_set_option_value('filetype', 'markdown', { buf = bufnr })
+
+          api.nvim_set_current_buf(bufnr)
+          api.nvim_win_set_cursor(0, { 7, 0 })
+        end)
+      end)
     end)
   end)
 end
