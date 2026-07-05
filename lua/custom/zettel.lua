@@ -33,7 +33,7 @@ Welcome to your Zettelkasten!
 local EXAMPLE_CARD_CONTENT = [=[
 ---
 title: Example Card
-date: ]=] .. os.date('%Y-%m-%d %H:%M:%S') .. [=[
+date: ]=] .. tostring(os.date('%Y-%m-%d %H:%M:%S')) .. [=[
 
 tags: [example]
 ---
@@ -52,19 +52,37 @@ local function get_workspace_root()
   return fs_normalize(root)
 end
 
+local function get_target_filepath(title, sub_dir)
+  local timestamp = tostring(os.date('%Y%m%d%H%M'))
+  local safe_title = title:gsub('%s+', '-'):gsub('[^%w%-一-龥]', ''):lower()
+  local filename = timestamp .. '-' .. safe_title .. '.md'
+  local root = get_workspace_root()
+  local target_dir = fs_normalize(root .. '/' .. sub_dir)
+  if not fs_stat(target_dir) then
+    fn.mkdir(target_dir, 'p')
+  end
+  return target_dir .. '/' .. filename
+end
+
+local function createbuf_and_curpos(filepath, lines, cursor_pos)
+  local bufnr = api.nvim_create_buf(true, false)
+  api.nvim_buf_set_name(bufnr, filepath)
+  api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+  api.nvim_set_option_value('filetype', 'markdown', { buf = bufnr })
+  api.nvim_set_current_buf(bufnr)
+  api.nvim_win_set_cursor(0, cursor_pos)
+end
+
 function M.init_workspace()
   local default_path = get_workspace_root()
-
   vim.ui.input({ prompt = ' 🚀 Init Zettel workspace in: ', default = default_path }, function(path)
     if not path or path == '' then return end
-
     vim.schedule(function()
       local home = os_homedir()
       if home and path:sub(1, 1) == '~' then
         path = home .. path:sub(2)
       end
       path = fs_normalize(path)
-
       local dirs = {
         path,
         path .. '/Inbox',
@@ -77,14 +95,12 @@ function M.init_workspace()
         path .. '/Cards',
         path .. '/Assets'
       }
-
       for i = 1, #dirs do
         local dir = dirs[i]
         if not fs_stat(dir) then
           fn.mkdir(dir, 'p')
         end
       end
-
       local function write_file(filepath, content)
         if not fs_stat(filepath) then
           local fd = fs_open(filepath, 'w', 438)
@@ -94,11 +110,9 @@ function M.init_workspace()
           end
         end
       end
-
       write_file(path .. '/.marksman.toml', TOML_CONTENT)
       write_file(path .. '/index.md', INDEX_CONTENT)
       write_file(path .. '/Cards/example-card.md', EXAMPLE_CARD_CONTENT)
-
       vim.notify('\n[Zettel] Workspace initialized successfully at:\n' .. path, vim.log.levels.INFO)
       vim.cmd('edit ' .. fn.fnameescape(path .. '/index.md'))
     end)
@@ -108,25 +122,12 @@ end
 function M.new_card()
   vim.ui.input({ prompt = ' 󰎚 Card Title: ' }, function(title)
     if not title or title == '' then return end
-
     vim.schedule(function()
-      local timestamp = os.date('%Y%m%d%H%M')
-      local safe_title = title:gsub('%s+', '-'):gsub('[^%w%-一-龥]', ''):lower()
-      local filename = timestamp .. '-' .. safe_title .. '.md'
-
-      local root = get_workspace_root()
-      local target_dir = fs_normalize(root .. '/Cards')
-
-      if not fs_stat(target_dir) then
-        fn.mkdir(target_dir, 'p')
-      end
-
-      local filepath = target_dir .. '/' .. filename
-
+      local filepath = get_target_filepath(title, 'Cards')
       local lines = {
         '---',
         'title: ' .. title,
-        'date: ' .. os.date('%Y-%m-%d %H:%M:%S'),
+        'date: ' .. tostring(os.date('%Y-%m-%d %H:%M:%S')),
         'tags: []',
         '---',
         '',
@@ -134,15 +135,7 @@ function M.new_card()
         '',
         'Links: [[index]]',
       }
-
-      local bufnr = api.nvim_create_buf(true, false)
-
-      api.nvim_buf_set_name(bufnr, filepath)
-      api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
-      api.nvim_set_option_value('filetype', 'markdown', { buf = bufnr })
-
-      api.nvim_set_current_buf(bufnr)
-      api.nvim_win_set_cursor(0, { 7, 2 })
+      createbuf_and_curpos(filepath, lines, { 7, 2 })
     end)
   end)
 end
@@ -157,55 +150,32 @@ function M.new_inbox_note()
     { name = '📔 Projects (直接扔进 Inbox)', folder = 'Projects' },
     { name = '👀 People (直接扔进 Inbox)', folder = 'People' },
   }
-
   vim.ui.select(scenarios, {
     prompt = ' 📂 Select Scenario: ',
     format_item = function(item) return item.name end,
   }, function(choice)
     if not choice then return end
-
     local default_title = ''
     if choice.folder == 'Daily' then
       default_title = tostring(os.date('%Y-%m-%d'))
     end
-
     vim.schedule(function()
       vim.ui.input({ prompt = ' 󰎚 Note Title: ', default = default_title }, function(title)
         if not title or title == '' then return end
-
         vim.schedule(function()
-          local timestamp = os.date('%Y%m%d%H%M')
-          local safe_title = title:gsub('%s+', '-'):gsub('[^%w%-一-龥]', ''):lower()
-          local filename = timestamp .. '-' .. safe_title .. '.md'
-
-          local root = get_workspace_root()
-          local target_dir = fs_normalize(root .. '/Inbox/' .. choice.folder)
-
-          if not fs_stat(target_dir) then
-            fn.mkdir(target_dir, 'p')
-          end
-
-          local filepath = target_dir .. '/' .. filename
-
+          local subfolder = choice.folder == '' and 'Inbox' or ('Inbox/' .. choice.folder)
+          local filepath = get_target_filepath(title, subfolder)
           local lines = {
             '---',
             'title: ' .. title,
-            'date: ' .. os.date('%Y-%m-%d %H:%M:%S'),
+            'date: ' .. tostring(os.date('%Y-%m-%d %H:%M:%S')),
             'scenario: ' .. (choice.folder == '' and 'Inbox' or choice.folder),
             '---',
             '',
             '# ' .. title,
             '',
           }
-
-          local bufnr = api.nvim_create_buf(true, false)
-
-          api.nvim_buf_set_name(bufnr, filepath)
-          api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
-          api.nvim_set_option_value('filetype', 'markdown', { buf = bufnr })
-
-          api.nvim_set_current_buf(bufnr)
-          api.nvim_win_set_cursor(0, { 7, 0 })
+          createbuf_and_curpos(filepath, lines, { 7, 2 })
         end)
       end)
     end)
