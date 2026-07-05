@@ -159,7 +159,7 @@
       "src": "https://github.com/ChuYanLon/telegram.nvim"
     },
     "tiny-inline-diagnostic.nvim": {
-      "rev": "18c5bcfd4e3cd55946830016780641e3901fecb2",
+      "rev": "6264451f14119d63a52580e5198d6baf8518b0b2",
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
     "venv-selector.nvim": {
