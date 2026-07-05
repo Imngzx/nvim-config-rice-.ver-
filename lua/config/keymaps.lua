@@ -47,8 +47,8 @@ end, { desc = 'New file' })
 
 -- [Window]
 map('n', '<leader>pd', '<c-w>c', { desc = 'Delete window', remap = true })
-map('n', '<leader>ps', '<c-w>s', { desc = 'Split window below', remap = true })
-map('n', '<leader>pv', '<c-w>v', { desc = 'Split window right', remap = true })
+map('n', '<leader>ps', '<c-w>s', { desc = '[Panel] Split window below', remap = true })
+map('n', '<leader>pv', '<c-w>v', { desc = '[Panel] Split window right', remap = true })
 
 -- Move between windows
 map('n', '<c-h>', '<c-w>h', { desc = 'Move to left window' })

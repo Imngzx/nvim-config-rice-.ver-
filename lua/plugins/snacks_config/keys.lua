@@ -199,7 +199,7 @@ return {
   -- 🛠️ [ Utility & Toggles ]
   -- ==========================================
   { '<leader>st', function() require('custom.todo').search() end, desc = 'Search TODOs' },
-  { '<leader>pT', function() Snacks.terminal() end, desc = 'Toggle half terminal' },
+  { '<leader>pT', function() Snacks.terminal() end, desc = '[Panel] Toggle half terminal' },
   { '<leader>uz', function() Snacks.zen() end, desc = 'Toggle zen mode' },
   { '<leader>uZ', function() Snacks.zen.zoom() end, desc = 'Toggle Zoom (Maximize window)' },
 
@@ -210,7 +210,7 @@ return {
   -- Neovim News
   {
     '<leader>pN',
-    desc = 'Neovim News',
+    desc = '[Float] Neovim News',
     function()
       Snacks.win({
         file = vim.api.nvim_get_runtime_file('doc/news.txt', false)[1],

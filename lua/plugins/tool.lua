@@ -28,6 +28,7 @@ resonance.load({
         { '<leader>e', group = 'Explorer', icon = '󰙅 ' },
         { '<leader>f', group = 'Find/File', icon = '󰈞 ' },
         { '<leader>g', group = 'Git', icon = '󰊢 ' },
+        { '<leader>gp', group = 'Neogit Panel', icon = '󰊢 ' },
         { '<leader>H', group = 'Open Dahsboard (Home)', icon = ' ' },
         { '<leader>n', group = 'Minimap', icon = '🗺️ ' },
         { '<leader>p', group = 'Panel/Project', icon = '󰏖 ' },
@@ -38,6 +39,7 @@ resonance.load({
         { '<leader>T', group = 'Telegram', icon = ' ' },
         { '<leader>u', group = 'UI/Toggles', icon = '󰙵 ' },
         { '<leader>w', group = 'Write/Quit', icon = ' / 󰩈 ' },
+        { '<leader>z', group = 'Zettelkasten', icon = ' ' },
 
         { '<leader>/', group = 'Grep', icon = '󱎸 ' },
         { '<leader>;', group = 'Pick symbols in dropbar', icon = ' ' },

@@ -27,7 +27,7 @@ resonance.setup({
 })
 
 -- UI keymap binding
-vim.keymap.set('n', '<leader>pL', resonance.open_ui, { desc = 'Resonance UI' })
+vim.keymap.set('n', '<leader>pL', resonance.open_ui, { desc = '[Float] Resonance UI' })
 
 --plugins
 
