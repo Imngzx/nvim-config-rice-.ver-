@@ -5,7 +5,6 @@ local create_autocmd = api.nvim_create_autocmd
 local create_augroup = api.nvim_create_augroup
 local schedule = vim.schedule
 local ui_group = create_augroup('AutoUIVisibility', { clear = true })
-local vim_local = vim.opt_local
 local map = vim.keymap.set
 local user_command = vim.api.nvim_create_user_command
 
@@ -17,8 +16,12 @@ end
 create_autocmd('FileType', {
   group = create_augroup('DisableAutoComment', { clear = true }),
   pattern = '*',
-  callback = function()
-    vim_local.formatoptions:remove({ 'c', 'r', 'o' })
+  callback = function(event)
+    vim.schedule(function()
+      if vim.api.nvim_buf_is_valid(event.buf) then
+        vim.bo[event.buf].formatoptions = vim.bo[event.buf].formatoptions:gsub('[cro]', '')
+      end
+    end)
   end,
 })
 
