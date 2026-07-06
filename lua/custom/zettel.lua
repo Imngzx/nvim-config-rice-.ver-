@@ -540,8 +540,9 @@ function M.generate_graph(silent)
       if ui_open then
         ui_open(html_path)
       else
-        local open_cmd = fn.has('mac') == 1 and 'open' or
-          (fn.has('win32') == 1 and 'start' or 'xdg-open')
+        local utils = require('libs.utils')
+        local open_cmd = utils.is_mac() and 'open' or
+          (utils.is_windows() and 'start' or 'xdg-open')
         os_execute(open_cmd .. ' ' .. fn_fnameescape(html_path))
       end
       notify(
