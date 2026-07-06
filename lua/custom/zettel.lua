@@ -13,6 +13,26 @@ local fs_normalize = fs.normalize
 local os_homedir = uv.os_homedir
 local json_encode = vim.json and vim.json.encode or fn.json_encode
 
+local string_match = string.match
+local string_gmatch = string.gmatch
+local string_gsub = string.gsub
+local string_lower = string.lower
+local fn_fnamemodify = fn.fnamemodify
+local fn_fnameescape = fn.fnameescape
+local fn_mkdir = fn.mkdir
+local fn_executable = fn.executable
+local os_execute = os.execute
+local os_date = os.date
+local pcall = pcall
+local tostring = tostring
+local system = vim.system
+local schedule = vim.schedule
+local ui_open = vim.ui.open
+local ui_input = vim.ui.input
+local ui_select = vim.ui.select
+local notify = vim.notify
+local cwd = uv.cwd
+
 local TOML_CONTENT = [=[
 # .marksman.toml
 [core]
@@ -204,7 +224,7 @@ local AGENT_META_CONTENT = [=[
 - **Style**: 专业、精准，不要为了寒暄浪费 Token。
 ]=]
 
--- ======== Graph View HTML Templates (Zero Dependency & Bypass CORS) ========
+-- ======== 🌌 Graph View HTML Templates ========
 local GRAPH_TEMPLATE_HEAD = [=[
 <!DOCTYPE html>
 <html lang="en">
@@ -213,7 +233,8 @@ local GRAPH_TEMPLATE_HEAD = [=[
   <title>Zettelkasten Graph</title>
   <style>
     body { margin: 0; padding: 0; background-color: #1e1e2e; font-family: 'Cascadia Code', monospace; overflow: hidden; }
-    #graph { width: 100vw; height: 100vh; }
+    #graph { width: 100vw; height: 100vh; cursor: grab; }
+    #graph:active { cursor: grabbing; }
     .hud { position: absolute; top: 15px; left: 20px; color: #a6adc8; z-index: 10; pointer-events: none; }
     h3 { margin: 0 0 5px 0; color: #cba6f7; text-transform: uppercase; letter-spacing: 2px; }
   </style>
@@ -231,7 +252,6 @@ local GRAPH_TEMPLATE_TAIL = [=[
     document.getElementById('stats').innerText = `Nodes: ${graphData.nodes.length} | Edges: ${graphData.links.length}`;
     const chart = echarts.init(document.getElementById('graph'));
 
-    // 计算节点的入度/出度，用于渲染大小
     const nodeDegrees = {};
     graphData.links.forEach(l => {
       nodeDegrees[l.source] = (nodeDegrees[l.source] || 0) + 1;
@@ -240,10 +260,8 @@ local GRAPH_TEMPLATE_TAIL = [=[
 
     graphData.nodes.forEach(n => {
       const degree = nodeDegrees[n.id] || 0;
-      // 核心节点更大 (限制在 10~40 之间)
       n.symbolSize = Math.max(10, Math.min(degree * 4 + 10, 40));
       n.itemStyle = {
-         // Catppuccin 极客配色: 紫色(核心) -> 蓝色(连接) -> 灰白(孤立)
          color: degree > 4 ? '#cba6f7' : (degree > 0 ? '#89b4fa' : '#a6adc8'),
          borderColor: '#11111b', borderWidth: 2
       };
@@ -257,7 +275,8 @@ local GRAPH_TEMPLATE_TAIL = [=[
         layout: 'force',
         data: graphData.nodes,
         links: graphData.links,
-        roam: true, // 开启缩放和拖拽
+        roam: true,          // 开启滚轮缩放与平移
+        draggable: true,     // 👈 修复：开启节点拖拽物理效果！
         label: { position: 'right' },
         force: { repulsion: 250, edgeLength: 80, gravity: 0.1, friction: 0.2 },
         lineStyle: { color: '#585b70', curveness: 0.1, width: 1.5 }
@@ -270,24 +289,19 @@ local GRAPH_TEMPLATE_TAIL = [=[
 </html>
 ]=]
 
--- ==========================================
-
 local function get_workspace_root()
   local buf = api.nvim_get_current_buf()
-  local root = fs.root(buf, { '.marksman.toml', '.git', 'Makefile', '.jj' }) or uv.cwd() or '.'
+  local root = fs.root(buf, { '.marksman.toml', '.git', 'Makefile', '.jj' }) or cwd() or '.'
   return fs_normalize(root)
 end
 
 local function get_target_filepath(title, sub_dir, exact_name)
-  local safe_title = title:gsub('%s+', '-'):gsub('[^%w%-%_%.一-龥]', ''):lower()
+  local safe_title = string_lower(string_gsub(string_gsub(title, '%s+', '-'), '[^%w%-%_%.一-龥]', ''))
   local filename = exact_name and (safe_title .. '.md') or
-    (tostring(os.date('%Y%m%d%H%M')) .. '-' .. safe_title .. '.md')
-
+    (tostring(os_date('%Y%m%d%H%M')) .. '-' .. safe_title .. '.md')
   local root = get_workspace_root()
   local target_dir = fs_normalize(root .. '/' .. sub_dir)
-  if not fs_stat(target_dir) then
-    fn.mkdir(target_dir, 'p')
-  end
+  if not fs_stat(target_dir) then fn_mkdir(target_dir, 'p') end
   return target_dir .. '/' .. filename
 end
 
@@ -304,9 +318,9 @@ end
 
 function M.init_workspace()
   local default_path = get_workspace_root()
-  vim.ui.input({ prompt = ' 🚀 Init Zettel workspace in: ', default = default_path }, function(path)
+  ui_input({ prompt = ' 🚀 Init Zettel workspace in: ', default = default_path }, function(path)
     if not path or path == '' then return end
-    vim.schedule(function()
+    schedule(function()
       local home = os_homedir()
       if home and path:sub(1, 1) == '~' then
         path = home .. path:sub(2)
@@ -336,8 +350,7 @@ function M.init_workspace()
         if not fs_stat(filepath) then
           local fd = fs_open(filepath, 'w', 438)
           if fd then
-            fs_write(fd, content, -1)
-            fs_close(fd)
+            fs_write(fd, content, -1); fs_close(fd)
           end
         end
       end
@@ -351,18 +364,18 @@ function M.init_workspace()
       write_file(path .. '/Cards/Examples/example-usage.md', EXAMPLE_USAGE_CONTENT)
       write_file(path .. '/.meta/user.md', USER_META_CONTENT)
       write_file(path .. '/.meta/agent_rules.md', AGENT_META_CONTENT)
-      vim.notify('[Zettel] Workspace initialized successfully at:\n' .. path, vim.log.levels.INFO)
-      vim.cmd('edit ' .. fn.fnameescape(path .. '/index.md'))
+      notify('[Zettel] Workspace initialized successfully at:\n' .. path, vim.log.levels.INFO)
+      vim.cmd('edit ' .. fn_fnameescape(path .. '/index.md'))
     end)
   end)
 end
 
 function M.new_card()
-  vim.ui.input({ prompt = ' 󰎚 Card Title (Enter for Quick Note): ' }, function(title)
+  ui_input({ prompt = ' 󰎚 Card Title (Enter for Quick Note): ' }, function(title)
     if title == nil then return end
-    vim.schedule(function()
+    schedule(function()
       local is_empty = (title == '')
-      local timestamp = tostring(os.date('%Y%m%d%H%M'))
+      local timestamp = tostring(os_date('%Y%m%d%H%M'))
       local filename_seed = is_empty and timestamp or title
       local final_title = is_empty and 'Untitled' or title
       local filepath = get_target_filepath(filename_seed, 'Cards', true)
@@ -393,7 +406,7 @@ function M.new_inbox_note()
     { name = '📔 Projects (项目)', folder = 'Projects' },
     { name = '👀 People (关于人的)', folder = 'People' },
   }
-  vim.ui.select(scenarios, {
+  ui_select(scenarios, {
     prompt = ' 📂 Select Scenario: ',
     format_item = function(item) return item.name end,
   }, function(choice)
@@ -401,15 +414,15 @@ function M.new_inbox_note()
     local is_daily = (choice.folder == 'Daily')
     local default_title = is_daily and tostring(os.date('%Y-%m-%d')) or ''
 
-    vim.schedule(function()
-      vim.ui.input({ prompt = ' 󰎚 Note Title: ', default = default_title }, function(title)
+    schedule(function()
+      ui_input({ prompt = ' 󰎚 Note Title: ', default = default_title }, function(title)
         if not title or title == '' then return end
-        vim.schedule(function()
+        schedule(function()
           local subfolder = choice.folder == '' and 'Inbox' or ('Inbox/' .. choice.folder)
           local filepath = get_target_filepath(title, subfolder, is_daily)
-          if is_daily and uv.fs_stat(filepath) then
-            vim.cmd('edit ' .. fn.fnameescape(filepath))
-            vim.notify('󰎚 Daily note already exists. Opened.', vim.log.levels.INFO)
+          if is_daily and fs_stat(filepath) then
+            vim.cmd('edit ' .. fn_fnameescape(filepath))
+            notify('󰎚 Daily note already exists. Opened.', vim.log.levels.INFO)
             return
           end
           local lines = {
@@ -434,7 +447,7 @@ function M.backlinks()
   if not ok then return end
   local current_file = fn.expand('%:t:r')
   if current_file == '' then
-    vim.notify('No file to find backlinks for!', vim.log.levels.WARN)
+    notify('No file to find backlinks for!', vim.log.levels.WARN)
     return
   end
   local search_pattern = '\\[\\[' .. current_file .. '\\]\\]'
@@ -448,73 +461,81 @@ end
 
 function M.generate_graph()
   local root = get_workspace_root()
-  if fn.executable('rg') == 0 then
-    vim.notify('[Zettel] "rg" (ripgrep) is required for graph view!', vim.log.levels.ERROR)
+  if fn_executable('rg') == 0 then
+    notify('[Zettel] "rg" (ripgrep) is required for graph view!', vim.log.levels.ERROR)
     return
   end
 
   local cmd = {
     'rg', '-o', '\\[\\[([^\\]]+)\\]\\]',
     '--vimgrep', '--no-heading',
-    '-g', '*.md',
-    '-g', '!{.meta,Assets,.*}/*',
+    '-g', '*.md', '-g', '!{.meta,Assets,.*}/*',
     root
   }
 
-  vim.system(cmd, { text = true }, function(obj)
-    vim.schedule(function()
+  system(cmd, { text = true }, function(obj)
+    schedule(function()
       if obj.code ~= 0 and obj.code ~= 1 then
-        vim.notify('[Zettel] Graph gen failed: ' .. (obj.stderr or 'unknown error'),
-          vim.log.levels.ERROR)
+        notify('[Zettel] Graph gen failed: ' .. (obj.stderr or 'error'), vim.log.levels.ERROR)
         return
       end
 
       local output = obj.stdout or ''
+
       local nodes_map = {}
-      local links_map = {}
+      local edge_map = {}
+      local nodes = {}
       local links = {}
+      local node_cnt = 0
+      local link_cnt = 0
 
-      for line in output:gmatch('[^\r\n]+') do
-        local file, target = line:match('^(.-):%d+:%d+:%[%[(.-)%]%]$')
+      for line in string_gmatch(output, '[^\r\n]+') do
+        local file, target = string_match(line, '^(.-):%d+:%d+:%[%[(.-)%]%]$')
         if file and target then
-          local source = fn.fnamemodify(file, ':t:r') -- 剥离路径和 .md
+          local source = fn_fnamemodify(file, ':t:r')
 
-          nodes_map[source] = true
-          nodes_map[target] = true
+          if not nodes_map[source] then
+            nodes_map[source] = true
+            node_cnt = node_cnt + 1
+            nodes[node_cnt] = { name = source, id = source }
+          end
 
-          local edge_key = source .. '->' .. target
-          if not links_map[edge_key] then
-            links_map[edge_key] = true
-            table.insert(links, { source = source, target = target })
+          if not nodes_map[target] then
+            nodes_map[target] = true
+            node_cnt = node_cnt + 1
+            nodes[node_cnt] = { name = target, id = target }
+          end
+
+          local edge_key = source .. '\0' .. target
+          if not edge_map[edge_key] then
+            edge_map[edge_key] = true
+            link_cnt = link_cnt + 1
+            links[link_cnt] = { source = source, target = target }
           end
         end
       end
 
-      local nodes = {}
-      for node, _ in pairs(nodes_map) do
-        table.insert(nodes, { name = node, id = node })
-      end
-
       local ok, json_str = pcall(json_encode, { nodes = nodes, links = links })
       if not ok then return end
-      local html = GRAPH_TEMPLATE_HEAD .. json_str .. GRAPH_TEMPLATE_TAIL
 
+      local html = GRAPH_TEMPLATE_HEAD .. json_str .. GRAPH_TEMPLATE_TAIL
       local html_path = root .. '/.meta/graph.html'
-      local fd = uv.fs_open(html_path, 'w', 438)
+
+      local fd = fs_open(html_path, 'w', 438)
       if fd then
-        uv.fs_write(fd, html, -1)
-        uv.fs_close(fd)
+        fs_write(fd, html, -1)
+        fs_close(fd)
       end
 
-      if vim.ui.open then
-        vim.ui.open(html_path)
+      if ui_open then
+        ui_open(html_path)
       else
         local open_cmd = fn.has('mac') == 1 and 'open' or
           (fn.has('win32') == 1 and 'start' or 'xdg-open')
-        os.execute(open_cmd .. ' ' .. fn.fnameescape(html_path))
+        os_execute(open_cmd .. ' ' .. fn_fnameescape(html_path))
       end
 
-      vim.notify('🌌 Graph generated!', vim.log.levels.INFO)
+      notify('🌌 Zettel Graph generated! (' .. node_cnt .. ' nodes)', vim.log.levels.INFO)
     end)
   end)
 end
