@@ -128,7 +128,7 @@ local EXAMPLE_TAG_CONTENT = [=[
 
 **卡片盒黄金法则 (Zettelkasten Golden Rules)**：
 
-- **双向链接 (`[[xxx]]`)**：连接**逻辑与内容**，将相关笔记织成知识图谱。 (Connects logic and content to weave a knowledge graph).
+- **双向链接 (`[[]]`)**：连接**逻辑与内容**，将相关笔记织成知识图谱。 (Connects logic and content to weave a knowledge graph).
 - **标签 (`tags: []`)**：管理笔记的**状态、类型或维度**，方便进行全局搜索和过滤。 (Manages the state, type, or context of notes for easy filtering).
 
 ## 1. 状态管理标签 (State Tags - Recommended🌟)
