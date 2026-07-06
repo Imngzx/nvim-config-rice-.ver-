@@ -105,7 +105,7 @@ local EXAMPLE_CARD_CONTENT = [=[
 ---
 title: Example Card
 date: 2026-07-05 14:11:26
-tags: [[xxx]]
+tags: [example-tag]
 ---
 
 # Example
@@ -343,7 +343,7 @@ function M.init_workspace()
       for i = 1, #dirs do
         local dir = dirs[i]
         if not fs_stat(dir) then
-          fn.mkdir(dir, 'p')
+          fn_mkdir(dir, 'p')
         end
       end
       local function write_file(filepath, content)
