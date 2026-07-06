@@ -236,4 +236,5 @@ return {
   { '<leader>zI', function() require('custom.zettel').init_workspace() end, desc = 'Zettel: Initialize Zettelkasten Workspace' },
   { '<leader>zi', function() require('custom.zettel').new_inbox_note() end, desc = 'Zettel: New Inbox Note' },
   { '<leader>zb', function() require('custom.zettel').backlinks() end, desc = 'Zettel: Find Backlinks' },
+  { '<leader>zg', function() require('custom.zettel').generate_graph() end, desc = 'Zettel: Generate graph' },
 }

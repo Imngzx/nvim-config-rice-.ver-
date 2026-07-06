@@ -11,6 +11,7 @@ local fs_write = uv.fs_write
 local fs_close = uv.fs_close
 local fs_normalize = fs.normalize
 local os_homedir = uv.os_homedir
+local json_encode = vim.json and vim.json.encode or fn.json_encode
 
 local TOML_CONTENT = [=[
 # .marksman.toml
@@ -19,6 +20,7 @@ markdown.extension = ".md"
 ]=]
 
 local GITIGNORE = [=[
+.meta/graph.html
 ]=]
 
 local JSON_CONTENT = [=[
@@ -28,7 +30,6 @@ local JSON_CONTENT = [=[
 }
 ]=]
 
-local EDITORCONFIG = [=[
 local EDITORCONFIG = [=[
 root = true
 
@@ -203,6 +204,74 @@ local AGENT_META_CONTENT = [=[
 - **Style**: 专业、精准，不要为了寒暄浪费 Token。
 ]=]
 
+-- ======== Graph View HTML Templates (Zero Dependency & Bypass CORS) ========
+local GRAPH_TEMPLATE_HEAD = [=[
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zettelkasten Graph</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #1e1e2e; font-family: 'Cascadia Code', monospace; overflow: hidden; }
+    #graph { width: 100vw; height: 100vh; }
+    .hud { position: absolute; top: 15px; left: 20px; color: #a6adc8; z-index: 10; pointer-events: none; }
+    h3 { margin: 0 0 5px 0; color: #cba6f7; text-transform: uppercase; letter-spacing: 2px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+</head>
+<body>
+  <div class="hud"><h3>🌌 Zettel Graph</h3><span id="stats"></span></div>
+  <div id="graph"></div>
+  <script>
+    const graphData =
+]=]
+
+local GRAPH_TEMPLATE_TAIL = [=[
+    ;
+    document.getElementById('stats').innerText = `Nodes: ${graphData.nodes.length} | Edges: ${graphData.links.length}`;
+    const chart = echarts.init(document.getElementById('graph'));
+
+    // 计算节点的入度/出度，用于渲染大小
+    const nodeDegrees = {};
+    graphData.links.forEach(l => {
+      nodeDegrees[l.source] = (nodeDegrees[l.source] || 0) + 1;
+      nodeDegrees[l.target] = (nodeDegrees[l.target] || 0) + 1;
+    });
+
+    graphData.nodes.forEach(n => {
+      const degree = nodeDegrees[n.id] || 0;
+      // 核心节点更大 (限制在 10~40 之间)
+      n.symbolSize = Math.max(10, Math.min(degree * 4 + 10, 40));
+      n.itemStyle = {
+         // Catppuccin 极客配色: 紫色(核心) -> 蓝色(连接) -> 灰白(孤立)
+         color: degree > 4 ? '#cba6f7' : (degree > 0 ? '#89b4fa' : '#a6adc8'),
+         borderColor: '#11111b', borderWidth: 2
+      };
+      n.label = { show: degree > 0, color: '#cdd6f4', fontSize: 12 };
+    });
+
+    const option = {
+      tooltip: {},
+      series: [{
+        type: 'graph',
+        layout: 'force',
+        data: graphData.nodes,
+        links: graphData.links,
+        roam: true, // 开启缩放和拖拽
+        label: { position: 'right' },
+        force: { repulsion: 250, edgeLength: 80, gravity: 0.1, friction: 0.2 },
+        lineStyle: { color: '#585b70', curveness: 0.1, width: 1.5 }
+      }]
+    };
+    chart.setOption(option);
+    window.addEventListener('resize', () => chart.resize());
+  </script>
+</body>
+</html>
+]=]
+
+-- ==========================================
+
 local function get_workspace_root()
   local buf = api.nvim_get_current_buf()
   local root = fs.root(buf, { '.marksman.toml', '.git', 'Makefile', '.jj' }) or uv.cwd() or '.'
@@ -375,6 +444,79 @@ function M.backlinks()
     search = search_pattern,
     regex = true,
   })
+end
+
+function M.generate_graph()
+  local root = get_workspace_root()
+  if fn.executable('rg') == 0 then
+    vim.notify('[Zettel] "rg" (ripgrep) is required for graph view!', vim.log.levels.ERROR)
+    return
+  end
+
+  local cmd = {
+    'rg', '-o', '\\[\\[([^\\]]+)\\]\\]',
+    '--vimgrep', '--no-heading',
+    '-g', '*.md',
+    '-g', '!{.meta,Assets,.*}/*',
+    root
+  }
+
+  vim.system(cmd, { text = true }, function(obj)
+    vim.schedule(function()
+      if obj.code ~= 0 and obj.code ~= 1 then
+        vim.notify('[Zettel] Graph gen failed: ' .. (obj.stderr or 'unknown error'),
+          vim.log.levels.ERROR)
+        return
+      end
+
+      local output = obj.stdout or ''
+      local nodes_map = {}
+      local links_map = {}
+      local links = {}
+
+      for line in output:gmatch('[^\r\n]+') do
+        local file, target = line:match('^(.-):%d+:%d+:%[%[(.-)%]%]$')
+        if file and target then
+          local source = fn.fnamemodify(file, ':t:r') -- 剥离路径和 .md
+
+          nodes_map[source] = true
+          nodes_map[target] = true
+
+          local edge_key = source .. '->' .. target
+          if not links_map[edge_key] then
+            links_map[edge_key] = true
+            table.insert(links, { source = source, target = target })
+          end
+        end
+      end
+
+      local nodes = {}
+      for node, _ in pairs(nodes_map) do
+        table.insert(nodes, { name = node, id = node })
+      end
+
+      local ok, json_str = pcall(json_encode, { nodes = nodes, links = links })
+      if not ok then return end
+      local html = GRAPH_TEMPLATE_HEAD .. json_str .. GRAPH_TEMPLATE_TAIL
+
+      local html_path = root .. '/.meta/graph.html'
+      local fd = uv.fs_open(html_path, 'w', 438)
+      if fd then
+        uv.fs_write(fd, html, -1)
+        uv.fs_close(fd)
+      end
+
+      if vim.ui.open then
+        vim.ui.open(html_path)
+      else
+        local open_cmd = fn.has('mac') == 1 and 'open' or
+          (fn.has('win32') == 1 and 'start' or 'xdg-open')
+        os.execute(open_cmd .. ' ' .. fn.fnameescape(html_path))
+      end
+
+      vim.notify('🌌 Graph generated!', vim.log.levels.INFO)
+    end)
+  end)
 end
 
 return M
