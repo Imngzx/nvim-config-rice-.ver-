@@ -459,53 +459,66 @@ function M.backlinks()
   })
 end
 
-function M.generate_graph()
+local auto_graph_setup = false
+--- @param silent boolean?
+function M.generate_graph(silent)
   local root = get_workspace_root()
   if fn_executable('rg') == 0 then
-    notify('[Zettel] "rg" (ripgrep) is required for graph view!', vim.log.levels.ERROR)
+    if not silent then
+      notify('[Zettel] "rg" (ripgrep) is required for graph view!',
+        vim.log.levels.ERROR)
+    end
     return
   end
-
+  if not auto_graph_setup then
+    auto_graph_setup = true
+    api.nvim_create_autocmd('BufWritePost', {
+      group = api.nvim_create_augroup('ZettelAutoGraph', { clear = true }),
+      pattern = '*.md',
+      callback = function(args)
+        local file_path = api.nvim_buf_get_name(args.buf)
+        if file_path:find(root, 1, true) then
+          M.generate_graph(true) -- Silent update!
+        end
+      end
+    })
+  end
   local cmd = {
     'rg', '-o', '\\[\\[([^\\]]+)\\]\\]',
     '--vimgrep', '--no-heading',
     '-g', '*.md', '-g', '!{.meta,Assets,.*}/*',
     root
   }
-
   system(cmd, { text = true }, function(obj)
     schedule(function()
       if obj.code ~= 0 and obj.code ~= 1 then
-        notify('[Zettel] Graph gen failed: ' .. (obj.stderr or 'error'), vim.log.levels.ERROR)
+        if not silent then
+          notify('[Zettel] Graph gen failed: ' .. (obj.stderr or 'error'),
+            vim.log.levels.ERROR)
+        end
         return
       end
-
       local output = obj.stdout or ''
-
       local nodes_map = {}
       local edge_map = {}
       local nodes = {}
       local links = {}
       local node_cnt = 0
       local link_cnt = 0
-
       for line in string_gmatch(output, '[^\r\n]+') do
         local file, target = string_match(line, '^(.-):%d+:%d+:%[%[(.-)%]%]$')
         if file and target then
           local source = fn_fnamemodify(file, ':t:r')
-
           if not nodes_map[source] then
             nodes_map[source] = true
             node_cnt = node_cnt + 1
             nodes[node_cnt] = { name = source, id = source }
           end
-
           if not nodes_map[target] then
             nodes_map[target] = true
             node_cnt = node_cnt + 1
             nodes[node_cnt] = { name = target, id = target }
           end
-
           local edge_key = source .. '\0' .. target
           if not edge_map[edge_key] then
             edge_map[edge_key] = true
@@ -514,19 +527,16 @@ function M.generate_graph()
           end
         end
       end
-
       local ok, json_str = pcall(json_encode, { nodes = nodes, links = links })
       if not ok then return end
-
       local html = GRAPH_TEMPLATE_HEAD .. json_str .. GRAPH_TEMPLATE_TAIL
       local html_path = root .. '/.meta/graph.html'
-
       local fd = fs_open(html_path, 'w', 438)
       if fd then
         fs_write(fd, html, -1)
         fs_close(fd)
       end
-
+      if silent then return end
       if ui_open then
         ui_open(html_path)
       else
@@ -534,8 +544,10 @@ function M.generate_graph()
           (fn.has('win32') == 1 and 'start' or 'xdg-open')
         os_execute(open_cmd .. ' ' .. fn_fnameescape(html_path))
       end
-
-      notify('🌌 Zettel Graph generated! (' .. node_cnt .. ' nodes)', vim.log.levels.INFO)
+      notify(
+        '🌌 Zettel Graph generated! (' ..
+        node_cnt .. ' nodes)\n⚡ Auto-update enabled: Hit F5 in browser after saving your notes!',
+        vim.log.levels.INFO)
     end)
   end)
 end
