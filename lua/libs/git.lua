@@ -1,4 +1,3 @@
--- this is for plugins
 local M = {}
 
 local is_setup = false
@@ -10,9 +9,7 @@ M.config = {
 function M.update_git_branch(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
 
-  if vim.bo[bufnr].buftype ~= ''
-    or vim.b[bufnr].my_git_fetching
-    or vim.b[bufnr].my_git_not_repo then
+  if vim.bo[bufnr].buftype ~= '' or vim.b[bufnr].my_git_fetching then
     return
   end
 
@@ -23,7 +20,10 @@ function M.update_git_branch(bufnr)
   if M.config.get_git_root then
     dir = M.config.get_git_root(filepath)
     if not dir then
-      vim.b[bufnr].my_git_not_repo = true
+      if vim.b[bufnr].my_git_branch then
+        vim.b[bufnr].my_git_branch = nil
+        vim.schedule(function() vim.cmd('redrawstatus!') end)
+      end
       return
     end
   else
@@ -42,13 +42,11 @@ function M.update_git_branch(bufnr)
           local new_branch = ''
           if obj.code == 0 and obj.stdout and obj.stdout ~= '' then
             new_branch = vim.trim(obj.stdout)
-          else
-            vim.b[bufnr].my_git_not_repo = true
           end
 
           if vim.b[bufnr].my_git_branch ~= new_branch then
             vim.b[bufnr].my_git_branch = new_branch
-            vim.api.nvim_command('redrawstatus')
+            vim.cmd('redrawstatus!')
           end
         end
       end)
@@ -61,10 +59,21 @@ function M.setup(opts)
   if is_setup then return end
   is_setup = true
 
-  vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'FocusGained' }, {
+  vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'FocusGained', 'SessionLoadPost' }, {
     group = vim.api.nvim_create_augroup('LibsSharedGitFetcher', { clear = true }),
     callback = function(args)
-      M.update_git_branch(args.buf)
+      if args.event == 'SessionLoadPost' then
+        vim.defer_fn(function()
+          local bufs = vim.api.nvim_list_bufs()
+          for i = 1, #bufs do
+            if vim.api.nvim_buf_is_loaded(bufs[i]) then
+              M.update_git_branch(bufs[i])
+            end
+          end
+        end, 100)
+      else
+        M.update_git_branch(args.buf)
+      end
     end,
   })
 end
