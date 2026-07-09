@@ -11,10 +11,11 @@ local fs_write = uv.fs_write
 local fs_close = uv.fs_close
 local fs_normalize = fs.normalize
 local os_homedir = uv.os_homedir
-local json_encode = vim.json and vim.json.encode or fn.json_encode
+local json_encode = vim.json.encode
 
 local string_match = string.match
 local string_gmatch = string.gmatch
+local fn_substitute = fn.substitute
 local string_gsub = string.gsub
 local string_lower = string.lower
 local fn_fnamemodify = fn.fnamemodify
@@ -296,7 +297,8 @@ local function get_workspace_root()
 end
 
 local function get_target_filepath(title, sub_dir, exact_name)
-  local safe_title = string_lower(string_gsub(string_gsub(title, '%s+', '-'), '[^%w%-%_%.一-龥]', ''))
+  local step1 = string_lower(string_gsub(title, '%s+', '-'))
+  local safe_title = fn_substitute(step1, '\\v[^a-z0-9_.\\-一-龥ぁ-んァ-ヶ가-힣]', '', 'g')
   local filename = exact_name and (safe_title .. '.md') or
     (tostring(os_date('%Y%m%d%H%M')) .. '-' .. safe_title .. '.md')
   local root = get_workspace_root()
@@ -347,12 +349,17 @@ function M.init_workspace()
         end
       end
       local function write_file(filepath, content)
-        if not fs_stat(filepath) then
-          local fd = fs_open(filepath, 'w', 438)
-          if fd then
-            fs_write(fd, content, -1); fs_close(fd)
+        fs_stat(filepath, function(_, stat)
+          if not stat then
+            fs_open(filepath, 'w', 438, function(_, fd)
+              if fd then
+                fs_write(fd, content, -1, function()
+                  fs_close(fd)
+                end)
+              end
+            end)
           end
-        end
+        end)
       end
       write_file(path .. '/.marksman.toml', TOML_CONTENT)
       write_file(path .. '/.markdownlint.json', JSON_CONTENT)
@@ -470,6 +477,7 @@ function M.generate_graph(silent)
     end
     return
   end
+
   if not auto_graph_setup then
     auto_graph_setup = true
     api.nvim_create_autocmd('BufWritePost', {
@@ -483,12 +491,14 @@ function M.generate_graph(silent)
       end
     })
   end
+
   local cmd = {
     'rg', '-o', '\\[\\[([^\\]]+)\\]\\]',
     '--vimgrep', '--no-heading',
     '-g', '*.md', '-g', '!{.meta,Assets,.*}/*',
     root
   }
+
   system(cmd, { text = true }, function(obj)
     schedule(function()
       if obj.code ~= 0 and obj.code ~= 1 then
@@ -498,6 +508,7 @@ function M.generate_graph(silent)
         end
         return
       end
+
       local output = obj.stdout or ''
       local nodes_map = {}
       local edge_map = {}
@@ -505,6 +516,7 @@ function M.generate_graph(silent)
       local links = {}
       local node_cnt = 0
       local link_cnt = 0
+
       for line in string_gmatch(output, '[^\r\n]+') do
         local file, target = string_match(line, '^(.-):%d+:%d+:%[%[(.-)%]%]$')
         if file and target then
@@ -527,28 +539,40 @@ function M.generate_graph(silent)
           end
         end
       end
+
       local ok, json_str = pcall(json_encode, { nodes = nodes, links = links })
       if not ok then return end
       local html = GRAPH_TEMPLATE_HEAD .. json_str .. GRAPH_TEMPLATE_TAIL
       local html_path = root .. '/.meta/graph.html'
-      local fd = fs_open(html_path, 'w', 438)
-      if fd then
-        fs_write(fd, html, -1)
-        fs_close(fd)
-      end
-      if silent then return end
-      if ui_open then
-        ui_open(html_path)
-      else
-        local utils = require('libs.utils')
-        local open_cmd = utils.is_mac() and 'open' or
-          (utils.is_windows() and 'start' or 'xdg-open')
-        os_execute(open_cmd .. ' ' .. fn_fnameescape(html_path))
-      end
-      notify(
-        '🌌 Zettel Graph generated! (' ..
-        node_cnt .. ' nodes)\n⚡ Auto-update enabled: Hit F5 in browser after saving your notes!',
-        vim.log.levels.INFO)
+      fs_open(html_path, 'w', 438, function(_, fd)
+        if fd then
+          fs_write(fd, html, -1, function()
+            fs_close(fd)
+            if silent then return end
+            schedule(function()
+              if ui_open then
+                ui_open(html_path)
+              else
+                local utils = require('libs.utils')
+                local open_cmd = utils.is_mac() and 'open' or
+                  (utils.is_windows() and 'start' or 'xdg-open')
+                os_execute(open_cmd .. ' ' .. fn_fnameescape(html_path))
+              end
+              notify(
+                '🌌 Zettel Graph generated! (' ..
+                node_cnt ..
+                ' nodes)\n⚡ Auto-update enabled: Hit F5 in browser after saving your notes!',
+                vim.log.levels.INFO)
+            end)
+          end)
+        else
+          if not silent then
+            schedule(function()
+              notify('[Zettel] Failed to open graph HTML for writing', vim.log.levels.ERROR)
+            end)
+          end
+        end
+      end)
     end)
   end)
 end
