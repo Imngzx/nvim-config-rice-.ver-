@@ -52,27 +52,19 @@ map('n', '<leader>pv', '<c-w>v', { desc = '[Panel] Split window right', remap = 
 
 -- Move between windows
 map('n', '<c-h>', '<c-w>h', { desc = 'Move to left window' })
-map('n', '<bs>', '<c-w>h', { desc = 'Move to left window' }) -- Fix <bs> issue
 map('n', '<c-j>', '<c-w>j', { desc = 'Move to below window' })
 map('n', '<c-k>', '<c-w>k', { desc = 'Move to above window' })
 map('n', '<c-l>', '<c-w>l', { desc = 'Move to right window' })
 
 -- Resize splits
-map('n', '<c-left>', function()
-  vim.api.nvim_win_set_width(0, vim.api.nvim_win_get_width(0) - vim.v.count1)
-end, { desc = 'Decrease window width' })
-
-map('n', '<c-right>', function()
-  vim.api.nvim_win_set_width(0, vim.api.nvim_win_get_width(0) + vim.v.count1)
-end, { desc = 'Increase window width' })
-
-map('n', '<c-down>', function()
-  vim.api.nvim_win_set_height(0, vim.api.nvim_win_get_height(0) - vim.v.count1)
-end, { desc = 'Decrease window height' })
-
-map('n', '<c-up>', function()
-  vim.api.nvim_win_set_height(0, vim.api.nvim_win_get_height(0) + vim.v.count1)
-end, { desc = 'Increase window height' })
+map('n', '<c-left>', function() vim.cmd('vertical resize -' .. vim.v.count1) end,
+  { desc = 'Decrease window width' })
+map('n', '<c-right>', function() vim.cmd('vertical resize +' .. vim.v.count1) end,
+  { desc = 'Increase window width' })
+map('n', '<c-down>', function() vim.cmd('resize -' .. vim.v.count1) end,
+  { desc = 'Decrease window height' })
+map('n', '<c-up>', function() vim.cmd('resize +' .. vim.v.count1) end,
+  { desc = 'Increase window height' })
 
 -- Terminal
 map('n', '<leader>pt', function()
