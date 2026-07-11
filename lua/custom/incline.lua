@@ -16,7 +16,6 @@ local nvim_win_set_config = api.nvim_win_set_config
 local nvim_buf_set_lines = api.nvim_buf_set_lines
 local nvim_buf_clear_namespace = api.nvim_buf_clear_namespace
 local nvim_buf_set_extmark = api.nvim_buf_set_extmark
-local nvim_get_hl = api.nvim_get_hl
 local nvim_set_hl = api.nvim_set_hl
 local nvim_create_buf = api.nvim_create_buf
 local nvim_open_win = api.nvim_open_win
@@ -32,7 +31,6 @@ local line = fn.line
 local pcall = pcall
 
 local ns = nvim_create_namespace('HandcraftedIncline')
-local mini_icons_cache = nil
 
 -- NOTE: 可选 'none', 'rounded', 'single'
 M.config = {
@@ -40,15 +38,10 @@ M.config = {
   panel_bg = '#44406e',
 }
 
-local function get_hl_hex(name, attr)
-  local ok, hl = pcall(nvim_get_hl, 0, { name = name, link = false })
-  if ok and hl[attr] then return string.format('#%06x', hl[attr]) end
-  return nil
-end
-
 local function get_contrast_color(hex_str)
-  local bg_hex = get_hl_hex('Normal', 'bg') or '#1e1e2e'
-  local fg_hex = get_hl_hex('Normal', 'fg') or '#cdd6f4'
+  local Snacks = require('snacks')
+  local bg_hex = Snacks.util.color('Normal', 'bg') or '#1e1e2e'
+  local fg_hex = Snacks.util.color('Normal', 'fg') or '#cdd6f4'
   if not hex_str or #hex_str ~= 7 then return bg_hex end
   local r, g, b = tonumber(hex_str:sub(2, 3), 16), tonumber(hex_str:sub(4, 5), 16),
     tonumber(hex_str:sub(6, 7), 16)
@@ -112,17 +105,12 @@ local function update_incline()
       goto continue
     end
 
-    local icon, hl = '', 'Normal'
-    if mini_icons_cache == nil then
-      local ok_icons, mini_icons = pcall(require, 'mini.icons')
-      mini_icons_cache = ok_icons and mini_icons or false
-    end
+    local icon, hl = require('snacks').util.icon(filename, 'file')
 
-    if mini_icons_cache then
-      icon, hl = mini_icons_cache.get('file', filename)
-    end
+    icon = icon or ''
+    hl = hl or 'Normal'
 
-    local ft_color = get_hl_hex(hl, 'fg') or '#ABB2BF'
+    local ft_color = require('snacks').util.color(hl, 'fg') or '#ABB2BF'
     local contrast_fg = get_contrast_color(ft_color)
 
     local safe_hl = hl:gsub('[^%w_]', '_')

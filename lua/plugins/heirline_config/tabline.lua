@@ -30,15 +30,12 @@ local function get_opt_fast(name, bufnr)
   return api.nvim_get_option_value(name, _opt_args)
 end
 
-local _bpm, _icons, _snacks
+local _bpm, _snacks
 local function get_bpm()
   if not _bpm then pcall(function() _bpm = require('bpm') end) end
   return _bpm
 end
-local function get_icons()
-  if not _icons then pcall(function() _icons = require('mini.icons') end) end
-  return _icons
-end
+
 local function get_snacks()
   if not _snacks then pcall(function() _snacks = require('snacks') end) end
   return _snacks
@@ -114,15 +111,9 @@ local function get_buf_state(bufnr)
   state.warns = diags[severity.WARN] or 0
 
   state.is_modified = get_opt_fast('modified', bufnr)
-  local icons = get_icons()
-  if icons then
-    local icon, hl = icons.get('file', buf_get_name(bufnr))
-    state.icon = icon
-    state.icon_hl = hl
-  else
-    state.icon = nil
-    state.icon_hl = nil
-  end
+  local icon, hl = get_snacks().util.icon(buf_get_name(bufnr), 'file')
+  state.icon = icon
+  state.icon_hl = hl
 
   local w = 7
   w = w + (state.icon and nvim_strwidth(state.icon .. ' ') or 2)

@@ -39,14 +39,10 @@ resonance.load({
     vim.api.nvim_create_autocmd('ColorScheme', {
       pattern = '*',
       callback = function()
-        -- 确保 Minimap 背景透明
         vim.api.nvim_set_hl(0, 'NeominimapBackground', { bg = 'NONE' })
 
-        -- 扒取 Catppuccin 主题里的 Visual（选中颜色），大概是浅灰色/暗蓝色
-        local ok, vis_hl = pcall(vim.api.nvim_get_hl, 0, { name = 'Visual', link = false })
-        local block_color = (ok and vis_hl.bg) and string.format('#%06x', vis_hl.bg) or '#45475a'
+        local block_color = require('snacks').util.color('Visual', 'bg') or '#45475a'
 
-        -- 强行把这个颜色塞给 Neominimap 的视口指示器！
         vim.api.nvim_set_hl(0, 'NeominimapCursorLine', { bg = block_color })
       end,
     })

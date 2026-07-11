@@ -47,15 +47,6 @@ local function get_ts_text(...)
   return ts_get_node_text_cache(...)
 end
 
-local mini_icons_cache = nil
-local function get_mini_icons()
-  if mini_icons_cache == nil then
-    local ok, m = pcall(require, 'mini.icons')
-    mini_icons_cache = ok and m or false
-  end
-  return mini_icons_cache
-end
-
 local BUF_ZERO = { buf = 0 }
 local FIELDS_TO_TRY = { 'name', 'key', 'property', 'declarator', 'item' }
 local HEADING_ICONS = { 'H1', 'H2', 'H3', 'H4', 'H5', 'H6' }
@@ -245,9 +236,9 @@ local FilePath = {
     local dir = fs_dirname(rel_path) or ''
     local tail = fs_basename(rel_path) or ''
 
-    local mini_icons = get_mini_icons()
-    local dir_icon, dir_hl = '󰉋', 'Directory'
-    if mini_icons then dir_icon, dir_hl = mini_icons.get('directory', 'folder') end
+    local Snacks = require('snacks')
+
+    local dir_icon, dir_hl = Snacks.util.icon('folder', 'directory')
 
     local full_rendered, short_rendered = '', ''
 
@@ -264,8 +255,7 @@ local FilePath = {
       end
     end
 
-    local file_icon, file_hl = '󰈔', 'Comment'
-    if mini_icons then file_icon, file_hl = mini_icons.get('file', filename) end
+    local file_icon, file_hl = Snacks.util.icon(filename, 'file')
 
     tail = escape_stl(tail)
     local tail_part = string_format('%%#%s#%s %%#WinBar#%s', file_hl, file_icon, tail)
