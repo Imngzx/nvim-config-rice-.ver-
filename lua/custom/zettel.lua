@@ -396,7 +396,7 @@ function M.new_card()
         '# ' .. final_title,
         '',
         'Links: [[index]]',
-        'Tags Guide: [[example-tag]]',
+        -- 'Tags Guide: [[example-tag]]',
       }
       createbuf_and_curpos(filepath, lines, { 7, 2 })
     end)
