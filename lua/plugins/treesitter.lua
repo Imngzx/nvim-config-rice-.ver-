@@ -1,7 +1,7 @@
 local resonance = require('resonance')
 
 local parsers = {
-  'c', 'cpp', 'python', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
+  'c', 'cpp', 'make', 'cmake', 'python', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
   'bash', 'json', 'yaml', 'toml', 'rust', 'zig', 'javascript', 'typescript', 'vue',
   'latex', 'html', 'regex', 'css', 'gitcommit', 'fish', 'kdl',
 }
