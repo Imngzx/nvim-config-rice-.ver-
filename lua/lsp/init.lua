@@ -42,7 +42,25 @@ local custom_servers = setmetatable({}, {
 
 -- pls type in which one do you want to use (custom lsp)
 local custom_server_keys = {
-  'clangd', 'zls', 'rust_analyzer', 'qmlls6', 'lua_ls', 'basedpyright', 'ruff'
+  -- c, c++
+  'clangd',
+
+  -- zig
+
+  'zls',
+
+  -- rust
+  'rust_analyzer',
+
+  -- qml (for quickshell)
+  'qmlls6',
+
+  -- lua
+  'lua_ls',
+
+  -- python
+  'basedpyright',
+  'ruff'
 }
 
 -- 【3】this handles tool installation from mason other than lsp
