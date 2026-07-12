@@ -59,11 +59,7 @@ local buf_id = nil
 local ns = nvim_create_namespace('diy_lsp_loading')
 
 local function cleanup()
-  if timer then
-    timer:stop()
-    if not timer:is_closing() then timer:close() end
-    timer = nil
-  end
+  timer = require('snacks').util.stop(timer)
   if win_id and nvim_win_is_valid(win_id) then
     nvim_win_close(win_id, true)
     win_id = nil

@@ -1,5 +1,3 @@
--- lua/custom/git-blame.lua
-
 local M = {}
 
 local api = vim.api
@@ -233,10 +231,7 @@ function M.setup(opts)
     group = aug,
     callback = function(args)
       local b = args.buf
-      if fetch_timers[b] then
-        if not fetch_timers[b]:is_closing() then fetch_timers[b]:close() end
-        fetch_timers[b] = nil
-      end
+      fetch_timers[b] = require('snacks').util.stop(fetch_timers[b])
       if b_state[b] then
         if b_state[b].job then b_state[b].job:kill('sigterm') end
         b_state[b] = nil

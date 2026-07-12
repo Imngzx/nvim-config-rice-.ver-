@@ -98,8 +98,7 @@ function M.clear()
   if not vim.g.bg_transparent then return end
 
   for i = 1, #M._timers do
-    local t = M._timers[i]
-    pcall(function() if t and not t:is_closing() then t:close() end end)
+    require('snacks').util.stop(M._timers[i])
   end
   M._timers = {}
 
@@ -109,7 +108,7 @@ function M.clear()
   if timer then
     timer:start(800, 0, vim.schedule_wrap(function()
       do_clear()
-      pcall(function() if not timer:is_closing() then timer:close() end end)
+      require('snacks').util.stop(timer)
     end))
     table.insert(M._timers, timer)
   end
@@ -129,8 +128,7 @@ function M.disable()
   cache_write()
 
   for i = 1, #M._timers do
-    local t = M._timers[i]
-    pcall(function() if t and not t:is_closing() then t:close() end end)
+    require('snacks').util.stop(M._timers[i])
   end
   M._timers = {}
 

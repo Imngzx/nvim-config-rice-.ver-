@@ -156,13 +156,7 @@ return {
         picker:show_preview()
       end,
       on_close = function(picker)
-        if picker._preview_timer then
-          picker._preview_timer:stop()
-          if not picker._preview_timer:is_closing() then
-            picker._preview_timer:close()
-          end
-          picker._preview_timer = nil
-        end
+        picker._preview_timer = Snacks.util.stop(picker._preview_timer)
         vim.g.explorer_size = picker.layout.root:size()
         if picker.preview and picker.preview.win then
           picker.preview.win:close()
