@@ -43,7 +43,7 @@ return {
   -- ==========================================
   -- 🐙 [ Git ]
   -- ==========================================
-  { '<leader>gl', function() Snacks.picker.git_log() end, desc = 'Git log' },
+  { '<leader>gl', function() Snacks.lazygit.log_file() end, desc = 'Lazygit' },
   { '<leader>gL', function() Snacks.gitbrowse() end, desc = 'Git browse link', mode = { 'n', 'v' } },
   { '<leader>gb', function() Snacks.git.blame_line() end, desc = 'Git blame line' },
   { '<leader>gB', function() Snacks.picker.git_branches() end, desc = 'Git branches' },
