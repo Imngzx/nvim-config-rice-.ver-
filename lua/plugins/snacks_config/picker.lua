@@ -141,22 +141,17 @@ return {
         picker.main = preview_win.win
 
         local orig_show_preview = picker.show_preview
-        picker._preview_timer = vim.uv.new_timer()
 
-        picker.show_preview = function(self)
-          if not self._preview_timer then return end
-          self._preview_timer:stop()
-          self._preview_timer:start(60, 0, vim.schedule_wrap(function()
-            if self.preview and self.preview.win and self.preview.win:valid() then
-              orig_show_preview(self)
-            end
-          end))
-        end
+        picker.show_preview = require('snacks').util.debounce(function()
+          if picker.preview and picker.preview.win and picker.preview.win:valid() then
+            ---@diagnostic disable-next-line: redundant-parameter
+            orig_show_preview(picker)
+          end
+        end, { ms = 60 })
 
         picker:show_preview()
       end,
       on_close = function(picker)
-        picker._preview_timer = Snacks.util.stop(picker._preview_timer)
         vim.g.explorer_size = picker.layout.root:size()
         if picker.preview and picker.preview.win then
           picker.preview.win:close()
