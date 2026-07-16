@@ -1,7 +1,7 @@
 {
   "plugins": {
     "ascetic.nvim": {
-      "rev": "0e39a31789c0ec8753aab6cffaf830e55a9858d7",
+      "rev": "d66d62ab7be1b28aa8e54efc9e28261e3bd54839",
       "src": "https://github.com/Imngzx/ascetic.nvim"
     },
     "atone.nvim": {
@@ -143,7 +143,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "3e9a37d0e0d20eda12fad29ef8023c478d1d79aa",
+      "rev": "77e3acbb4a369cc664bae23bcc4c0e627a916760",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "showkeys": {
