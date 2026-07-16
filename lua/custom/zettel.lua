@@ -381,7 +381,8 @@ function M.new_card()
   ui_input({ prompt = ' 󰎚 Card Title (Enter for Quick Note): ' }, function(title)
     if title == nil then return end
     schedule(function()
-      local is_empty = (title == '')
+      local safe_input = vim.trim(title)
+      local is_empty = (safe_input == '')
       local timestamp = tostring(os_date('%Y%m%d%H%M'))
       local filename_seed = is_empty and timestamp or title
       local final_title = is_empty and 'Untitled' or title
@@ -423,7 +424,7 @@ function M.new_inbox_note()
 
     schedule(function()
       ui_input({ prompt = ' 󰎚 Note Title: ', default = default_title }, function(title)
-        if not title or title == '' then return end
+        if not title or vim.trim(title) == '' then return end
         schedule(function()
           local subfolder = choice.folder == '' and 'Inbox' or ('Inbox/' .. choice.folder)
           local filepath = get_target_filepath(title, subfolder, is_daily)
