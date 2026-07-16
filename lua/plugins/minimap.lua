@@ -47,6 +47,6 @@ resonance.load({
       end,
     })
     -- 强行触发一次
-    vim.api.nvim_exec_autocmds('ColorScheme', {})
+    vim.api.nvim_exec_autocmds('ColorScheme')
   end
 })
