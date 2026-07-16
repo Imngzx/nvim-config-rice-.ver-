@@ -148,3 +148,6 @@ map('n', '<leader>up', function()
 end, { desc = 'Pick Vibe Color' })
 
 map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+
+map('n', '<leader>ch', function() require('custom.cheatsheet').toggle() end,
+  { desc = 'Toggle Cheatsheet' })
