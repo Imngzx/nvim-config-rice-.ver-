@@ -1,108 +1,122 @@
 local M = {}
 
--- =========================================================
--- ⚡ 1. 局部化 C-API (极致避免全局查表开销)
--- =========================================================
 local api = vim.api
 local fn = vim.fn
+
 local math_floor = math.floor
 local table_concat = table.concat
+local table_sort = table.sort
 local string_rep = string.rep
-local strdisplaywidth = api.nvim_strwidth
-local strcharpart = fn.strcharpart
+local string_sub = string.sub
+local string_format = string.format
+local string_byte = string.byte
 
 local nvim_buf_set_lines = api.nvim_buf_set_lines
 local nvim_buf_set_extmark = api.nvim_buf_set_extmark
 local nvim_get_keymap = api.nvim_get_keymap
+local nvim_buf_get_keymap = api.nvim_buf_get_keymap
+local nvim_get_current_buf = api.nvim_get_current_buf
+local nvim_strwidth = api.nvim_strwidth
+local strcharpart = fn.strcharpart
 
 local ns = api.nvim_create_namespace('VibeCheatsheet')
 
--- =========================================================
--- 🎮 2. 状态机与缓存池 (Zero-Allocation 思想)
--- =========================================================
 local active_win = nil
 
 ---@type string[]|nil
 local cache_lines = nil
+local last_bufnr = -1
 
--- SoA (Struct of Arrays) 缓存 Extmarks，避免生成海量临时 Table 触发 GC
 local cache_em_row, cache_em_col, cache_em_end, cache_em_hl = {}, {}, {}, {}
 local cache_em_count = 0
 
--- 监听终端尺寸变化，自动让缓存失效
 api.nvim_create_autocmd('VimResized', {
   group = api.nvim_create_augroup('VibeCheatsheetResize', { clear = true }),
   callback = function() cache_lines = nil end,
 })
 
--- =========================================================
--- ⚙️ 3. 数据层：分组规则与快速格式化
--- =========================================================
 local group_rules = {
-  { p = ' a', n = ' AI / CodeCompanion' },
-  { p = ' b', n = '󰓩 Buffer / Workspace' },
-  { p = ' c', n = ' Code / LSP' },
-  { p = ' d', n = ' Debug (DAP)' },
-  { p = ' f', n = '󰈞 Find / Search (Snacks)' },
-  { p = ' g', n = '󰊢 Git / Neogit' },
-  { p = ' p', n = '󰏖 Panel / Tools' },
-  { p = ' r', n = ' Code Runner' },
-  { p = ' s', n = ' Search History / Meta' },
-  { p = ' t', n = ' Translate' },
-  { p = ' u', n = '󰙵 UI & Toggles' },
-  { p = ' z', n = ' Zettelkasten' },
+  { p = ' a', n = ' AI / CodeCompanion', hl = 'Special' },
+  { p = ' b', n = '󰓩 Buffer / Workspace', hl = 'String' },
+  { p = ' c', n = ' Code / LSP', hl = 'Type' },
+  { p = ' d', n = ' Debug (DAP)', hl = 'DiagnosticError' },
+  { p = ' f', n = '󰈞 Find / Search', hl = 'DiagnosticInfo' },
+  { p = ' g', n = '󰊢 Git / Neogit', hl = 'Constant' },
+  { p = ' p', n = '󰏖 Panel / Tools', hl = 'Operator' },
+  { p = ' r', n = ' Code Runner', hl = 'Macro' },
+  { p = ' s', n = ' Search Meta', hl = 'Keyword' },
+  { p = ' t', n = ' Translate', hl = 'Function' },
+  { p = ' u', n = '󰙵 UI & Toggles', hl = 'DiagnosticHint' },
+  { p = ' z', n = ' Zettelkasten', hl = 'Label' },
 }
 
 local function format_lhs(lhs)
   return lhs:gsub(' ', '<Space>'):gsub('<lt>', '<')
 end
 
--- =========================================================
--- 🚀 4. 排版与编译引擎 (只在缓存失效时执行)
--- =========================================================
 local function build_data()
   if cache_lines then return end
 
-  local all_maps = nvim_get_keymap('n')
   local groups = {}
-  local other_group = { name = ' General / Others', keys = {}, count = 0 }
+  local other_group = { name = ' General / Others', hl = 'Title', keys = {}, count = 0 }
 
   for i = 1, #group_rules do
-    groups[group_rules[i].p] = { name = group_rules[i].n, keys = {}, count = 0 }
+    groups[group_rules[i].p] = { name = group_rules[i].n, hl = group_rules[i].hl, keys = {}, count = 0 }
   end
 
-  -- 1. 过滤并分类映射 (只拿带 Desc 且以 Space 开头的核心键)
-  for i = 1, #all_maps do
-    local map = all_maps[i]
-    local desc, lhs = map.desc, map.lhs
-    if desc and desc ~= '' and lhs ~= '' then
-      local matched = false
-      for j = 1, #group_rules do
-        local prefix = group_rules[j].p
-        if lhs:sub(1, #prefix) == prefix then
-          local g = groups[prefix]
-          g.count = g.count + 1
-          g.keys[g.count] = map
-          matched = true
-          break
-        end
-      end
-      if not matched and lhs:byte(1) == 32 then -- 32 是空格 (Space leader)
-        other_group.count = other_group.count + 1
-        other_group.keys[other_group.count] = map
-      end
+  local maps_dict = {}
+  local global_maps = nvim_get_keymap('n')
+  for i = 1, #global_maps do
+    local m = global_maps[i]
+    if m.desc and m.desc ~= '' and m.lhs ~= '' then
+      maps_dict[m.lhs] = m
     end
   end
 
-  -- 按字母顺序排序
+  local buf_maps = nvim_buf_get_keymap(0, 'n')
+  for i = 1, #buf_maps do
+    local m = buf_maps[i]
+    if m.desc and m.desc ~= '' and m.lhs ~= '' then
+      maps_dict[m.lhs] = m
+    end
+  end
+
+  local maps_list = {}
+  local maps_count = 0
+  for _, m in pairs(maps_dict) do
+    maps_count = maps_count + 1
+    maps_list[maps_count] = m
+  end
+
+  for i = 1, maps_count do
+    local map = maps_list[i]
+    local lhs = map.lhs
+    local matched = false
+
+    for j = 1, #group_rules do
+      local prefix = group_rules[j].p
+      if string_sub(lhs, 1, #prefix) == prefix then
+        local g = groups[prefix]
+        g.count = g.count + 1
+        g.keys[g.count] = map
+        matched = true
+        break
+      end
+    end
+
+    if not matched and string_byte(lhs, 1) == 32 then
+      other_group.count = other_group.count + 1
+      other_group.keys[other_group.count] = map
+    end
+  end
+
   local function sort_fn(a, b) return a.lhs < b.lhs end
   for i = 1, #group_rules do
     local g = groups[group_rules[i].p]
-    if g.count > 0 then table.sort(g.keys, sort_fn) end
+    if g.count > 0 then table_sort(g.keys, sort_fn) end
   end
-  if other_group.count > 0 then table.sort(other_group.keys, sort_fn) end
+  if other_group.count > 0 then table_sort(other_group.keys, sort_fn) end
 
-  -- 2. 瀑布流列计算
   local col_width = 46
   local columns_count = math_floor((vim.o.columns * 0.8) / col_width)
   if columns_count < 1 then columns_count = 1 end
@@ -121,7 +135,6 @@ local function build_data()
 
   local function append_group(g)
     if g.count == 0 then return end
-    -- 找最短的列
     local shortest_col, min_lines = 1, 99999
     for i = 1, columns_count do
       if cols_count[i] < min_lines then
@@ -130,7 +143,7 @@ local function build_data()
       end
     end
 
-    add_to_col(shortest_col, { is_title = true, text = g.name })
+    add_to_col(shortest_col, { is_title = true, text = g.name, hl = g.hl })
     for i = 1, g.count do
       local k = g.keys[i]
       add_to_col(shortest_col, { is_title = false, lhs = format_lhs(k.lhs), desc = k.desc })
@@ -141,7 +154,6 @@ local function build_data()
   for i = 1, #group_rules do append_group(groups[group_rules[i].p]) end
   append_group(other_group)
 
-  -- 3. 压平为行文本，并生成 SoA 格式的 Extmark 数据 (String Builder 模式)
   local max_rows = 0
   for i = 1, columns_count do
     if cols_count[i] > max_rows then max_rows = cols_count[i] end
@@ -166,14 +178,14 @@ local function build_data()
         cache_em_row[em_idx] = row - 1
         cache_em_col[em_idx] = current_byte
         cache_em_end[em_idx] = current_byte + #cell_str
-        cache_em_hl[em_idx] = 'Title'
+        cache_em_hl[em_idx] = item.hl
 
-        local pad = col_width - strdisplaywidth(cell_str)
+        local pad = col_width - nvim_strwidth(cell_str)
         if pad > 0 then cell_str = cell_str .. string_rep(' ', pad) end
       else
         local lhs_pad = 17
         local lhs_fmt = '  %-' .. lhs_pad .. 's'
-        local lhs_str = string.format(lhs_fmt, item.lhs)
+        local lhs_str = string_format(lhs_fmt, item.lhs)
 
         em_idx = em_idx + 1
         cache_em_row[em_idx] = row - 1
@@ -182,10 +194,9 @@ local function build_data()
         cache_em_hl[em_idx] = 'Keyword'
 
         local desc_str = item.desc
-        local desc_w = strdisplaywidth(desc_str)
+        local desc_w = nvim_strwidth(desc_str)
         local max_desc_w = col_width - lhs_pad - 4
 
-        -- 安全处理包含中文字符的截断
         if desc_w > max_desc_w then
           desc_str = strcharpart(desc_str, 0, max_desc_w - 3) .. '...'
         end
@@ -197,7 +208,7 @@ local function build_data()
         cache_em_hl[em_idx] = 'Comment'
 
         cell_str = lhs_str .. desc_str
-        local pad = col_width - strdisplaywidth(cell_str)
+        local pad = col_width - nvim_strwidth(cell_str)
         if pad > 0 then cell_str = cell_str .. string_rep(' ', pad) end
       end
 
@@ -211,14 +222,17 @@ local function build_data()
   cache_em_count = em_idx
 end
 
--- =========================================================
--- 🪟 5. 视图控制 (使用 Snacks.win 完美融入)
--- =========================================================
 function M.toggle()
   if active_win and active_win:valid() then
     active_win:close()
     active_win = nil
     return
+  end
+
+  local current_buf = nvim_get_current_buf()
+  if last_bufnr ~= current_buf then
+    cache_lines = nil
+    last_bufnr = current_buf
   end
 
   build_data()
@@ -252,25 +266,18 @@ function M.toggle()
   })
 
   local buf = active_win.buf
-
-  -- 🚀 [修复点]: 增加 nil 检查进行类型收窄 (Type Narrowing)
-  -- 这样 lua_ls 就明确知道 buf 是 integer，cache_lines 是 string[]
   if not buf or not cache_lines then return end
 
-  -- 1. 注入文本 (一次性)
   nvim_buf_set_lines(buf, 0, -1, false, cache_lines)
 
-  -- 2. 批量注入高亮 (极限性能：重复使用同一个 opts table 避免产生碎片垃圾)
   local ext_opts = { end_row = 0, end_col = 0, hl_group = '' }
   for i = 1, cache_em_count do
     ext_opts.end_row = cache_em_row[i]
     ext_opts.end_col = cache_em_end[i]
     ext_opts.hl_group = cache_em_hl[i]
-    -- 此时的 buf 已经通过了上面的检查，LSP 不会再报错了
     nvim_buf_set_extmark(buf, ns, cache_em_row[i], cache_em_col[i], ext_opts)
   end
 
-  -- 3. 锁定 Buffer
   vim.bo[buf].modifiable = false
 end
 
