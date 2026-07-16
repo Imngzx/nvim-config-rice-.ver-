@@ -23,7 +23,7 @@ local _ts_args = { bufnr = 0, pos = _ts_pos, ignore_injections = false }
 local str_byteindex = vim.str_byteindex
 local function truncate_utf8(str, max_chars)
   if #str <= max_chars then return str end
-  local ok, byte_idx = pcall(str_byteindex, str, max_chars)
+  local ok, byte_idx = pcall(str_byteindex, str, 'utf-8', max_chars)
   if ok and byte_idx and byte_idx < #str then
     return str:sub(1, byte_idx) .. '…'
   end
