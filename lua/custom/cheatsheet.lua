@@ -229,7 +229,7 @@ function M.toggle()
     height = 0.8,
     border = 'rounded',
     backdrop = 60,
-    title = ' 🚀 Vibe Cheatsheet ',
+    title = ' 🚀 Cheatsheet ',
     title_pos = 'center',
     zindex = 45,
     enter = true,
