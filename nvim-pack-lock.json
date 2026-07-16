@@ -83,8 +83,8 @@
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "neogit": {
-      "rev": "f309b8486ac1d42012db412c84faff00cf338a1b",
-      "src": "https://github.com/aurora0x27/neogit"
+      "rev": "f8674ec894315c02449b61c9de9a116c5aafeb90",
+      "src": "https://github.com/NeogitOrg/neogit"
     },
     "neominimap.nvim": {
       "rev": "0676085d898019f06044923934e38663f5efa290",

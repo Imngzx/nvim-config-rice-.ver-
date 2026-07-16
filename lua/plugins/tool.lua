@@ -121,7 +121,7 @@ resonance.load({
   },
 
   {
-    'https://github.com/aurora0x27/neogit',
+    'https://github.com/NeogitOrg/neogit',
     dependencies = 'https://github.com/nvim-lua/plenary.nvim',
 
     cmd = 'Neogit',
