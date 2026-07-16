@@ -89,7 +89,7 @@ local function repl_impl(lines)
 end
 
 local function get_lines(bufnr, from, to)
-  local ok, ret = pcall(nvim_buf_get_text, bufnr, from[1], from[2], to[1], to[2], {})
+  local ok, ret = pcall(nvim_buf_get_text, bufnr, from[1], from[2], to[1], to[2])
   if not ok then
     vim.notify(
       string.format('Cannot get text of buffer %d, [%d:%d]-[%d:%d] because `%s`', bufnr, from[1],

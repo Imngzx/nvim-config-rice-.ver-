@@ -31,9 +31,9 @@ end
 
 --- Ask user safely
 local function get_char(prompt)
-  api.nvim_echo({ { prompt, 'Question' } }, false, {})
+  api.nvim_echo({ { prompt, 'Question' } }, false)
   local ok, char = pcall(fn.getcharstr)
-  api.nvim_echo({ { '', 'Normal' } }, false, {})
+  api.nvim_echo({ { '', 'Normal' } }, false)
   if not ok or char == '\27' or char == '\r' or char == '' then return nil end
   return char
 end
