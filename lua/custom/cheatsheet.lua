@@ -46,6 +46,7 @@ local group_rules = {
   { p = ' r', n = ' Code Runner', hl = 'Macro' },
   { p = ' s', n = ' Search Meta', hl = 'Keyword' },
   { p = ' t', n = ' Translate', hl = 'Function' },
+  { p = ' T', n = ' Telegram', hl = 'DiagnosticError' },
   { p = ' u', n = '󰙵 UI & Toggles', hl = 'DiagnosticHint' },
   { p = ' z', n = ' Zettelkasten', hl = 'Label' },
 }

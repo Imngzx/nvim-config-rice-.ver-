@@ -42,7 +42,6 @@ resonance.load({
         { '<leader>z', group = 'Zettelkasten', icon = ' ' },
 
         { '<leader>/', group = 'Grep', icon = '󱎸 ' },
-        { '<leader>;', group = 'Pick symbols in dropbar', icon = ' ' },
 
         { '[', group = 'Prev', icon = '󰒮 ' },
         { ']', group = 'Next', icon = '󰒭 ' },
