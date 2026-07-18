@@ -3,7 +3,7 @@ local resonance = require('resonance')
 local parsers = {
   'c', 'cpp', 'make', 'cmake', 'python', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
   'bash', 'json', 'yaml', 'toml', 'rust', 'zig', 'javascript', 'typescript', 'vue',
-  'latex', 'html', 'regex', 'css', 'gitcommit', 'fish', 'kdl',
+  'latex', 'html', 'regex', 'css', 'gitcommit', 'fish', 'kdl', 'powershell',
 }
 
 local function setup_compiler()
