@@ -47,8 +47,8 @@
       "src": "https://github.com/hat0uma/csvview.nvim"
     },
     "flash.nvim": {
-      "rev": "b6346946d10d07998efee029fb0f7a593806d0cd",
-      "src": "https://github.com/folke/flash.nvim"
+      "rev": "70da6362c68772a6d2e316b691b701bf6b53936f",
+      "src": "https://github.com/onion108/flash.nvim"
     },
     "friendly-snippets": {
       "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
