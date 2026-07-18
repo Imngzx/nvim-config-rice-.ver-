@@ -27,7 +27,7 @@
       "version": "'main'"
     },
     "codecompanion.nvim": {
-      "rev": "5b87dd95a5b62bbf198ef147b96d22751ccc1faa",
+      "rev": "279ca3df18f48dd42b34fa5bc0d846f3f60dafa0",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -39,7 +39,7 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "cord.nvim": {
-      "rev": "a4b9d7b3961bdddec583df5e37de4b5d6a606d0a",
+      "rev": "8f081613c1314a0d6f38839c2788216621efb4d9",
       "src": "https://github.com/vyfor/cord.nvim"
     },
     "csvview.nvim": {
