@@ -366,8 +366,8 @@ end
 
 local BufferLine = make_perfect_buflist(
   TablineBufferBlock,
-  { provider = '  ', hl = 'TabLine' },
-  { provider = '  ', hl = 'TabLine' },
+  { provider = '  ', hl = 'TabLine' },
+  { provider = '  ', hl = 'TabLine' },
   get_bufs
 )
 
