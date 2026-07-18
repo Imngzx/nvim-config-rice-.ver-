@@ -3,13 +3,15 @@ local M = {}
 local api = vim.api
 local fn = vim.fn
 
+---@diagnostic disable-next-line: undefined-field
+local table_clear = table.clear
 local math_floor = math.floor
 local table_concat = table.concat
 local table_sort = table.sort
+
 local string_rep = string.rep
 local string_sub = string.sub
-local string_format = string.format
-local string_byte = string.byte
+local string_gsub = string.gsub
 
 local nvim_buf_set_lines = api.nvim_buf_set_lines
 local nvim_buf_set_extmark = api.nvim_buf_set_extmark
@@ -22,13 +24,20 @@ local strcharpart = fn.strcharpart
 local ns = api.nvim_create_namespace('VibeCheatsheet')
 
 local active_win = nil
-
----@type string[]|nil
 local cache_lines = nil
 local last_bufnr = -1
 
 local cache_em_row, cache_em_col, cache_em_end, cache_em_hl = {}, {}, {}, {}
 local cache_em_count = 0
+
+local _maps_dict = {}
+local _maps_list = {}
+local _cols_data = {}
+local _cols_count = {}
+local _lines = {}
+local _line_parts = {}
+local _groups = {}
+local _other_group = { name = ' General / Others', hl = 'Title', keys = {}, count = 0 }
 
 api.nvim_create_autocmd('VimResized', {
   group = api.nvim_create_augroup('VibeCheatsheetResize', { clear = true }),
@@ -42,62 +51,108 @@ local group_rules = {
   { p = ' d', n = ' Debug (DAP)', hl = 'DiagnosticError' },
   { p = ' f', n = '󰈞 Find / Search', hl = 'DiagnosticInfo' },
   { p = ' g', n = '󰊢 Git / Neogit', hl = 'Constant' },
+  { p = ' n', n = '🗺️ Minimap', hl = 'Function' },
   { p = ' p', n = '󰏖 Panel / Tools', hl = 'Operator' },
-  { p = ' r', n = ' Code Runner', hl = 'Macro' },
-  { p = ' s', n = ' Search Meta', hl = 'Keyword' },
+  { p = ' r', n = ' Code Runner', hl = 'DiagnosticInfo' },
+  { p = ' s', n = ' Search Meta', hl = 'Type' },
   { p = ' t', n = ' Translate', hl = 'Function' },
   { p = ' T', n = ' Telegram', hl = 'DiagnosticError' },
   { p = ' u', n = '󰙵 UI & Toggles', hl = 'DiagnosticHint' },
   { p = ' z', n = ' Zettelkasten', hl = 'Label' },
+  { p = ' <Tab>', n = '󰓩 Workspace/Tabs', hl = 'String' },
+
+  { p = 'g', n = '󰜎 Goto / LSP', hl = 'Macro' },
+  { p = '[', n = '󰒮 Prev / Jump', hl = 'WarningMsg' },
+  { p = ']', n = '󰒭 Next / Jump', hl = 'WarningMsg' },
+  { p = 's', n = '󰑄 Surround', hl = 'Keyword' },
+  { p = 'z', n = '󱃅 Fold / UFO', hl = 'DiagnosticHint' },
+  { p = '<C-', n = '󰘴 Ctrl / Window', hl = 'Special' },
+  { p = '<A-', n = '󰘵 Alt / Move', hl = 'Number' },
+  { p = '<S-', n = '󰘲 Shift / Buffer', hl = 'String' },
 }
 
-local function format_lhs(lhs)
-  return lhs:gsub(' ', '<Space>'):gsub('<lt>', '<')
+for i = 1, #group_rules do
+  _groups[group_rules[i].p] = { name = group_rules[i].n, hl = group_rules[i].hl, keys = {}, count = 0 }
 end
+
+local function format_lhs(lhs)
+  return string_gsub(string_gsub(lhs, ' ', '<Space> + '), '<lt>', '<')
+end
+
+local function sort_fn(a, b) return a.lhs < b.lhs end
 
 local function build_data()
   if cache_lines then return end
 
-  local groups = {}
-  local other_group = { name = ' General / Others', hl = 'Title', keys = {}, count = 0 }
+  table_clear(_maps_dict)
+  table_clear(_maps_list)
+  table_clear(_lines)
+  _other_group.count = 0
+  for i = 1, #group_rules do _groups[group_rules[i].p].count = 0 end
 
-  for i = 1, #group_rules do
-    groups[group_rules[i].p] = { name = group_rules[i].n, hl = group_rules[i].hl, keys = {}, count = 0 }
-  end
+  local COL_WIDTH = 52
+  local BADGE_BYTES = 7
+  local LHS_DISP_WIDTH = 26
+  local DESC_MAX_DISP = COL_WIDTH - LHS_DISP_WIDTH - 2
 
-  local maps_dict = {}
-  local global_maps = nvim_get_keymap('n')
-  for i = 1, #global_maps do
-    local m = global_maps[i]
-    if m.desc and m.desc ~= '' and m.lhs ~= '' then
-      maps_dict[m.lhs] = m
+  local function process_map(m, is_n, is_v, is_i, is_buf)
+    if not (m.desc and m.desc ~= '' and m.lhs ~= '') then return end
+    local ex = _maps_dict[m.lhs]
+
+    if not ex then
+      _maps_dict[m.lhs] = { lhs = m.lhs, desc = m.desc, n = is_n, v = is_v, i = is_i, is_buf = is_buf }
+    elseif not ex.is_buf or is_buf then
+      if is_buf and not ex.is_buf then
+        _maps_dict[m.lhs] = { lhs = m.lhs, desc = m.desc, n = is_n, v = is_v, i = is_i, is_buf = true }
+      else
+        if is_n then ex.n = true end
+        if is_v then ex.v = true end
+        if is_i then ex.i = true end
+      end
     end
   end
 
-  local buf_maps = nvim_buf_get_keymap(0, 'n')
-  for i = 1, #buf_maps do
-    local m = buf_maps[i]
-    if m.desc and m.desc ~= '' and m.lhs ~= '' then
-      maps_dict[m.lhs] = m
-    end
+  local em_idx = 0
+  local function push_em(r, c_start, c_end, hl)
+    em_idx = em_idx + 1
+    cache_em_row[em_idx] = r
+    cache_em_col[em_idx] = c_start
+    cache_em_end[em_idx] = c_end
+    cache_em_hl[em_idx] = hl
   end
 
-  local maps_list = {}
+  local function pad_cell(str)
+    local pad = COL_WIDTH - nvim_strwidth(str)
+    return pad > 0 and (str .. string_rep(' ', pad)) or str
+  end
+
+  local function fetch_maps(mode)
+    local is_n, is_v, is_i = (mode == 'n'), (mode == 'v'), (mode == 'i')
+    local global_maps = nvim_get_keymap(mode)
+    for i = 1, #global_maps do process_map(global_maps[i], is_n, is_v, is_i, false) end
+
+    local buf_maps = nvim_buf_get_keymap(0, mode)
+    for i = 1, #buf_maps do process_map(buf_maps[i], is_n, is_v, is_i, true) end
+  end
+
+  fetch_maps('n')
+  fetch_maps('v')
+  fetch_maps('i')
+
   local maps_count = 0
-  for _, m in pairs(maps_dict) do
+  for _, m in pairs(_maps_dict) do
     maps_count = maps_count + 1
-    maps_list[maps_count] = m
+    _maps_list[maps_count] = m
   end
 
   for i = 1, maps_count do
-    local map = maps_list[i]
-    local lhs = map.lhs
+    local map = _maps_list[i]
     local matched = false
 
     for j = 1, #group_rules do
       local prefix = group_rules[j].p
-      if string_sub(lhs, 1, #prefix) == prefix then
-        local g = groups[prefix]
+      if string_sub(map.lhs, 1, #prefix) == prefix then
+        local g = _groups[prefix]
         g.count = g.count + 1
         g.keys[g.count] = map
         matched = true
@@ -105,121 +160,115 @@ local function build_data()
       end
     end
 
-    if not matched and string_byte(lhs, 1) == 32 then
-      other_group.count = other_group.count + 1
-      other_group.keys[other_group.count] = map
+    if not matched then
+      _other_group.count = _other_group.count + 1
+      _other_group.keys[_other_group.count] = map
     end
   end
 
-  local function sort_fn(a, b) return a.lhs < b.lhs end
   for i = 1, #group_rules do
-    local g = groups[group_rules[i].p]
-    if g.count > 0 then table_sort(g.keys, sort_fn) end
+    local g = _groups[group_rules[i].p]
+    if g.count > 0 then
+      local valid_keys = {}
+      for k = 1, g.count do valid_keys[k] = g.keys[k] end
+      table_sort(valid_keys, sort_fn)
+      g.keys = valid_keys
+    end
   end
-  if other_group.count > 0 then table_sort(other_group.keys, sort_fn) end
+  if _other_group.count > 0 then
+    local valid_keys = {}
+    for k = 1, _other_group.count do valid_keys[k] = _other_group.keys[k] end
+    table_sort(valid_keys, sort_fn)
+    _other_group.keys = valid_keys
+  end
 
-  local col_width = 46
-  local columns_count = math_floor((vim.o.columns * 0.8) / col_width)
+  local win_inner_cols = vim.o.columns * 0.8 - 4
+  local columns_count = math_floor(win_inner_cols / COL_WIDTH)
   if columns_count < 1 then columns_count = 1 end
 
-  local cols_data, cols_count = {}, {}
   for i = 1, columns_count do
-    cols_data[i] = {}
-    cols_count[i] = 0
+    if not _cols_data[i] then _cols_data[i] = {} end
+    table_clear(_cols_data[i])
+    _cols_count[i] = 0
   end
 
   local function add_to_col(col_idx, item)
-    local c = cols_count[col_idx] + 1
-    cols_count[col_idx] = c
-    cols_data[col_idx][c] = item
+    local c = _cols_count[col_idx] + 1
+    _cols_count[col_idx] = c
+    _cols_data[col_idx][c] = item
   end
 
   local function append_group(g)
     if g.count == 0 then return end
     local shortest_col, min_lines = 1, 99999
     for i = 1, columns_count do
-      if cols_count[i] < min_lines then
-        min_lines = cols_count[i]
+      if _cols_count[i] < min_lines then
+        min_lines = _cols_count[i]
         shortest_col = i
       end
     end
 
     add_to_col(shortest_col, { is_title = true, text = g.name, hl = g.hl })
     for i = 1, g.count do
-      local k = g.keys[i]
-      add_to_col(shortest_col, { is_title = false, lhs = format_lhs(k.lhs), desc = k.desc })
+      add_to_col(shortest_col, { is_title = false, map = g.keys[i] })
     end
     add_to_col(shortest_col, { is_empty = true })
   end
 
-  for i = 1, #group_rules do append_group(groups[group_rules[i].p]) end
-  append_group(other_group)
+  for i = 1, #group_rules do append_group(_groups[group_rules[i].p]) end
+  append_group(_other_group)
 
   local max_rows = 0
   for i = 1, columns_count do
-    if cols_count[i] > max_rows then max_rows = cols_count[i] end
+    if _cols_count[i] > max_rows then max_rows = _cols_count[i] end
   end
 
-  local lines = {}
-  local em_idx = 0
-
   for row = 1, max_rows do
-    local line_parts = {}
+    table_clear(_line_parts)
     local current_byte = 0
 
     for col = 1, columns_count do
-      local item = cols_data[col][row]
+      local item = _cols_data[col][row]
       local cell_str = ''
 
       if not item or item.is_empty then
-        cell_str = string_rep(' ', col_width)
+        cell_str = string_rep(' ', COL_WIDTH)
       elseif item.is_title then
         cell_str = ' ' .. item.text
-        em_idx = em_idx + 1
-        cache_em_row[em_idx] = row - 1
-        cache_em_col[em_idx] = current_byte
-        cache_em_end[em_idx] = current_byte + #cell_str
-        cache_em_hl[em_idx] = item.hl
-
-        local pad = col_width - nvim_strwidth(cell_str)
-        if pad > 0 then cell_str = cell_str .. string_rep(' ', pad) end
+        push_em(row - 1, current_byte, current_byte + #cell_str, item.hl)
+        cell_str = pad_cell(cell_str)
       else
-        local lhs_pad = 17
-        local lhs_fmt = '  %-' .. lhs_pad .. 's'
-        local lhs_str = string_format(lhs_fmt, item.lhs)
+        local m = item.map
+        local mode_str = ' [' ..
+          (m.n and 'N' or '-') .. (m.v and 'V' or '-') .. (m.i and 'I' or '-') .. '] '
+        local lhs_str = format_lhs(m.lhs)
+        local raw_lhs = mode_str .. lhs_str
 
-        em_idx = em_idx + 1
-        cache_em_row[em_idx] = row - 1
-        cache_em_col[em_idx] = current_byte + 2
-        cache_em_end[em_idx] = current_byte + 2 + #item.lhs
-        cache_em_hl[em_idx] = 'Keyword'
+        local pad_len = LHS_DISP_WIDTH - nvim_strwidth(raw_lhs)
+        local full_lhs = pad_len > 0 and (raw_lhs .. string_rep(' ', pad_len)) or raw_lhs
+        local full_lhs_bytes = #full_lhs
 
-        local desc_str = item.desc
-        local desc_w = nvim_strwidth(desc_str)
-        local max_desc_w = col_width - lhs_pad - 4
+        push_em(row - 1, current_byte, current_byte + BADGE_BYTES, 'NonText')
+        push_em(row - 1, current_byte + BADGE_BYTES, current_byte + BADGE_BYTES + #lhs_str, 'Keyword')
 
-        if desc_w > max_desc_w then
-          desc_str = strcharpart(desc_str, 0, max_desc_w - 3) .. '...'
+        local desc_str = m.desc
+        if nvim_strwidth(desc_str) > DESC_MAX_DISP then
+          desc_str = strcharpart(desc_str, 0, DESC_MAX_DISP - 3) .. '...'
         end
 
-        em_idx = em_idx + 1
-        cache_em_row[em_idx] = row - 1
-        cache_em_col[em_idx] = current_byte + #lhs_str
-        cache_em_end[em_idx] = current_byte + #lhs_str + #desc_str
-        cache_em_hl[em_idx] = 'Comment'
+        push_em(row - 1, current_byte + full_lhs_bytes, current_byte + full_lhs_bytes + #desc_str,
+          'Comment')
 
-        cell_str = lhs_str .. desc_str
-        local pad = col_width - nvim_strwidth(cell_str)
-        if pad > 0 then cell_str = cell_str .. string_rep(' ', pad) end
+        cell_str = pad_cell(full_lhs .. desc_str)
       end
 
-      line_parts[col] = cell_str
+      _line_parts[col] = cell_str
       current_byte = current_byte + #cell_str
     end
-    lines[row] = table_concat(line_parts)
+    _lines[row] = table_concat(_line_parts)
   end
 
-  cache_lines = lines
+  cache_lines = _lines
   cache_em_count = em_idx
 end
 
