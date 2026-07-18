@@ -3,8 +3,15 @@ local M = {}
 local api = vim.api
 local fn = vim.fn
 
+local ok_tc, tc = pcall(require, 'table.clear')
 ---@diagnostic disable-next-line: undefined-field
-local table_clear = table.clear
+local table_clear = ok_tc and tc or table.clear or function(t)
+  local k = next(t)
+  while k ~= nil do
+    t[k] = nil
+    k = next(t)
+  end
+end
 local math_floor = math.floor
 local table_concat = table.concat
 local table_sort = table.sort
@@ -94,16 +101,21 @@ local function build_data()
   local BADGE_BYTES = 7
   local LHS_DISP_WIDTH = 26
   local DESC_MAX_DISP = COL_WIDTH - LHS_DISP_WIDTH - 2
+  local _maps_count = 0
 
   local function process_map(m, is_n, is_v, is_i, is_buf)
     if not (m.desc and m.desc ~= '' and m.lhs ~= '') then return end
     local ex = _maps_dict[m.lhs]
-
     if not ex then
-      _maps_dict[m.lhs] = { lhs = m.lhs, desc = m.desc, n = is_n, v = is_v, i = is_i, is_buf = is_buf }
+      local new_map = { lhs = m.lhs, desc = m.desc, n = is_n, v = is_v, i = is_i, is_buf = is_buf }
+      _maps_dict[m.lhs] = new_map
+      _maps_count = _maps_count + 1
+      _maps_list[_maps_count] = new_map
     elseif not ex.is_buf or is_buf then
       if is_buf and not ex.is_buf then
-        _maps_dict[m.lhs] = { lhs = m.lhs, desc = m.desc, n = is_n, v = is_v, i = is_i, is_buf = true }
+        ex.is_buf = true
+        ex.n, ex.v, ex.i = is_n, is_v, is_i
+        ex.desc = m.desc
       else
         if is_n then ex.n = true end
         if is_v then ex.v = true end
@@ -139,13 +151,8 @@ local function build_data()
   fetch_maps('v')
   fetch_maps('i')
 
-  local maps_count = 0
-  for _, m in pairs(_maps_dict) do
-    maps_count = maps_count + 1
-    _maps_list[maps_count] = m
-  end
 
-  for i = 1, maps_count do
+  for i = 1, _maps_count do
     local map = _maps_list[i]
     local matched = false
 
