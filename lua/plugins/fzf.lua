@@ -50,6 +50,7 @@ resonance.load({
   config = function()
     require('fzf-lua').setup({
       'default',
+      formatter = 'path.dirname_first',
       fzf_colors = true,
       winopts = {
         border = 'rounded',

@@ -31,6 +31,7 @@ resonance.load({
         dropbar = { enabled = true, color_mode = false },
         flash = true,
         dap = true,
+        fzf = true
       },
       custom_highlights = function(colors)
         return {
@@ -59,6 +60,10 @@ resonance.load({
 
           FzfLuaBorder = { bg = 'NONE', fg = colors.pink },
           FzfLuaPreviewBorder = { bg = 'NONE', fg = colors.pink },
+
+          FzfLuaDirPart = { fg = colors.overlay1 },
+          FzfLuaFilePart = { fg = colors.text, bold = true },
+          FzfLuaFzfMatch = { fg = colors.peach, bold = true },
 
           WinSeparator = { fg = colors.surface1, bold = true },
           IncSearch = { bg = colors.peach, fg = colors.base, bold = true },
