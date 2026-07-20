@@ -58,7 +58,7 @@ vim.api.nvim_create_autocmd('User', {
     -- restore session
     require('custom.session').setup()
     require('custom.workspace').setup()
-    -- require('plugins.fzf') --NOTE: uncomment this for a very performant picker
+    require('plugins.fzf')
 
     -- coding
     local fn, env = vim.fn, vim.env

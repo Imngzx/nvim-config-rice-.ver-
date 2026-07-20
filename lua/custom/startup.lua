@@ -33,3 +33,5 @@ if vim.env.PROF then
     },
   })
 end
+
+require('libs.power').setup({ enable_auto_switch = true })

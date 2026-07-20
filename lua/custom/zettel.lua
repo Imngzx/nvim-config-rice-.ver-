@@ -28,10 +28,6 @@ local pcall = pcall
 local tostring = tostring
 local system = vim.system
 local schedule = vim.schedule
-local ui_open = vim.ui.open
-local ui_input = vim.ui.input
-local ui_select = vim.ui.select
-local notify = vim.notify
 local cwd = uv.cwd
 
 local TOML_CONTENT = [=[
@@ -321,7 +317,7 @@ end
 
 function M.init_workspace()
   local default_path = get_workspace_root()
-  ui_input({ prompt = ' 🚀 Init Zettel workspace in: ', default = default_path }, function(path)
+  vim.ui.input({ prompt = ' 🚀 Init Zettel workspace in: ', default = default_path }, function(path)
     if not path or path == '' then return end
     schedule(function()
       local home = os_homedir()
@@ -372,14 +368,14 @@ function M.init_workspace()
       write_file(path .. '/Cards/Examples/example-usage.md', EXAMPLE_USAGE_CONTENT)
       write_file(path .. '/.meta/user.md', USER_META_CONTENT)
       write_file(path .. '/.meta/agent_rules.md', AGENT_META_CONTENT)
-      notify('[Zettel] Workspace initialized successfully at:\n' .. path, vim.log.levels.INFO)
+      vim.notify('[Zettel] Workspace initialized successfully at:\n' .. path, vim.log.levels.INFO)
       vim.cmd('edit ' .. fn_fnameescape(path .. '/index.md'))
     end)
   end)
 end
 
 function M.new_card()
-  ui_input({ prompt = ' 󰎚 Card Title (Enter for Quick Note): ' }, function(title)
+  vim.ui.input({ prompt = ' 󰎚 Card Title (Enter for Quick Note): ' }, function(title)
     if title == nil then return end
     schedule(function()
       local safe_input = vim.trim(title)
@@ -415,7 +411,7 @@ function M.new_inbox_note()
     { name = '📔 Projects (项目)', folder = 'Projects' },
     { name = '👀 People (关于人的)', folder = 'People' },
   }
-  ui_select(scenarios, {
+  vim.ui.select(scenarios, {
     prompt = ' 📂 Select Scenario: ',
     format_item = function(item) return item.name end,
   }, function(choice)
@@ -424,14 +420,14 @@ function M.new_inbox_note()
     local default_title = is_daily and tostring(os.date('%Y-%m-%d')) or ''
 
     schedule(function()
-      ui_input({ prompt = ' 󰎚 Note Title: ', default = default_title }, function(title)
+      vim.ui.input({ prompt = ' 󰎚 Note Title: ', default = default_title }, function(title)
         if not title or vim.trim(title) == '' then return end
         schedule(function()
           local subfolder = choice.folder == '' and 'Inbox' or ('Inbox/' .. choice.folder)
           local filepath = get_target_filepath(title, subfolder, is_daily)
           if is_daily and fs_stat(filepath) then
             vim.cmd('edit ' .. fn_fnameescape(filepath))
-            notify('󰎚 Daily note already exists. Opened.', vim.log.levels.INFO)
+            vim.notify('󰎚 Daily note already exists. Opened.', vim.log.levels.INFO)
             return
           end
           local lines = {
@@ -456,7 +452,7 @@ function M.backlinks()
   if not ok then return end
   local current_file = fn.expand('%:t:r')
   if current_file == '' then
-    notify('No file to find backlinks for!', vim.log.levels.WARN)
+    vim.notify('No file to find backlinks for!', vim.log.levels.WARN)
     return
   end
   local search_pattern = '\\[\\[' .. current_file .. '\\]\\]'
@@ -474,7 +470,7 @@ function M.generate_graph(silent)
   local root = get_workspace_root()
   if fn_executable('rg') == 0 then
     if not silent then
-      notify('[Zettel] "rg" (ripgrep) is required for graph view!',
+      vim.notify('[Zettel] "rg" (ripgrep) is required for graph view!',
         vim.log.levels.ERROR)
     end
     return
@@ -505,7 +501,7 @@ function M.generate_graph(silent)
     schedule(function()
       if obj.code ~= 0 and obj.code ~= 1 then
         if not silent then
-          notify('[Zettel] Graph gen failed: ' .. (obj.stderr or 'error'),
+          vim.notify('[Zettel] Graph gen failed: ' .. (obj.stderr or 'error'),
             vim.log.levels.ERROR)
         end
         return
@@ -552,15 +548,15 @@ function M.generate_graph(silent)
             fs_close(fd)
             if silent then return end
             schedule(function()
-              if ui_open then
-                ui_open(html_path)
+              if vim.ui.open then
+                vim.ui.open(html_path)
               else
                 local utils = require('libs.utils')
                 local open_cmd = utils.is_mac() and 'open' or
                   (utils.is_windows() and 'start' or 'xdg-open')
                 os_execute(open_cmd .. ' ' .. fn_fnameescape(html_path))
               end
-              notify(
+              vim.notify(
                 '🌌 Zettel Graph generated! (' ..
                 node_cnt ..
                 ' nodes)\n⚡ Auto-update enabled: Hit F5 in browser after saving your notes!',
@@ -570,7 +566,7 @@ function M.generate_graph(silent)
         else
           if not silent then
             schedule(function()
-              notify('[Zettel] Failed to open graph HTML for writing', vim.log.levels.ERROR)
+              vim.notify('[Zettel] Failed to open graph HTML for writing', vim.log.levels.ERROR)
             end)
           end
         end

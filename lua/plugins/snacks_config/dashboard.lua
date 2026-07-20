@@ -30,5 +30,20 @@ return {
         padding = 1,
       }
     end,
+
+    function()
+      local is_ac = require('libs.power').is_ac()
+      local power_icon = is_ac and '🔌 AC Power ' or '🔋 Battery '
+      local power_mode = is_ac and '[High Performance]' or '[Ascetic Mode]'
+      local power_hl = is_ac and 'DiagnosticOk' or 'DiagnosticWarn'
+      return {
+        align = 'center',
+        text = {
+          { power_icon, hl = power_hl },
+          { power_mode, hl = 'Comment' },
+        },
+        padding = 1,
+      }
+    end,
   },
 }

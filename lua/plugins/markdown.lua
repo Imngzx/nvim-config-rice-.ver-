@@ -59,5 +59,8 @@ resonance.load({
         end,
       }):map('<leader>um')
     end
+    if not require('libs.power').is_ac() then
+      require('render-markdown').disable()
+    end
   end
 })

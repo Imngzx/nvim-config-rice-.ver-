@@ -142,11 +142,6 @@ map('n', '<leader>sK', '<cmd>ShowkeysToggle<cr>', { desc = 'Toggle Showkeys' })
 -- Package update
 map('n', '<leader>pu', function() vim.pack.update() end, { desc = 'Update plugins' })
 
-map('n', '<leader>up', function()
-  require('config.color_picker')
-  vim.api.nvim_command('PickColor')
-end, { desc = 'Pick Vibe Color' })
-
 map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 map('n', '<leader>ch', function() require('custom.cheatsheet').toggle() end,

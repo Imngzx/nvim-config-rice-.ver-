@@ -57,6 +57,9 @@ resonance.load({
           SnacksIndent6 = { fg = colors.mauve },
           SnacksIndent7 = { fg = colors.lavender },
 
+          FzfLuaBorder = { bg = 'NONE', fg = colors.pink },
+          FzfLuaPreviewBorder = { bg = 'NONE', fg = colors.pink },
+
           WinSeparator = { fg = colors.surface1, bold = true },
           IncSearch = { bg = colors.peach, fg = colors.base, bold = true },
           Search = { bg = colors.surface2, fg = colors.text },
