@@ -57,7 +57,6 @@ function M.picker()
     local tab = tabs[i]
     local name = ok and bpm.resolve_tabname(tab) or ('Tab ' .. tab)
 
-    -- 找回你丢失的 Buffer 数量计算逻辑
     local buf_count = 0
     if ok and bpm.get_attached_buf then
       local attached_bufs = bpm.get_attached_buf(tab)
@@ -85,14 +84,13 @@ function M.picker()
       is_current = (tab == cur_tab),
       buf_count = buf_count,
       active_file = active_file,
-      -- fzf-lua 需要的纯文本排版
-      fzf_str = string.format('%s %s [%d bufs] %s', tab == cur_tab and '󰓩' or '󰓨', name, buf_count,
-        active_file)
     }
   end
 
   if is_ac then
-    -- 完全还原你的 Snacks.picker 配置
+    -- ==========================================
+    -- 🔌 交流电: Snacks.picker (完美 UI)
+    -- ==========================================
     require('snacks').picker({
       title = ' 🏢 Workspaces ',
       items = items,
@@ -130,15 +128,53 @@ function M.picker()
       end,
     })
   else
-    -- Fzf-lua 极致性能版 (电池模式)
+    -- ==========================================
+    -- 🔋 电池: Fzf-lua (性能拉满)
+    -- ==========================================
+    local ok_loader, loader = pcall(require, 'resonance.loader')
+    if ok_loader and loader.specs['fzf-lua'] then
+      loader.specs['fzf-lua']._force_load()
+    else
+      vim.cmd('packadd fzf-lua')
+    end
+
+    local fzf = require('fzf-lua')
+    local fzf_utils = require('fzf-lua.utils')
+
     local fzf_items = {}
     local item_map = {}
+
     for i = 1, #items do
-      table.insert(fzf_items, items[i].fzf_str)
-      item_map[items[i].fzf_str] = items[i]
+      local item = items[i]
+      local is_cur = item.is_current
+
+      local hl_text = is_cur and 'DiagnosticOk' or 'Normal'
+      local hl_icon = is_cur and 'DiagnosticOk' or 'DiagnosticHint'
+      local icon = is_cur and '󰓩' or '󰓨'
+      local suffix = is_cur and ' (Current)' or ''
+
+      local colored_icon = fzf_utils.ansi_from_hl(hl_icon, ' ' .. icon .. ' ')
+      local colored_text = fzf_utils.ansi_from_hl(hl_text, item.text .. suffix)
+      local colored_buf = fzf_utils.ansi_from_hl('Comment', '  [' .. item.buf_count .. ' bufs]')
+      local colored_file = fzf_utils.ansi_from_hl('NonText', ' 󰍎 ' .. item.active_file)
+
+      local fzf_str = colored_icon .. colored_text .. colored_buf .. colored_file
+
+      table.insert(fzf_items, fzf_str)
+      item_map[fzf_str] = item
     end
-    require('fzf-lua').fzf_exec(fzf_items, {
-      prompt = 'Workspace> ',
+
+    fzf.fzf_exec(fzf_items, {
+      prompt = '🏢 Workspaces> ',
+      fzf_opts = { ['--ansi'] = true },
+      winopts = {
+        width = 0.45,
+        height = 0.4,
+        row = 0.5,
+        col = 0.5,
+        border = 'rounded',
+        preview = { hidden = 'hidden' },
+      },
       actions = {
         ['default'] = function(selected)
           local item = item_map[selected[1]]
