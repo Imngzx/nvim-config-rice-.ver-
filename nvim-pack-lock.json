@@ -27,7 +27,7 @@
       "version": "'main'"
     },
     "codecompanion.nvim": {
-      "rev": "15f39ba587154a97c912284646c1bd076b55a3be",
+      "rev": "cb63fa31804369db308c5c1c62486c6884d98e3b",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -115,7 +115,7 @@
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "nvim-lspconfig": {
-      "rev": "e7ca2c95ba316a8b846d3f3546d407908c5c4ccb",
+      "rev": "7f87dbb4707f54117e98ab8f15d6a2975b3f13f0",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
@@ -159,7 +159,7 @@
       "src": "https://github.com/folke/snacks.nvim"
     },
     "telegram.nvim": {
-      "rev": "ef5d03396d59812a771a874a0d6da64135e68224",
+      "rev": "94ba0469182c6d66fdc862b68d6cc3c2907168a6",
       "src": "https://github.com/ChuYanLon/telegram.nvim"
     },
     "tiny-inline-diagnostic.nvim": {
