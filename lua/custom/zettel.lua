@@ -47,7 +47,8 @@ local GITIGNORE = [=[
 local JSON_CONTENT = [=[
 {
   "MD013": false,
-  "MD060": false
+  "MD060": false,
+  "MD025": false
 }
 ]=]
 
