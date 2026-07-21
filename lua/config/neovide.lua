@@ -26,5 +26,5 @@ if g.neovide then
   g.snacks_scroll = false
 else
   -- Running in terminal → enable snacks scroll & ui2
-  g.snacks_scroll = true
+  g.snacks_scroll = require('libs.power').is_ac()
 end

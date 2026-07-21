@@ -43,7 +43,7 @@ Snacks.setup({
   words = { enabled = true },
   styles = {},
   scroll = {
-    enabled = true,
+    enabled = require('libs.power').is_ac(),
     animate = { duration = { step = 10, total = 50 }, easing = 'linear' },
   },
   statuscolumn = {
