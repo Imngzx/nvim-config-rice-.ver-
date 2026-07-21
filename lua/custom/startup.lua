@@ -34,4 +34,11 @@ if vim.env.PROF then
   })
 end
 
+-- PERF: changing picker due to powermode
+-- fzf during battery mode
+-- snacks during wall power mode
 require('libs.power').setup({ enable_auto_switch = true })
+
+-- NOTE: list of disabled plugin during battery mode
+-- Snacks.animate, partial Snacks.picker
+-- render-markdown.nvim
