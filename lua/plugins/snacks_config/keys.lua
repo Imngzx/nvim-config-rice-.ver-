@@ -47,7 +47,7 @@ if is_ac then
     { '<leader>fr', function() Snacks.picker.registers() end, desc = 'Registers' },
     { '<leader>sc', function() Snacks.picker.command_history() end, desc = 'Command history' },
     { '<leader>s/', function() Snacks.picker.search_history() end, desc = 'Search history' },
-    { '<leader>sa', function() Snacks.picker.autocmds() end, desc = 'Autocmds' },
+    { '<leader>fa', function() Snacks.picker.autocmds() end, desc = 'Autocmds' },
     { '<leader>sC', function() Snacks.picker.commands() end, desc = 'Commands' },
     { '<leader>sh', function() Snacks.picker.help() end, desc = 'Help pages' },
     { '<leader>sH', function() Snacks.picker.highlights() end, desc = 'Highlights' },

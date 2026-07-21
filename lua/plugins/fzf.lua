@@ -20,7 +20,7 @@ if not is_ac then
     { 'n', '<leader>fr', function() require('fzf-lua').registers() end, { desc = 'Registers' } },
     { 'n', '<leader>sc', function() require('fzf-lua').command_history() end, { desc = 'Command history' } },
     { 'n', '<leader>s/', function() require('fzf-lua').search_history() end, { desc = 'Search history' } },
-    { 'n', '<leader>sa', function() require('fzf-lua').autocmds() end, { desc = 'Autocmds' } },
+    { 'n', '<leader>fa', function() require('fzf-lua').autocmds() end, { desc = 'Autocmds' } },
     { 'n', '<leader>sC', function() require('fzf-lua').commands() end, { desc = 'Commands' } },
     { 'n', '<leader>sh', function() require('fzf-lua').help_tags() end, { desc = 'Help pages' } },
     { 'n', '<leader>sH', function() require('fzf-lua').highlights() end, { desc = 'Highlights' } },
