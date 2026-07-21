@@ -40,5 +40,5 @@ end
 require('libs.power').setup({ enable_auto_switch = true })
 
 -- NOTE: list of disabled plugin during battery mode
--- Snacks.animate, partial Snacks.picker
+-- Snacks.animate, partial Snacks.picker, Snacks.image
 -- render-markdown.nvim

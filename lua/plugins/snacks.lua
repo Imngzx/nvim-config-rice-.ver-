@@ -2,6 +2,7 @@
 
 local resonance = require('resonance')
 local utils = require('libs.utils')
+local power = require('libs.power')
 
 -- 1. 加载核心插件
 vim.pack.add({ 'https://github.com/folke/snacks.nvim' })
@@ -16,7 +17,7 @@ Snacks.setup({
     line_length = 1500,
   },
   explorer = { enabled = true },
-  image = { enabled = true },
+  image = { enabled = power.is_ac() },
   indent = {
     enabled = true,
     indent = {
@@ -43,7 +44,7 @@ Snacks.setup({
   words = { enabled = true },
   styles = {},
   scroll = {
-    enabled = require('libs.power').is_ac(),
+    enabled = power.is_ac(),
     animate = { duration = { step = 10, total = 50 }, easing = 'linear' },
   },
   statuscolumn = {
