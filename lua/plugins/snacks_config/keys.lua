@@ -32,7 +32,7 @@ if is_ac then
     { '<leader>ff', function() Snacks.picker.git_files() end, desc = 'Find git files' },
     { '<leader>fp', function() Snacks.picker.projects() end, desc = 'Projects' },
     { '<leader>fz', function() Snacks.picker.zoxide() end, desc = 'Zoxide (Recent Dirs)' },
-    { '<leader>fl', function() Snacks.picker.lines() end, desc = 'Buffer lines' },
+    { '<leader>fl', function() Snacks.picker.lines({ matcher = { sort_empty = false } }) end, desc = 'Buffer lines' },
     { '<leader>fB', function() Snacks.picker.grep_buffers() end, desc = 'Grep open buffers' },
     { '<leader>fw', function() Snacks.picker.grep_word() end, desc = 'Visual selection or word', mode = { 'n', 'x' } },
   })
@@ -92,9 +92,9 @@ bind({
 
 if is_ac then
   bind({
-    { '<leader>co', function() Snacks.picker.lsp_symbols() end, desc = 'LSP symbols' },
+    { '<leader>co', function() Snacks.picker.lsp_symbols({ matcher = { sort_empty = false } }) end, desc = 'LSP symbols' },
     { '<leader>cD', function() Snacks.picker.diagnostics() end, desc = 'Diagnostics' },
-    { '<leader>cd', function() Snacks.picker.diagnostics_buffer() end, desc = 'Buffer diagnostics' },
+    { '<leader>cd', function() Snacks.picker.diagnostics_buffer({ matcher = { sort_empty = false } }) end, desc = 'Buffer diagnostics' },
     { 'gd', function() Snacks.picker.lsp_definitions() end, desc = 'Goto definition' },
     { 'gD', function() Snacks.picker.lsp_declarations() end, desc = 'Goto declaration' },
     { 'gr', function() Snacks.picker.lsp_references() end, nowait = true, desc = 'References' },
