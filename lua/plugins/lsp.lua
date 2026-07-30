@@ -231,6 +231,7 @@ resonance.load({
                       snippets = '[LuaSnip]',
                       path = '[Path]',
                       lazydev = '[LazyDev]',
+                      telegram = '[Telegram]',
                     }
                     return menu_labels[ctx.source_name] or ('[' .. ctx.source_name .. ']')
                   end,
@@ -263,6 +264,9 @@ resonance.load({
             if vim.bo.filetype == 'lua' then
               return { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' }
             end
+            if vim.bo.filetype == 'telegram' then
+              return { 'telegram', 'lsp', 'snippets', 'path' }
+            end
             return { 'lsp', 'path', 'snippets', 'buffer' }
           end,
           providers = {
@@ -275,6 +279,9 @@ resonance.load({
               opts = {
                 friendly_snippets = true,
               }
+            },
+            telegram = {
+              module = 'telegram.blink'
             }
           },
         },
