@@ -50,7 +50,7 @@ resonance.load({
             if vim.api.nvim_buf_is_valid(args.buf) then
               local ok = pcall(vim.treesitter.start, args.buf, lang)
               if ok then
-                vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                vim.bo[args.buf].indentexpr = require('nvim-treesitter').indentexpr
               end
             end
           end)

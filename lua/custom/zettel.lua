@@ -300,7 +300,9 @@ local function get_target_filepath(title, sub_dir, exact_name)
     (tostring(os_date('%Y%m%d%H%M')) .. '-' .. safe_title .. '.md')
   local root = get_workspace_root()
   local target_dir = fs_normalize(root .. '/' .. sub_dir)
-  if not fs_stat(target_dir) then fn_mkdir(target_dir, 'p') end
+  if not fs_stat(target_dir) then
+    vim.fs.mkdir(target_dir, { parents = true })
+  end
   return target_dir .. '/' .. filename
 end
 
@@ -342,7 +344,7 @@ function M.init_workspace()
       for i = 1, #dirs do
         local dir = dirs[i]
         if not fs_stat(dir) then
-          fn_mkdir(dir, 'p')
+          vim.fs.mkdir(dir, { parents = true })
         end
       end
       local function write_file(filepath, content)

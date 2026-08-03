@@ -178,7 +178,8 @@ return {
               local is_dir = input:sub(-1) == '/'
               local target_dir = is_dir and path or vim.fs.dirname(path)
               local stat = vim.uv.fs_stat(target_dir)
-              if not stat or stat.type ~= 'directory' then pcall(vim.fn.mkdir, target_dir, 'p') end
+              if not stat or stat.type ~= 'directory' then pcall(vim.fs.mkdir, target_dir,
+                  { parents = true }) end
               if is_dir then
                 picker:update()
               else

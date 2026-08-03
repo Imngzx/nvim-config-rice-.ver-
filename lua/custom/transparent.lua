@@ -56,7 +56,7 @@ end
 
 local function cache_write()
   local dir = vim.fs.dirname(cache_path)
-  if not vim.uv.fs_stat(dir) then fn.mkdir(dir, 'p') end
+  if not vim.uv.fs_stat(dir) then vim.fs.mkdir(dir, { parents = true }) end
   local fd = vim.uv.fs_open(cache_path, 'w', 438)
   if fd then
     vim.uv.fs_write(fd, tostring(vim.g.bg_transparent), -1)

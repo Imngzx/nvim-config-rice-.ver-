@@ -26,7 +26,7 @@ local cwd = uv.cwd
 
 local session_dir = fs.normalize(fn.stdpath('state') .. '/sessions/')
 if not fs_stat(session_dir) then
-  fn.mkdir(session_dir, 'p')
+  vim.fs.mkdir(session_dir, { parents = true })
 end
 
 local function get_git_branch(root)
