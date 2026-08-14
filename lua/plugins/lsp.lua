@@ -363,29 +363,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
     -- LSP keymaps
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buf = ev.buf, desc = 'LSP hover' })
-    -- vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, { buf = ev.buf, desc = 'LSP hover' })
-    -- Moved to Snacks
-    -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = ev.buf, desc='Goto definition'})
-    -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = ev.buf, desc='Goto declaration'})
-    -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, {
-    --   buffer = ev.buf,
-    --   desc =
-    --   'List references'
-    -- })
-
-    -- commented conflicted keymaps with keys.lua around line 60 and 61
-    -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation,
-    --   { buffer = ev.buf, desc = 'Goto implementation' })
-    -- vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition,
-    --   { buffer = ev.buf, desc = 'Type definition' })
-
     vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { buf = ev.buf, desc = 'Rename symbol' })
     vim.keymap.set({ 'n', 'x' }, '<leader>ca', vim.lsp.buf.code_action,
       { buf = ev.buf, desc = 'Code action' })
     vim.keymap.set('i', '<c-k>', vim.lsp.buf.signature_help,
       { buf = ev.buf, desc = 'Signature help' })
     vim.keymap.set('n', '<leader>pl', '<cmd>checkhealth vim.lsp<cr>', { desc = '[Panel] Lsp info' })
-    -- vim.keymap.set('n', '<leader>cf', vim.lsp.buf.format,
-    --   { buffer = ev.buf, desc = 'Format code' })
   end,
 })

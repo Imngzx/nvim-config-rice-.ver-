@@ -76,7 +76,7 @@ end
 local map = vim.keymap.set
 
 map('n', '<leader>cc', cycle_checkbox, {
-  buffer = true,
+  buf = 0,
   silent = true,
   desc = 'Cycle Checkbox ( / x - )'
 })
@@ -95,5 +95,5 @@ local states = {
 for key, info in pairs(states) do
   map('n', '<leader>ct' .. key, function()
     set_checkbox(info.char)
-  end, { buffer = true, silent = true, desc = 'Task: ' .. info.desc })
+  end, { buf = 0, silent = true, desc = 'Task: ' .. info.desc })
 end
