@@ -4,7 +4,6 @@
 > This is a fork of the original [author's](https://github.com/cworld1/nvim-config) config. His config is the bone of my config. So please have a look on his config too.
 
 > [!WARNING]
-> Please read the [disclaimer](./note/manifesto-%26-disclaimer.md) before copy or use this configuration
 > This configuration is only for nvim nightly 0.13
 
 ## About
