@@ -2,7 +2,8 @@
 
 return {
   lua_ls = {
-    mason_name = 'lua-language-server',
+    cmd = { 'lua-language-server' },
+    mason = false,
 
     ---@type lspconfig.settings.lua_ls
     settings = {

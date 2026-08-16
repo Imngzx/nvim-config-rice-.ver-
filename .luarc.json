@@ -1,0 +1,48 @@
+{
+  "runtime": {
+    "version": "LuaJIT"
+  },
+  "diagnostics": {
+    "globals": [
+      "vim",
+      "package",
+      "coroutine",
+      "table",
+      "string",
+      "math",
+      "io",
+      "os",
+      "debug",
+      "utf8",
+      "bit",
+      "jit",
+      "require",
+      "print",
+      "error",
+      "assert",
+      "select",
+      "next",
+      "pairs",
+      "ipairs",
+      "type",
+      "tonumber",
+      "tostring",
+      "rawget",
+      "rawset",
+      "rawequal",
+      "getmetatable",
+      "setmetatable",
+      "load",
+      "loadfile",
+      "dofile",
+      "pcall",
+      "xpcall"
+    ]
+  },
+  "workspace": {
+    "checkThirdParty": false
+  },
+  "telemetry": {
+    "enable": false
+  }
+}
