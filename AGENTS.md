@@ -1,108 +1,211 @@
-# Neovim Configuration Project
+# Neovim Configuration — AI Development Guidelines
 
-## Project Structure
+> **Purpose**: Step-by-step reference for AI assistants working on this Neovim configuration.  
+> **Audience**: Any AI agent editing `~/.config/nvim/`.  
+> **Last Updated**: 2026-08-16
 
+---
+
+## 1. Repository Overview
+
+| Aspect | Detail |
+|--------|--------|
+| **Type** | Personal Neovim configuration (modular, lazy-loaded via resonance.nvim) |
+| **Entry Point** | `init.lua` → `require('custom.startup')` → `require('config.resonance')` |
+| **Core Modules** | `lua/custom/` (24 modules), `lua/plugins/` (30+ plugin configs), `lua/config/` (7 configs), `lua/libs/` (5 utilities) |
+| **Plugin Manager** | `resonance.nvim` (lazy-loader wrapper around `vim.pack`, Neovim 0.13+) |
+| **Config Style** | Lazy specs with triggers: `event`, `cmd`, `keys`, `ft`, `User VeryLazy` |
+| **Knowledge Base** | `note/knowledge/` — auto-generated module documentation |
+
+---
+
+## 2. Available Tools on This Machine
+
+| Tool | Path | Purpose |
+|------|------|---------|
+| `nvim` | System `nvim` (0.13+) | Headless testing: `nvim --headless -c "..." -c "qall"` |
+| `lua` | Embedded in `nvim` | All Lua execution via `nvim --headless -c "lua ..."` |
+| `rg` (ripgrep) | System `rg` | Fast code search |
+| `git` | System `git` | Version control, `git show HEAD:<file>` for original versions |
+| `bash` / `fish` | Standard | Shell commands, pipelines |
+| `python3` | System `python3` | `scripts.py` utility runner |
+
+### Benchmark Command Template
+
+```bash
+# Startup benchmark (10 runs, 3 warmup, no user config)
+nvim --headless -u NONE -c "luafile ~/.config/nvim/init.lua" -c "qall"  # baseline
+
+# With resonance
+nvim --headless -u NONE -c "luafile ~/.config/nvim/init.lua" -c "lua require('custom.startup')" -c "qall"
+
+# Direct module timing
+nvim --headless -c "lua local t=vim.uv.hrtime(); require('custom.startup'); print('startup:', (vim.uv.hrtime()-t)/1e6, 'ms')" -c "qall"
 ```
-lua/                 # Core configuration directory
-├── custom/           # Custom module implementations (no plugins)
-│   ├── coderunner.lua  # Build/run integration
-│   ├── zettel.lua      # Note-taking system
-│   ├── transparent.lua   # Background transparency management
-│   ├── session.lua      # Workspace persistence
-│   ├── startup.lua     # Optimized startup logic
-│   ├── workspace.lua    # Project navigation
-│   ├── cheatsheet.lua    # Quick reference system
-│   ├── repl.lua         # Interactive read-eval-print loop
-│   ├── git-blame.lua    # Git integration
-│   ├── incline.lua      # LSP client management
-│   ├── color-list.lua   # Color scheme tools
-│   ├── git.lua          # Git workflow helpers
-│   ├── language-switcher.lua # Language toggling
-│   ├── pairs.lua        # Utility functions
-│   ├── sudo.lua         # Elevated privilege commands
-│   ├── todo.lua         # Code annotation search
-│   ├── ui2.lua          # UI enhancements
-│   ├── word-jump.lua    # Navigation utilities
-│   └── yazi.lua        # Theme management
-└── plugins/           # Plugin configurations
 
-note/                  # Project knowledge base
-└── knowledge/         # Auto-generated module documentation
+---
 
-```
+## 3. Key Architecture Patterns
 
-## Code Style Guidelines
-
-### 1. Module Structure
+### Startup Sequence (`init.lua`)
 
 ```lua
-local M = {}  -- Module container
+-- 1. Bytecode cache + disable built-ins + UI init + power-aware picker
+require('custom.startup')
 
--- Local utilities
+-- 2. Core editor options
+require('config.options')
+require('config.keymaps')
+require('config.autocmds')
+
+-- 3. Plugin manager bootstrap + all plugin configs
+require('config.resonance')
+```
+
+### Module Pattern (`lua/custom/*.lua`, `lua/plugins/*.lua`)
+
+```lua
+local M = {}
+
+-- Localize globals at top
 local api = vim.api
 local fn = vim.fn
-local utils = require('libs.utils')
+local uv = vim.uv
+local resonance = require('resonance')
 
--- Configuration section
-function M.setup()  -- Initialization logic
-  -- ...
+-- Lazy-require heavy deps
+local function get_snacks()
+  return package.loaded['snacks'] or require('snacks')
 end
 
--- Core functionality
-function M.core_function()  -- Feature implementation
-  -- ...
+function M.setup()
+  -- Initialization logic
 end
 
-return M  -- Expose module
+function M.core_function()
+  -- Feature implementation
+end
+
+return M
 ```
 
-### 2. Performance Optimization
-
-- **Fast Path Pattern**:
-
-  ```lua
-
-if vim.loader then
-  vim.loader.enable()  -- Bytecode caching
-end
-
-```
-- **Power-aware Selection**:
-  ```lua
-if require('libs.power').is_ac() then
-  -- Use feature-rich implementation
-else
-  -- Use lightweight alternative
-end
-```
-
-### 3. Error Handling
+### Plugin Spec (via resonance.nvim)
 
 ```lua
-local ok, mod = pcall(require, 'module.name')
-if not ok then
-  -- Fallback logic
-end
+local resonance = require('resonance')
+
+resonance.load({
+  {
+    src = "https://github.com/author/plugin",
+    event = { "BufReadPost", "BufNewFile" },  -- or cmd, keys, ft
+    dependencies = "https://github.com/author/dep",
+    build = 'make',  -- or 'npm i', function() end
+    config = function()
+      local plugin = require('plugin')
+      plugin.setup({ ... })
+    end
+  },
+})
 ```
 
-### 4. UI Elements
+---
 
-- **Keymaps**:
+## 4. Development Workflow
 
-  ```lua
+### Step 1: Read & Understand
 
-vim.keymap.set('n', '<leader>rp', M.run_project, { desc = 'Run Project' })
+```bash
+# Read core entry points
+read ~/.config/nvim/init.lua
+read ~/.config/nvim/lua/custom/startup.lua
+read ~/.config/nvim/lua/config/resonance.lua
 
+# Read key custom modules
+read ~/.config/nvim/lua/custom/session.lua
+read ~/.config/nvim/lua/custom/coderunner.lua
+read ~/.config/nvim/lua/custom/workspace.lua
+
+# Read plugin configs
+read ~/.config/nvim/lua/plugins/heirline.lua
+read ~/.config/nvim/lua/plugins/snacks.lua
+read ~/.config/nvim/lua/plugins/lsp.lua
 ```
-- **Highlighting**:
-  ```lua
-vim.api.nvim_set_hl(0, 'CustomGroup', { fg = '#ff0000' })
+
+### Step 2: Test Current Behavior
+
+```bash
+# Quick smoke test (full config)
+nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "qall"
+
+# Test specific module
+nvim --headless -c "lua require('custom.session').save()" -c "qall"
+
+# Test resonance plugin loading
+nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "lua print(vim.inspect(require('resonance').plugins))" -c "qall"
+
+# Benchmark startup
+for i in {1..10}; do nvim --headless -u NONE -c "luafile ~/.config/nvim/init.lua" -c "qall"; done 2>&1 | tail -5
 ```
 
-### 5. Cross-Module Communication
+### Step 3: Make Changes
+
+- Edit files in **config root** (`~/.config/nvim/`)
+- Test immediately with headless Neovim
+- For plugin changes: edit `lua/plugins/*.lua` or `lua/plugins/*/config/*.lua`
+
+### Step 4: Verify
+
+```bash
+# Functional tests
+nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "lua require('custom.session').save(); print('session saved')" -c "qall"
+nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "lua require('custom.workspace').open()" -c "qall"
+
+# Startup regression check
+nvim --headless -u NONE -c "luafile ~/.config/nvim/init.lua" -c "qall"  # must complete < 200ms
+
+# Config reload test
+nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "lua dofile(vim.env.MYVIMRC)" -c "qall"
+```
+
+### Step 5: Commit
+
+```bash
+cd ~/.config/nvim
+git add lua/custom/session.lua lua/plugins/heirline.lua
+git commit -m "feat(session): add auto-save on focus lost"
+```
+
+---
+
+## 5. Critical Patterns & Conventions
+
+### resonance.nvim Integration Rules
+
+1. **Always use lazy triggers** — `event`, `cmd`, `keys`, `ft`; avoid `config` without trigger
+2. **Wrap plugin requires in `User VeryLazy` autocmd** — prevents luajit parsing at startup (see `config/resonance.lua:55-141`)
+3. **Load theme first** — `require('plugins.catppuccin')` before UI plugins to avoid flicker
+4. **Call `resonance.trigger_verylazy()` at end** — fires `User VeryLazy` for deferred configs
+
+### Performance Rules
+
+- **Bytecode cache first**: `if vim.loader then vim.loader.enable() end` (in `startup.lua:2-4`)
+- **Disable unused built-ins** — 11 plugins disabled in `startup.lua:8-23`
+- **Power-aware picker** — `libs.power` switches fzf (battery) vs snacks (AC) at `startup.lua:37-44`
+- **Lazy-require heavy modules** — `package.loaded['x'] or require('x')`
+- **Localize globals** — `local uv = vim.uv`, `local api = vim.api` at module top
+
+### Lua Style (Project Conventions)
+
+- Tables over multiple returns: `{name=..., path=..., loaded=...}`
+- Early returns, flat conditionals
+- Comments only for *why*, not *what*
+- `vim.uv` / `vim.system` over `vim.fn` in hot paths
+- `vim.schedule()` for async work (git, system calls)
+
+### Cross-Module Communication
 
 ```lua
--- Using shared namespaces
+-- Shared state via _G
 _G.MyGlobalState = _G.MyGlobalState or {}
 
 -- Event-driven
@@ -111,90 +214,223 @@ vim.api.nvim_create_autocmd('VimLeavePre', {
   callback = function() M.save() end
 })
 
-## Documentation Standards
-
-### 1. Knowledge Base
-- Each module in `lua/custom/` should have a corresponding
-  `note/knowledge/<module>.md` file
-- Documentation should include:
-  - Module purpose
-  - Core functions
-  - Configuration options
-  - Key mappings
-  - Performance considerations
-
-### 2. Code Comments
-```lua
---queues the repaint of the floating window to avoid flickering
-vim.schedule(20, function() self:repaint() end)
+-- Direct require (for lightweight modules)
+local utils = require('libs.utils')
 ```
 
-## Plugin Management
+---
 
-### 1. Disabled Built-ins
+## 6. Common Tasks
+
+### Add New Custom Module (`lua/custom/newmodule.lua`)
+
+1. Create module following pattern in §3
+2. Add `require('custom.newmodule')` to `config/resonance.lua` (after core UI, before `trigger_verylazy`)
+3. Create `note/knowledge/newmodule.md` with purpose, functions, keymaps
+4. Add keymaps in `config/keymaps.lua` if needed
+
+### Add New Plugin (`lua/plugins/newplugin.lua`)
+
+1. Create file with `resonance.load({{ src=..., event=..., config=... }})`
+2. Add `require('plugins.newplugin')` to `config/resonance.lua`
+3. For complex plugins: create `lua/plugins/newplugin_config/` with `init.lua`, `config.lua`, etc.
+4. Follow lazy trigger conventions: `event` for filetypes, `keys` for keymaps, `cmd` for commands
+
+### Modify Heirline Statusline
+
+1. Edit `lua/plugins/heirline_config/statusline.lua` (components)
+2. Edit `lua/plugins/heirline_config/colors.lua` (color palette)
+3. Test: `nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "lua require('heirline').reset()" -c "qall"`
+
+### Modify Snacks Picker Config
+
+1. Edit `lua/plugins/snacks_config/picker.lua` or `lua/plugins/snacks.lua`
+2. Power-aware: check `require('libs.power').is_ac()` for conditional features
+
+### Update Knowledge Base
+
+```bash
+# After modifying a custom module, update its docs
+# Example: coderunner.lua → note/knowledge/coderunner.md
+```
+
+---
+
+## 7. Debugging Checklist
+
+| Symptom | Check |
+|---------|-------|
+| Slow startup | `vim.loader.enable()` called? Built-ins disabled? `vim-startuptime` output |
+| Plugin not loading | Trigger registered? `:packadd` called? Check `resonance.plugins` |
+| UI flicker on theme change | Theme loaded first? `catppuccin` before `snacks`/`heirline`? |
+| Keymap not working | Defined in `config/keymaps.lua` or plugin `keys` spec? `which-key` conflict? |
+| LSP not attaching | `lsp.lua` config? `vim.lsp.enable()` called? Check `:LspInfo` |
+| Session not restoring | `session.lua` autocmds? `VimLeavePre` firing? Check `~/.local/state/nvim/sessions/` |
+| Power mode not switching | `libs.power` setup called? `/sys/class/power_supply/AC/online` readable? |
+
+---
+
+## 8. Reference: resonance.nvim API Used
+
+| Function | Purpose | Config Usage |
+|----------|---------|--------------|
+| `resonance.load(specs)` | Register plugins lazily | `config/resonance.lua:33-141`, all `plugins/*.lua` |
+| `resonance.setup(opts)` | Configure loader | `config/resonance.lua:19-27` |
+| `resonance.open_ui()` | Open plugin manager UI | `config/resonance.lua:30` keymap |
+| `resonance.trigger_verylazy()` | Fire `User VeryLazy` | `config/resonance.lua:145` |
+| `resonance.plugins` | Access plugin table | Debugging, inspection |
+
+### `vim.pack` API (via resonance)
+
+| Function | Purpose |
+|----------|---------|
+| `vim.pack.add(specs, {confirm=false, load=false})` | Install plugins |
+| `vim.pack.get(names?, {info, offline})` | Query installed |
+| `vim.pack.update(names?, {force, offline})` | Update plugins |
+| `vim.pack.del(names, {force})` | Delete plugins |
+| `PackChanged` event | Build hooks |
+
+---
+
+## 9. Sync Locations
+
+| Source (Edit Here) | Runtime (Test Here) |
+|--------------------|---------------------|
+| `~/.config/nvim/lua/custom/` | Loaded directly from config |
+| `~/.config/nvim/lua/plugins/` | Loaded directly from config |
+| `~/.config/nvim/lua/config/` | Loaded directly from config |
+| `~/.config/nvim/lua/libs/` | Loaded directly from config |
+| `~/.local/share/nvim/site/pack/core/opt/resonance.nvim/` | resonance.nvim itself (auto-managed) |
+
+**Always test in runtime** — that's what Neovim actually loads.
+
+---
+
+## 10. Emergency: Restore Original Files
+
+```bash
+# From git HEAD (config repo)
+cd ~/.config/nvim
+git show HEAD:lua/custom/session.lua > lua/custom/session.lua
+git show HEAD:lua/plugins/heirline.lua > lua/plugins/heirline.lua
+
+# Re-clone resonance.nvim if corrupted
+rm -rf ~/.local/share/nvim/site/pack/core/opt/resonance.nvim
+nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "qall"  # auto-reclones
+```
+
+---
+
+## 11. AI Workflow & Communication Patterns
+
+### Todo System (Mandatory for Multi-Step Work)
+
+**Initialize at start of any multi-step task:**
+```lua
+todo(i="Brief purpose", op="init", list=[{"phase": "PhaseName", "items": ["Task 1", "Task 2"]}])
+```
+
+**Update as work progresses:**
+```lua
+todo(i="Task description", op="start", task="Task 1", phase="PhaseName")
+todo(i="Task description", op="done", task="Task 1", phase="PhaseName")
+```
+
+**Phase transitions are automatic** — earliest incomplete task in phase order becomes active.
+
+### Code Editing Patterns
+
+#### Use `edit` tool with anchored patches (not `write` for modifications)
 
 ```lua
--- Disable unwanted built-in plugins
-local disabled_built_ins = {'fzf', 'gzip', 'matchit'}
-for _, plugin in ipairs(disabled_built_ins) do
-  vim.g['loaded_'..plugin] = 1
+edit(i="Purpose", input=[[
+*** Begin Patch
+[~/.config/nvim/lua/custom/session.lua#HASH]
+PUT 69.=69:
++  vim.notify('Session saved to ' .. target_file)
+PUT 185.=185:
++  nvim_create_autocmd('FocusLost', { callback = M.save })
+*** End Patch
+]])
+```
+
+#### For new files, use `write`
+
+```lua
+write(i="Create new module", path="~/.config/nvim/lua/custom/newmodule.lua", content=[[
+local M = {}
+local api = vim.api
+
+function M.setup()
+  -- init
 end
+
+return M
+]])
 ```
 
-### 2. Plugin Installation and Configuration
+#### Use `lsp` for cross-file renames/references
 
 ```lua
-local resonance = require('resonance')
-
-resonance.load({
-  {
-    src = "https://github.com/<author>/<plugin1_name>",
-
-    dependencies = "https://github.com/<author>/<plugin2_name>",
-
-    build = 'make', -- npm i or others based on plugin's docs
-      
-    cmd = {'cmd1', 'cmd2'},
-
-    keys = {
-      { 'n', '<leader>Tg', '<cmd>cmd1<CR>', { desc = 'Open something' } },
-      { 'n', '<leader>TL', '<cmd>cmd2<CR>', { desc = 'Do something' } },
-    },
-
-    event = { "BufReadPre", "BufNewFile" },
-    -- For VeryLazy, use: event = { "User", pattern = "VeryLazy" }
-    config = function()
-
-      local name = require('plugin1_name')
-
-      name.setup({
-      -- Config here...
-      })
-
-    end
-  },
-  
-  { -- another plugin...},
-
-  { -- another plugin...},
-})
+lsp(action="rename", file="~/.config/nvim/lua/custom/session.lua", line=69, symbol="save", new_name="persist", apply=true)
+lsp(action="references", file="~/.config/nvim/lua/custom/session.lua", line=69, symbol="save")
 ```
 
-## Development Workflow
+---
 
-### 1. Exploration
+## 12. Module Reference Quick Index
 
-- Use `snacks` for code navigation and analysis
-- Leverage `lsp` for language server integration
+### Core Custom Modules (`lua/custom/`)
 
-### 2. Implementation
+| Module | Purpose | Key Functions | Knowledge Doc |
+|--------|---------|---------------|---------------|
+| `startup.lua` | Boot sequence, bytecode cache, built-in disable, power-aware picker | — | — |
+| `session.lua` | Workspace persistence (git-branch-aware) | `save()`, `load(last)`, `setup()` | `note/knowledge/session.md` |
+| `coderunner.lua` | Build/run integration (C/C++/Rust/Go/Python) | `run_project()`, `build_run_command()` | `note/knowledge/coderunner.md` |
+| `workspace.lua` | Project navigation | `open()`, `switch()` | `note/knowledge/workspace.md` |
+| `transparent.lua` | Background transparency toggle | `toggle()`, `setup()` | `note/knowledge/transparent.md` |
+| `zettel.lua` | Note-taking system | `new()`, `search()`, `link()` | `note/knowledge/zettel.md` |
+| `git.lua` / `git-blame.lua` | Git workflow helpers | `blame()`, `diff()`, `status()` | — |
+| `repl.lua` | Interactive REPL per filetype | `open()`, `send()` | — |
+| `todo.lua` | Code annotation search (TODO/FIXME) | `search()`, `list()` | — |
+| `ui2.lua` | UI enhancements | `setup()` | — |
+| `word-jump.lua` | Navigation utilities | `jump()`, `setup()` | — |
+| `cheatsheet.lua` | Quick reference system | `show()`, `build()` | — |
+| `sudo.lua` | Elevated privilege commands | `write()`, `read()` | — |
+| `language-switcher.lua` | Language toggling | `toggle()`, `setup()` | — |
+| `pairs.lua` | Utility functions | various | — |
+| `incline.lua` | LSP client management | `setup()` | — |
+| `color-list.lua` | Color scheme tools | `list()`, `preview()` | — |
+| `surround.lua` | Surround text objects | `setup()` | — |
+| `lsp-loading.lua` | LSP progress UI | `setup()` | — |
 
-- Follow **single-responsibility principle** for modules
-- Use **답변 보도 `TextChanged` events for real-time features**
+### Key Plugin Configs (`lua/plugins/`)
 
-### 3. Verification
+| Config | Plugin | Trigger | Notes |
+|--------|--------|---------|-------|
+| `heirline.lua` | heirline.nvim | `BufReadPost`, `BufNewFile` | Statusline, tabline, winbar |
+| `snacks.lua` | snacks.nvim | Various | Picker, explorer, profiler, image |
+| `lsp.lua` | nvim-lspconfig + mason | `FileType` | LSP setup per language |
+| `treesitter.lua` | nvim-treesitter | `BufReadPost` | Parsing, highlight, indent |
+| `fzf.lua` | fzf-lua | `Cmd`/`Keys` | Fuzzy finder (battery mode) |
+| `catppuccin.lua` | catppuccin | `VeryLazy` | Theme (load first) |
+| `dap.lua` | nvim-dap | `Keys` | Debugging |
+| `markdown.lua` | render-markdown | `FileType` | Markdown rendering |
+| `cmdline.lua` | noice.nvim | `VeryLazy` | Command line UI |
+| `ufo.lua` | nvim-ufo | `BufReadPost` | Folding |
+| `csvview.lua` | csvview.nvim | `FileType` | CSV viewer |
+| `telegram.lua` | telegram.nvim | `Cmd` | Telegram integration |
 
-- Test with actual runtime execution (`:luafile`)
-- Use `debug` tool for breakpoints
+### Libraries (`lua/libs/`)
 
-This document reflects the current codebase structure and establishes standards for maintaining and extending the configuration.
+| Lib | Purpose |
+|-----|---------|
+| `power.lua` | AC/battery detection, auto-switch picker |
+| `utils.lua` | OS detection, version checks |
+| `git.lua` | Git root detection for heirline |
+| `icons.lua` | Icon definitions |
+| `spell.lua` | Spell check utilities |
+
+---
+
+*Generated 2026-08-16. Follows resonance.nvim AI_GUIDELINES.md pattern.*
