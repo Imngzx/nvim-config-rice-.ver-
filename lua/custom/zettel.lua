@@ -20,7 +20,6 @@ local string_gsub = string.gsub
 local string_lower = string.lower
 local fn_fnamemodify = fn.fnamemodify
 local fn_fnameescape = fn.fnameescape
-local fn_mkdir = fn.mkdir
 local fn_executable = fn.executable
 local os_execute = os.execute
 local os_date = os.date
