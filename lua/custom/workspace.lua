@@ -94,15 +94,17 @@ function M.picker()
     require('snacks').picker({
       title = ' 🏢 Workspaces ',
       items = items,
+
       layout = {
         preset = 'select',
         layout = {
           width = 0.45,
           height = 0.4,
-          border = 'rounded',
-          box = 'vertical',
-          { win = 'input', height = 1, border = 'bottom' },
-          { win = 'list', border = 'none' },
+          backdrop = 60
+          -- border = 'rounded',
+          -- box = 'vertical',
+          -- { win = 'input', height = 1, border = 'bottom' },
+          -- { win = 'list', border = 'none' },
         }
       },
       format = function(item, _)
