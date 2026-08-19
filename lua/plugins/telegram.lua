@@ -1,6 +1,4 @@
-local resonance = require('resonance')
-
-resonance.load({
+require('resonance').load({
   'https://github.com/ChuYanLon/telegram.nvim',
 
   build = 'npm i',

@@ -1,7 +1,5 @@
-local resonance = require('resonance')
-
 -- [Colorful Menu]
-resonance.load({
+require('resonance').load({
   'https://github.com/xzbdmw/colorful-menu.nvim',
   event = { 'InsertEnter', 'CmdlineEnter' },
   config = function()

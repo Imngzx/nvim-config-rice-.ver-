@@ -1,11 +1,10 @@
-local resonance = require('resonance')
 local api = vim.api
 local create_autocmd = api.nvim_create_autocmd
 local create_augroup = api.nvim_create_augroup
 local cmd = vim.cmd
 
 -- [CSV View]
-resonance.load({
+require('resonance').load({
   'https://github.com/hat0uma/csvview.nvim',
   cmd = { 'CsvViewEnable', 'CsvViewDisable', 'CsvViewToggle' },
   ft = { 'csv', 'tsv' },

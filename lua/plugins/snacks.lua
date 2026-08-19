@@ -1,6 +1,5 @@
 ---@module 'snacks'
 
-local resonance = require('resonance')
 local utils = require('libs.utils')
 local power = require('libs.power')
 
@@ -100,7 +99,7 @@ local set_keys = function(keys)
 end
 
 -- 4. 依托你精湛的按需加载引擎
-resonance.load({
+require('resonance').load({
   'https://github.com/folke/snacks.nvim',
   event = { 'User', pattern = 'VeryLazy' },
   config = function()

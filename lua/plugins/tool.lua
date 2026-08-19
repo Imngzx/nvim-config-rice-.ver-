@@ -1,7 +1,5 @@
-local resonance = require('resonance')
-
 -- [Key note] Load on VeryLazy
-resonance.load({
+require('resonance').load({
   {
     'https://github.com/folke/which-key.nvim',
     event = { 'User', pattern = 'VeryLazy' },

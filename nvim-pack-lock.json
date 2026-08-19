@@ -27,7 +27,7 @@
       "version": "'main'"
     },
     "codecompanion.nvim": {
-      "rev": "75a43ba789cca4eea90aaa60b585aa5ab4a41967",
+      "rev": "6fb43a1754956198f94df141de5e185a12a52c4d",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -63,7 +63,7 @@
       "src": "https://github.com/rebelot/heirline.nvim"
     },
     "jisho.nvim": {
-      "rev": "7bbd985a124cb99d8e38bb59b8ed60f06c1a45a8",
+      "rev": "7a545e8a2a8716dcf84e4702ec9e117faa90cb09",
       "src": "https://github.com/Imngzx/jisho.nvim"
     },
     "lazydev.nvim": {
@@ -115,7 +115,7 @@
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "nvim-lspconfig": {
-      "rev": "6fc041976833841cc9d991f45193533fe2a2e09b",
+      "rev": "c8a582abc20a3121a768073df569d088cb5604b5",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {

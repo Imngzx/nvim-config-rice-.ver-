@@ -1,6 +1,4 @@
-local resonance = require('resonance')
-
-resonance.load({
+require('resonance').load({
   'https://github.com/onion108/flash.nvim',
   keys = {
     { { 'n', 'x', 'o' }, '<CR>', function() require('flash').jump() end, { desc = 'Flash' } },

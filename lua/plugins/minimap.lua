@@ -1,6 +1,4 @@
 -- lua/plugins/neominimap.lua
-local resonance = require('resonance')
-
 vim.g.neominimap = {
   auto_enable = true,
   layout = 'float',
@@ -22,7 +20,7 @@ vim.g.neominimap = {
   notification_level = vim.log.levels.OFF,
 }
 
-resonance.load({
+require('resonance').load({
   'https://github.com/Isrothy/neominimap.nvim',
 
   keys = {

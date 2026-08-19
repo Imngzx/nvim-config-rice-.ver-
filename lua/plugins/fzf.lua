@@ -1,4 +1,3 @@
-local resonance = require('resonance')
 local is_ac = require('libs.power').is_ac()
 
 local fzf_keys = {}
@@ -43,7 +42,7 @@ if not is_ac then
   }
 end
 
-resonance.load({
+require('resonance').load({
   'https://github.com/ibhagwan/fzf-lua',
   cmd = 'FzfLua',
   keys = fzf_keys,

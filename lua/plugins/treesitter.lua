@@ -1,5 +1,3 @@
-local resonance = require('resonance')
-
 local parsers = {
   'c', 'cpp', 'make', 'cmake', 'python', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
   'bash', 'json', 'yaml', 'toml', 'rust', 'zig', 'javascript', 'typescript', 'vue',
@@ -13,7 +11,7 @@ local function setup_compiler()
   end
 end
 
-resonance.load({
+require('resonance').load({
   'https://github.com/nvim-treesitter/nvim-treesitter',
   version = 'main',
   build = function()

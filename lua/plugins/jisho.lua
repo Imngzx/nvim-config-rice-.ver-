@@ -1,6 +1,4 @@
-local resonance = require('resonance')
-
-resonance.load({
+require('resonance').load({
   'https://github.com/Imngzx/jisho.nvim',
 
   dependencies = { 'https://github.com/atusy/budoux.lua', },
@@ -24,6 +22,10 @@ resonance.load({
     require('jisho').setup({
       use_budoux = true,
       layout = 'spacious',
+      window = {
+        width = 0.6,
+        height = 0.9,
+      }
     })
   end,
 })

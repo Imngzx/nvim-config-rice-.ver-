@@ -1,6 +1,4 @@
-local resonance = require('resonance')
-
-resonance.load({
+require('resonance').load({
   'https://github.com/MeanderingProgrammer/render-markdown.nvim',
   -- cmd = { 'Tg', 'TgLogout', 'TgSend', 'TgPr' },
   ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion', 'telegram' },

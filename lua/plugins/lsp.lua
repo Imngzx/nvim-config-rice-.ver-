@@ -1,4 +1,3 @@
-local resonance = require('resonance')
 local H = {}
 
 -- calls the second init in this config
@@ -34,7 +33,7 @@ vim.g.markdown_fenced_languages = {
 }
 
 -- [Dependencies] Mason auto install once you open the Mason panel
-resonance.load({
+require('resonance').load({
   {
     'https://github.com/mason-org/mason.nvim',
     cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonLog', 'MasonUpdate' },

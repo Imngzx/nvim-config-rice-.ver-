@@ -1,9 +1,6 @@
-local resonance = require('resonance')
-local utils = require('libs.utils')
+local path_sep = require('libs.utils').is_windows() and '\\' or '/'
 
-local path_sep = utils.is_windows() and '\\' or '/'
-
-resonance.load({
+require('resonance').load({
   plugin = {
     src = 'https://github.com/catppuccin/nvim',
     name = 'catppuccin',

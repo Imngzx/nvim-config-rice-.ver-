@@ -1,7 +1,5 @@
-local resonance = require('resonance')
-
 -- [Debugger] Nvim-DAP
-resonance.load({
+require('resonance').load({
   plugin = {
     'https://github.com/mfussenegger/nvim-dap',
     'https://github.com/igorlfs/nvim-dap-view',
