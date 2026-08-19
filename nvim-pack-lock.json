@@ -63,7 +63,7 @@
       "src": "https://github.com/rebelot/heirline.nvim"
     },
     "jisho.nvim": {
-      "rev": "7a545e8a2a8716dcf84e4702ec9e117faa90cb09",
+      "rev": "8a525c91044bcfb4290fc37db0cf6e83ddc88695",
       "src": "https://github.com/Imngzx/jisho.nvim"
     },
     "lazydev.nvim": {
