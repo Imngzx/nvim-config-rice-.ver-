@@ -31,6 +31,7 @@ local custom_servers = setmetatable({}, {
     if k == 'zls' then return require('lsp.servers.zig') end
     if k == 'rust_analyzer' then return require('lsp.servers.rust') end
     if k == 'qmlls6' then return require('lsp.servers.qml') end
+    if k == 'luau_lsp' then return require('lsp.servers.luau') end
 
     -- single file with multiple lsp's config
     if k == 'lua_ls' then return require('lsp.servers.lua').lua_ls end
@@ -55,6 +56,9 @@ local custom_server_keys = {
   -- qml (for quickshell)
   'qmlls6',
 
+  -- luau (Roblox)
+  'luau_lsp',
+
   -- lua
   'lua_ls',
 
@@ -70,6 +74,7 @@ M.mason_tools = {
   'shfmt', -- Shell 格式化器
   'prettier',
   'prettierd',
+  'luau-lsp',
   'cmakelang',
   'markdownlint-cli2',
   'htmlhint',
