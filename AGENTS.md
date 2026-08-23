@@ -254,7 +254,54 @@ local utils = require('libs.utils')
 ```bash
 # After modifying a custom module, update its docs
 # Example: coderunner.lua → note/knowledge/coderunner.md
+
+### Add New LSP Server
+
+1. Create server config at `lua/lsp/servers/<name>.lua`:
+   ```lua
+   ---@module 'lspconfig'
+   return {
+     mason = true/false,           -- auto-install via Mason
+     cmd = { 'binary', 'args' },   -- use full path for Mason bins:
+                                   -- vim.fn.stdpath('data')..'/mason/bin/<binary>'
+     filetypes = { 'ft1', 'ft2' },
+     root_markers = { '.git', 'config.file' },
+     settings = { ... },           -- server-specific settings
+   }
+   ```
+
+2. Register in `lua/lsp/init.lua`:
+   - Add to `custom_servers` metatable `__index`:
+     ```lua
+     if k == '<server_name>' then return require('lsp.servers.<name>') end
+     ```
+   - Add to `custom_server_keys` list:
+     ```lua
+     '<server_name>',
+     ```
+
+3. Test:
+   ```bash
+   nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "lua require('custom.startup')" -c "lua require('config.resonance')" -c "lua require('lsp.init').setup()" -c "lua vim.lsp.enable(require('lsp.init').enabled_servers)" -c "edit test.<ft>" -c "lua vim.wait(2000)" -c "lua print(vim.inspect(vim.lsp.get_clients({name='<server_name>'})))" -c "qall"
+   ```
+
+### Add Mason-only Tool (formatter/linter/debugger)
+
+Add to `M.mason_tools` in `lua/lsp/init.lua`:
+```lua
+M.mason_tools = {
+  -- existing tools...
+  'tool-name',  -- matches Mason package name
+}
 ```
+
+Then press `<leader>pm` to open Mason and auto-install.
+
+### Key Gotchas for LSP
+
+- **Use absolute path** for Mason binaries: `vim.fn.stdpath('data') .. '/mason/bin/<binary>'`
+- **`--stdio` flag** often needed for LSP servers installed via Mason
+- **Filetype must match** — check `vim.filetype.match({filename='test.xxx'})`
 
 ---
 
