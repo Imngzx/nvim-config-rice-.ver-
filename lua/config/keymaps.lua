@@ -7,7 +7,7 @@ vim.g.maplocalleader = ' '
 -- [Basic]
 -- Quit & Save
 map('n', '<leader>qq', '<cmd>qa<cr>', { desc = 'Quit all' })
-map('n', '<leader>qr', '<cmd>restart<cr>', { desc = 'Restart' })
+map('n', '<leader>qr', '<cmd>restart!<cr>', { desc = 'Restart' })
 map('n', '<leader>ww', '<cmd>w<cr>', { desc = 'Save file' })
 map('n', '<leader>wq', '<cmd>wq<cr>', { desc = 'Save and quit' })
 
