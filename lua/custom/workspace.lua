@@ -175,7 +175,7 @@ function M.picker()
         row = 0.5,
         col = 0.5,
         border = 'rounded',
-        preview = { hidden = 'hidden' },
+        preview = { hidden = true },
       },
       actions = {
         ['default'] = function(selected)
