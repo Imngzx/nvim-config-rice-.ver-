@@ -127,7 +127,7 @@ end, { desc = 'Initialize Zettelkasten Workspace' })
 create_autocmd({ 'VimEnter', 'ColorScheme' }, {
   group = bg_sync_group,
   callback = function()
-    local normal = vim.api.nvim_get_hl(0, { name = 'Normal' })
+    local normal = vim.api.nvim_get_hl(0, { name = 'StatusLine' })
     if normal and normal.bg then
       local hex = string.format('#%06x', normal.bg)
 
