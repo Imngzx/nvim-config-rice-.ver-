@@ -2,11 +2,13 @@ local api = vim.api
 local o = vim.o
 local opt = vim.opt
 local create_autocmd = api.nvim_create_autocmd
+local write = io.write
 local create_augroup = api.nvim_create_augroup
 local schedule = vim.schedule
 local ui_group = create_augroup('AutoUIVisibility', { clear = true })
 local map = vim.keymap.set
 local user_command = vim.api.nvim_create_user_command
+local bg_sync_group = vim.api.nvim_create_augroup('TerminalBgSync', { clear = true })
 
 local function augroup(name)
   return create_augroup('cameron_' .. name, { clear = true })
@@ -121,3 +123,31 @@ create_autocmd({ 'BufEnter', 'BufAdd', 'BufDelete' }, {
 user_command('ZettelInit', function()
   require('custom.zettel').init_workspace()
 end, { desc = 'Initialize Zettelkasten Workspace' })
+
+create_autocmd({ 'VimEnter', 'ColorScheme' }, {
+  group = bg_sync_group,
+  callback = function()
+    local normal = vim.api.nvim_get_hl(0, { name = 'Normal' })
+    if normal and normal.bg then
+      local hex = string.format('#%06x', normal.bg)
+
+      if os.getenv('TMUX') then
+        write(string.format('\027Ptmux;\027\027]11;%s\007\027\\', hex))
+      else
+        -- Native Kitty sequence
+        write(string.format('\027]11;%s\007', hex))
+      end
+    end
+  end,
+})
+
+create_autocmd('VimLeavePre', {
+  group = bg_sync_group,
+  callback = function()
+    if os.getenv('TMUX') then
+      write('\027Ptmux;\027\027]111\007\027\\')
+    else
+      write('\027]111\007')
+    end
+  end,
+})
