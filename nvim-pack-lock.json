@@ -27,7 +27,7 @@
       "version": "'main'"
     },
     "codecompanion.nvim": {
-      "rev": "c39ddadd1d4e4f976d5c165348bd89eed98e3178",
+      "rev": "6db36f4a3d9bd10a3ca9ca2a3fd9ca1973acaff2",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -115,11 +115,11 @@
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "nvim-lspconfig": {
-      "rev": "3928e638fdedf195b23ae5a18f024afa487982bc",
+      "rev": "684cb45c2faa24ce463b4fe9aaf011bfe1e0fb26",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
-      "rev": "8b98b4470eb326f1c7b50dae79f8c963568e5720",
+      "rev": "857651fce37eba032ebe28f3a206283cdc65c45a",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
@@ -136,7 +136,7 @@
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "popup.nvim": {
-      "rev": "9f664b79aed283b950f8eb88b112b59eaf4da560",
+      "rev": "1c72a148a9d9baeec34da60012a0ba0708649a26",
       "src": "https://github.com/aurora0x27/popup.nvim"
     },
     "promise-async": {
@@ -148,7 +148,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "resonance.nvim": {
-      "rev": "a9387769e8c3b8c238c6754296ccea24d8a01633",
+      "rev": "19f2796b8248022c1a3fa749e83d37a515a9b9d8",
       "src": "https://github.com/Imngzx/resonance.nvim"
     },
     "showkeys": {
