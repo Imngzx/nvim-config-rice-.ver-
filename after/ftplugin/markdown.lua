@@ -97,3 +97,8 @@ for key, info in pairs(states) do
     set_checkbox(info.char)
   end, { buf = 0, silent = true, desc = 'Task: ' .. info.desc })
 end
+
+require('custom.md-paste-image').setup({
+  img_dir = '_res',
+  auto_paste = true,
+})
