@@ -37,7 +37,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 - List of features that became **Pluginless**
   - [x] [incline.nvim](https://github.com/b0o/incline.nvim)
   - [x] [vim-suda](https://github.com/lambdalisue/vim-suda)
-  - [x] [bufferline.nvim](github.com/akinsho/bufferline.nvim)
+  - [x] [bufferline.nvim](https://github.com/akinsho/bufferline.nvim)
   - [x] [todo-comments](https://github.com/folke/todo-comments.nvim) (Key: `<Leader>st`)
   - [x] [fidget.nvim](https://github.com/j-hui/fidget.nvim)
   - [x] [mini.surround](https://github.com/nvim-mini/mini.surround)
@@ -76,7 +76,6 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 - Language server protocol: `nvim-lspconfig`
 - Leader key: `Space`
 - Default LSP for Lua-language: `lua_ls`
-- Key doc: [Simple-keybinding-documentations](./note/simple-doc.md)
 
 > [!NOTE]
 > If you want to see the file structure of my config, please use `tree` in terminal
