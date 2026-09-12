@@ -4,7 +4,7 @@ local M = {}
 local default_servers = {
 
   -- [markdown]
-  marksman = true,
+  -- marksman = true,
 
   -- [json]
   jsonls = 'json-lsp',
@@ -29,6 +29,8 @@ local custom_servers = setmetatable({}, {
   __index = function(t, k)
     if k == 'clangd' then return require('lsp.servers.c-language') end
     if k == 'zls' then return require('lsp.servers.zig') end
+    if k == 'rumdl' then return require('lsp.servers.markdown').rumdl end
+    if k == 'markdown-oxide' then return require('lsp.servers.markdown').markdown_oxide end
     if k == 'rust_analyzer' then return require('lsp.servers.rust') end
     if k == 'qmlls6' then return require('lsp.servers.qml') end
     if k == 'luau_lsp' then return require('lsp.servers.luau') end
@@ -64,7 +66,10 @@ local custom_server_keys = {
 
   -- python
   'basedpyright',
-  'ruff'
+  'ruff',
+
+  'rumdl',
+  'markdown-oxide'
 }
 
 -- 【3】this handles tool installation from mason other than lsp
@@ -76,7 +81,6 @@ M.mason_tools = {
   'prettierd',
   'luau-lsp',
   'cmakelang',
-  'markdownlint-cli2',
   'htmlhint',
   'shellcheck',
   'mpls', -- Markdown preview LSP

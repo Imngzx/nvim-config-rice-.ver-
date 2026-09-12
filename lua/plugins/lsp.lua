@@ -24,7 +24,7 @@ H.conform = {
   cmake = { 'cmake_format' },
   json = { 'jq' },
   zig = { 'zigfmt' },
-  markdown = { 'markdownlint-cli2' }
+  markdown = { 'rumdl' }
 }
 
 vim.g.markdown_fenced_languages = {
@@ -98,7 +98,6 @@ require('resonance').load({
       local lint = require('lint')
 
       lint.linters_by_ft = {
-        markdown = { 'markdownlint-cli2' },
         html = { 'htmlhint' },
         cmake = { 'cmakelint' },
       }
