@@ -79,6 +79,7 @@ M.mason_tools = {
   'markdownlint-cli2',
   'htmlhint',
   'shellcheck',
+  'mpls', -- Markdown preview LSP
   -- 'vue-language-server',
 }
 

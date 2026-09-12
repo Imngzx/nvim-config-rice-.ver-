@@ -60,5 +60,29 @@ require('resonance').load({
     if not require('libs.power').is_ac() then
       require('render-markdown').disable()
     end
+    -- mpls markdown preview keymap
+    if ok then
+      snacks.keymap.set('n', '<localleader>cp', function()
+        -- Use current buffer for root_dir detection
+        local buf = vim.api.nvim_get_current_buf()
+        vim.lsp.start({
+          name = 'mpls',
+          cmd = {
+            'mpls',
+            '--theme',
+            'dark',
+            '--enable-emoji',
+            '--enable-footnotes',
+          },
+          root_dir = vim.fs.root(buf, { '.marksman.toml', '.git' })
+            or vim.fn.getcwd(),
+          filetypes = { 'markdown' },
+        })
+      end, {
+        ft = 'markdown',
+        desc = '[LSP] Preview file',
+      })
+    end
   end
 })
+
