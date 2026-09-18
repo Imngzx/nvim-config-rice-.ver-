@@ -15,10 +15,22 @@ end
 --- Check if running in WSL
 ---@return boolean
 function M.is_wsl()
-  if jit.os ~= 'Linux' then return false end
-  local version = vim.fn.readfile('/proc/version')[1] or ''
-  return version:lower():match('microsoft') ~= nil
+  if M._wsl_cached ~= nil then
+    return M._wsl_cached
+  end
+
+  if jit.os ~= 'Linux' then
+    M._wsl_cached = false
+    return false
+  end
+
+  local ok, version = pcall(vim.fn.readfile, '/proc/version')
+  M._wsl_cached = ok and version[1] and version[1]:lower():match('microsoft') ~= nil or false
+  return M._wsl_cached
 end
+
+-- Pre-warm WSL cache at load time (safe context)
+M.is_wsl()
 
 --- Check if the current nvim version is compatible with the allowed version
 ---@param min_version string
