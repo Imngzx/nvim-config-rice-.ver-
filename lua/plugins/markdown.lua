@@ -62,7 +62,7 @@ require('resonance').load({
     end
     -- mpls markdown preview keymap
     if ok then
-      snacks.keymap.set('n', '<localleader>cp', function()
+      snacks.keymap.set('n', '<localleader>cz', function()
         -- Use current buffer for root_dir detection
         local buf = vim.api.nvim_get_current_buf()
         vim.lsp.start({
@@ -85,4 +85,3 @@ require('resonance').load({
     end
   end
 })
-
