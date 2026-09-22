@@ -3,6 +3,7 @@ local api, fn = vim.api, vim.fn
 local ORIGINAL_HL_CACHE = {}
 
 M._timers = {}
+local async = vim.async
 
 -- Config Module
 local config = {
@@ -38,30 +39,48 @@ end
 
 local cache_path = fn.stdpath('data') .. package.config:sub(1, 1) .. 'transparent_state'
 
+---@return boolean
 local function cache_read()
-  local stat = vim.uv.fs_stat(cache_path)
-  if stat then
-    local fd = vim.uv.fs_open(cache_path, 'r', 438)
-    if fd then
-      local data = vim.uv.fs_read(fd, stat.size, 0)
-      vim.uv.fs_close(fd)
-      if data then
-        vim.g.bg_transparent = (data:match('true') ~= nil)
-        return
+  ---@type vim.async.Task<boolean>
+  local task = async.run(function()
+    ---@type boolean, string?, vim.uv.fs_stat_t?
+    local ok, err, stat = async.pawait(2, vim.uv.fs_stat, cache_path)
+    if ok and not err and stat then
+      ---@type boolean, string?, integer?
+      local ok, err, fd = async.pawait(4, vim.uv.fs_open, cache_path, 'r', 438)
+      if ok and not err and fd then
+        ---@type boolean, string?, string?
+        local ok, err, data = async.pawait(4, vim.uv.fs_read, fd, stat.size, 0)
+        async.pawait(2, vim.uv.fs_close, fd)
+        if ok and not err and data then
+          ---@cast data string
+          return (data:match('true') ~= nil)
+        end
       end
     end
-  end
-  vim.g.bg_transparent = false
+    return false
+  end)
+  local ok, result = task:pwait()
+  if ok then return result end
+  return false
 end
 
+---@return vim.async.Task
 local function cache_write()
-  local dir = vim.fs.dirname(cache_path)
-  if not vim.uv.fs_stat(dir) then vim.fs.mkdir(dir, { parents = true }) end
-  local fd = vim.uv.fs_open(cache_path, 'w', 438)
-  if fd then
-    vim.uv.fs_write(fd, tostring(vim.g.bg_transparent), -1)
-    vim.uv.fs_close(fd)
-  end
+  return async.run(function()
+    local dir = vim.fs.dirname(cache_path)
+    ---@type boolean, string?, vim.uv.fs_stat_t?
+    local ok, err, stat = async.pawait(2, vim.uv.fs_stat, dir)
+    if not ok or err or not stat then
+      async.await(3, vim.uv.fs_mkdir, dir, { parents = true })
+    end
+    ---@type boolean, string?, integer?
+    local ok, err, fd = async.pawait(4, vim.uv.fs_open, cache_path, 'w', 438)
+    if ok and not err and fd then
+      async.await(4, vim.uv.fs_write, fd, tostring(vim.g.bg_transparent), -1)
+      async.await(2, vim.uv.fs_close, fd)
+    end
+  end)
 end
 
 local function clear_group(group)
@@ -119,13 +138,13 @@ end
 
 function M.enable()
   vim.g.bg_transparent = true
-  cache_write()
+  cache_write():pwait()
   M.clear()
 end
 
 function M.disable()
   vim.g.bg_transparent = false
-  cache_write()
+  cache_write():pwait()
 
   for i = 1, #M._timers do
     require('snacks').util.stop(M._timers[i])
@@ -159,7 +178,7 @@ function M.setup(opts)
   opts = opts or {}
   config = vim.tbl_extend('force', config, opts)
 
-  cache_read()
+  vim.g.bg_transparent = cache_read()
 
   if opts.auto_enable ~= nil then
     if opts.auto_enable then
@@ -167,7 +186,7 @@ function M.setup(opts)
     else
       vim.g.bg_transparent = false
     end
-    cache_write()
+    cache_write():pwait()
   end
 
   vim.schedule(function()
