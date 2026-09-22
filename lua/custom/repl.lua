@@ -80,7 +80,12 @@ local function repl_impl(lines)
 
       for i = 2, #vals do
         table.insert(out, ',')
-        vim.list_extend(out, vim.split(vals[i], '\n', { plain = true }))
+        local val = vals[i]
+        if type(val) == 'string' then
+          vim.list_extend(out, vim.split(val, '\n', { plain = true }))
+        else
+          vim.list_extend(out, { tostring(val) })
+        end
       end
     end
   end
