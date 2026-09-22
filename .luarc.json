@@ -1,48 +1,46 @@
 {
   "runtime": {
-    "version": "LuaJIT"
+    "version": "LuaJIT",
+    "path": [
+      "lua/?.lua",
+      "lua/?/init.lua"
+    ]
+  },
+  "workspace": {
+    "library": [
+      "${3rd}/luv/library",
+      "/usr/share/nvim/runtime/lua"
+    ],
+    "checkThirdParty": false
   },
   "diagnostics": {
     "globals": [
       "vim",
-      "package",
-      "coroutine",
-      "table",
-      "string",
-      "math",
-      "io",
-      "os",
-      "debug",
-      "utf8",
       "bit",
-      "jit",
-      "require",
-      "print",
-      "error",
-      "assert",
-      "select",
-      "next",
-      "pairs",
-      "ipairs",
-      "type",
-      "tonumber",
-      "tostring",
-      "rawget",
-      "rawset",
-      "rawequal",
-      "getmetatable",
-      "setmetatable",
-      "load",
-      "loadfile",
-      "dofile",
-      "pcall",
-      "xpcall"
+      "jit"
+    ],
+    "disable": [
+      "lowercase-global",
+      "undefined-global",
+      "undefined-doc-name",
+      "undefined-field",
+      "return-type-mismatch",
+      "missing-return",
+      "param-type-mismatch",
+      "cast-local-type",
+      "assign-type-mismatch"
     ]
   },
-  "workspace": {
-    "checkThirdParty": false
-  },
-  "telemetry": {
+  "format": {
     "enable": false
+  },
+  "hint": {
+    "enable": true,
+    "arrayIndex": "Disable",
+    "await": true,
+    "paramName": "All",
+    "paramType": true,
+    "semicolon": "Disable",
+    "setType": true
   }
 }
