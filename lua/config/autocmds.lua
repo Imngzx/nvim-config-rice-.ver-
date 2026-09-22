@@ -124,30 +124,30 @@ user_command('ZettelInit', function()
   require('custom.zettel').init_workspace()
 end, { desc = 'Initialize Zettelkasten Workspace' })
 
-create_autocmd({ 'VimEnter', 'ColorScheme' }, {
-  group = bg_sync_group,
-  callback = function()
-    local normal = vim.api.nvim_get_hl(0, { name = 'Normal' })
-    if normal and normal.bg then
-      local hex = string.format('#%06x', normal.bg)
-
-      if os.getenv('TMUX') then
-        write(string.format('\027Ptmux;\027\027]11;%s\007\027\\', hex))
-      else
-        -- Native Kitty sequence
-        write(string.format('\027]11;%s\007', hex))
-      end
-    end
-  end,
-})
-
-create_autocmd('VimLeavePre', {
-  group = bg_sync_group,
-  callback = function()
-    if os.getenv('TMUX') then
-      write('\027Ptmux;\027\027]111\007\027\\')
-    else
-      write('\027]111\007')
-    end
-  end,
-})
+-- create_autocmd({ 'VimEnter', 'ColorScheme' }, {
+--   group = bg_sync_group,
+--   callback = function()
+--     local normal = vim.api.nvim_get_hl(0, { name = 'Normal' })
+--     if normal and normal.bg then
+--       local hex = string.format('#%06x', normal.bg)
+--
+--       if os.getenv('TMUX') then
+--         write(string.format('\027Ptmux;\027\027]11;%s\007\027\\', hex))
+--       else
+--         -- Native Kitty sequence
+--         write(string.format('\027]11;%s\007', hex))
+--       end
+--     end
+--   end,
+-- })
+--
+-- create_autocmd('VimLeavePre', {
+--   group = bg_sync_group,
+--   callback = function()
+--     if os.getenv('TMUX') then
+--       write('\027Ptmux;\027\027]111\007\027\\')
+--     else
+--       write('\027]111\007')
+--     end
+--   end,
+-- })
