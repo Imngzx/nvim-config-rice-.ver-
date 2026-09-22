@@ -13,7 +13,7 @@ return {
         -- MD040 Fenced code blocks should have a language specified
         -- MD041 First line in a file should be a top-level heading
         -- MD045 Images should have alternate text
-        disableRules = { 'MD013', 'MD025', 'MD033', 'MD034', 'MD040', 'MD041', 'MD045' },
+        disableRules = { 'MD013', 'MD033', 'MD034', 'MD040', 'MD041', 'MD045' },
         settings = {
           enableLinting = true,
           -- MD060 Makes significant formatting changes to existing tables
@@ -26,6 +26,17 @@ return {
             'build',
             'dist',
             '*.tmp.md',
+          },
+          MD025 = {
+            front_matter_title = "",
+            allow_document_sections = true,
+          },
+          MD073 = {
+            enabled = true,
+            min_level = 2,
+            max_level = 4,
+            enforce_order = true,
+            indent = 2,
           },
           MD032 = { allowLazyContinuation = false },
           MD060 = { enabled = true, style = 'aligned' },
