@@ -2,13 +2,14 @@
 require('resonance').load({
   plugin = {
     'https://github.com/mfussenegger/nvim-dap',
-    'https://github.com/igorlfs/nvim-dap-view',
+    'https://github.com/rcarriga/nvim-dap-ui',
     'https://github.com/theHamsta/nvim-dap-virtual-text',
     'https://github.com/mfussenegger/nvim-dap-python',
   },
+  dependencies = { 'https://github.com/nvim-neotest/nvim-nio' },
   keys = {
-    -- 📺 DAP View (UI)
-    { 'n', '<leader>du', function() require('dap-view').toggle() end, { desc = 'Toggle Dap View' } },
+    -- 📺 DAP UI
+    { 'n', '<leader>du', function() require('dapui').toggle() end, { desc = 'Toggle Dap UI' } },
 
     -- 🐍 DAP Python
     { 'n', '<localleader>dT', function() require('dap-python').test_method() end, { desc = 'Debug Method (Python)' } },
@@ -49,18 +50,18 @@ require('resonance').load({
       { text = ' ', texthl = 'DapBreakpointRejected', linehl = '', numhl = '' })
 
     -- 🔌 starts dependent plugins
-    local dap_view = require('dap-view')
-    dap_view.setup()
+    local dapui = require('dapui')
+    dapui.setup()
     require('nvim-dap-virtual-text').setup({})
     require('dap-python').setup('python3', {})
 
     local dap = require('dap')
 
-    dap.listeners.after.event_initialized['dap-view-auto-open'] = function()
-      dap_view.open()
+    dap.listeners.after.event_initialized['dapui-auto-open'] = function()
+      dapui.open()
     end
-    dap.listeners.before.event_terminated['dap-view-auto-close'] = function() dap_view.close() end
-    dap.listeners.before.event_exited['dap-view-auto-close'] = function() dap_view.close() end
+    dap.listeners.before.event_terminated['dapui-auto-close'] = function() dapui.close() end
+    dap.listeners.before.event_exited['dapui-auto-close'] = function() dapui.close() end
 
     local mason_bin = vim.fn.stdpath('data') .. '/mason/bin/'
     -- windows compability
