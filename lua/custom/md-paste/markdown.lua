@@ -2,6 +2,23 @@ local M = {}
 
 local pandoc = require('custom.md-paste.pandoc')
 
+local function inclusive_end_column(row, col)
+  local line = vim.api.nvim_buf_get_lines(0, row, row + 1, false)[1] or ''
+  local b = string.byte(line, col + 1)
+  if not b then return col end
+  local len = 1
+  if b < 0x80 then
+    len = 1
+  elseif b < 0xE0 then
+    len = 2
+  elseif b < 0xF0 then
+    len = 3
+  else
+    len = 4
+  end
+  return col + len - 1
+end
+
 local function is_url(text)
   text = vim.trim(text or '')
 
@@ -39,6 +56,15 @@ local function get_visual_range()
     or (start_row == end_row and start_col > end_col) then
     start_row, end_row = end_row, start_row
     start_col, end_col = end_col, start_col
+  end
+
+
+  if mode == 'v' then
+    if vim.o.selection == 'exclusive' then
+      end_col = end_col - 1
+    else
+      end_col = inclusive_end_column(end_row, end_col)
+    end
   end
 
   return {
