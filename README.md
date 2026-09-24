@@ -25,7 +25,7 @@ Use this on Linux for best experience ฅ₍^•⩊ •マⳊ
 ### Summarization
 
 - **Fast.** Less than **30ms** to start, say no to heavy plugins for ui only
-- **Simple.** Run out of the box with only 45 plugins.
+- **Simple.** Run out of the box with only less plugins.
 - **Modern.** Pure `lua` config.
 - **Modular.** Easy to customize.
 - **Powerful.** Near full functionality to code, supports cjk.
