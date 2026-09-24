@@ -31,7 +31,7 @@
       "version": "'main'"
     },
     "codecompanion.nvim": {
-      "rev": "3af636c9892c70c5a4e91604718bf902076aff26",
+      "rev": "ff4a913c3bb6ace172edd2e4cf6cd1d43200aea0",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "colorful-menu.nvim": {
@@ -119,7 +119,7 @@
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "nvim-lspconfig": {
-      "rev": "ffd261c09c3dabd0bf1a438f47a8ae3b22f3c3ff",
+      "rev": "046b1a797af1effe8e0474b9af9657a3761ec58a",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-nio": {
