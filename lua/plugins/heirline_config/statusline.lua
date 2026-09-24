@@ -43,7 +43,7 @@ local ViMode = {
   update = true,
   init = function(self)
     self.mode = vim.fn.mode(1)
-    self.mode_color = colors.mode_colors[self.mode] or 'normal'
+    self.mode_color = colors.get_mode_color(self.mode)
   end,
   static = { mode_names = colors.mode_names },
   {
@@ -173,7 +173,7 @@ setup_time_updater()
 local LocationAndTime = {
   init = function(self)
     self.mode = vim.fn.mode(1)
-    self.mode_color = colors.mode_colors[self.mode] or 'normal'
+    self.mode_color = colors.get_mode_color(self.mode)
   end,
   { provider = '', hl = { fg = 'section_bg', bg = 'bg' } },
   { provider = '  %l:%c ', hl = function(self) return { fg = self.mode_color, bg = 'section_bg' } end },

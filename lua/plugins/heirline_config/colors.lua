@@ -1,5 +1,6 @@
 local utils = require('heirline.utils')
 local M = {}
+local active_colors = {}
 
 function M.setup_colors()
   local statusline = utils.get_highlight('StatusLine')
@@ -8,7 +9,7 @@ function M.setup_colors()
   local match_paren = utils.get_highlight('MatchParen')
   local cursor_line = utils.get_highlight('CursorLine')
 
-  return {
+  local palette = {
     bg = statusline.bg or '#1e1e2e',
     fg = statusline.fg or '#cdd6f4',
 
@@ -39,6 +40,9 @@ function M.setup_colors()
     tab_num_unfocus = utils.get_highlight('Comment').fg,
     tab_cross_fg = cursor_line.bg,
   }
+
+  active_colors = palette
+  return palette
 end
 M.mode_names = {
   n = 'NORMAL',
@@ -119,5 +123,10 @@ M.mode_colors = {
   ['!'] = 'command',
   t = 'terminal',
 }
+
+function M.get_mode_color(mode)
+  local color_name = M.mode_colors[mode] or 'normal'
+  return active_colors[color_name] or active_colors.normal or '#89b4fa'
+end
 
 return M
