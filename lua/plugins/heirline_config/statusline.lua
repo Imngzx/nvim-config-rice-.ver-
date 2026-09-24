@@ -1,6 +1,42 @@
 local conditions = require('heirline.conditions')
 local colors = require('plugins.heirline_config.colors')
 local _lsp_args = { bufnr = 0 }
+local nvim_get_current_buf = vim.api.nvim_get_current_buf
+
+local lsp_name_cache = {}
+local lsp_cache_group = vim.api.nvim_create_augroup('HeirlineLspNameCache', { clear = true })
+vim.api.nvim_create_autocmd({ 'LspAttach', 'LspDetach' }, {
+  group = lsp_cache_group,
+  callback = function(args) lsp_name_cache[args.buf] = nil end,
+})
+
+local function get_active_lsp_text(bufnr)
+  local cached = lsp_name_cache[bufnr]
+  if cached ~= nil then return cached end
+
+  _lsp_args.bufnr = bufnr
+  local clients = vim.lsp.get_clients(_lsp_args)
+  local count = #clients
+  if count == 0 then
+    lsp_name_cache[bufnr] = ''
+    return ''
+  end
+
+  local max_show = 2
+  local limit = count > max_show and max_show or count
+  local names = {}
+  for i = 1, limit do
+    names[i] = clients[i].name
+  end
+
+  local text = '   ' .. table.concat(names, ' | ') .. ' '
+  if count > max_show then
+    text = text:sub(1, -2) .. ' (+' .. (count - max_show) .. ') '
+  end
+
+  lsp_name_cache[bufnr] = text
+  return text
+end
 
 -- 1. Vi Mode
 local ViMode = {
@@ -94,27 +130,7 @@ local Align = { provider = '%=' }
 local ActiveLSP = {
   update = { 'LspAttach', 'LspDetach', 'BufEnter' },
   provider = function()
-    _lsp_args.bufnr = 0
-    local clients = vim.lsp.get_clients(_lsp_args)
-    local count = #clients
-    if count == 0 then return '' end
-
-    local names = {}
-    local max_show = 2
-
-    local limit = count > max_show and max_show or count
-
-    for i = 1, limit do
-      names[i] = clients[i].name
-    end
-
-    local text = table.concat(names, ' | ')
-
-    if count > max_show then
-      text = text .. ' (+' .. (count - max_show) .. ')'
-    end
-
-    return '   ' .. text .. ' '
+    return get_active_lsp_text(nvim_get_current_buf())
   end,
   hl = { fg = 'lsp_name', bold = true, bg = 'bg' },
 }

@@ -11,6 +11,8 @@ local nvim_buf_get_name = api.nvim_buf_get_name
 local nvim_get_current_win = api.nvim_get_current_win
 local nvim_buf_get_changedtick = api.nvim_buf_get_changedtick
 local nvim_get_option_value = api.nvim_get_option_value
+local nvim_win_is_valid = api.nvim_win_is_valid
+local nvim_win_set_cursor = api.nvim_win_set_cursor
 
 local fs_basename = vim.fs.basename
 local fs_dirname = vim.fs.dirname
@@ -47,6 +49,12 @@ local function get_ts_text(...)
   return ts_get_node_text_cache(...)
 end
 
+local snacks
+local function get_snacks()
+  if not snacks then snacks = require('snacks') end
+  return snacks
+end
+
 local BUF_ZERO = { buf = 0 }
 local FIELDS_TO_TRY = { 'name', 'key', 'property', 'declarator', 'item' }
 local HEADING_ICONS = { 'H1', 'H2', 'H3', 'H4', 'H5', 'H6' }
@@ -71,25 +79,63 @@ local ts_icons = {
 
 local win_cache = {}
 local file_cache = {}
+local node_name_cache = {}
+local breadcrumb_targets = {}
+local next_breadcrumb_target = 0
+
+local function clear_win_cache(win_id)
+  local cache = win_cache[win_id]
+  if cache and cache.target_ids then
+    for i = 1, #cache.target_ids do
+      breadcrumb_targets[cache.target_ids[i]] = nil
+    end
+  end
+  win_cache[win_id] = nil
+end
+
+local function jump_to_breadcrumb(_, target_id)
+  local target = breadcrumb_targets[target_id]
+  if not target then return end
+
+  vim.schedule(function()
+    if nvim_win_is_valid(target.win_id) and nvim_win_get_buf(target.win_id) == target.bufnr then
+      pcall(nvim_win_set_cursor, target.win_id, { target.row + 1, target.col })
+    end
+  end)
+end
 
 local aug = api.nvim_create_augroup('HeirlineWinbarCache', { clear = true })
 api.nvim_create_autocmd('WinClosed', {
   group = aug,
   callback = function(args)
     local win_id = tonumber(args.match)
-    if win_id then win_cache[win_id] = nil end
+    if win_id then clear_win_cache(win_id) end
   end
 })
 api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
   group = aug,
-  callback = function(args) file_cache[args.buf] = nil end
+  callback = function(args)
+    file_cache[args.buf] = nil
+    node_name_cache[args.buf] = nil
+  end
 })
+
+local NON_SCOPE_TYPES = {
+  pipe_table = true,
+  pipe_table_row = true,
+  pipe_table_cell = true,
+}
 
 local scope_memo = {}
 
 local function identify_scope(type_str)
   local cached = scope_memo[type_str]
   if cached ~= nil then return cached or nil end
+
+  if NON_SCOPE_TYPES[type_str] then
+    scope_memo[type_str] = false
+    return nil
+  end
 
   local res = nil
   if type_str:find('func', 1, true) then
@@ -131,7 +177,7 @@ local function safe_get_text(node, bufnr)
   return ok and text or nil
 end
 
-local function get_node_name(node, bufnr)
+local function get_node_name_uncached(node, bufnr)
   local type_str = node:type()
 
   if type_str == 'section' then
@@ -142,6 +188,7 @@ local function get_node_name(node, bufnr)
         break
       end
     end
+    if type_str == 'section' then return nil end
   end
 
   if type_str:find('heading', 1, true) then
@@ -212,6 +259,22 @@ local function get_node_name(node, bufnr)
   return nil
 end
 
+local function get_node_name(node, bufnr, tick)
+  local cache = node_name_cache[bufnr]
+  if not cache or cache.tick ~= tick then
+    cache = { tick = tick, nodes = {} }
+    node_name_cache[bufnr] = cache
+  end
+
+  local node_id = node:id()
+  local cached = cache.nodes[node_id]
+  if cached then return cached[1] or nil, cached[2] end
+
+  local name, icon = get_node_name_uncached(node, bufnr)
+  cache.nodes[node_id] = { name or false, icon }
+  return name, icon
+end
+
 local FilePath = {
   init = function(self)
     local win_id = nvim_get_current_win()
@@ -236,25 +299,31 @@ local FilePath = {
     local dir = fs_dirname(rel_path) or ''
     local tail = fs_basename(rel_path) or ''
 
-    local Snacks = require('snacks')
-
+    local Snacks = get_snacks()
     local dir_icon, dir_hl = Snacks.util.icon('folder', 'directory')
-
-    local full_rendered, short_rendered = '', ''
+    local full_parts, short_parts = {}, {}
 
     if dir and dir ~= '.' and dir ~= '' then
       dir = dir:gsub('\\', '/')
       for segment in string_gmatch(dir, '[^/]+') do
         local short_segment = segment:sub(1, 1)
-        segment = escape_stl(segment)
-        short_segment = escape_stl(short_segment)
-        full_rendered = full_rendered ..
-          string_format('%%#%s#%s %%#WinBar#%s%%#Comment# ', dir_hl, dir_icon, segment)
-        short_rendered = short_rendered ..
-          string_format('%%#%s#%s %%#WinBar#%s%%#Comment# ', dir_hl, dir_icon, short_segment)
+        table_insert(full_parts, string_format(
+          '%%#%s#%s %%#WinBar#%s%%#Comment# ',
+          dir_hl,
+          dir_icon,
+          escape_stl(segment)
+        ))
+        table_insert(short_parts, string_format(
+          '%%#%s#%s %%#WinBar#%s%%#Comment# ',
+          dir_hl,
+          dir_icon,
+          escape_stl(short_segment)
+        ))
       end
     end
 
+    local full_rendered = table_concat(full_parts)
+    local short_rendered = table_concat(short_parts)
     local file_icon, file_hl = Snacks.util.icon(filename, 'file')
 
     tail = escape_stl(tail)
@@ -290,7 +359,8 @@ local Breadcrumbs = {
 
     local ok, node = pcall(get_ts_node, _ts_args)
     if not ok or not node then
-      self.rendered_string = ''
+      clear_win_cache(win_id)
+      self.child = nil
       return
     end
 
@@ -307,26 +377,42 @@ local Breadcrumbs = {
 
     local cache = win_cache[win_id]
     if cache and cache.bufnr == bufnr and cache.tick == tick and cache.scope_id == scope_id then
-      self.rendered_string = cache.rendered_string
+      self.child = cache.child
       return
     end
 
-    local parts = {}
+    local children = {}
+    local target_ids = {}
     local max_depth = 5
     local curr_depth = 0
 
     while scope_node and curr_depth < max_depth do
-      local name, icon_override = get_node_name(scope_node, bufnr)
+      local name, icon_override = get_node_name(scope_node, bufnr, tick)
       if name then
         local icon_data = ts_icons[start_scope] or ts_icons['default']
         local final_icon = icon_override or icon_data.icon
+        local start_row, start_col = scope_node:range()
 
-        name = truncate_utf8(name, 40)
-        name = escape_stl(name)
+        next_breadcrumb_target = next_breadcrumb_target + 1
+        local target_id = next_breadcrumb_target
+        breadcrumb_targets[target_id] = {
+          win_id = win_id,
+          bufnr = bufnr,
+          row = start_row,
+          col = start_col,
+        }
+        table_insert(target_ids, target_id)
 
-        local part = string_format('%%#Comment# %%#%s#%s %%#WinBar#%s', icon_data.hl, final_icon,
-          name)
-        table_insert(parts, 1, part)
+        table_insert(children, 1, {
+          on_click = {
+            minwid = target_id,
+            callback = jump_to_breadcrumb,
+            name = 'heirline_winbar_breadcrumb',
+          },
+          { provider = ' ', hl = 'Comment' },
+          { provider = final_icon .. ' ', hl = icon_data.hl },
+          { provider = escape_stl(truncate_utf8(name, 40)), hl = 'WinBar' },
+        })
         curr_depth = curr_depth + 1
       end
 
@@ -339,15 +425,20 @@ local Breadcrumbs = {
     end
 
     if curr_depth == max_depth and scope_node then
-      table_insert(parts, 1, '%#Comment# ⋯ ')
+      table_insert(children, 1, { provider = ' ⋯ ', hl = 'Comment' })
     end
 
-    local rendered = table_concat(parts)
-    self.rendered_string = rendered
-
-    win_cache[win_id] = { bufnr = bufnr, tick = tick, scope_id = scope_id, rendered_string = rendered }
+    clear_win_cache(win_id)
+    self.child = self:new(children, 1)
+    win_cache[win_id] = {
+      bufnr = bufnr,
+      tick = tick,
+      scope_id = scope_id,
+      child = self.child,
+      target_ids = target_ids,
+    }
   end,
-  provider = function(self) return self.rendered_string end,
+  provider = function(self) return self.child and self.child:eval() or '' end,
 }
 
 local TerminalWinBar = {

@@ -2,9 +2,15 @@ local utils = require('heirline.utils')
 local M = {}
 
 function M.setup_colors()
+  local statusline = utils.get_highlight('StatusLine')
+  local diagnostic_info = utils.get_highlight('DiagnosticInfo')
+  local error = utils.get_highlight('Error')
+  local match_paren = utils.get_highlight('MatchParen')
+  local cursor_line = utils.get_highlight('CursorLine')
+
   return {
-    bg = utils.get_highlight('StatusLine').bg or '#1e1e2e',
-    fg = utils.get_highlight('StatusLine').fg or '#cdd6f4',
+    bg = statusline.bg or '#1e1e2e',
+    fg = statusline.fg or '#cdd6f4',
 
     -- bright_bg = utils.get_highlight('Folded').bg or '#45475a',
     -- section_bg = utils.get_highlight('CursorLine').bg or '#313244',
@@ -13,29 +19,27 @@ function M.setup_colors()
 
     normal = utils.get_highlight('Directory').fg or '#89b4fa',
     insert = utils.get_highlight('String').fg or '#a6e3a1',
-    visual = utils.get_highlight('Statement').fg or '#cba6f7',
-    replace = utils.get_highlight('Error').fg or '#f38ba8',
-    command = utils.get_highlight('MatchParen').fg or '#fab387',
+    replace = error.fg or '#f38ba8',
+    command = match_paren.fg or '#fab387',
     terminal = utils.get_highlight('WarningMsg').fg or '#f9e2af',
     diag_error = utils.get_highlight('DiagnosticError').fg,
     diag_warn = utils.get_highlight('DiagnosticWarn').fg,
-    diag_info = utils.get_highlight('DiagnosticInfo').fg,
+    diag_info = diagnostic_info.fg,
     diag_hint = utils.get_highlight('DiagnosticHint').fg,
     git_add = utils.get_highlight('MiniDiffSignAdd').fg or '#a6e3a1',
     git_change = utils.get_highlight('MiniDiffSignChange').fg or '#f9e2af',
     git_del = utils.get_highlight('MiniDiffSignDelete').fg or '#f38ba8',
 
-    lsp_name = utils.get_highlight('DiagnosticInfo').fg,
+    lsp_name = diagnostic_info.fg,
     venv_name = utils.get_highlight('Type').fg,
 
-    tab_mod = utils.get_highlight('MatchParen').fg,
-    tab_cross_bg = utils.get_highlight('Error').fg,
-    tab_num = utils.get_highlight('DiagnosticInfo').fg,
+    tab_mod = match_paren.fg,
+    tab_cross_bg = error.fg,
+    tab_num = diagnostic_info.fg,
     tab_num_unfocus = utils.get_highlight('Comment').fg,
-    tab_cross_fg = utils.get_highlight('CursorLine').bg,
+    tab_cross_fg = cursor_line.bg,
   }
 end
-
 M.mode_names = {
   n = 'NORMAL',
   no = 'OP-PENDING',
