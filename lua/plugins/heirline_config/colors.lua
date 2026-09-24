@@ -20,6 +20,7 @@ function M.setup_colors()
 
     normal = utils.get_highlight('Directory').fg or '#89b4fa',
     insert = utils.get_highlight('String').fg or '#a6e3a1',
+    visual = utils.get_highlight('Statement').fg or '#cba6f7',
     replace = error.fg or '#f38ba8',
     command = match_paren.fg or '#fab387',
     terminal = utils.get_highlight('WarningMsg').fg or '#f9e2af',
