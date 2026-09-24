@@ -1,4 +1,4 @@
-# Cameron's NeoVim Config *forked from CWorld
+# 🌠 Stellar:Vim - Speed and Modern
 
 > [!NOTE]
 > This is a fork of the original [author's](https://github.com/cworld1/nvim-config) config. His config is the bone of my config. So please have a look on his config too.
@@ -90,14 +90,14 @@ Making sure you've installed [NeoVim-nightly 0.13](https://github.com/neovim/neo
 _For Windows:_
 
 ```bash
-git clone https://github.com/Imngzx/nvim-config-rice-.ver-.git "${env:LOCALAPPDATA}\nvim"
+git clone https://github.com/Imngzx/stellar-vim.git "${env:LOCALAPPDATA}\nvim"
 nvim
 ```
 
 _For \*nix:_
 
 ```bash
-git clone https://github.com/Imngzx/nvim-config-rice-.ver-.git $XDG_CONFIG_HOME/nvim
+git clone https://github.com/Imngzx/stellar-vim.git $XDG_CONFIG_HOME/nvim
 nvim
 ```
 
