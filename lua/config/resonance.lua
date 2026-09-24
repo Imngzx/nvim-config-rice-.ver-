@@ -43,7 +43,9 @@ require('plugins.ui')
 require('plugins.tool')
 
 -- misc
-require('plugins.discord')
+if require('libs.power').is_ac() then
+  require('plugins.discord')
+end
 
 -- NOTE: the reson I wrap my plugins with this block is because the mechanics of luajit
 -- although resonance.nvim will blocks luajit to require the plugin until resonance sends it to rtp
