@@ -203,8 +203,12 @@ git commit -m "feat(session): add auto-save on focus lost"
 - Early returns, flat conditionals
 - Comments only for *why*, not *what*
 - `vim.uv` / `vim.system` over `vim.fn` in hot paths
-- `vim.schedule()` for async work (git, system calls)
-
+### LuaJIT/C API Performance Rules
+ 
+- **Prefer `vim.uv` sync APIs** (`fs_stat`, `fs_read`, `fs_write`) over async callbacks for small I/O — avoids callback/closure allocation.
+- **Hoist FFI `cdef` and `ffi.new` to module scope** — compile once, reuse struct instances; never allocate in hot paths.
+- **Use `libs.utils` OS helpers** (`is_penguin()`, `is_windows()`, `is_mac()`) — they cache `jit.os` checks; avoid inline `jit.os` duplication.
+- **Use byte operations** (`str:byte(i) == N`, `bit.band`) over string sub/compare — no intermediate string allocation.
 ### Cross-Module Communication
 
 ```lua

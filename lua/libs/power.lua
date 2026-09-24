@@ -1,10 +1,17 @@
 local M = {}
 
-local uv = vim.uv
+local api = vim.api
+local async = vim.async
 local fn = vim.fn
 local pcall = pcall
-local sched = vim.schedule
-local sys = vim.system
+local schedule = vim.schedule
+local uv = vim.uv
+
+local fs_close = async.wrap(2, uv.fs_close)
+local fs_open = async.wrap(4, uv.fs_open)
+local fs_read = async.wrap(4, uv.fs_read)
+local fs_write = async.wrap(4, uv.fs_write)
+local system = async.wrap(3, vim.system)
 
 M.config = {
   enable_auto_switch = true,
@@ -13,62 +20,70 @@ M.config = {
 
 local cache_path = fn.stdpath('state') .. '/power_state.cache'
 local _is_ac = M.config.default_to_ac
+local windows_ffi
+local windows_status
 
 local function read_cache_fast()
   local fd = uv.fs_open(cache_path, 'r', 438)
-  if fd then
-    local data = uv.fs_read(fd, 2, 0)
-    uv.fs_close(fd)
-    if data then _is_ac = (data == '1') end
-  end
+  if not fd then return end
+
+  local data = uv.fs_read(fd, 2, 0)
+  uv.fs_close(fd)
+  if data then _is_ac = data:byte(1) == 49 end
+end
+
+---@async
+local function read_power_file(path)
+  local open_err, fd = fs_open(path, 'r', 438)
+  if open_err or not fd then return end
+
+  local read_err, data = fs_read(fd, 2, 0)
+  fs_close(fd)
+  if read_err then return end
+  return data
+end
+
+local function write_cache(actual_ac)
+  async.run('power-cache-write', function()
+    local open_err, fd = fs_open(cache_path, 'w', 438)
+    if open_err or not fd then return end
+
+    fs_write(fd, actual_ac and '1' or '0', -1)
+    fs_close(fd)
+  end):raise_on_error()
 end
 
 local function verify_and_notify(actual_ac)
-  if actual_ac ~= _is_ac then
-    _is_ac = actual_ac
-    uv.fs_open(cache_path, 'w', 438, function(_, fd)
-      if fd then
-        uv.fs_write(fd, actual_ac and '1' or '0', -1, function()
-          uv.fs_close(fd)
-        end)
-      end
-    end)
+  if actual_ac == _is_ac then return end
 
-    local msg = actual_ac
-      and '🔌 [Power] AC detected. Restart Neovim to initialize High-Perf Pickers (Snacks).'
-      or '🔋 [Power] Battery detected. Restart Neovim to initialize Low-Power Pickers (Fzf-lua).'
+  _is_ac = actual_ac
+  write_cache(actual_ac)
 
-    sched(function()
-      vim.notify(msg, vim.log.levels.WARN, { title = 'Engine Switch' })
-    end)
-  end
-end
+  local msg = actual_ac
+    and '🔌 [Power] AC detected. Restart Neovim to initialize High-Perf Pickers (Snacks).'
+    or '🔋 [Power] Battery detected. Restart Neovim to initialize Low-Power Pickers (Fzf-lua).'
 
-local function check_linux()
-  uv.fs_open('/sys/class/power_supply/AC/online', 'r', 438, function(err, fd)
-    if err or not fd then
-      uv.fs_open('/sys/class/power_supply/ACAD/online', 'r', 438, function(err2, fd2)
-        if err2 or not fd2 then return end
-        uv.fs_read(fd2, 2, 0, function(_, data)
-          uv.fs_close(fd2)
-          if data then verify_and_notify(data:sub(1, 1) == '1') end
-        end)
-      end)
-      return
-    end
-    uv.fs_read(fd, 2, 0, function(_, data)
-      uv.fs_close(fd)
-      if data then verify_and_notify(data:sub(1, 1) == '1') end
-    end)
+  schedule(function()
+    vim.notify(msg, vim.log.levels.WARN, { title = 'Engine Switch' })
   end)
 end
 
-local function check_windows()
+local function check_linux()
+  async.run('power-linux-check', function()
+    local data = read_power_file('/sys/class/power_supply/AC/online')
+      or read_power_file('/sys/class/power_supply/ACAD/online')
+    if data then verify_and_notify(data:byte(1) == 49) end
+  end):raise_on_error()
+end
+
+local function get_windows_status()
+  if windows_status then return windows_ffi, windows_status end
+
   local ok, ffi = pcall(require, 'ffi')
   if not ok then return end
 
-  if not pcall(function() return ffi.typeof('SYSTEM_POWER_STATUS') end) then
-    pcall(ffi.cdef, [[
+  if not pcall(ffi.typeof, 'SYSTEM_POWER_STATUS') then
+    local declared = pcall(ffi.cdef, [[
       typedef struct _SYSTEM_POWER_STATUS {
         unsigned char ACLineStatus;
         unsigned char BatteryFlag;
@@ -79,24 +94,38 @@ local function check_windows()
       } SYSTEM_POWER_STATUS;
       bool GetSystemPowerStatus(SYSTEM_POWER_STATUS *lpSystemPowerStatus);
     ]])
+    if not declared then return end
   end
 
-  pcall(function()
-    local status = ffi.new('SYSTEM_POWER_STATUS')
-    if ffi.C.GetSystemPowerStatus(status) then
-      ---@diagnostic disable-next-line: undefined-field
-      local ac = status.ACLineStatus
-      verify_and_notify(ac == 1 or ac == 255)
-    end
-  end)
+  local allocated, status = pcall(ffi.new, 'SYSTEM_POWER_STATUS')
+  if not allocated then return end
+
+  windows_ffi = ffi
+  windows_status = status
+  return windows_ffi, windows_status
+end
+
+local function check_windows()
+  async.run('power-windows-check', function()
+    local ffi, status = get_windows_status()
+    if not ffi then return end
+
+    local ok, powered = pcall(ffi.C.GetSystemPowerStatus, status)
+    if not ok or not powered then return end
+
+    ---@diagnostic disable-next-line: undefined-field
+    local ac = status.ACLineStatus
+    verify_and_notify(ac == 1 or ac == 255)
+  end):raise_on_error()
 end
 
 local function check_mac()
-  sys({ 'pmset', '-g', 'batt' }, { text = true }, function(obj)
-    if obj.code == 0 and obj.stdout then
-      verify_and_notify(obj.stdout:find('AC Power') ~= nil)
+  async.run('power-macos-check', function()
+    local result = system({ 'pmset', '-g', 'batt' }, { text = true })
+    if result and result.code == 0 and result.stdout then
+      verify_and_notify(result.stdout:find('AC Power', 1, true) ~= nil)
     end
-  end)
+  end):raise_on_error()
 end
 
 function M.is_ac()
@@ -105,7 +134,11 @@ function M.is_ac()
 end
 
 function M.setup(opts)
-  M.config = vim.tbl_deep_extend('force', M.config, opts or {})
+  if opts then
+    for key, value in pairs(opts) do
+      M.config[key] = value
+    end
+  end
   if not M.config.enable_auto_switch then return end
 
   read_cache_fast()
@@ -115,11 +148,11 @@ function M.setup(opts)
     or utils.is_windows() and check_windows
     or utils.is_mac() and check_mac or function() end
 
-  vim.defer_fn(checker, 100)
+  checker()
 
-  vim.api.nvim_create_autocmd('FocusGained', {
-    group = vim.api.nvim_create_augroup('LibPowerStateCheck', { clear = true }),
-    callback = function() checker() end,
+  api.nvim_create_autocmd('FocusGained', {
+    group = api.nvim_create_augroup('LibPowerStateCheck', { clear = true }),
+    callback = checker,
   })
 end
 
