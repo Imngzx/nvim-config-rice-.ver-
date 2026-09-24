@@ -41,7 +41,6 @@ require('plugins.cmdline')
 require('plugins.ui')
 
 require('plugins.tool')
-require('custom.sudo')
 
 -- misc
 require('plugins.discord')
@@ -103,6 +102,8 @@ vim.api.nvim_create_autocmd('User', {
     end
     require('config.neovide')
     require('custom.todo').setup()
+    require('custom.sudo')
+
 
     -- [git]
     require('custom.git').setup({
