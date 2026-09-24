@@ -4,7 +4,6 @@ local utils = require('heirline.utils')
 -- ⚡ 1. 赋值优化法 (Localize C-API for extreme performance)
 -- =========================================================
 local api = vim.api
-local fn = vim.fn
 local schedule = vim.schedule
 local math_min = math.min
 local table_concat = table.concat
@@ -17,8 +16,8 @@ local get_current_buf = api.nvim_get_current_buf
 local list_bufs = api.nvim_list_bufs
 local nvim_strwidth = api.nvim_strwidth
 local fs_basename = vim.fs.basename
-local strcharpart = fn.strcharpart
-local strchars = fn.strchars
+local str_byteindex = vim.str_byteindex
+local str_utfindex = vim.str_utfindex
 
 local diag_count = vim.diagnostic.count
 local severity = vim.diagnostic.severity
@@ -53,6 +52,11 @@ local function num_len(n)
   if n < 100 then return 2 end
   if n < 1000 then return 3 end
   return 4
+end
+
+local function truncate_buf_name(name)
+  if #name <= 20 or str_utfindex(name, 'utf-32') <= 20 then return name end
+  return str_sub(name, 1, str_byteindex(name, 'utf-32', 19, false)) .. '…'
 end
 
 local _buf_pool = {}
@@ -95,15 +99,7 @@ local function get_buf_state(bufnr)
   end
   if name == '' then name = '[No Name]' end
 
-  local name_bytes = #name
-  if name_bytes > 20 then
-    local name_chars = strchars(name)
-    if name_bytes == name_chars then
-      name = str_sub(name, 1, 19) .. '…'
-    elseif name_chars > 20 then
-      name = strcharpart(name, 0, 19) .. '…'
-    end
-  end
+  name = truncate_buf_name(name)
   state.safe_name = name
 
   local diags = diag_count(bufnr)

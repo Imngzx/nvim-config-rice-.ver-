@@ -1,7 +1,10 @@
+local api = vim.api
+local async = vim.async
 local conditions = require('heirline.conditions')
 local colors = require('plugins.heirline_config.colors')
 local _lsp_args = { bufnr = 0 }
-local nvim_get_current_buf = vim.api.nvim_get_current_buf
+local nvim_get_current_buf = api.nvim_get_current_buf
+local nvim_command = api.nvim_command
 
 local lsp_name_cache = {}
 local lsp_cache_group = vim.api.nvim_create_augroup('HeirlineLspNameCache', { clear = true })
@@ -159,14 +162,14 @@ end
 local cached_time = get_time_str()
 
 local function setup_time_updater()
-  cached_time = get_time_str()
-  local current_seconds = tonumber(os.date('%S'))
-  local ms_until_next_minute = (60 - current_seconds) * 1000
-
-  vim.defer_fn(function()
-    vim.api.nvim_command('redrawstatus')
-    setup_time_updater()
-  end, ms_until_next_minute)
+  async.run('HeirlineClock', function()
+    while true do
+      cached_time = get_time_str()
+      local current_seconds = tonumber(os.date('%S'))
+      async.sleep((60 - current_seconds) * 1000)
+      nvim_command('redrawstatus')
+    end
+  end)
 end
 setup_time_updater()
 

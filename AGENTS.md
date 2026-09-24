@@ -32,6 +32,7 @@
 | `fzf` | System `fzf` | Fuzzy finder (used in picker configs) |
 | `fd` | System `fd` | Fast file finder (used in picker configs) |
 | `lua-language-server` | `/usr/bin/lua-language-server` (pacman) | LSP diagnostics: `lua-language-server --check=FILE` |
+
 ### Benchmark Command Template
 
 ```bash
@@ -242,7 +243,7 @@ local utils = require('libs.utils')
 
 1. Edit `lua/plugins/heirline_config/statusline.lua` (components)
 2. Edit `lua/plugins/heirline_config/colors.lua` (color palette)
-3. Test: `nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "lua require('heirline').reset()" -c "qall"`
+3. Test: `nvim --headless -u NONE -c "luafile ~/.config/nvim/init.lua" -c "doautocmd User VeryLazy" -c "lua vim.cmd('redrawstatus'); vim.cmd('redrawtabline'); vim.cmd('colorscheme catppuccin')" -c "qall"`
 
 ### Modify Snacks Picker Config
 
@@ -272,15 +273,19 @@ local utils = require('libs.utils')
 
 2. Register in `lua/lsp/init.lua`:
    - Add to `custom_servers` metatable `__index`:
+
      ```lua
      if k == '<server_name>' then return require('lsp.servers.<name>') end
      ```
+
    - Add to `custom_server_keys` list:
+
      ```lua
      '<server_name>',
      ```
 
 3. Test:
+
    ```bash
    nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "lua require('custom.startup')" -c "lua require('config.resonance')" -c "lua require('lsp.init').setup()" -c "lua vim.lsp.enable(require('lsp.init').enabled_servers)" -c "edit test.<ft>" -c "lua vim.wait(2000)" -c "lua print(vim.inspect(vim.lsp.get_clients({name='<server_name>'})))" -c "qall"
    ```
@@ -288,6 +293,7 @@ local utils = require('libs.utils')
 ### Add Mason-only Tool (formatter/linter/debugger)
 
 Add to `M.mason_tools` in `lua/lsp/init.lua`:
+
 ```lua
 M.mason_tools = {
   -- existing tools...
@@ -375,11 +381,13 @@ nvim --headless -c "luafile ~/.config/nvim/init.lua" -c "qall"  # auto-reclones
 ### Todo System (Mandatory for Multi-Step Work)
 
 **Initialize at start of any multi-step task:**
+
 ```lua
 todo(i="Brief purpose", op="init", list=[{"phase": "PhaseName", "items": ["Task 1", "Task 2"]}])
 ```
 
 **Update as work progresses:**
+
 ```lua
 todo(i="Task description", op="start", task="Task 1", phase="PhaseName")
 todo(i="Task description", op="done", task="Task 1", phase="PhaseName")
