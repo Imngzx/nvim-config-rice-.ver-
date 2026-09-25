@@ -73,9 +73,9 @@ end
 local function truncate(str, max_len)
   if not str or str == '' then return '' end
   if #str <= max_len then return str end
-  local _, char_len = str_utfindex(str, 'utf-8', #str)
+  local char_len = str_utfindex(str)
   if char_len > max_len then
-    local byte_idx = str_byteindex(str, 'utf-8', max_len - 3)
+    local byte_idx = str_byteindex(str, max_len - 3)
     return str_sub(str, 1, byte_idx) .. '...'
   end
   return str
